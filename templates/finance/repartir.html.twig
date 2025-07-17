@@ -31,7 +31,7 @@
                 <div class="col-12 mb-4">
                 {{ "Résultat net de l’exercice"|trans}} : {{ resultat|number_format(0, '', ' ')}}
                 </div>
-        {% if resultat < 0 %}
+        {% if resultat > 0 %}
 
        <form id="form" method="post">
              
