@@ -3888,6 +3888,26 @@ class FinanceController extends AbstractController
                             $gain->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom'));
                             $gain->setAnnee(date('Y'));
                             $entityManager->persist($gain); 
+
+                            $debit = new Debit();
+                            $debit->setCompte($banque->getCompte());
+                            $debit->setType('Banque');
+                            // $debitfoncier->setSalaire($paieSalaire);
+                            $debit->setMontant($request->request->get('dividende') - $request->request->get('impotDividende'));
+
+                            $ecriturelo = new Ecriture();
+                            $ecriturelo->setType('Banque');
+                            $ecriturelo->setComptecredit($request->request->get('compte'));
+                            $ecriturelo->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $ecriturelo->setComptedebit($banque->getCompte());
+                            $ecriturelo->setLibellecomptedebit($banque->getNom());
+                            $ecriturelo->setDebit($debit);
+                            $ecriturelo->setSolde(-($request->request->get('dividende') - $request->request->get('impotDividende')));
+                            $ecriturelo->setMontant($request->request->get('dividende') - $request->request->get('impotDividende'));
+                            $ecriturelo->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom'));
+                            $entityManager->persist($debit);
+                            $entityManager->persist($ecriturelo);
+
                         }elseif($key == "nom1" && $value != null){
                             $nom1 = new EcritureRepartition();
                             $nom1->setComptecredit("1301");
@@ -3918,6 +3938,26 @@ class FinanceController extends AbstractController
                             $gain1->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom1'));
                             $gain1->setAnnee(date('Y'));
                             $entityManager->persist($gain1); 
+
+                            $debit1 = new Debit();
+                            $debit1->setCompte($banque->getCompte());
+                            $debit1->setType('Banque');
+                            // $debitfoncier->setSalaire($paieSalaire);
+                            $debit1->setMontant($request->request->get('dividende1') - $request->request->get('impotDividende1'));
+
+                            $ecriturelocal1 = new Ecriture();
+                            $ecriturelocal1->setType('Banque');
+                            $ecriturelocal1->setComptecredit($request->request->get('compte1'));
+                            $ecriturelocal1->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $ecriturelocal1->setComptedebit($banque->getCompte());
+                            $ecriturelocal1->setLibellecomptedebit($banque->getNom());
+                            $ecriturelocal1->setDebit($debit1);
+                            $ecriturelocal1->setSolde(-($request->request->get('dividende1') - $request->request->get('impotDividende1')));
+                            $ecriturelocal1->setMontant($request->request->get('dividende1') - $request->request->get('impotDividende1'));
+                            $ecriturelocal1->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom1'));
+                            $entityManager->persist($debit1);
+                            $entityManager->persist($ecriturelocal1);
+
                         }elseif($key == "nom2" && $value != null){
                             $nom2 = new EcritureRepartition();
                             $nom2->setComptecredit("1301");
@@ -3948,6 +3988,26 @@ class FinanceController extends AbstractController
                             $gain2->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom2'));
                             $gain2->setAnnee(date('Y'));
                             $entityManager->persist($gain2); 
+
+                            $debit2 = new Debit();
+                            $debit2->setCompte($banque->getCompte());
+                            $debit2->setType('Banque');
+                            // $debitfoncier->setSalaire($paieSalaire);
+                            $debit2->setMontant($request->request->get('dividende2') - $request->request->get('impotDividende2'));
+                             
+                            
+                            $ecriturelocal = new Ecriture();
+                            $ecriturelocal->setType('Banque');
+                            $ecriturelocal->setComptecredit($request->request->get('compte2'));
+                            $ecriturelocal->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $ecriturelocal->setComptedebit($banque->getCompte());
+                            $ecriturelocal->setLibellecomptedebit($banque->getNom());
+                            $ecriturelocal->setDebit($debit2);
+                            $ecriturelocal->setSolde(-($request->request->get('dividende2') - $request->request->get('impotDividende2')));
+                            $ecriturelocal->setMontant($request->request->get('dividende2') - $request->request->get('impotDividende2'));
+                            $ecriturelocal->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom2'));
+                            $entityManager->persist($debit2);
+                            $entityManager->persist($ecriturelocal);
                         }
                         $entityManager->flush();
                     }
