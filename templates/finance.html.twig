@@ -229,12 +229,29 @@
                                 {{ 'Financement'|trans }}
                             </a>
                         </li>
-                        <li class="dropdown-item">
-                            <a class="nav-link {% block journal %}{% endblock %}"
-                               href="{{ path('finance_index') }}">
-                                <i class="fa-solid fa-money-bill-transfer"></i>
+                        <li class="dropdown-item submenu">
+                            <a class="nav-link dropdown-toggle {% block journal %}{% endblock %}" href="#"
+                               id="paiement_salaire"
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               <i class="fa-solid fa-money-bill-trend-up"></i>
                                 {{ 'Journal'|trans }}
                             </a>
+                            <ul class="dropdown-submenu" aria-labelledby="paiement_salaire">
+                                <li class="dropdown-item">
+                                    <a class="nav-link {% block comptable %}{% endblock %}"
+                                       href="{{ path('finance_index') }}">
+                                       <i class="fa-solid fa-money-bill-transfer"></i>
+                                        {{ 'Comptable'|trans }}
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a class="nav-link {% block repartition %}{% endblock %}"
+                                       href="{{ path('finance_journal_repartir') }}">
+                                        <i class="fa fa-share"></i><i class="fa-solid fa-money-bill-transfer"></i>
+                                        {{ 'Repartition Resultat'|trans }}
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                          <li class="dropdown-item">
                             <a class="nav-link {% block resultat %}{% endblock %}"
