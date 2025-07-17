@@ -17,6 +17,7 @@ use App\Entity\Depense;
 use App\Entity\Ecriture;
 use App\Entity\Financement;
 use App\Entity\Paie;
+use App\Entity\EcritureRepartition;
 use App\Entity\PaieSalaire;
 use App\Entity\LivrerReste;
 use App\Repository\EcritureRepository;
@@ -3774,6 +3775,301 @@ class FinanceController extends AbstractController
 
             $response = $this->render('finance/immobilisation.html.twig',[
               'depenses' => $listdepenses,
+               
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/repartir/", name :"repartir", methods : ["POST", "GET"]) ]
+    public function repartir(Request $request): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $resultat = $this->ResultatInterne();
+            $entityManager = $this->entityManager;
+            $banques = $entityManager->getRepository(Banque::class)->findAll();
+       
+            if ($request->isMethod('POST')) {
+
+                $repartiton = $entityManager->getRepository(EcritureRepartition::class)->findBy(['annee' => date('Y')]);
+                if(empty($repartiton)){
+
+                    $banque = $entityManager->getRepository(Banque::class)->find($request->request->get('banque'));
+                
+                    $ecriture = new EcritureRepartition();
+                    $ecriture->setComptecredit("131");
+                    $ecriture->setLibellecomptecredit("Résultat net de l’exercice");
+                    $ecriture->setComptedebit("1301");
+                    $ecriture->setLibellecomptedebit("Résultat net en instance d’affectation");
+                    $ecriture->setMontant($resultat);
+                    $ecriture->setLibelle("Résultat net en instance d’affectation");
+                    $ecriture->setAnnee(date('Y'));
+                    $entityManager->persist($ecriture);
+
+                    foreach($request->request as $key=>$value){
+                        if($key == "reservelegal"){
+                            $reservelegal = new EcritureRepartition();
+                            $reservelegal->setComptecredit("1301");
+                            $reservelegal->setLibellecomptecredit("Résultat net de l’exercice");
+                            $reservelegal->setComptedebit("111");
+                            $reservelegal->setLibellecomptedebit("Réserve légale");
+                            $reservelegal->setMontant($value);
+                            $reservelegal->setLibelle("Réserve légale");
+                            $reservelegal->setAnnee(date('Y'));
+                            $entityManager->persist($reservelegal);
+                        }elseif($key == "autrereserve"){
+                            $autrereserve = new EcritureRepartition();
+                            $autrereserve->setComptecredit("1301");
+                            $autrereserve->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $autrereserve->setComptedebit("1188");
+                            $autrereserve->setLibellecomptedebit("Autres réserves");
+                            $autrereserve->setMontant($value);
+                            $autrereserve->setLibelle("Autres réserves");
+                            $autrereserve->setAnnee(date('Y'));
+                            $entityManager->persist($autrereserve);
+                            
+                        }elseif($key == "repport"){
+                            $repport = new EcritureRepartition();
+                            $repport->setComptecredit("1301");
+                            $repport->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $repport->setComptedebit("121");
+                            $repport->setLibellecomptedebit("Report à nouveau créditeur");
+                            $repport->setMontant($value);
+                            $repport->setLibelle("Report à nouveau créditeur");
+                            $repport->setAnnee(date('Y'));
+                            $entityManager->persist($repport);
+                            
+                        }elseif($key == "nom"){
+                            $nom = new EcritureRepartition();
+                            $nom->setComptecredit("1301");
+                            $nom->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $nom->setComptedebit($request->request->get('compte'));
+                            $nom->setLibellecomptedebit("Associés, Dividendes à payer Actionnaire");
+                            $nom->setMontant($request->request->get('dividende'));
+                            $nom->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom'));
+                            $nom->setAnnee(date('Y'));
+                            $entityManager->persist($nom);  
+                    
+                            $impotDividende = new EcritureRepartition();
+                            $impotDividende->setComptecredit($request->request->get('compte'));
+                            $impotDividende->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $impotDividende->setComptedebit("4424");
+                            $impotDividende->setLibellecomptedebit("Impôts et taxes recouvrables /sté");
+                            $impotDividende->setMontant($request->request->get('impotDividende'));
+                            $impotDividende->setLibelle("Impôts et taxes recouvrables /sté ".$request->request->get('nom'));
+                            $impotDividende->setAnnee(date('Y'));
+                            $entityManager->persist($impotDividende);  
+
+                            $gain = new EcritureRepartition();
+                            $gain->setComptecredit($request->request->get('compte'));
+                            $gain->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $gain->setComptedebit($banque->getCompte());
+                            $gain->setLibellecomptedebit($banque->getNom());
+                            $gain->setMontant($request->request->get('dividende') - $request->request->get('impotDividende'));
+                            $gain->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom'));
+                            $gain->setAnnee(date('Y'));
+                            $entityManager->persist($gain); 
+                        }elseif($key == "nom1" && $value != null){
+                            $nom1 = new EcritureRepartition();
+                            $nom1->setComptecredit("1301");
+                            $nom1->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $nom1->setComptedebit($request->request->get('compte1'));
+                            $nom1->setLibellecomptedebit("Associés, Dividendes à payer Actionnaire");
+                            $nom1->setMontant($request->request->get('dividende1'));
+                            $nom1->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom1'));
+                            $nom1->setAnnee(date('Y'));
+                            $entityManager->persist($nom1);  
+                    
+                            $impotDividende1 = new EcritureRepartition();
+                            $impotDividende1->setComptecredit($request->request->get('compte1'));
+                            $impotDividende1->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $impotDividende1->setComptedebit("4424");
+                            $impotDividende1->setLibellecomptedebit("Impôts et taxes recouvrables /sté");
+                            $impotDividende1->setMontant($request->request->get('impotDividende1'));
+                            $impotDividende1->setLibelle("Impôts et taxes recouvrables /sté ".$request->request->get('nom1'));
+                            $impotDividende1->setAnnee(date('Y'));
+                            $entityManager->persist($impotDividende1);  
+
+                            $gain1 = new EcritureRepartition();
+                            $gain1->setComptecredit($request->request->get('compte1'));
+                            $gain1->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $gain1->setComptedebit($banque->getCompte());
+                            $gain1->setLibellecomptedebit($banque->getNom());
+                            $gain1->setMontant($request->request->get('dividende1') - $request->request->get('impotDividende1'));
+                            $gain1->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom1'));
+                            $gain1->setAnnee(date('Y'));
+                            $entityManager->persist($gain1); 
+                        }elseif($key == "nom2" && $value != null){
+                            $nom2 = new EcritureRepartition();
+                            $nom2->setComptecredit("1301");
+                            $nom2->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $nom2->setComptedebit($request->request->get('compte2'));
+                            $nom2->setLibellecomptedebit("Associés, Dividendes à payer Actionnaire");
+                            $nom2->setMontant($request->request->get('dividende2'));
+                            $nom2->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom2'));
+                            $nom2->setAnnee(date('Y'));
+                            $entityManager->persist($nom2);  
+                    
+                            $impotDividende2 = new EcritureRepartition();
+                            $impotDividende2->setComptecredit($request->request->get('compte2'));
+                            $impotDividende2->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $impotDividende2->setComptedebit("4424");
+                            $impotDividende2->setLibellecomptedebit("Impôts et taxes recouvrables /sté");
+                            $impotDividende2->setMontant($request->request->get('impotDividende2'));
+                            $impotDividende2->setLibelle("Impôts et taxes recouvrables /sté ".$request->request->get('nom2'));
+                            $impotDividende2->setAnnee(date('Y'));
+                            $entityManager->persist($impotDividende2);  
+
+                            $gain2 = new EcritureRepartition();
+                            $gain2->setComptecredit($request->request->get('compte2'));
+                            $gain2->setLibellecomptecredit("Associés, Dividendes à payer Actionnaire");
+                            $gain2->setComptedebit($banque->getCompte());
+                            $gain2->setLibellecomptedebit($banque->getNom());
+                            $gain2->setMontant($request->request->get('dividende2') - $request->request->get('impotDividende2'));
+                            $gain2->setLibelle("Associés, Dividendes à payer Actionnaire ".$request->request->get('nom2'));
+                            $gain2->setAnnee(date('Y'));
+                            $entityManager->persist($gain2); 
+                        }
+                        $entityManager->flush();
+                    }
+                    $this->addFlash('notice', 'Resultat reussie');
+                
+                }else{
+                    $this->addFlash('notice', 'Resultat deja reparti');
+                }
+                
+              return $this->redirectToroute('finance_journal_repartir'); 
+            }
+
+
+            $response = $this->render('finance/repartir.html.twig',[
+              'resultat' => $resultat,
+              'banques' => $banques,
+               
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/journalRepartir/", name :"journal_repartir", methods : ["POST", "GET"]) ]
+    public function Journalrepartir(Request $request): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $resultat = $this->ResultatInterne();
+            $entityManager = $this->entityManager;
+            
+
+            $ecritures = $entityManager->getRepository(EcritureRepartition::class)->findAll();
+               
+            $response = $this->render('finance/journalrepartition.html.twig',[
+              'ecritures' => $ecritures,
+               
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/RepartirNegatif/", name :"repartir_negatif", methods : ["POST", "GET"]) ]
+    public function repartinegatif(Request $request): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $resultat = $this->ResultatInterne();
+            $entityManager = $this->entityManager;
+            
+
+            $ecritures = $entityManager->getRepository(EcritureRepartition::class)->findAll();
+            if(empty($repartiton)){
+                $ecriture = new EcritureRepartition();
+                $ecriture->setComptecredit("1309");
+                $ecriture->setLibellecomptecredit("Résultat net en instance d’affectation : perte");
+                $ecriture->setComptedebit("139");
+                $ecriture->setLibellecomptedebit("Résultat net : perte");
+                $ecriture->setMontant($resultat);
+                $ecriture->setLibelle("Résultat net : perte");
+                $ecriture->setAnnee(date('Y'));
+                $entityManager->persist($ecriture);
+
+                $perte = new EcritureRepartition();
+                $perte->setComptecredit("1291");
+                $perte->setLibellecomptecredit(" perte nette à reporter");
+                $perte->setComptedebit("1309");
+                $perte->setLibellecomptedebit("Résultat net en instance d’affectation : perte");
+                $perte->setMontant($resultat);
+                $perte->setLibelle("Résultat net en instance d’affectation : perte");
+                $perte->setAnnee(date('Y'));
+                $entityManager->persist($perte);
+                
+                $entityManager->flush();
+                
+
+                $this->addFlash('notice', 'Repartition reussie');
+                return $this->redirectToroute('finance_journal_repartir'); 
+            }else{
+
+                $this->addFlash('notice', 'Resultat deja reparti');
+                return $this->redirectToroute('finance_journal_repartir'); 
+            }
+            
+             
+            $response = $this->render('finance/journalrepartition.html.twig',[
+              'ecritures' => $ecritures,
                
             ]);
             $response->setSharedMaxAge(0);

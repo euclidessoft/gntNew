@@ -1,0 +1,165 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+
+{% block title %}{{ 'Compte Resultat'|trans }} - GNT Pharma{% endblock %}
+
+{% block finance %}active{% endblock %}
+
+{% block resultat %}active{% endblock %}
+
+{% block body %}
+
+  <div class="col-lg-5 offset-lg-2 mt-4 fond-7 pb-5 pt-3 px-5">
+    <h4 class="mb-5">
+        <i class="fa fa-share"></i>
+        {{ 'Repartition resultat'|trans }}
+    </h4>
+    {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+        <div class="row">
+                <div class="col-12 mb-4">
+                {{ "Résultat net de l’exercice"|trans}} : {{ resultat|number_format(0, '', ' ')}}
+                </div>
+        {% if resultat < 0 %}
+
+       <form id="form" method="post">
+             
+                <div class="col-12 mb-4">
+                {{ "Réserve Légale"|trans}} : <input type="number" id="reservelegal" name="reservelegal" placeholder="{{ 'Réserve Légale'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-4">
+                {{ "Autre Réserve"|trans}} : <input type="number" id="autrereserve" name="autrereserve" placeholder="{{ 'Autre Réserve'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-5">
+                {{ "Repport a nouveau"|trans}} : <input type="number" id="repport" name="repport" placeholder="{{ 'Repport a nouveau'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-2">
+                {{ "Associés, Dividendes à payer"|trans}} :
+                 <input type="number" id="compte" name="compte" placeholder="{{ 'Compte associer'|trans}}" class="form-control mb-2" />
+                 <input type="text" id="nom" name="nom" placeholder="{{ 'Nom associer'|trans}}" class="form-control mb-2" />
+                <input type="number" id="dividende" name="dividende" placeholder="{{ 'Associés, Dividendes à payer'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-5">
+                <input type="number" id="impotDividende" name="impotDividende" placeholder="{{ 'Impôts et taxes recouvrables /sté'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-2">
+                {{ "Associés, Dividendes à payer"|trans}} :({{"Facultatif"|trans}})
+                 <input type="number" id="compte1" name="compte1" placeholder="{{ 'Compte associer'|trans}}" class="form-control mb-2" />
+                 <input type="text" id="nom1" name="nom1" placeholder="{{ 'Nom associer'|trans}}" class="form-control mb-2" />
+                <input type="number" id="dividende1" name="dividende1" placeholder="{{ 'Associés, Dividendes à payer'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-5">
+                <input type="number" id="impotDividende1" name="impotDividende1" placeholder="{{ 'Impôts et taxes recouvrables /sté'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-2">
+                {{ "Associés, Dividendes à payer"|trans}} :({{"Facultatif"|trans}})
+                 <input type="number" id="compte2" name="compte2" placeholder="{{ 'Compte associer'|trans}}" class="form-control mb-2" />
+                 <input type="text" id="nom2" name="nom2" placeholder="{{ 'Nom associer'|trans}}" class="form-control mb-2" />
+                <input type="number" id="dividende2" name="dividende2" placeholder="{{ 'Associés, Dividendes à payer'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-5">
+                <input type="number" id="impotDividende2" name="impotDividende2" placeholder="{{ 'Impôts et taxes recouvrables /sté'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12" id="associer">
+                 <div id='div0'></div>
+                </div>
+                <div class="col-12 text-right" id="associer">
+                <button type="button" class="btn btn-success" onclick="asscossier()"><i class="fa fa-plus"></i> ajouter un Associer</button>
+                </div>
+                <input type="hidden" id="nombre" value="0"/>
+             </div>
+             
+              <div class="col-md-8 offset-md-2 mt-4 pt-3 fond-7">
+                    <div class="centrer">
+               
+                        <button  type="button"  class="btn btn-shadow btn-green btn-normal mb-3 me-3" id="send" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <i class="fa fa-share"></i>
+                            {{ 'Repartir'|trans }}
+                        </button>
+                    </div>
+                </div>
+          
+    </div>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">{{"Repartition Resultat"|trans}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+     
+        Banque: <select class="form-control" name="banque">
+        <option value="0"  selected="selected">{{"Selctionnez une banque"|trans}}</option>
+        {% for banque in banques %}
+            <option value="{{ banque.id}}">{{ banque.nom}}</option>
+        {% else %}
+        {% endfor %}
+        </select>
+         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="annulervente" class="btn btn-success-light" data-bs-dismiss="modal">{{"Annuler"|trans}}</button>
+        <button type="button" class="btn btn-success" onclick="valider()">{{"Enregistrer"|trans}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="col-md-8 offset-md-2 mt-4 pt-3 fond-7">
+                    <div class="centrer">
+               
+                        <a href="{{ path('finance_repartir_negatif')}}" class="btn btn-shadow btn-green btn-normal mb-3 me-3" id="send" onlcik="load('send')">
+                            <i class="fa fa-share"></i>
+                            {{ 'Repartir'|trans }}
+                        </a>
+                    </div>
+                </div>
+{% endif %}
+
+{% endblock %}
+{% block scripts %}
+<script>
+function asscossier(){
+    let id = Number($("#nombre").val())
+   
+    $('#div'+id).html("<div class=\"col-12 mb-3\">\n" +
+    "{{ 'Associés, Dividendes à payer'|trans}} :\n" +
+    "<input type='number' id='compte' name='compte"+id+"' placeholder=\"{{ 'Compte associer'|trans}}\" class='form-control mb-2' />\n" +
+    "<input type=\"text\" name='nom"+id+"' placeholder=\"{{ 'Nom Associer'|trans}}\" class=\"form-control mb-2\" />\n" +
+    "<input type=\"number\" name='dividende"+id+"' placeholder=\"{{ 'Associés, Dividendes à payer'|trans}}\" class=\"form-control mb-2\" />\n" +
+    "<input type=\"number\" name='impotDividende"+id+"' placeholder=\"{{ 'Impôts et taxes recouvrables /sté'|trans}}\" class=\"form-control\" />\n" +
+    "<button type=\"button\" class=\"btn btn-danger\" onclick=\"sup("+id+")\"><i class=\"fa fa-trash\"></i></button>\n" +
+    "</div>")
+    id = id + 1
+    $("#nombre").val(id)
+     $('#associer').append("<div id='div"+id+"'></div>")
+}
+function sup(id){
+    $('#div'+id).html("");
+}
+function valider(){
+if($("#reservelegal").val() != "" && $("#autrereserve").val() != "" && $("#repport").val() != "" && $("#compte").val() != "" && $("#nom ").val() != "" && $("#dividende").val() != "" && $("#banque option:selected").val() != "0"){
+        var valider=$('#valider');
+        valider.addClass("disabled");
+        valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+        $('#form').submit();
+    }else{
+        alert("{{'veuillez renseignez les champs obligatoires'|trans}}")
+    }
+}
+
+</script>
+{% endblock %}

@@ -35,6 +35,7 @@ class Versement
 
     #[ORM\ManyToOne(targetEntity:Banque::class, inversedBy:"versements") ]
     private $banque;
+    
     /**
      * Constructor
      */
