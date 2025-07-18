@@ -12,7 +12,7 @@
 
 {% block finance %}active{% endblock %}
 
-{% block resultat %}active{% endblock %}
+{% block affectation %}active{% endblock %}
 
 {% block body %}
 
@@ -31,7 +31,7 @@
                 <div class="col-12 mb-4">
                 {{ "Résultat net de l’exercice"|trans}} : {{ resultat|number_format(0, '', ' ')}}
                 </div>
-        {% if resultat < 0 %}
+        {% if resultat > 0 %}
 
        <form id="form" method="post">
              
@@ -123,7 +123,7 @@
                
                         <a href="{{ path('finance_repartir_negatif')}}" class="btn btn-shadow btn-green btn-normal mb-3 me-3" id="send" onlcik="load('send')">
                             <i class="fa fa-share"></i>
-                            {{ 'Repartir'|trans }}
+                            {{ 'Repporter'|trans }}
                         </a>
                     </div>
                 </div>
