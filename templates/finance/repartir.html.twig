@@ -36,10 +36,19 @@
        <form id="form" method="post">
              
                 <div class="col-12 mb-4">
-                {{ "Réserve Légale"|trans}} : <input type="number" id="reservelegal" name="reservelegal" placeholder="{{ 'Réserve Légale'|trans}}" class="form-control" />
+                {{ "Réserve Légale"|trans}} : <input type="number" id="reservelegal" name="reservelegal" placeholder="{{ 'Réserve Légale(111)'|trans}}" class="form-control" />
                 </div>
                 <div class="col-12 mb-4">
-                {{ "Autre Réserve"|trans}} : <input type="number" id="autrereserve" name="autrereserve" placeholder="{{ 'Autre Réserve'|trans}}" class="form-control" />
+                {{ "Réserves Statutaires ou Contactuelles"|trans}} : <input type="number" id="reservestatutaire" name="reservestatutaire" placeholder="{{ 'Réserves Statutaires ou Contactuelles(112)'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-4">
+                {{ "Réserves Reglementaires"|trans}} : <input type="number" id="reservereglementaire" name="reservereglementaire" placeholder="{{ 'Réserves Reglementaires(113)'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-4">
+                {{ "Réserves Facultatives"|trans}} : <input type="number" id="reservefacultative" name="reservefacultative" placeholder="{{ 'Réserves Facultatives(1181)'|trans}}" class="form-control" />
+                </div>
+                <div class="col-12 mb-4">
+                {{ "Autre Réserve"|trans}} : <input type="number" id="autrereserve" name="autrereserve" placeholder="{{ 'Autre Réserve ou diverse (1188)'|trans}}" class="form-control" />
                 </div>
                 <div class="col-12 mb-5">
                 {{ "Repport a nouveau"|trans}} : <input type="number" id="repport" name="repport" placeholder="{{ 'Repport a nouveau'|trans}}" class="form-control" />
@@ -54,7 +63,7 @@
                 <input type="number" id="impotDividende" name="impotDividende" placeholder="{{ 'Impôts et taxes recouvrables /sté'|trans}}" class="form-control" />
                 </div>
                 <div class="col-12 mb-2">
-                {{ "Associés, Dividendes à payer"|trans}} :({{"Facultatif"|trans}})
+                {{ "Associés, Dividendes à payer"|trans}} :
                  <input type="number" id="compte1" name="compte1" placeholder="{{ 'Compte associer'|trans}}" class="form-control mb-2" />
                  <input type="text" id="nom1" name="nom1" placeholder="{{ 'Nom associer'|trans}}" class="form-control mb-2" />
                 <input type="number" id="dividende1" name="dividende1" placeholder="{{ 'Associés, Dividendes à payer'|trans}}" class="form-control" />
@@ -63,7 +72,7 @@
                 <input type="number" id="impotDividende1" name="impotDividende1" placeholder="{{ 'Impôts et taxes recouvrables /sté'|trans}}" class="form-control" />
                 </div>
                 <div class="col-12 mb-2">
-                {{ "Associés, Dividendes à payer"|trans}} :({{"Facultatif"|trans}})
+                {{ "Associés, Dividendes à payer"|trans}} :
                  <input type="number" id="compte2" name="compte2" placeholder="{{ 'Compte associer'|trans}}" class="form-control mb-2" />
                  <input type="text" id="nom2" name="nom2" placeholder="{{ 'Nom associer'|trans}}" class="form-control mb-2" />
                 <input type="number" id="dividende2" name="dividende2" placeholder="{{ 'Associés, Dividendes à payer'|trans}}" class="form-control" />
@@ -85,7 +94,7 @@
                
                         <button  type="button"  class="btn btn-shadow btn-green btn-normal mb-3 me-3" id="send" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             <i class="fa fa-share"></i>
-                            {{ 'Repartir'|trans }}
+                            {{ 'Affecter'|trans }}
                         </button>
                     </div>
                 </div>
@@ -151,13 +160,11 @@ function sup(id){
     $('#div'+id).html("");
 }
 function valider(){
-if($("#reservelegal").val() != "" && $("#autrereserve").val() != "" && $("#repport").val() != "" && $("#compte").val() != "" && $("#nom ").val() != "" && $("#dividende").val() != "" && $("#banque option:selected").val() != "0"){
+if(confirm("Etes-vous vraiment sur de vouloir valider")){
         var valider=$('#valider');
         valider.addClass("disabled");
         valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
         $('#form').submit();
-    }else{
-        alert("{{'veuillez renseignez les champs obligatoires'|trans}}")
     }
 }
 

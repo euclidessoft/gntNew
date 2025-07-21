@@ -141,7 +141,11 @@
     <div class="col-md-5 text-bold">
         &emsp;
     </div>
-    <div class="col-md-10 mt-5">
-        {{ form_rest(form) }}
+    <div class="col-md-5 text-bold">
+        &emsp;
     </div>
+    <div class="col-md-5 text-bold mt-5">
+         {{ form_row(form.fournisseurs, {'label':'Fournisseur'}) }}
+    </div>
+        {{ form_rest(form) }}
 </div>

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Complement\Solde;
 use App\Entity\Banque;
+use App\Entity\Reserve;
+use App\Entity\Repport;
 use App\Entity\Commande;
 use App\Entity\CommandeProduit;
 use App\Entity\Approvisionnement;
@@ -3826,7 +3828,7 @@ class FinanceController extends AbstractController
                     $entityManager->persist($ecriture);
 
                     foreach($request->request as $key=>$value){
-                        if($key == "reservelegal"){
+                        if($key == "reservelegal" && $value != null){
                             $reservelegal = new EcritureRepartition();
                             $reservelegal->setComptecredit("1301");
                             $reservelegal->setLibellecomptecredit("Résultat net de l’exercice");
@@ -3836,7 +3838,60 @@ class FinanceController extends AbstractController
                             $reservelegal->setLibelle("Réserve légale");
                             $reservelegal->setAnnee(date('Y'));
                             $entityManager->persist($reservelegal);
-                        }elseif($key == "autrereserve"){
+                            $reserve = new Reserve();
+                            $reserve->setCompte("111");
+                            $reserve->setAnnee(date('Y'));
+                            $reserve->setMontant($value);
+                            $entityManager->persist($reserve);
+                        }elseif($key == "reservestatutaire" && $value != null){
+                            $reservestatutaire = new EcritureRepartition();
+                            $reservestatutaire->setComptecredit("1301");
+                            $reservestatutaire->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $reservestatutaire->setComptedebit("112");
+                            $reservestatutaire->setLibellecomptedebit("Resrves Statutaires ou Contactueles");
+                            $reservestatutaire->setMontant($value);
+                            $reservestatutaire->setLibelle("Resrves Statutaires ou Contactueles");
+                            $reservestatutaire->setAnnee(date('Y'));
+                            $entityManager->persist($reservestatutaire);
+                            $reserve = new Reserve();
+                            $reserve->setCompte("112");
+                            $reserve->setAnnee(date('Y'));
+                            $reserve->setMontant($value);
+                            $entityManager->persist($reserve);
+                            
+                        }elseif($key == "reservereglementaire" && $value != null){
+                            $reservereglementaire = new EcritureRepartition();
+                            $reservereglementaire->setComptecredit("1301");
+                            $reservereglementaire->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $reservereglementaire->setComptedebit("113");
+                            $reservereglementaire->setLibellecomptedebit("Resrves Reglementaire");
+                            $reservereglementaire->setMontant($value);
+                            $reservereglementaire->setLibelle("Resrves Reglementaire");
+                            $reservereglementaire->setAnnee(date('Y'));
+                            $entityManager->persist($reservereglementaire);
+                            $reserve = new Reserve();
+                            $reserve->setCompte("113");
+                            $reserve->setAnnee(date('Y'));
+                            $reserve->setMontant($value);
+                            $entityManager->persist($reserve);
+                            
+                        }elseif($key == "reservefacultative" && $value != null){
+                            $reservefacultative = new EcritureRepartition();
+                            $reservefacultative->setComptecredit("1301");
+                            $reservefacultative->setLibellecomptecredit("Résultat net en instance d’affectation");
+                            $reservefacultative->setComptedebit("1181");
+                            $reservefacultative->setLibellecomptedebit("Resrves Facultatives");
+                            $reservefacultative->setMontant($value);
+                            $reservefacultative->setLibelle("Resrves Facultatives");
+                            $reservefacultative->setAnnee(date('Y'));
+                            $entityManager->persist($reservefacultative);
+                            $reserve = new Reserve();
+                            $reserve->setCompte("1181");
+                            $reserve->setAnnee(date('Y'));
+                            $reserve->setMontant($value);
+                            $entityManager->persist($reserve);
+                            
+                        }elseif($key == "autrereserve" && $value != null){
                             $autrereserve = new EcritureRepartition();
                             $autrereserve->setComptecredit("1301");
                             $autrereserve->setLibellecomptecredit("Résultat net en instance d’affectation");
@@ -3846,8 +3901,13 @@ class FinanceController extends AbstractController
                             $autrereserve->setLibelle("Autres réserves");
                             $autrereserve->setAnnee(date('Y'));
                             $entityManager->persist($autrereserve);
+                            $reserve = new Reserve();
+                            $reserve->setCompte("1188");
+                            $reserve->setAnnee(date('Y'));
+                            $reserve->setMontant($value);
+                            $entityManager->persist($reserve);
                             
-                        }elseif($key == "repport"){
+                        }elseif($key == "repport" && $value != null){
                             $repport = new EcritureRepartition();
                             $repport->setComptecredit("1301");
                             $repport->setLibellecomptecredit("Résultat net en instance d’affectation");
@@ -3857,8 +3917,14 @@ class FinanceController extends AbstractController
                             $repport->setLibelle("Report à nouveau créditeur");
                             $repport->setAnnee(date('Y'));
                             $entityManager->persist($repport);
+
+                            $reserve = new Repport();
+                            // $reserve->setCompte("1291");
+                            $reserve->setAnnee(date('Y'));
+                            $reserve->setMontant($value);
+                            $entityManager->persist($reserve);
                             
-                        }elseif($key == "nom"){
+                        }elseif($key == "nom" && $value != null){
                             $nom = new EcritureRepartition();
                             $nom->setComptecredit("1301");
                             $nom->setLibellecomptecredit("Résultat net en instance d’affectation");
