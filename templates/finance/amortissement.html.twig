@@ -49,7 +49,7 @@
                     <tbody>
                     {% set cumul = 0 %}
                     {% set ref = 0 %}
-                    {% set cumulmois = 0 %}
+                    {# {% set cumulmois = 0 %} #}
                         {% for i in 0 .. yearDiff %}
                             {% if yearDiff == 0 %} {#  moin d'un an #}
                                 {% if annee == "now"|date('Y')%}{# cas ou on n'est dans la meme annee #}
@@ -87,7 +87,7 @@
                                 {# {% if ref <= dernierAnnee %} #}
                                      {% set nbrmois = 1+ moisfirstyear %}
                                     {% set cumul = cumul + (dotationMensuelle * nbrmois) %}
-                                    {% set cumulmois = cumulmois + nbrmois %}
+                                    {# {% set cumulmois = cumulmois + nbrmois %} #}
                                     <tr>
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
@@ -142,7 +142,7 @@
                                 
                                     {% set cumul = cumul + (dotationMensuelle * 12) %}
 
-                                     {% set cumulmois = cumulmois + 12 %}
+                                     {# {% set cumulmois = cumulmois + 12 %} #}
                                     <tr>
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>

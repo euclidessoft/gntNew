@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Complement\Amortissement;
 use App\Complement\Solde;
 use App\Entity\Banque;
 use App\Entity\Reserve;
@@ -2642,7 +2643,7 @@ class FinanceController extends AbstractController
     }
     
     #[Route("/CompteResultat", name :"Compteresultat", methods : ["POST", "GET"]) ]
-    public function CompteResultat(Solde $solde, Request $request, CommandeRepository $repository, CommandeProduitRepository $CommandeProduitRepository, ApprovisionnementRepository $Approrepository, PaieRepository $paieRepository): Response
+    public function CompteResultat(Amortissement $amortis, Request $request, CommandeRepository $repository, CommandeProduitRepository $CommandeProduitRepository, ApprovisionnementRepository $Approrepository, PaieRepository $paieRepository): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             $commandes = $repository->findBy(['suivi' => true, 'payer' => true ]);// achat deja paye
@@ -2773,16 +2774,18 @@ class FinanceController extends AbstractController
                 foreach($depenses as $depense){
 
                     $lignedepense = $depense->getCategorie();
+
+                    
                     if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
 
                        
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 3) === "211" 
                             || substr($lignedepense->getCompte(), 0, 4) === "2181"
                             || substr($lignedepense->getCompte(), 0, 4) === "2191") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                        
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 3) === "212" 
@@ -2790,13 +2793,13 @@ class FinanceController extends AbstractController
                             || substr($lignedepense->getCompte(), 0, 3) === "214"
                             || substr($lignedepense->getCompte(), 0, 4) === "2193") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;    
                        
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 3) === "215"
                              ||   substr($lignedepense->getCompte(), 0, 3) === "216") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;    
                        
                     
                     } elseif ((substr($lignedepense->getCompte(), 0, 3) === "217"
@@ -2804,7 +2807,7 @@ class FinanceController extends AbstractController
                              ||   substr($lignedepense->getCompte(), 0, 4) === "2198")
                              &&   substr($lignedepense->getCompte(), 0, 4) !== "2181") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                        
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "231" 
@@ -2813,7 +2816,7 @@ class FinanceController extends AbstractController
                             || substr($lignedepense->getCompte(), 0, 3) === "237"
                             || substr($lignedepense->getCompte(), 0, 4) === "2391") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                        
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "234" 
@@ -2822,36 +2825,36 @@ class FinanceController extends AbstractController
                             || substr($lignedepense->getCompte(), 0, 4) === "2392"
                             || substr($lignedepense->getCompte(), 0, 4) === "2393") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
+                       
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 3) === "245"
+                              || substr($lignedepense->getCompte(), 0, 4) === "2495") {
+                                
+
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;    
                        
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 2) === "24"
                              &&   substr($lignedepense->getCompte(), 0, 3) !== "245"
                              &&   substr($lignedepense->getCompte(), 0, 4) !== "2495") {
-
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
-                       
-                    
-                    } elseif (substr($lignedepense->getCompte(), 0, 3) === "245"
-                              || substr($lignedepense->getCompte(), 0, 4) === "2495") {
-
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                        
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "251"
                               || substr($lignedepense->getCompte(), 0, 3) === "252") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortissement->amortissement($depense) : null;    
                         
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 2) === "26") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortissement->amortissement($depense) : null ;    
                        
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 2) === "27") {
 
-                        $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                        $lignedepense->getAmortissement() != null ? $amortissement += $amortissement->amortissement($depense) : null ;    
                        
                     
                     }
@@ -2937,7 +2940,7 @@ class FinanceController extends AbstractController
     }
 
     #[Route("/Bilan", name :"bilan", methods : ["POST", "GET"]) ]
-    public function bilan(Solde $solde, Request $request, EcritureRepository $repository): Response
+    public function bilan(Amortissement $amortis, Solde $solde, Request $request, EcritureRepository $repository): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             
@@ -3016,13 +3019,13 @@ class FinanceController extends AbstractController
                     if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
 
                         $terrain += $depense->getMontant(); 
-                        $lignedepense->getAmortissement() != null ? $amortterrain += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortterrain = 0;
+                        $lignedepense->getAmortissement() != null ? $amortterrain += $amortis->amortissement($depense) : null;
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 3) === "211" 
                             || substr($lignedepense->getCompte(), 0, 4) === "2181"
                             || substr($lignedepense->getCompte(), 0, 4) === "2191") {
 
-                        $lignedepense->getAmortissement() != null ? $amortdeveloppement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortdeveloppement = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amortdeveloppement += $amortis->amortissement($depense) : null ;    
                         $developpement += $depense->getMontant(); 
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 3) === "212" 
@@ -3030,13 +3033,13 @@ class FinanceController extends AbstractController
                             || substr($lignedepense->getCompte(), 0, 3) === "214"
                             || substr($lignedepense->getCompte(), 0, 4) === "2193") {
 
-                        $lignedepense->getAmortissement() != null ? $amortbrevet += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortbrevet = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amortbrevet += $amortis->amortissement($depense) : null ;    
                         $brevet += $depense->getMontant(); 
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 3) === "215"
                              ||   substr($lignedepense->getCompte(), 0, 3) === "216") {
 
-                        $lignedepense->getAmortissement() != null ? $amortfond += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortfond = 0;    
+                        $lignedepense->getAmortissement() != null ? $amortfond += $amortis->amortissement($depense) : null;    
                         $fond += $depense->getMontant(); 
                     
                     } elseif ((substr($lignedepense->getCompte(), 0, 3) === "217"
@@ -3044,7 +3047,7 @@ class FinanceController extends AbstractController
                              ||   substr($lignedepense->getCompte(), 0, 4) === "2198")
                              &&   substr($lignedepense->getCompte(), 0, 4) !== "2181") {
 
-                        $lignedepense->getAmortissement() != null ? $amortautresincorp += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortautresincorp = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amortautresincorp += $amortis->amortissement($depense) : null ;    
                         $autresincorp += $depense->getMontant(); 
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "231" 
@@ -3053,7 +3056,7 @@ class FinanceController extends AbstractController
                             || substr($lignedepense->getCompte(), 0, 3) === "237"
                             || substr($lignedepense->getCompte(), 0, 4) === "2391") {
 
-                        $lignedepense->getAmortissement() != null ? $amortbatiment += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortbatiment = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amortbatiment += $amortis->amortissement($depense) : null ;    
                         $batiment += $depense->getMontant(); 
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "234" 
@@ -3062,36 +3065,36 @@ class FinanceController extends AbstractController
                             || substr($lignedepense->getCompte(), 0, 4) === "2392"
                             || substr($lignedepense->getCompte(), 0, 4) === "2393") {
 
-                        $lignedepense->getAmortissement() != null ? $amortamenagement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortamenagement = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amortamenagement += $amortis->amortissement($depense) : null ;    
                         $amenagement += $depense->getMontant(); 
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 2) === "24"
                              &&   substr($lignedepense->getCompte(), 0, 3) !== "245"
                              &&   substr($lignedepense->getCompte(), 0, 4) !== "2495") {
 
-                        $lignedepense->getAmortissement() != null ? $amortmobilier += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortmobilier = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amortmobilier += $amortis->amortissement($depense) : null ;    
                         $mobilier += $depense->getMontant(); 
                     
                     } elseif (substr($lignedepense->getCompte(), 0, 3) === "245"
                               || substr($lignedepense->getCompte(), 0, 4) === "2495") {
 
-                        $lignedepense->getAmortissement() != null ? $amorttransport += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amorttransport = 0;    
+                        $lignedepense->getAmortissement() != null ? $amorttransport += $amortis->amortissement($depense) : null;    
                         $transport += $depense->getMontant(); 
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "251"
                               || substr($lignedepense->getCompte(), 0, 3) === "252") {
 
-                        $lignedepense->getAmortissement() != null ? $amortavanceimmo += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortavanceimmo = 0;    
+                        $lignedepense->getAmortissement() != null ? $amortavanceimmo += $amortis->amortissement($depense) : null;    
                         $avanceimmo += $depense->getMontant(); 
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 2) === "26") {
 
-                        $lignedepense->getAmortissement() != null ? $amorttitre += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amorttitre = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amorttitre += $amortis->amortissement($depense) : null ;    
                         $titre += $depense->getMontant(); 
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 2) === "27") {
 
-                        $lignedepense->getAmortissement() != null ? $amortautresimmofin += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortautresimmofin = 0 ;    
+                        $lignedepense->getAmortissement() != null ? $amortautresimmofin += $amortis->amortissement($depense) : null ;    
                         $autresimmofin += $depense->getMontant(); 
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "485"
@@ -3438,6 +3441,7 @@ class FinanceController extends AbstractController
             
             // amortissement
             $amortissement = 0;
+            $amortis = new Amortissement();
             $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
             
             foreach($depenses as $depense){
@@ -3446,13 +3450,13 @@ class FinanceController extends AbstractController
                 if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
 
                        
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;
                 
                 } elseif (substr($lignedepense->getCompte(), 0, 3) === "211" 
                         || substr($lignedepense->getCompte(), 0, 4) === "2181"
                         || substr($lignedepense->getCompte(), 0, 4) === "2191") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
                 } elseif (substr($lignedepense->getCompte(), 0, 3) === "212" 
@@ -3460,13 +3464,13 @@ class FinanceController extends AbstractController
                         || substr($lignedepense->getCompte(), 0, 3) === "214"
                         || substr($lignedepense->getCompte(), 0, 4) === "2193") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;    
                    
                 
                 } elseif (substr($lignedepense->getCompte(), 0, 3) === "215"
                          ||   substr($lignedepense->getCompte(), 0, 3) === "216") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;    
                    
                 
                 } elseif ((substr($lignedepense->getCompte(), 0, 3) === "217"
@@ -3474,7 +3478,7 @@ class FinanceController extends AbstractController
                          ||   substr($lignedepense->getCompte(), 0, 4) === "2198")
                          &&   substr($lignedepense->getCompte(), 0, 4) !== "2181") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
                 }elseif (substr($lignedepense->getCompte(), 0, 3) === "231" 
@@ -3483,7 +3487,7 @@ class FinanceController extends AbstractController
                         || substr($lignedepense->getCompte(), 0, 3) === "237"
                         || substr($lignedepense->getCompte(), 0, 4) === "2391") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
                 }elseif (substr($lignedepense->getCompte(), 0, 3) === "234" 
@@ -3492,36 +3496,36 @@ class FinanceController extends AbstractController
                         || substr($lignedepense->getCompte(), 0, 4) === "2392"
                         || substr($lignedepense->getCompte(), 0, 4) === "2393") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
                 } elseif (substr($lignedepense->getCompte(), 0, 2) === "24"
                          &&   substr($lignedepense->getCompte(), 0, 3) !== "245"
                          &&   substr($lignedepense->getCompte(), 0, 4) !== "2495") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
                 } elseif (substr($lignedepense->getCompte(), 0, 3) === "245"
                           || substr($lignedepense->getCompte(), 0, 4) === "2495") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;    
                    
                 
                 }elseif (substr($lignedepense->getCompte(), 0, 3) === "251"
                           || substr($lignedepense->getCompte(), 0, 3) === "252") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null;    
                     
                 
                 }elseif (substr($lignedepense->getCompte(), 0, 2) === "26") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
                 }elseif (substr($lignedepense->getCompte(), 0, 2) === "27") {
 
-                    $lignedepense->getAmortissement() != null ? $amortissement += $depense->getMontant() / ( $lignedepense->getAmortissement() * 12) : $amortissement ;    
+                    $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
                 }else{
@@ -3598,7 +3602,6 @@ class FinanceController extends AbstractController
         if ($this->security->isGranted('ROLE_FINANCE')) {
             
            // Informations de l'immobilisation
-        $description = "Mobilier de bureau";
         $valeurAquisition = $depense->getMontant(); // en FCFA
         $duree = $depense->getCategorie()->getAmortissement(); // en années
         $dateAcquisition = $depense->getDate();
@@ -4220,5 +4223,7 @@ class FinanceController extends AbstractController
             return $response;
         }
     }
+
+ 
 
 }
