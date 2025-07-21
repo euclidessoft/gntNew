@@ -43,6 +43,7 @@
                         <th class="text-center"> {{ 'Annee'|trans }}</th>
                         <th class="text-center"> {{ 'Dotation Mensulle'|trans }}</th>
                         <th class="text-center"> {{ 'Nombre de mois'|trans }}</th>
+                        <th class="text-center"> {{ 'Dotation Annuelle'|trans }}</th>
                         <th>{{ 'Cumul'|trans }}</th>
                     </tr>
                     </thead>
@@ -60,6 +61,7 @@
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{monthDiff}}</td>
+                                        <td>{{ (dotationMensuelle * monthDiff)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                                 {% else %}
@@ -71,6 +73,7 @@
                                         <td>{{ annee }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{firstmois}}</td>
+                                         <td>{{ (dotationMensuelle * firstmois)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                                     {% endif %}
@@ -79,6 +82,7 @@
                                         <td>{{ annee + 1}}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{"now"|date("m")}}</td>
+                                         <td>{{ (dotationMensuelle * "now"|date("m"))|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                                 {% endif %}
@@ -92,6 +96,7 @@
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{ nbrmois }}</td>
+                                         <td>{{ (dotationMensuelle * nbrmois)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                             {% elseif loop.last and duree <= yearDiff %}{# dernier iteration avec delai depasse #}
@@ -104,6 +109,7 @@
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{ nbrmois }}</td>
+                                         <td>{{ (dotationMensuelle * nbrmois)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                             {% elseif loop.last %}{# dernier iteration mais tj en cours #}
@@ -117,6 +123,7 @@
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{ nbrmois }}</td>
+                                         <td>{{ (dotationMensuelle * nbrmois)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                                 {% else %}{# cas trois annes chevauche mais mois de deux ans de calcul#}
@@ -125,6 +132,7 @@
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{ 12 }}</td>
+                                         <td>{{ (dotationMensuelle * 12)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                                      {% set nbrmois = 'now'|date('m') %}
@@ -133,6 +141,7 @@
                                         <td>{{ ref+1 }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>{{ nbrmois }} </td>
+                                         <td>{{ (dotationMensuelle * nbrmois)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                                 {% endif %}
@@ -147,6 +156,7 @@
                                         <td>{{ ref }}</td>
                                         <td>{{ dotationMensuelle|number_format(0, ',', ' ') }}</td>
                                         <td>12</td>
+                                         <td>{{ (dotationMensuelle * 12)|number_format(0, '', ' ')}}</td>
                                         <td>{{ cumul|number_format(0, ',', ' ') }}</td>
                                     </tr>
                               

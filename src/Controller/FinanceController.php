@@ -2769,7 +2769,7 @@ class FinanceController extends AbstractController
             // amortissement et charge
             
 
-            $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+            $depenses = $this->entityManager->getRepository(Depense::class)->immobilisation();
             
                 foreach($depenses as $depense){
 
@@ -2838,6 +2838,7 @@ class FinanceController extends AbstractController
                     } elseif (substr($lignedepense->getCompte(), 0, 2) === "24"
                              &&   substr($lignedepense->getCompte(), 0, 3) !== "245"
                              &&   substr($lignedepense->getCompte(), 0, 4) !== "2495") {
+                              
                         $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                        
                     
@@ -2859,6 +2860,12 @@ class FinanceController extends AbstractController
                     
                     }
 
+                 }  
+                
+                 $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+            
+                foreach($depenses as $depense){
+                      $lignedepense = $depense->getCategorie();
 
 
                     if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
@@ -3012,7 +3019,7 @@ class FinanceController extends AbstractController
             $transport = 0;
             $amorttransport = 0;
            
-            $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+            $depenses = $this->entityManager->getRepository(Depense::class)->immobilisation();
             foreach($depenses as $depense){
                 
                     $lignedepense = $depense->getCategorie();
@@ -3096,6 +3103,19 @@ class FinanceController extends AbstractController
 
                         $lignedepense->getAmortissement() != null ? $amortautresimmofin += $amortis->amortissement($depense) : null ;    
                         $autresimmofin += $depense->getMontant(); 
+                    
+                    }
+                }
+
+                 $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+            
+                foreach($depenses as $depense){
+                      $lignedepense = $depense->getCategorie();
+
+
+                    if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
+
+                    //terrain pas amortissement
                     
                     }elseif (substr($lignedepense->getCompte(), 0, 3) === "485"
                             || substr($lignedepense->getCompte(), 0, 3) === "488") {
@@ -3442,7 +3462,7 @@ class FinanceController extends AbstractController
             // amortissement
             $amortissement = 0;
             $amortis = new Amortissement();
-            $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+            $depenses = $this->entityManager->getRepository(Depense::class)->immobilisation();
             
             foreach($depenses as $depense){
 
@@ -3528,15 +3548,52 @@ class FinanceController extends AbstractController
                     $lignedepense->getAmortissement() != null ? $amortissement += $amortis->amortissement($depense) : null ;    
                    
                 
-                }else{
-                        $charge += $depense->getMontant();    
-                    }
-                
-                
-               
-
-                  
+                }
             }
+            
+             $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+            
+                foreach($depenses as $depense){
+                      $lignedepense = $depense->getCategorie();
+
+
+                    if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
+
+                    //terrain pas amortissement
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 3) === "604" 
+                    || substr($lignedepense->getCompte(), 0, 3) === "605" 
+                    || substr($lignedepense->getCompte(), 0, 3) === "608") {
+
+                        $charge += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "62"
+                    || substr($lignedepense->getCompte(), 0, 2) === "63") {
+
+                        $charge += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "61") {
+
+                        $charge += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "65") {
+
+                        $charge += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "64") {
+
+                        $charge += $depense->getMontant(); 
+                
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "67") {
+                        $charge += $depense->getMontant(); 
+                    }elseif (substr($lignedepense->getCompte(), 0, 3) === "697") {
+                        $charge += $depense->getMontant(); 
+                    }
+                    
+                    
+
+                      
+                }
             //  $amortis = $this->entityManager->getRepository(Categorie::class)->resultat();
             //  foreach($amortis as $amorti){
             //     $depenses = $this->entityManager->getRepository(Depense::class)->findBy(['categorie' => $amorti->getId()]);

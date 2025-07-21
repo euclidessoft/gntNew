@@ -59,4 +59,17 @@ class DepenseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    // src/Repository/DepenseRepository.php
+
+public function immobilisation(): array
+{
+    return $this->createQueryBuilder('d')
+        ->innerJoin('d.categorie', 'c')
+        ->andWhere('c.amortissement IS NOT NULL')
+        // ->orderBy('d.date', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
 }
