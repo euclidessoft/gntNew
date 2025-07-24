@@ -20,16 +20,16 @@
     <div class="row">
 
         <div class="col-md-6 mb-4">
-            {{ form_row(form.designation, {'attr':{'placeholder':'Désignation *'}, 'label':false}) }}
+            {{ form_row(form.designation, {'attr':{'placeholder':'Désignation *'}, 'label':'Désignation *'}) }}
         </div>
         <div class="col-md-6 mb-4">
-            {{ form_row(form.type, {'attr':{'placeholder':'Type *'}, 'label':false}) }}
+            {{ form_row(form.type, {'attr':{'placeholder':'Type *'}, 'label':'Type *'}) }}
         </div>
         <div class="col-md-6 mb-4">
-            {{ form_row(form.debut, {'label':false, 'attr' : {'onchange' : 'gestdate()'}}) }}
+            {{ form_row(form.debut, {'label':'Date de debut', 'attr' : {'onchange' : 'gestdate()'}}) }}
         </div>
         <div class="col-md-6 mb-4">
-            {{ form_row(form.fin, {'label':false, 'attr' : {'onchange' : 'gestdate()'}}) }}
+            {{ form_row(form.fin, {'label':'date fin', 'attr' : {'onchange' : 'gestdate()'}}) }}
         </div>
         <div class="row offset-1" id="tranche">
             <div class="col-md-2">
@@ -39,8 +39,8 @@
 
                     </div>
                     <div class="card-body">
-                        {{ form_row(form.premier, {'attr':{'placeholder':'nombre acheté'}, 'label':false}) }}
-                        {{ form_row(form.ugpremier, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':false}) }}
+                        {{ form_row(form.premier, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugpremier, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
                     </div>
                 </div>
 
@@ -52,8 +52,8 @@
 
                     </div>
                     <div class="card-body">
-                        {{ form_row(form.deuxieme, {'attr':{'placeholder':'nombre acheté'}, 'label':false}) }}
-                        {{ form_row(form.ugdeuxieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':false}) }}
+                        {{ form_row(form.deuxieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugdeuxieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
                     </div>
                 </div>
 
@@ -66,8 +66,8 @@
 
                     </div>
                     <div class="card-body">
-                        {{ form_row(form.troisieme, {'attr':{'placeholder':'nombre acheté'}, 'label':false}) }}
-                        {{ form_row(form.ugtroisieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':false}) }}
+                        {{ form_row(form.troisieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugtroisieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
                     </div>
                 </div>
 
@@ -80,8 +80,8 @@
 
                     </div>
                     <div class="card-body">
-                        {{ form_row(form.quatrieme, {'attr':{'placeholder':'nombre acheté'}, 'label':false}) }}
-                        {{ form_row(form.ugquatrieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':false}) }}
+                        {{ form_row(form.quatrieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugquatrieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
                     </div>
                 </div>
 
@@ -94,8 +94,8 @@
 
                     </div>
                     <div class="card-body">
-                        {{ form_row(form.cinquieme, {'attr':{'placeholder':'nombre acheté'}, 'label':false}) }}
-                        {{ form_row(form.ugcinquieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':false}) }}
+                        {{ form_row(form.cinquieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugcinquieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@
         </div>
         <div class="col-md-12 mb-4" id="reduction">
             <div class="input-group ">
-                {{ form_widget(form.reduction, {'attr':{'placeholder':'Réduction'}, 'label':false}) }}
+                {{ form_widget(form.reduction, {'attr':{'placeholder':'Réduction'}, 'label':'Réduction'}) }}
                 <div class="input-group-append">
                     <span class="input-group-text" id="basic-addon2">%</span>
                 </div>

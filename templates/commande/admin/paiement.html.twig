@@ -87,8 +87,8 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if commandeproduit.tva != 0 %}
-                        {% set tva = tva + (((commandeproduit.quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
+                    {# {% if commandeproduit.tva != 0 %}
+                        {% set tva = tva + ((( {% set tva = tva .quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
                         {% if commandeproduit.promotion is not null %}
                             {% if commandeproduit.promotion.reduction is not null %}
                                 {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction /100)) * 0.1925 }}
@@ -100,7 +100,10 @@
                         {% endif %}
                     {% else %}
                         -
-                    {% endif %}
+                    {% endif %} #}
+                     {% set tva = tva + commandeproduit.tva %}
+                     {{ commandeproduit.tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+
                 </td>
                 <td>{{ commandeproduit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 <td class="text-nowrap">
@@ -231,8 +234,9 @@
 {% block scripts %}
     <script>
         function number() {
-            var reg = new RegExp("^[0-9]{3,9}$");
-            if (reg.test($('#paiement_form_montant').val())) {
+         //   var reg = new RegExp("^[0-9]{3,9}$");
+        //    if (reg.test($('#paiement_form_montant').val())) {
+            if ($('#paiement_form_montant').val() != "") {
                 if ($('#paiement_form_type option:selected').val() == 'Cheque' || $('#paiement_form_type option:selected').val() == 'Virement') {
                     if ($('#paiement_form_montant').val() != '' && $('#paiement_form_type').val() != '') {
                         $('#ajouter').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");

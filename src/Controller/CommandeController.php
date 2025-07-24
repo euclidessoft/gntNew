@@ -197,6 +197,7 @@ class CommandeController extends AbstractController
                     $this->entityManager->persist($commandeproduit);
                 }
                 $montant = $montant + $tva - $reduction;
+                // $commande->setMontant(ceil($montant));
                 $commande->setMontant(ceil($montant));
                 $commande->setTva($tva);
                 $commande->setReduction($reduction);

@@ -58,23 +58,16 @@ class PaieRepository extends ServiceEntityRepository
         }
 
         
-        if ($mois && $annee) {
-            // Début et fin du mois
-            $startDate = new \DateTime("$annee-$mois-01");
-            $endDate = new \DateTime("$annee-$mois-01");
-            $endDate->modify('last day of this month')->setTime(23, 59, 59);
-
-            // Filtrage des paiements entre ces deux dates
-            $qb->andWhere('p.datepaye BETWEEN :debut AND :fin')
-                ->setParameter('debut', $startDate)
-                ->setParameter('fin', $endDate);
+        if ($mois) {
+            $qb->andWhere('p.mois = :mois')
+                ->setParameter('mois', $mois);
         }
         
         elseif ($annee) {
             $start = new \DateTime("$annee-01-01");
             $end = new \DateTime("$annee-12-31");
 
-            $qb->andWhere('p.datepaye BETWEEN :start AND :end')
+            $qb->andWhere('p.date BETWEEN :start AND :end')
                 ->setParameter('start', $start)
                 ->setParameter('end', $end);
         }

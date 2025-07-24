@@ -67,6 +67,8 @@ public function immobilisation(): array
     return $this->createQueryBuilder('d')
         ->innerJoin('d.categorie', 'c')
         ->andWhere('c.amortissement IS NOT NULL')
+        ->orWhere('c.compte LIKE :start')
+        ->setParameter('start', '22%')
         // ->orderBy('d.date', 'DESC')
         ->getQuery()
         ->getResult();
