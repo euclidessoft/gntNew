@@ -30,8 +30,8 @@
         <tbody>
             <tr>
                 <td>{{ promotion.designation }}</td>
-                <td>{{ promotion.debut ? promotion.debut|date('Y-m-d') : '' }}</td>
-                <td>{{ promotion.fin ? promotion.fin|date('Y-m-d') : '' }}</td>
+                <td>{{ promotion.debut ? promotion.debut|date('d/m/Y') : '' }}</td>
+                <td>{{ promotion.fin ? promotion.fin|date('d/m/Y') : '' }}</td>
                 <td>{{ promotion.type }}</td>
                 <td>
                     {% if promotion.premier is null %}

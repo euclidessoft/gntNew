@@ -97,7 +97,7 @@ class PromotionController extends AbstractController
             $form = $this->createForm(PromotionType::class, $promotion);
             $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted()) {
                 $em = $this->entityManager;
                 $promo = $session->get("promo", []);
                 if (count($promo) >= 1) {
@@ -111,6 +111,7 @@ class PromotionController extends AbstractController
 
                         $em->persist($promotionproduit);
                     }
+                    // dd($promotion);;
                     $em->flush();
                     $session->remove("promo");
                     $this->addFlash('notice', 'Promotion crée');

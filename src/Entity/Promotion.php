@@ -26,13 +26,14 @@ class Promotion
 
     #[ORM\Column(type:"date") ]
      #[Assert\NotBlank(  message : "Champ obligatoire") ]
-     #[Assert\Date(  message : "Format invalide") ]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "La date est invalide.")]
     private $debut;
 
     #[ORM\Column(type:"date") ]
-     #[Assert\NotBlank(  message : "Champ obligatoire")]
-     #[Assert\Date(  message : "Format invalide") ]
+    #[Assert\NotBlank(message: "Champ obligatoire")]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "La date est invalide.")]
     private $fin;
+
 
     #[ORM\Column(type:"string", length:255) ]
      #[Assert\NotBlank(  message : "Champ obligatoire") ]

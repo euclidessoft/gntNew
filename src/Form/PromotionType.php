@@ -15,8 +15,12 @@ class PromotionType extends AbstractType
     {
         $builder
             ->add('designation')
-            ->add('debut', DateType::class, array( 'widget' => 'single_text', 'attr' => ['title' => 'Date de début'],))
-            ->add('fin', DateType::class, array( 'widget' => 'single_text', 'attr' => ['title' => 'Date de fin'],))
+            ->add('debut', DateType::class, 
+            array( 'widget' => 'single_text', 
+                    'attr' => ['title' => 'Date de début'],))
+            ->add('fin', DateType::class, 
+            array( 'widget' => 'single_text', 
+                    'attr' => ['title' => 'Date de fin'],))
             ->add('type', promoType::class, ['placeholder' => 'types de promotion *',
                 'label' => false,] )
             ->add('premier'  )
