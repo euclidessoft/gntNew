@@ -174,7 +174,7 @@
     {#                                </button>#}
 </span>
                                 <button class="btn btn-danger me-2 mb-2"
-                                        title="{{ 'Supprimer cet article'|trans }}" onclick="supprim({{ produit['id'] }}, {{ produit['lot'] }})">
+                                        title="{{ 'Supprimer cet article'|trans }}" onclick="supprim({{ produit['id'] }}, '{{ produit['lot'] }}')">
                                     <i class="fa fa-trash"></i>
                                 </button>
 
@@ -237,7 +237,7 @@
                                 // "                                    <i class='fa fa-edit'></i>\n" +
                                 // "                                </button></span>\n" +
                                 "                                <button class='btn btn-danger me-2 mb-2'\n" +
-                                "                                   title=\"{{ 'Supprimer cet article'|trans}}\" onclick='supprim(" + produit + ","+ numero.val() +")'>\n" +
+                                "                                   title=\"{{ 'Supprimer cet article'|trans}}\" onclick='supprim(" + produit + ",'"+ numero.val() +"')'>\n" +
                                 "                                    <i class='fa fa-trash'></i>\n" +
                                 "                                </button>\n");
                                // "<button type='button' class='btn btn-success mb-2' data-bs-toggle='modal' data-bs-target='#modal" + produit + "'  id='btn" + produit + "'> <i class='fa fa-plus'></i> Lot </button></td></tr>"
@@ -274,10 +274,11 @@
                 $.ajax({
                     type: "POST",
                     url: "{{ path('stock_delete') }}",
-                    data: "prod=" + produit + "&lot=" + numero,
+                    data: {prod: produit , lot: numero},
                     success: function (data) {
                         if (data['id'] == 'ok') {
-                            $("#tr" + produit + numero).remove();
+                             const rowId =  + produit + escapeJquerySelector(numero);
+                             $("#tr" + rowId).remove();
                             $('#btn' + produit).removeClass('disabled');
                             $("#quant" + produit).val('');// vider le champ quantite dans modal ajouter
                             $("#ajouter" + produit).show();// afficher le bouton ajouter
@@ -360,6 +361,10 @@
             if (confirm("Confirmation validation?")) {
                 document.location.href = "{{ path('stock_valider') }}";
             }
+        }
+
+        function escapeJquerySelector(id) {
+            return id.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|\/@])/g, '\\$1');
         }
 
     </script>
