@@ -201,9 +201,9 @@ class CommandeController extends AbstractController
                 }
                 $montant = $montant + $tva - $reduction;
                 // $commande->setMontant(ceil($montant));
-                $commande->setMontant(ceil($montant));
-                $commande->setTva($tva);
-                $commande->setReduction($reduction);
+                $commande->setMontant(round($montant,2));
+                $commande->setTva(round($tva,2));
+                $commande->setReduction(round($reduction,2));
                 $this->entityManager->persist($commande);
                 $this->entityManager->flush();
                 $session->remove("panier");
@@ -952,7 +952,7 @@ class CommandeController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
 
                 $entityManager = $this->entityManager;
-                if (($paiement->getMontant() == $commande->getMontant()) || $commande->getCredit()) {
+                if (($paiement->getMontant() >= $commande->getMontant()) || $commande->getCredit()) {
                     $paiement->setUser($this->getUser());
                     $paiement->setCommande($commande);
                     $commande->setSuivi(true);
@@ -981,9 +981,9 @@ class CommandeController extends AbstractController
                     $credit->setPaiement($paiement);// ecriture comptable
                     $credit->setMontant($paiement->getMontant());
 
-                    $ecriture->setSolde($paiement->getMontant() - $commande->getTva());
+                    $ecriture->setSolde($paiement->getMontant());
                     $ecriture->setCredit($credit);
-                    $ecriture->setMontant($paiement->getMontant() - $commande->getTva());
+                    $ecriture->setMontant($paiement->getMontant());
                     $ecriture->setLibelle('Vente de médicaments');
                     $ecriture->setComptedebit($commande->getUser()->getCompte());
                     $ecriture->setLibellecomptedebit("Compte Client");
@@ -995,10 +995,10 @@ class CommandeController extends AbstractController
 
                      if($commande->getTva() != 0){
                          $tva = new Ecriture();
-                        $tva->setComptecredit("44441");
+                        $tva->setComptecredit("443100");
                         $tva->setLibellecomptecredit("TVA");
-                        $tva->setComptedebit($commande->getUser()->getCompte());
-                        $tva->setLibellecomptedebit('Vente de médicaments');
+                        $tva->setComptedebit("447210");
+                        $tva->setLibellecomptedebit('TVA');
                         $tva->setSolde(0);
                         $tva->setMontant($commande->getTva());
                         $tva->setLibelle("TVA sur Vente de médicaments");
@@ -1018,7 +1018,7 @@ class CommandeController extends AbstractController
                     ]);
                     return $response;
                 } else {
-                    $this->addFlash('danger', 'Vérifier le montant saisi');
+                    $this->addFlash('danger', 'Vérifier!!! Montant inferieur a la facture...');
                     $response = $this->redirectToRoute('commande_panier_paiement', ['commande' => $commande->getId()], Response::HTTP_SEE_OTHER);
                     $response->setSharedMaxAge(0);
                     $response->headers->addCacheControlDirective('no-cache', true);
@@ -1089,11 +1089,11 @@ class CommandeController extends AbstractController
                         $commande->setPayer(true);
                         $credit->setTva($commande->getTva());
                          if($commande->getTva != 0){
-                            $tva = new Ecriture();
-                            $tva->setComptecredit("44441");
+                             $tva = new Ecriture();
+                            $tva->setComptecredit("443100");
                             $tva->setLibellecomptecredit("TVA");
-                            $tva->setComptedebit($commande->getUser()->getCompte());
-                            $tva->setLibellecomptedebit('Vente de médicaments');
+                            $tva->setComptedebit("447210");
+                            $tva->setLibellecomptedebit('TVA');
                             $tva->setSolde(0);
                             $tva->setMontant($commande->getTva());
                             $tva->setLibelle("TVA sur Vente de médicaments");
