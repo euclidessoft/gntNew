@@ -182,13 +182,16 @@ class CommandeController extends AbstractController
                             $reduction = $reduction + $reductionproduit;
                         }
                     }
-                    if ($produit->getTva() == true) {
-                        $tva = $tva + ((($product['produit']->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925);
-                    }
+
                     $montant = $montant + $product['produit']->getQuantite() * $produit->getPrix();
 
                     $commandeproduit = new CommandeProduit($produit, $commande, $produit->getPrix(), $produit->getPrixpublic(), $product['produit']->getQuantite());
-                    $commandeproduit->setTva(ceil($tva));
+                    if($produit->getTva()){
+                        $tvaproduit = (($product['produit']->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925;
+                         $tva = $tva + $tvaproduit;
+                        $commandeproduit->setTva($tvaproduit);  
+                    }
+                    else $commandeproduit->setTva(0);
                     $commandeproduit->setPght($produit->getPght());
                     if (!empty($produit->getPromotion())) {
 
@@ -978,17 +981,29 @@ class CommandeController extends AbstractController
                     $credit->setPaiement($paiement);// ecriture comptable
                     $credit->setMontant($paiement->getMontant());
 
-                    $ecriture->setSolde($paiement->getMontant());
+                    $ecriture->setSolde($paiement->getMontant() - $commande->getTva());
                     $ecriture->setCredit($credit);
-                    $ecriture->setMontant($paiement->getMontant());
+                    $ecriture->setMontant($paiement->getMontant() - $commande->getTva());
                     $ecriture->setLibelle('Vente de médicaments');
-                    $ecriture->setComptedebit($paiement->getCommande()->getUser()->getCompte());
+                    $ecriture->setComptedebit($commande->getUser()->getCompte());
                     $ecriture->setLibellecomptedebit("Compte Client");
 
                     $entityManager->persist($commande);
                     $entityManager->persist($paiement);
                     $entityManager->persist($credit);
                     $entityManager->persist($ecriture);
+
+                     if($commande->getTva() != 0){
+                         $tva = new Ecriture();
+                        $tva->setComptecredit("44441");
+                        $tva->setLibellecomptecredit("TVA");
+                        $tva->setComptedebit($commande->getUser()->getCompte());
+                        $tva->setLibellecomptedebit('Vente de médicaments');
+                        $tva->setSolde(0);
+                        $tva->setMontant($commande->getTva());
+                        $tva->setLibelle("TVA sur Vente de médicaments");
+                        $entityManager->persist($tva);
+                    }
                     $entityManager->flush();
                     $this->addFlash('notice', 'Paiement effectué avec succés');
 
@@ -1073,6 +1088,17 @@ class CommandeController extends AbstractController
 
                         $commande->setPayer(true);
                         $credit->setTva($commande->getTva());
+                         if($commande->getTva != 0){
+                            $tva = new Ecriture();
+                            $tva->setComptecredit("44441");
+                            $tva->setLibellecomptecredit("TVA");
+                            $tva->setComptedebit($commande->getUser()->getCompte());
+                            $tva->setLibellecomptedebit('Vente de médicaments');
+                            $tva->setSolde(0);
+                            $tva->setMontant($commande->getTva());
+                            $tva->setLibelle("TVA sur Vente de médicaments");
+                            $entityManager->persist($tva);
+                         }
 
                     }
                     $versement->setUser($this->getUser());
