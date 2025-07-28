@@ -208,15 +208,15 @@
                     {{ "Net à payer"|trans }}
                 </td>
                 <td>
-                    <span id="total"
-                          class="fw-bold text nowrap">{{ (total+ tva -reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span class="fw-bold text nowrap">{{ (total+ tva -reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                <span id="total" class="text-nowrap" style="display:none;">{{ (total+ tva -reduction)|number_format(2, '.' , '') }}</span>
                 </td>
             </tr>
         </table>
 
         {#Conversion prix en lettre #}
         <div class="mt-5">
-            {{ 'Arrêtée la présente à la somme de '|trans }}<b id="conversion"></b> <b>francs CFA TTC</b>
+            {{ 'Arrêtée la présente à la somme de '|trans }}<b id="conversion"></b><b id="virgule"></b> <b>francs CFA TTC</b>
         </div>
         {#/***** end*****/#}
 

@@ -277,6 +277,15 @@
                 $('#promotion_reduction').val('');
             }
         });
+       
+       
+    var nombre = document.getElementById("total").innerText;
+    var total = Math.floor(document.getElementById("total").innerText);
+    var decimal = Math.round((nombre - total) * 100);
+    var totalEnLettres = NumberToLetter(total);
+    var virgule = NumberToLetter(decimal);
+    document.getElementById("conversion").innerHTML = totalEnLettres;
+    document.getElementById("virgule").innerHTML = " virgule " + virgule;
 
     });
 
@@ -557,9 +566,7 @@
     /*****Start Script de conversion le prix en lettre*****/
 
         // Utilisation de la fonction NumberToLetter
-    var total = document.getElementById("total").innerText;
-    var totalEnLettres = NumberToLetter(total);
-    document.getElementById("conversion").innerHTML = totalEnLettres;
+   
     function Unite( nombre ){
         var unite;
         switch( nombre ){

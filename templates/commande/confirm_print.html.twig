@@ -204,14 +204,15 @@
                 {{ "Net à payer"|trans }}
             </td>
             <td class="fw-bolder text-nowrap">
-                <span id="total" class="text-nowrap">{{ (total+ tva -reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                <span class="text-nowrap">{{ (total+ tva -reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                <span id="total" class="text-nowrap" style="display:none;">{{ (total+ tva -reduction)|number_format(2, '.' , '') }}</span>
             </td>
         </tr>
         </tbody>
     </table>
     {#Conversion prix en lettre #}
         <div class="mt-5">
-            {{'Arrêtée la présente à la somme de '|trans}} <b id="conversion"></b> <b>franc CFA TTC</b>
+            {{'Arrêtée la présente à la somme de '|trans}} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA TTC</b>
         </div>
     {#/***** end*****/#}
     {{ include('includes/javascript.html.twig') }}
