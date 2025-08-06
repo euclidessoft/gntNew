@@ -16,6 +16,7 @@ use App\Repository\CommandeProduitRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\PaiementRepository;
 use App\Repository\ProduitRepository;
+use App\Repository\StockRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,7 +80,7 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/Extranet", name :"extranet") ]
-    public function extranet(SessionInterface $session, ProduitRepository $produitRepository, Request $request)
+    public function extranet(SessionInterface $session, StockRepository $produitRepository, Request $request)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
@@ -105,7 +106,7 @@ class CommandeController extends AbstractController
 
 
             $response = $this->render('commande/admin/index.html.twig', [
-                'produits' => $produitRepository->findAll(),
+                'produits' => $produitRepository->stock(),
                 'panier' => $dataPanier,
                 'form' => $form->createView(),
             ]);
@@ -200,7 +201,6 @@ class CommandeController extends AbstractController
                     $this->entityManager->persist($commandeproduit);
                 }
                 $montant = $montant + $tva - $reduction;
-                // $commande->setMontant(ceil($montant));
                 $commande->setMontant(round($montant,2));
                 $commande->setTva(round($tva,2));
                 $commande->setReduction(round($reduction,2));
@@ -268,24 +268,27 @@ class CommandeController extends AbstractController
                             $reduction = $reduction + $reductionproduit;
                         }
                     }
-                    if ($produit->getTva() == true) {
-                        $tva = $tva + ((($product['produit']->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925);
-                    }
+
                     $montant = $montant + $product['produit']->getQuantite() * $produit->getPrix();
 
                     $commandeproduit = new CommandeProduit($produit, $commande, $produit->getPrix(), $produit->getPrixpublic(), $product['produit']->getQuantite());
-                    $commandeproduit->setTva(ceil($tva));
+                    if($produit->getTva()){
+                        $tvaproduit = (($product['produit']->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925;
+                         $tva = $tva + $tvaproduit;
+                        $commandeproduit->setTva($tvaproduit);  
+                    }
+                    else $commandeproduit->setTva(0);
                     $commandeproduit->setPght($produit->getPght());
                     if (!empty($produit->getPromotion())) {
 
                         $commandeproduit->setPromotion($produit->getPromotion());
                     }
-                    $em->persist($commandeproduit);
+                    $this->entityManager->persist($commandeproduit);
                 }
                 $montant = $montant + $tva - $reduction;
-                $commande->setMontant(ceil($montant));
-                $commande->setTva($tva);
-                $commande->setReduction($reduction);
+                $commande->setMontant(round($montant,2));
+                $commande->setTva(round($tva,2));
+                $commande->setReduction(round($reduction,2));
                 $em->persist($commande);
                 $em->flush();
                 $session->remove("panier");

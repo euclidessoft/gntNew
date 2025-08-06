@@ -49,7 +49,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for produit in produits %}
+                    {% for prod in produits %}
+                    {% set produit = prod.produit %}
+
                         <tr id="listprod{{ produit.id }}">
                             <td data-label="Réference">{{ produit.reference }}</td>
                             <td data-label="Désignation">{{ produit.desigantion }}</td>
