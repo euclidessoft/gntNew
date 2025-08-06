@@ -33,7 +33,12 @@
                 <a class="nav-link" href="{{ path('commande_panier_history') }}">{{'Commandes déjà payées'|trans}}</a>
             </li>
         </ul>
-
+        {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
         <table class="table table-success-light table-bordered table-hover table-striped w-100 mt-4" id="liste">
             <thead>
             <tr>
@@ -55,6 +60,9 @@
                         <a href="{{ path('commande_panier_paiement_credit', {'commande' : commande.id}) }}" class="btn btn-success">
                             <i class="fa fa-gears"></i> {{ 'Traitement'|trans }}
                         </a>
+                        {% if is_granted("ROLE_ADMIN") %}
+                       {{ include('commande/admin/commande_delete.html.twig')}}
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

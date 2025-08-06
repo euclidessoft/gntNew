@@ -1541,4 +1541,44 @@ class CommandeController extends AbstractController
          return $this->render('produit/index.html.twig', compact("dataPanier", "total"));*/
     }
 
+
+
+    #[Route("/{id}", name :"delete", methods : ["POST"]) ]
+    public function delete(Request $request, Commande $commande, CommandeProduitRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            if ($this->isCsrfTokenValid('delete' . $commande->getId(), $request->request->get('_token')) && !$commande->getSuivi()) {
+                $commandeproduits = $repository->findBy(['commande' => $commande->getId()]);
+                foreach($commandeproduits as $commandeproduit){
+                    $this->entityManager->remove($commandeproduit);
+
+                }
+                $this->entityManager->remove($commande);
+                $this->entityManager->flush();
+                $this->addFlash('notice','Annulation reussie');
+            }
+            $response = $this->redirectToRoute('commande_panier_suivi', [], Response::HTTP_SEE_OTHER);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
 }

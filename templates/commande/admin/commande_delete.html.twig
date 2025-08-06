@@ -1,4 +1,4 @@
-<form method="post" action="{{ path('depense_delete', {'id': commande.id}) }}" onsubmit="return confirm('{{"Etes-Vous de vouloir annuler?"|trans}}');" style="display: inline;">
+<form method="post" action="{{ path('commande_panier_delete', {'id': commande.id}) }}" onsubmit="return confirm('{{"Etes-Vous de vouloir annuler?"|trans}}');" style="display: inline;">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commande.id) }}">
     <button class="btn btn-success-light"><i class="fa fa-undo"></i> Annuler</button>
 </form>

@@ -39,6 +39,12 @@
                 </a>
             </li>
         </ul>
+          {% for message in app.flashes('notice') %}
+        <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{ message|trans }}
+        </div>
+    {% endfor %}
 
         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4 text-center" id="liste">
             <thead>
@@ -64,9 +70,9 @@
                             <i class="fa-solid fa-file-invoice-dollar"></i>
                             {{ 'Traitement'|trans }}
                         </a>
-                        {# {% if is_granted("ROLE_ADMIN") %}
+                        {% if is_granted("ROLE_ADMIN") %}
                        {{ include('commande/admin/commande_delete.html.twig')}}
-                        {% endif %} #}
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
