@@ -48,7 +48,7 @@
                 <th class="text-start">{{ 'Client'|trans }} </th>
                 <th class="text-center">{{ 'Telephone'|trans }} </th>
                 <th class="text-end">{{ 'Montant'|trans }}</th>
-                <th class="text-center">{{ 'Validation'|trans }} </th>
+                <th class="text-center">{{ 'Actions'|trans }} </th>
             </tr>
             </thead>
             <tbody>
@@ -64,6 +64,9 @@
                             <i class="fa-solid fa-file-invoice-dollar"></i>
                             {{ 'Traitement'|trans }}
                         </a>
+                        {# {% if is_granted("ROLE_ADMIN") %}
+                       {{ include('commande/admin/commande_delete.html.twig')}}
+                        {% endif %} #}
                     </td>
                 </tr>
             {% endfor %}

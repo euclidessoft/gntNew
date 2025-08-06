@@ -124,7 +124,8 @@
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="text-center">
-                    <span id="total" class="text-bold">{{ (total +tva-reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span class="text-bold">{{ (total +tva-reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id="total" class="text-nowrap" style="display:none;">{{ (total+ tva -reduction)|number_format(2, '.' , '') }}</span>
                     <input type="hidden" value="{{ total }}" id="totaltamp"/>
                 </td>
             </tr>       
@@ -132,7 +133,7 @@
             <tr>
                 <td colspan="8" class="text-end">
                     <span id="total" class="text-bold"></span>
-                    {{'Arrêtée la présente à la somme de '|trans}} <b id="conversion"> </b> <b>francs CFA TTC</b>
+                    {{'Arrêtée la présente à la somme de '|trans}} <b id="conversion"> </b><b id="virgule"></b> <b>francs CFA TTC</b>
                 </td>
             </tr>
             {#/***** end*****/#}
