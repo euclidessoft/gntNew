@@ -209,7 +209,7 @@ prix cession: price transfer
 Quantité Commande: Quantity Order
 Reste à livrer: Still to be delivered
 Montant avoir: Credit balance
-Arrêtée la présente à la somme de : Arranged the present at the sum of
+Arrêtée la présente à la somme de: Set the present invoice at the sum of
 Créer un avoir par: Create a credit note by
 Total Avoir: Total equity
 Editer Avoir: Edit Credit
@@ -668,3 +668,4 @@ un million: one million
 millions: million
 un milliard: one billion
 milliards: billion
+francs CFA TTC: CFA francs incl. VAT

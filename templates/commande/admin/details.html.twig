@@ -165,7 +165,7 @@
             <tr>
                 <td colspan="10" class="text-end">
                     <span class="text-bold"></span>
-                    {{'Arrêtée la présente à la somme de '|trans}} <b id="conversion"></b><b id="virgule"></b> <b>francs CFA TTC</b>
+                    {{ 'Arrêtée la présente à la somme de'|trans }}&nbsp;<b id="conversion"></b><b id="virgule"></b> <b>{{ 'francs CFA TTC'|trans }}</b>
                 </td>
             </tr>
             {#/***** end*****/#}
@@ -213,7 +213,7 @@
         <div class="centrer">
             <div class="row">
 
-                <a id="print" onclick="load('print')" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
+                <a id="print" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
                    class="btn btn-success float-end">
                     <i class="fa fa-print"></i>
                     {{ "Imprimer"|trans }}

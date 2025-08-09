@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ app.request.locale }}">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -49,9 +49,8 @@
     </style>
 
 </head>
-<body onload="print()" onafterprint="history.back()">
+<body>
 <div class="container-fluid">
-
     <div class="col-lg-8 offset-lg-2">
         <div class="row" style="border-bottom: 1px solid #039c4f;padding-bottom: 20px;">
             <div class="col-2">
@@ -101,8 +100,8 @@
                         <td>{{ commande.user.nom }}</td>
                         <td>{{ commande.paiement ? paiement.date|date('d/m/Y') : '' }}</td>
                         <td>{{ commande.paiement ? commande.paiement.type : '' }}</td>
-                        <td>{{ commande.paiement.banque ? commande.paiement.banque.nom : '' }}</td>
-                        <td>{{ commande.paiement ? commande.paiement.numero : '' }}</td>
+                        <td>{#{{ commande.paiement.banque ? commande.paiement.banque.nom : '' }}#}</td>
+                        <td>{#{{ commande.paiement ? commande.paiement.numero : '' }}#}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -181,7 +180,8 @@
                     {{ "Total HT"|trans }}
                 </td>
                 <td>
-                    <span id="" class="fw-bold text nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id=""
+                          class="fw-bold text nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                 </td>
             </tr>
             {% if reduction != 0 %}
@@ -190,7 +190,8 @@
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td>
-                        <span id="" class="text nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                        <span id=""
+                              class="text nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                     </td>
                 </tr>
             {% endif %}
@@ -199,7 +200,8 @@
                     {{ "Total TVA"|trans }}
                 </td>
                 <td>
-                    <span id="" class="text nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id=""
+                          class="text nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                 </td>
             </tr>
 
@@ -209,14 +211,16 @@
                 </td>
                 <td>
                     <span class="fw-bold text nowrap">{{ (total+ tva -reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                <span id="total" class="text-nowrap" style="display:none;">{{ (total+ tva -reduction)|number_format(2, '.' , '') }}</span>
+                    <span id="total" class="text-nowrap"
+                          style="display:none;">{{ (total+ tva -reduction)|number_format(2, '.' , '') }}</span>
                 </td>
             </tr>
         </table>
 
         {#Conversion prix en lettre #}
         <div class="mt-5">
-            {{ 'Arrêtée la présente à la somme de '|trans }}<b id="conversion"></b><b id="virgule"></b> <b>francs CFA TTC</b>
+            {{ 'Arrêtée la présente à la somme de'|trans }}&nbsp;<b id="conversion"></b><b id="virgule"></b>
+            <b>{{ 'francs CFA TTC'|trans }}</b>
         </div>
         {#/***** end*****/#}
 
@@ -258,7 +262,17 @@
             </div>
         {% endif %}
         {{ include('includes/javascript.html.twig') }}
+        <script>
+            {{ include('includes/impression.html.twig') }}
 
+
+            // Quand l'impression est terminée, revenir à la page précédente
+            window.onafterprint = function () {
+                history.back();
+            };
+        </script>
+    </div>
+</div>
 </body>
 
 </html>
