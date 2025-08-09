@@ -19,13 +19,13 @@
             {{ "Etat stock Produits"|trans }}
         </h3>
         <ul class="nav nav-tabs mb-4">
-{% if is_granted('ROLE_STOCK') %}
+{# {% if is_granted('ROLE_STOCK') %} #}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('stock_index') }}">
                     {{ 'Disponible'|trans }}
                 </a>
             </li>
-            {% endif %}
+            {# {% endif %} #}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('stock_surveiller') }}">
                     {{'à surveiller'|trans}}
@@ -36,13 +36,13 @@
                     {{'En rupture'|trans}}
                 </a>
             </li>
-            {% if is_granted('ROLE_STOCK') %}
+            {# {% if is_granted('ROLE_STOCK') %} #}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('stock_peremption') }}">
                         {{'Péremption Imminente'|trans }}
                     </a>
                 </li>
-            {% endif %}
+            {# {% endif %} #}
         </ul>
 
         <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
