@@ -18,13 +18,13 @@
         {{ "Etat stock produits"|trans }}
     </h3>
     <ul class="nav nav-tabs mb-4">
-        {% if is_granted('ROLE_STOCK') %}
+        {# {% if is_granted('ROLE_STOCK') %} #}
         <li class="nav-item">
             <a class="nav-link active" href="">
                 {{ 'Disponible'|trans }}
             </a>
         </li>
-        {% endif %}
+        {# {% endif %} #}
         <li class="nav-item">
             <a class="nav-link" href="{{ path('stock_surveiller') }}">
                 {{'à surveiller'|trans}}
@@ -35,13 +35,13 @@
                 {{ 'En rupture'|trans }}
             </a>
         </li>
-        {% if is_granted('ROLE_STOCK') %}
+        {# {% if is_granted('ROLE_STOCK') %} #}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('stock_peremption') }}">
                     {{ 'Péremption Imminente'|trans }}
                 </a>
             </li>
-        {% endif %}
+        {# {% endif %} #}
     </ul>
 
     <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
@@ -53,8 +53,9 @@
 {#            <th>N° Lot</th>#}
 {#            <th>Peremptio</th>#}
             <th>{{ 'Quantité'|trans }}</th>
-
+            {% if is_granted('ROLE_STOCK') %}
             <th>{{ 'Actions'|trans }}</th>
+        {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -66,12 +67,14 @@
 {#                <td>{{ produit.lot }}</td>#}
 {#                <td>{{ produit.peremption|date('d/m/Y') }}</td>#}
                 <td>{{ produit.produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                 {% if is_granted('ROLE_STOCK') %}
                 <td>
                     <a id="{{ produit.produit.id }}" onclick="load({{ produit.produit.id }})" class="btn btn-success" href="{{ path('stock_produit_show', {'id': produit.produit.id}) }}">
                         <i class="fa fa-list"></i>
                          {{'Détails'|trans}}
                     </a>
                 </td>
+        {% endif %}
 
             </tr>
         {% endfor %}

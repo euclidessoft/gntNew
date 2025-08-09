@@ -40,7 +40,7 @@ class StockController extends AbstractController
 #[Route("/", name :"index", methods : ["GET"]) ]
     public function stock(StockRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_STOCK')) {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
 
             $response = $this->render('stock/stock.html.twig', [
                 'stock' => $repository->stock(),
@@ -487,7 +487,7 @@ class StockController extends AbstractController
     #[Route("/{id}", name :"produit_show", methods : ["GET"]) ]
     public function produit(Produit $produit, StockRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_STOCK')) {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
 
             $response = $this->render('stock/produit_show.html.twig', [
                 'stock' => $repository->findBy(['produit' => $produit]),
@@ -519,7 +519,7 @@ class StockController extends AbstractController
     #[Route("/print/{id}", name :"produit_show_print", methods : ["GET"]) ]
     public function produitprint(Produit $produit, StockRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_STOCK')) {
+         if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
 
             $response = $this->render('stock/produit_show_print.html.twig', [
                 'stock' => $repository->findBy(['produit' => $produit]),

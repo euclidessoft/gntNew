@@ -18,12 +18,12 @@
             {{ "Etat stock Produits"|trans }}
         </h3>
         <ul class="nav nav-tabs mb-4">
-            {% if is_granted('ROLE_STOCK') %}
+            {# {% if is_granted('ROLE_STOCK') %} #}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('stock_index') }}">
                         {{ 'Disponible'|trans }}</a>
                 </li>
-            {% endif %}
+            {# {% endif %} #}
             <li class="nav-item">
                 <a class="nav-link active" href="#">
                     {{ 'A surveiller'|trans }}</a>
@@ -32,12 +32,12 @@
                 <a class="nav-link" href="{{ path('stock_rupture') }}">
                     {{ 'En rupture'|trans }}</a>
             </li>
-            {% if is_granted('ROLE_STOCK') %}
+            {# {% if is_granted('ROLE_STOCK') %} #}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('stock_peremption') }}">
                         {{ 'Péremption Imminente'|trans }}</a>
                 </li>
-            {% endif %}
+            {# {% endif %} #}
         </ul>
 
         <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
@@ -47,8 +47,9 @@
                 <th>{{ 'Désignation'|trans }}</th>
                 <th>{{ 'Fabricant'|trans }}</th>
                 <th>{{ 'Quantité'|trans }}</th>
-
+                {% if is_granted('ROLE_STOCK') %}
                 <th>{{ 'Actions'|trans }}</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -58,6 +59,7 @@
                     <td>{{ produit.desigantion }}</td>
                     <td>{{ produit.fabriquant }}</td>
                     <td>{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    {% if is_granted('ROLE_STOCK') %} 
                     <td>
                         <a id="{{produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" href="{{ path('stock_produit_show', {'id': produit.id}) }}">
                             <i class="fa fa-list"></i>
@@ -65,6 +67,7 @@
 
                         </a>
                     </td>
+                    {% endif %}
 
                 </tr>
 
