@@ -296,6 +296,8 @@ class PanierController extends AbstractController
                     $res['designation'] = $produit->getDesigantion();
                     $res['fabriquant'] = $produit->getFabriquant();
                     $res['quantite'] = $produit->getQuantite();
+                }else{
+                    $res['id'] = 'no';
                 }
             }else{
                 $res['id'] = 'no';
