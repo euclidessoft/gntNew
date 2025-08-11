@@ -49,18 +49,18 @@ class PaieController extends AbstractController
                 $bulletinExist = $entityManager->getRepository(Paie::class)->findByDate($employe->getId(), $startOfMonth, $endOfMonth);
                 if (!$bulletinExist) {
                     //Recuperations des Primes et Heure Supplementaire
-                    $primes = $entityManager->getRepository(Prime::class)->findByDateRange($employe->getId(), $startOfMonth, $endOfMonth);
-                    $heureSup = $entityManager->getRepository(HeureSuplementaire::class)->findByDateRange($employe->getId(), $startOfMonth, $endOfMonth);
-                    $sanctions = $entityManager->getRepository(Sanction::class)->findByDateRange($employe->getId(), $startOfMonth, $endOfMonth);
+                    // $primes = $entityManager->getRepository(Prime::class)->findByDateRange($employe->getId(), $startOfMonth, $endOfMonth);
+                    // $heureSup = $entityManager->getRepository(HeureSuplementaire::class)->findByDateRange($employe->getId(), $startOfMonth, $endOfMonth);
+                    // $sanctions = $entityManager->getRepository(Sanction::class)->findByDateRange($employe->getId(), $startOfMonth, $endOfMonth);
                     $salaireDeBase = $employe->getPoste()->getSalaire();
 
                     $paies[] = [
                         'employe' => $employe,
                         'salaireBase' => $salaireDeBase,
-                        'salaireBrut' => $salaireDeBase,
-                        'salaireNet' => $salaireDeBase ,
-                        'prime' => $primes,
-                        'heureSup' => $heureSup,
+                        // 'salaireBrut' => $salaireDeBase,
+                        // 'salaireNet' => $salaireDeBase ,
+                        // 'prime' => $primes,
+                        // 'heureSup' => $heureSup,
                     ];
                 }
             }
@@ -979,6 +979,7 @@ class PaieController extends AbstractController
             $ponction = 0;
             $totalprime = [];
             $montantprime = 0;
+            $allocationconge = 0;
 
             /** enciennete */
             $now = new \DateTime();
@@ -1029,6 +1030,9 @@ class PaieController extends AbstractController
                 }
                 else if(strtolower($prime->getDescription()) === 'indemnité de logement' || strtolower($prime->getDescription()) === 'indemnite de logement') {
                     $logement = $prime->getMontant();
+                }
+                else if(strtolower($prime->getDescription()) === 'allocation de congé' || strtolower($prime->getDescription()) === 'allocation de conge') {
+                    $allocationconge = $prime->getMontant();
                 }
 
                 // Vérifie si la prime est journalière (base == true)

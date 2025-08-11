@@ -27,7 +27,7 @@
             <tr>
                 <th>Matricule</th>
                 <th>Employé(e)</th>
-                <th>Salaire net</th>
+                <th>Salaire de base</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -36,7 +36,7 @@
             <tr>
                 <td>{{ paie.employe.matricule }}</td>
                 <td>{{ paie.employe.nom~' '~paie.employe.prenom }}</td>
-                <td>{{ paie.salaireNet|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                <td>{{ paie.salaireBase|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 <td>
                     <a href="{{ path('paie_show', {'id': paie.employe.id }) }}" class="btn btn-success">
                         <i class="fa fa-eye"></i>
