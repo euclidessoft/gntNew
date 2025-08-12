@@ -975,8 +975,8 @@ class LivrerController extends AbstractController
                                 $em->persist($stock);
                             }
                             $em->persist($livrerProduit);
-                            $em->remove($commandeproduit);//suppression reste a livrer
-                             $em->flush();
+                            $reste = $livrerResteRepository->find($commandeproduit->getId());
+                            $em->remove($reste);//suppression reste a livrer
 
 
                         }

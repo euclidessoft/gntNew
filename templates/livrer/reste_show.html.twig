@@ -222,7 +222,7 @@
                                         "                                            <td>"+ date +"</td>\n" +
                                         "                                            <td>"+ data[i]['quantite']+"</td>\n" +
                                         "                                            <td>" +
-                                        "<input type='number' id='"+ Number(data[i]['lot'])+"' class='form-control'/>" +
+                                        "<input type='text' id='"+ data[i]['lot']+"' class='form-control'/>" +
                                         "</td>\n" +
                                         "                                        </tr>");
                                 }else{
@@ -231,7 +231,7 @@
                                         "                                            <td>"+ date +"</td>\n" +
                                         "                                            <td>"+ data[i]['quantite']+"</td>\n" +
                                         "                                            <td>" +
-                                        "<input type='number' id='"+ Number(data[i]['lot'])+"' class='form-control'/>" +
+                                        "<input type='text' id='"+ data[i]['lot']+"' class='form-control'/>" +
                                         "</td>\n" +
                                         "                                        </tr>");
                                 }
@@ -282,7 +282,7 @@
                 let commande= 0;
                 let chaine = 0;
 
-                $("input[type=number]").each(
+                $("input[type=text]").each(
                     function () {
                         if($(this).val() != '') {
                             commande = Number(commande) + Number($(this).val());

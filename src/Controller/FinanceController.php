@@ -2731,7 +2731,7 @@ class FinanceController extends AbstractController
                     }
                 }else{
                     $autreschrages += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getPrix();
-                }    
+                }
             }
             
             $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
