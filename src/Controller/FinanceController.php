@@ -2730,7 +2730,7 @@ class FinanceController extends AbstractController
                         $autreschrages += -1 * $$reste->getProduit()->getSession() * $quant;// -1 * la quatite 
                     }
                 }else{
-                    $autreschrages += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getSession();
+                    $autreschrages += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getPrix();
                 }    
             }
             
@@ -3423,7 +3423,7 @@ class FinanceController extends AbstractController
                         $charge += -1 * $reste->getProduit()->getSession() * $quant;// -1 * la quatite 
                     }
                 }else{
-                    $charge += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getSession();
+                    $charge += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getPrix();
                 }    
             }
             

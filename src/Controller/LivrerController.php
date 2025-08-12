@@ -976,6 +976,7 @@ class LivrerController extends AbstractController
                             }
                             $em->persist($livrerProduit);
                             $em->remove($commandeproduit);//suppression reste a livrer
+                             $em->flush();
 
 
                         }

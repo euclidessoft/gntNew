@@ -76,7 +76,7 @@
                                     <div class="modal-body px-5">
                                         <div class="mt-4">
                                             <label for="banque{{ paie.id }}"></label>
-                                            <select class="form-control" id="banque{{ paie.id }}">
+                                            <select class="form-select" id="banque{{ paie.id }}">
                                                 <option value="0">Selectionnez une banque</option>
                                                 {% for banque in banques  %}
                                                 <option value="{{ banque.id }}">{{ banque.nom }}</option>
@@ -156,7 +156,7 @@
                 <div class="modal-body px-5">
                     <div class="mt-4">
                         <label for="{#mois{{ mois.id }}#}"></label>
-                        <select class="form-control" id="banquetous">
+                        <select class="form-select" id="banquetous">
                             <option value="0">Selectionnez une banque</option>
                             {% for banque in banques  %}
                                 <option value="{{ banque.id }}">{{ banque.nom }}</option>
