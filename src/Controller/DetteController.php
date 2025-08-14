@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Panier;
 use App\Entity\Reclamation;
 use App\Entity\Reponse;
 use App\Entity\User;
@@ -34,7 +35,7 @@ class DetteController extends AbstractController
 
             return $this->render('dette/index.html.twig', [
                 'commandes' => $repository->findBy(['payer' => false, 'user' => $user]),
-                'panier' => $session->get('panier', []),
+                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
 
         }else{
@@ -61,7 +62,7 @@ class DetteController extends AbstractController
                 return $this->render('dette/show.html.twig', [
                     'commande' => $commande,
                     'commandeproduits' => $repository->findBy(['commande' => $commande]),
-                    'panier' => $session->get('panier', []),
+                    'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
                 ]);
             }
             else{

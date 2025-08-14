@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Suggestion;
+use App\Entity\Panier;
 use App\Form\SuggestionType;
 use App\Repository\SuggestionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +29,7 @@ class SuggestionController extends AbstractController
 
             $response = $this->render('suggestion/index.html.twig', [
                 'suggestions' => $suggestionRepository->findBy(['client' => $this->getUser()]),
-                'panier' => $session->get('panier', []),
+                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -85,7 +86,7 @@ class SuggestionController extends AbstractController
         return $this->render('suggestion/new.html.twig', [
             'suggestion' => $suggestion,
             'form' => $form->createView(),
-            'panier' => $session->get('panier', []),
+            'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
         ]);
     }
 

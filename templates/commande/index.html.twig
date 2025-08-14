@@ -95,11 +95,7 @@
                                 <i class="fa fa-edit"></i>
                             </button>
                         </div>
-                        <a id="{{ produit.produit.id }}" onclick="load({{ produit.produit.id }})"
-                           href="{{ path("commande_delete", {id: produit.produit.id}) }}" class="btn btn-danger"
-                           title="{{ 'Supprimer cet article'|trans }}">
-                            <i class="fa fa-trash"></i>
-                        </a>
+                        {{ include('commande/_delete_form.html.twig')}}
 
                     </td>
                 </tr>
@@ -115,11 +111,8 @@
                     </td>
                     <td data-label="Vider le panier" rowspan="4">
 
-                        <a id="vider" onclick=load('vider') href="{{ path('commande_delete_all') }}"
-                           class="btn btn-danger" title="vider le panier">
-                            {{ 'Vider le panier'|trans }}
-                            <i class="fa fa-trash-alt"></i>
-                        </a>
+                       
+                         {{ include('commande/_delete.html.twig')}}
 
                     </td>
                 </tr>

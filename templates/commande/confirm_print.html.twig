@@ -229,7 +229,7 @@
 
         // Quand l'impression est terminée
         window.onafterprint = function () {
-            document.location.href = '{{ path('commande_panier_paiement',{'commande': commande.id}) }}'
+            document.location.href = '{{ path('commande_panier_Detail',{'commande': commande.id}) }}'
         };
         </script>
     </div>

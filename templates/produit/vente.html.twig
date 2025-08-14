@@ -64,7 +64,7 @@
                             </button>
                         {% else %}
                             <button type="button" class="btn btn-success{% if approvisionnement.produit.stock <= approvisionnement.produit.mincommande %} disabled {%  endif %}" id="btn{{ approvisionnement.produit.id }}"
-                                    onclick="addprod({{ approvisionnement.produit.id }}, {{ approvisionnement.produit.mincommande }}, {{ approvisionnement.produit.stock }})">
+                                    onclick="addinPanier({{ approvisionnement.produit.id }}, {{ approvisionnement.produit.mincommande }}, {{ approvisionnement.produit.stock }})">
                                 <i class="fa fa-cart-shopping"></i>
                             </button>
                         {% endif %}

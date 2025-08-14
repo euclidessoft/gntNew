@@ -140,6 +140,40 @@
 
     }
 
+    function addinPanier(id, mincom, st) {// fonction pour ajouter un produit dans le panier
+        var reg = new RegExp("^[0-9]+$");
+        if (reg.test($('#text' + id).val()) && mincom <= $('#text' + id).val()) {
+            if (st >= $('#text' + id).val()) {
+                $('#btn' + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('commande_addin') }}",
+                    data: "prod=" + id + "&quantite=" + $('#text' + id).val(),
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                            $('#tdprod' + id).html($('#text' + id).val());
+                            $('#gest_panier').html(data['panier']);
+                            $('#btn' + id).html("<i class='fa fa-cart-shopping'></i>");
+                            $('#btn' + id).addClass('disabled');
+                        } else {
+                            alert("{{ 'Vérifier la quantité saisie'|trans }}")
+                        }
+                    },
+                    error: function () {
+                        alert('{{ "La requête n'a pas abouti"|trans }}');
+                    }
+                });
+            } else {
+                var mess = "{{ 'Maximum disponible  ' }}" + st;
+                alert(mess);
+            }
+        } else {
+            var mess = "{{ 'Commande minimun '|trans}}" + mincom;
+            alert(mess);
+        }
+
+    }
+
 
 
     function nofocu(id) {

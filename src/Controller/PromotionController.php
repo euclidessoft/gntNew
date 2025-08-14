@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Promotion;
+use App\Entity\Panier;
 use App\Entity\PromotionProduit;
 use App\Form\PromotionType;
 use App\Repository\ProduitRepository;
@@ -211,7 +212,7 @@ class PromotionController extends AbstractController
             return $response;
         } else if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('promotion/encours.html.twig', [
                 'promotions' => $promotionRepository->CouranteClient(),
@@ -402,16 +403,16 @@ class PromotionController extends AbstractController
             if ($promotion->getDebut() <= $date) {
                 $promo = 1;
             }
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
             $total = 0;
 
-            foreach ($panier as $commande) {
-//                $product = $produitRepository->find($id);
+             foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit']
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
-//                $total += $product->getPrix() * $quantite;
             }
 
             return $this->render('promotion/show.html.twig', [

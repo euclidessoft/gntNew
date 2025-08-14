@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Produit;
+use App\Entity\Panier;
 use App\Entity\User;
 use App\Form\ProduitType;
 use App\Repository\ApprovisionnementRepository;
@@ -29,12 +30,14 @@ class ProduitController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach($panier as $commande){
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
 
@@ -142,12 +145,14 @@ class ProduitController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach($panier as $commande){
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
 
@@ -183,12 +188,14 @@ class ProduitController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+           $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach($panier as $commande){
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
             $approvisionner = $approvisionnerRepository->arrivage();//recuperation des approvisioonement de moins de 7 jours
@@ -276,15 +283,17 @@ class ProduitController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach($panier as $commande){
+             foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
-
+            // dd($dataPanier);
             $ventemensuel = $repository->ventemensuel();
             $venteannuel = $repository->venteannuel();//
 
@@ -359,12 +368,14 @@ class ProduitController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach($panier as $commande){
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
 

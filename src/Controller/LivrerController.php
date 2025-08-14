@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Panier;
 use App\Entity\Livrer;
 use App\Entity\LivrerProduit;
 use App\Entity\LivrerReste;
@@ -74,7 +75,7 @@ class LivrerController extends AbstractController
                 'retours' => $retourProduitRepository->retour_client($this->getUser()->getId()),
                 'livrers' => $livrerRepository->findBy(['reste' => true, 'user' => $this->getUser()->getId()]),
                 'commandes' => $repository->findBy(['suivi' => true, 'livraison' => false, 'user' => $this->getUser()->getId()]),
-                'panier' => $session->get("panier", []),
+                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -135,7 +136,7 @@ class LivrerController extends AbstractController
             ]);
             return $response;
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('livrer/history_client.html.twig', [
                 'livrers' => $repository->historique_client($this->getUser()->getId()),
@@ -510,7 +511,7 @@ class LivrerController extends AbstractController
             }
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("livraison", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             if ($commande->getLivraison() && $commande->getUser() == $this->getUser()) {
                 $livrer = $livrerRepository->findBy(['commande' => $commande]);
 //            $histo = [];

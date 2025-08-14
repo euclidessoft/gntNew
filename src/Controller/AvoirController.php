@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Avoir;
+use App\Entity\Panier;
 use App\Entity\AvoirReste;
 use App\Entity\Commande;
 use App\Entity\Retour;
@@ -58,7 +59,7 @@ class AvoirController extends AbstractController
             
             $response = $this->render('avoir/index.html.twig', [
                 'avoirs' => $avoirRepository->findby(['client' => $this->getUser()]),
-                'panier' => $panier = $session->get("panier", []),
+                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -392,7 +393,7 @@ class AvoirController extends AbstractController
             $response = $this->render('avoir/show.html.twig', [
                 'avoir' => $avoir,
                 'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
-                'panier' => $session->get('panier', []),
+                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -440,7 +441,7 @@ class AvoirController extends AbstractController
             $response = $this->render('avoir/show_print.html.twig', [
                 'avoir' => $avoir,
                 'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
-                'panier' => $session->get('panier', []),
+                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

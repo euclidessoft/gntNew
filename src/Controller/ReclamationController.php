@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Reclamation;
+use App\Entity\Panier;
 use App\Entity\User;
 use App\Form\ReclamationType;
 use App\Repository\LivrerProduitRepository;
@@ -42,7 +43,7 @@ class ReclamationController extends AbstractController
             return $response;
 
         }else if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
             $response = $this->render('reclamation/index.html.twig', [
@@ -91,7 +92,7 @@ class ReclamationController extends AbstractController
             return $response;
 
         }elseif ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
             $response = $this->render('reclamation/cloturer.html.twig', [
@@ -125,12 +126,14 @@ class ReclamationController extends AbstractController
     public function new(SessionInterface $session, Request $request, User $user): Response
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach ($panier as $commande) {
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
             $reclamation = new Reclamation();
@@ -234,12 +237,14 @@ class ReclamationController extends AbstractController
                 'commandes' => $commandeproduits,
             ]);
         } else if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach ($panier as $commande) {
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
 

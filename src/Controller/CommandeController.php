@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Panier;
 use App\Entity\CommandeProduit;
 use App\Entity\Credit;
 use App\Entity\Ecriture;
@@ -38,18 +39,16 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
             $total = 0;
 
-            foreach ($panier as $commande) {
-//                $product = $produitRepository->find($id);
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
-                    "promotion" => $commande['promotion']
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
-                //    var_dump($dataPanier);
-//                $total += $product->getPrix() * $quantite;
             }
 
             $response = $this->render('commande/index.html.twig', [
@@ -158,7 +157,7 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
             $dataPanier = [];
 //            $em = $this->getDoctrine()->getManager();
             $commande = new Commande();
@@ -175,20 +174,20 @@ class CommandeController extends AbstractController
                 $tva = 0;
                 foreach ($panier as $product) {
                     $reductionproduit = 0;
-                    $produit = $produitRepository->find($product['produit']->getId());
+                    $produit = $produitRepository->find($product->getProduit()->getId());
                     if (!empty($produit->getPromotion())) {//traitement de la promotion avec reduction
                         if (!empty($produit->getPromotion()->getReduction())) {
-                            $reductionproduit = $product['produit']->getQuantite() * $produit->getPrix() * $produit->getPromotion()->getReduction() / 100;
+                            $reductionproduit = $product->getQuantite() * $produit->getPrix() * $produit->getPromotion()->getReduction() / 100;
 
                             $reduction = $reduction + $reductionproduit;
                         }
                     }
 
-                    $montant = $montant + $product['produit']->getQuantite() * $produit->getPrix();
+                    $montant = $montant + $product->getQuantite() * $produit->getPrix();
 
-                    $commandeproduit = new CommandeProduit($produit, $commande, $produit->getPrix(), $produit->getPrixpublic(), $product['produit']->getQuantite());
+                    $commandeproduit = new CommandeProduit($produit, $commande, $produit->getPrix(), $produit->getPrixpublic(), $product->getQuantite());
                     if($produit->getTva()){
-                        $tvaproduit = (($product['produit']->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925;
+                        $tvaproduit = (($product->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925;
                          $tva = $tva + $tvaproduit;
                         $commandeproduit->setTva($tvaproduit);  
                     }
@@ -205,8 +204,11 @@ class CommandeController extends AbstractController
                 $commande->setTva(round($tva,2));
                 $commande->setReduction(round($reduction,2));
                 $this->entityManager->persist($commande);
+                foreach($panier as $pan){
+                $this->entityManager->remove($pan);
+                }
                 $this->entityManager->flush();
-                $session->remove("panier");
+                 
                 $response = $this->redirectToRoute('commande_panier_imprimer', [
                     'commande' => $commande->getId(),
                 ]);
@@ -326,7 +328,7 @@ class CommandeController extends AbstractController
     public function voscommande(SessionInterface $session, CommandeRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
 
             $response = $this->render('commande/suivi.html.twig', [
                 'commandes' => $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false]),
@@ -380,7 +382,7 @@ class CommandeController extends AbstractController
     public function voscommandeextranet(SessionInterface $session, CommandeRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
 
             $response = $this->render('commande/extranet.html.twig', [
                 'commandes' => $repository->extranet($this->getUser()->getId()),
@@ -450,7 +452,7 @@ class CommandeController extends AbstractController
             ]);
             return $response;
         } else if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('commande/history.html.twig', [
                 'commandes' => $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => true]),
@@ -626,7 +628,7 @@ class CommandeController extends AbstractController
     public function paiementClient(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
 
             $response = $this->render('commande/payment.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
@@ -666,17 +668,16 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
             $total = 0;
 
-            foreach ($panier as $commande) {
-//                $product = $produitRepository->find($id);
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
-                    "promotion" => $commande['promotion']
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
-//                $total += $product->getPrix() * $quantite;
             }
 
             $response = $this->render('commande/confirm.html.twig', [
@@ -756,18 +757,17 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $session->set("credit", 'credit');
             $dataPanier = [];
             $total = 0;
 
-            foreach ($panier as $commande) {
-//                $product = $produitRepository->find($id);
+           foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
-                    "promotion" => $commande['promotion']
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
-//                $total += $product->getPrix() * $quantite;
             }
 
             $response = $this->render('commande/confirm.html.twig', [
@@ -847,7 +847,7 @@ class CommandeController extends AbstractController
     public function paiementChoix(SessionInterface $session, CommandeProduitRepository $repository, $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $session->remove('credit');
 
 
@@ -1274,7 +1274,7 @@ class CommandeController extends AbstractController
     public function details(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('commande/details.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
@@ -1330,7 +1330,7 @@ class CommandeController extends AbstractController
     public function printdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('commande/details_print.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
@@ -1427,7 +1427,7 @@ class CommandeController extends AbstractController
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('commande/confirm_print.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),

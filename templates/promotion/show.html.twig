@@ -95,7 +95,7 @@
                                 </button>
                             {% else %}
                                 <button type="button" class="btn btn-success{% if promotionproduit.produit.stock <= promotionproduit.produit.mincommande or promo == 0 %} disabled {%  endif %}" id="btn{{ promotionproduit.produit.id }}"
-                                        onclick="addprod({{ promotionproduit.produit.id }}, {{ promotionproduit.produit.mincommande }}, {{ promotionproduit.produit.stock }})">
+                                        onclick="addinPanier({{ promotionproduit.produit.id }}, {{ promotionproduit.produit.mincommande }}, {{ promotionproduit.produit.stock }})">
                                     <i class="fa fa-cart-shopping"></i>
                                 </button>
                             {% endif %}

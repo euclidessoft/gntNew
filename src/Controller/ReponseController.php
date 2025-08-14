@@ -56,12 +56,14 @@ class ReponseController extends AbstractController
         }
         else if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach ($panier as $commande) {
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
 

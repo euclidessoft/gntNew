@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Produit;
+use App\Entity\Panier;
 use App\Repository\ApprovisionnementRepository;
 use App\Repository\ApprovisionnerRepository;
 use App\Repository\AvoirRepository;
@@ -41,12 +42,14 @@ class PanierController extends AbstractController
         }
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $session->get("panier", []);
+           $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
 
-            foreach($panier as $commande){
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
-                    "produit" => $commande['produit'],
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
                 ];
             }
             $top = $repository->topmensuel($this->getUser());//recperation mon top
@@ -262,6 +265,50 @@ class PanierController extends AbstractController
 
     }
 
+    #[Route("/addinPanier/", name :"addin") ]
+    public function addPanier(Request $request, ProduitRepository $produitRepository, SessionInterface $session, PromotionRepository $promotionRepository)
+    {
+        // On récupère le panier actuel
+        // $panier = $session->get("panier", []);
+        if( $request->isXmlHttpRequest() )
+        {// traitement de la requete ajax
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+            $id = $request->get('prod');// recuperation de id produit
+            $quantite = $request->get('quantite');// recuperation de la quantite commamde
+            $reduction = 0;
+            // if(empty($panier[$id])){//verification existance produit dans le panier
+                $produit = $produitRepository->find($id); // recuperation de id produit dans la db
+                if(!empty($produit->getPromotion())) {// verification promo reduction
+                if(!empty($produit->getPromotion()->getReduction())) {
+                    $reduction = $produit->getPromotion()->getReduction();
+                }
+                }
+                if($produit->getMincommande() <= $quantite) {// verification quantite minimum
+                   $pan = new Panier();
+                   $pan->setProduit($produit);
+                   $pan->setClient($this->getUser());
+                   $pan->setQuantite($quantite);
+                   $reduction != 0 ? $pan->setReduction($reduction) : null;
+                   $this->entityManager->persist($pan);
+                   $this->entityManager->flush();
+
+
+                    $res['id'] = 'ok';
+                    $res['panier'] = count($panier)+1;
+                }
+            // }else{
+            //     $res['id'] = 'no';
+            // }
+
+            $response = new Response();
+            $response->headers->set('content-type','application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        }
+
+    }
+
 
     #[Route("/addextranet/", name :"add_extranet") ]
     public function addextranet(Request $request, ProduitRepository $produitRepository, SessionInterface $session, PromotionRepository $promotionRepository)
@@ -363,6 +410,17 @@ class PanierController extends AbstractController
         return $this->redirectToRoute("commande_panier_panier");
     }
 
+    #[Route("/deleteIn/{id}", name :"deletein") ]
+    public function deletein(Produit $Produit, SessionInterface $session)
+    {
+        // On récupère le panier actuel
+        $panier = $this->entityManager->getRepository(Panier::class)->findOneBy(['client' => $this->getUser()->getId(), 'produit' => $Produit->getId()]);
+        $this->entityManager->remove($panier);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute("commande_panier_panier");
+    }
+
     #[Route("/edit_extranet", name :"edit_extranet") ]
     public function edit_extranet(Request $request, SessionInterface $session)
     {
@@ -423,6 +481,28 @@ class PanierController extends AbstractController
     public function deleteAll(SessionInterface $session)
     {
         $session->remove("panier");
+
+        $response = $this->redirectToRoute('commande_panier_panier', [], Response::HTTP_SEE_OTHER);
+        $response->setSharedMaxAge(0);
+        $response->headers->addCacheControlDirective('no-cache', true);
+        $response->headers->addCacheControlDirective('no-store', true);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+        $response->setCache([
+            'max_age' => 0,
+            'private' => true,
+        ]);
+        return $response;
+    }
+
+
+    #[Route("/deleteIN", name :"delete_allin") ]
+    public function deleteAllin(SessionInterface $session)
+    {
+        $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+        foreach($panier as $pan){
+            $this->entityManager->remove($pan);
+        }
+        $this->entityManager->flush();
 
         $response = $this->redirectToRoute('commande_panier_panier', [], Response::HTTP_SEE_OTHER);
         $response->setSharedMaxAge(0);
