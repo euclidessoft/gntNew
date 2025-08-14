@@ -393,6 +393,35 @@ class PanierController extends AbstractController
 
     }
 
+
+
+    #[Route("/editinPanier/", name :"editin") ]
+    public function editPanier(Request $request, ProduitRepository $produitRepository, SessionInterface $session, PromotionRepository $promotionRepository)
+    {
+        // On récupère le panier actuel
+        // $panier = $session->get("panier", []);
+        if( $request->isXmlHttpRequest() )
+        {// traitement de la requete ajax
+            $id = $request->get('prod');// recuperation de id produit
+            $quantite = $request->get('quantite');// recuperation de la quantite commamde
+            $panier = $this->entityManager->getRepository(Panier::class)->findOneBy(['client' => $this->getUser()->getId(), 'produit' => $id]);
+            $panier->setQuantite($quantite);
+          
+            $this->entityManager->persist($panier);
+            $this->entityManager->flush();
+
+
+            $res['id'] = 'ok';
+               
+            $response = new Response();
+            $response->headers->set('content-type','application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        }
+
+    }
+
     #[Route("/delete/{id}", name :"delete") ]
     public function delete(Produit $Produit, SessionInterface $session)
     {
@@ -494,7 +523,7 @@ class PanierController extends AbstractController
         return $response;
     }
 
-
+                  
     #[Route("/deleteIN", name :"delete_allin") ]
     public function deleteAllin(SessionInterface $session)
     {
