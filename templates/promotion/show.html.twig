@@ -3,6 +3,7 @@
     {% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
     {% block promotion %}active{% endblock %}
 
+{% block start %} onkeyup="entrer()" {% endblock %}
     {% block body %}
         <div class="container mt-4 fond-7">
             <h3 class="mt-4 mb-5 text-bold">
@@ -84,7 +85,7 @@
                                 {{ tamp }}
                             {% else %}
                                 <input type="number" id="text{{ promotionproduit.produit.id }}" class="form-control"
-                                       onfocus="focu({{ promotionproduit.produit.id }})" onblur="nofocu()" style="padding:0 10px" {% if promotionproduit.produit.stock <= promotionproduit.produit.mincommande or promo == 0 %} disabled {%  endif %}>
+                                       onfocus="focu({{ promotionproduit.produit.id }}, {{ promotionproduit.produit.mincommande }}, {{ promotionproduit.produit.stock }})" onblur="nofocu()" style="padding:0 10px" {% if promotionproduit.produit.stock <= promotionproduit.produit.mincommande or promo == 0 %} disabled {%  endif %}>
                                 <label for="text{{ promotionproduit.produit.id }}"></label>
                             {% endif %}
                         </td>
@@ -105,6 +106,8 @@
                 </tbody>
             </table>
             <input type="hidden" id="tampon"/>
+        <input type="hidden" id="min"/>
+        <input type="hidden" id="stock"/>
 
         </div>
     {% endblock %}

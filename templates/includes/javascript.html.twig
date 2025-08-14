@@ -142,8 +142,9 @@
 
     function addinPanier(id, mincom, st) {// fonction pour ajouter un produit dans le panier
         var reg = new RegExp("^[0-9]+$");
+        alert(st +"-->"+$('#text' + id).val()+">" )
         if (reg.test($('#text' + id).val()) && mincom <= $('#text' + id).val()) {
-            if (st >= $('#text' + id).val()) {
+          //  if (st >= $('#text' + id).val()) {
                 $('#btn' + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
                 $.ajax({
                     type: "POST",
@@ -163,10 +164,10 @@
                         alert('{{ "La requête n'a pas abouti"|trans }}');
                     }
                 });
-            } else {
+            /* } else {
                 var mess = "{{ 'Maximum disponible  ' }}" + st;
                 alert(mess);
-            }
+            } */
         } else {
             var mess = "{{ 'Commande minimun '|trans}}" + mincom;
             alert(mess);
@@ -205,12 +206,33 @@
 
     }
 
-
-
-    function nofocu(id) {
-        $('#tampon').val('');
+//hebergement
+    function focu(id,min,stock) {
+        $('#tampon').val(id);
+        $('#min').val(min);
+        $('#stock').val(stock);
     }
 
+    //hebergement
+    function nofocu() {
+        $('#tampon').val('');
+        $('#min').val('');
+        $('#stock').val('');
+    }
+
+    //fonction appuie sur le bouton entrer
+    function entrer() {
+        var reg = new RegExp("^[0-9]+$");
+        var id = $('#tampon').val();
+        var min = $('#min').val();
+        var stock = $('#stock').val();
+        var quantite = $('#text' + id).val();
+        if (reg.test(quantite) && window.event.keyCode == 13) {
+            addinPanier(id, min,stock);
+
+        } //else alert("{{ 'invalide'|trans }}");
+
+    }
     //message systeme
     function advert() {
         $('#advertiser').trigger('click');

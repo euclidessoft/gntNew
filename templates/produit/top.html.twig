@@ -3,6 +3,7 @@
 {% block produit %}active{% endblock %}
 {% block top %}active{% endblock %}
 
+{% block start %} onkeyup="entrer()" {% endblock %}
 {% block body %}
     <div class="container-fluid mt-4 fond-7">
         <h3 class="mt-4 mb-5 text-bold">
@@ -51,7 +52,7 @@
                             {{ tamp }}
                         {% else %}
                             <input type="number" id="text{{ approvisionnement.produit.id }}" class="form-control"
-                                   onfocus="focu({{ approvisionnement.produit.id }})" onblur="nofocu()" style="padding:0 10px" {% if approvisionnement.produit.stock <= approvisionnement.produit.mincommande %} disabled {%  endif %}>
+                                   onfocus="focu({{ approvisionnement.produit.id }}, {{ approvisionnement.produit.mincommande }}, {{ approvisionnement.produit.stock }})" onblur="nofocu()" style="padding:0 10px" {% if approvisionnement.produit.stock <= approvisionnement.produit.mincommande %} disabled {%  endif %}>
                             <label for="text{{ approvisionnement.produit.id }}"></label>
                             {% if approvisionnement.produit.stock <= approvisionnement.produit.mincommande %}
                                 {{ "indisponible"|trans }}
@@ -74,6 +75,8 @@
             {% endfor %}
             </tbody>
         </table>
-        <input type="hidden" id="tampon"/>
+         <input type="hidden" id="tampon"/>
+        <input type="hidden" id="min"/>
+        <input type="hidden" id="stock"/>
     </div>
 {% endblock %}
