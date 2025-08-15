@@ -46,7 +46,7 @@ class ApprovisionnementController extends AbstractController
 //            }
 
             foreach ($approv as $key => $item) {// ffabrication des donnees dans la session pour affichage
-                $ligne = explode("/",$item);
+                $ligne = explode("{/",$item);
                 $produit = $produitRepository->find($ligne[0]);
                 $fournisseur = $fournisseurRepository->find($ligne[4]);
                 $dataPanier[]= [
@@ -133,7 +133,7 @@ class ApprovisionnementController extends AbstractController
             $quantite = $request->get('quantite');// recuperation de la quantite commamde
             $idfournisseur = $request->get('fournisseur');// recuperation de la quantite commamde
             foreach ($approv as $key => $item) {
-                $ligne = explode("/",$item);
+                $ligne = explode("{/",$item);
                 if ($ligne[0] == $id && $ligne[2] == $numero) {
                     $res['id'] = 'Un produit avec les même reference a été ajouté';
                     goto suite;
@@ -143,7 +143,7 @@ class ApprovisionnementController extends AbstractController
             $fournisseur = $fournisseurRepository->find($idfournisseur); // recuperation de id produit dans la db
 //            if (empty($approv[$id])) {//verification existance produit dans le panier
 
-            $chaine = $id."/".$quantite."/".$numero."/".$peremption."/".$idfournisseur;
+            $chaine = $id."{/".$quantite."{/".$numero."{/".$peremption."{/".$idfournisseur;
 
 //            $produit->setQuantite($quantite);
 //            $produit->setLot($numero);
@@ -219,7 +219,7 @@ class ApprovisionnementController extends AbstractController
         $id = $request->get('prod');
         $numero = $request->get('lot');
         foreach ($approv as $key => $item) {
-            $ligne = explode("/",$item);
+            $ligne = explode("{/",$item);
             if ($ligne[0] == $id && $ligne[2] == $numero) {
                 unset($approv[$key]);
             }
@@ -304,7 +304,7 @@ class ApprovisionnementController extends AbstractController
                 $em->persist($approvisionner);
                 $i = 1;
                 foreach ($approv as $ligne) {
-                    $product = explode("/",$ligne);
+                    $product = explode("{/",$ligne);
                     $id = $product[0];
                     $quantite= $product[1];
                     $lot= $product[2];
