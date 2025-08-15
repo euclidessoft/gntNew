@@ -822,7 +822,7 @@ class LivrerController extends AbstractController
 
 
                     foreach ($ligne as $key => $item) {
-                        $lot = explode("/", $item);
+                        $lot = explode("{/", $item);
                         if ($key != 0) {
                             $id = $lot[0];
                             $numerolot = $lot[1];
@@ -882,8 +882,8 @@ class LivrerController extends AbstractController
             $em->persist($commande);
             $em->flush();
             $this->addFlash('notice', 'Livraison enregistrée avec succés');
-            $response = $this->redirectToRoute('livraison_index');
-            // $response = $this->redirectToRoute('livraison_historique_show_print', ['id' => $commande->getId()]);
+            // $response = $this->redirectToRoute('livraison_index');
+            $response = $this->redirectToRoute('livraison_historique_show_print', ['id' => $commande->getId()]);
 
             $session->remove('traitement');
             $session->remove('livreur');
@@ -954,7 +954,7 @@ class LivrerController extends AbstractController
                 $chaine = $livraison[$produit->getId()];
                 $ligne = explode("#", $chaine);
                 foreach ($ligne as $key => $item) {
-                    $lot = explode("/", $item);
+                    $lot = explode("{/", $item);
                     if ($key != 0) {
                         $id = $lot[0];
                         $numerolot = $lot[1];
@@ -1050,7 +1050,7 @@ class LivrerController extends AbstractController
                 $chaine = $livraison[$produit->getId()];
                 $ligne = explode("#", $chaine);
                 foreach ($ligne as $key => $item) {
-                    $lot = explode("/", $item);
+                    $lot = explode("{/", $item);
                     if ($key != 0) {
                         $id = $lot[0];
                         $numerolot = $lot[1];

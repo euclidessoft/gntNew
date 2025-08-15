@@ -115,7 +115,6 @@
                 <th>{{ 'désignation'|trans }}</th>
                 <th>{{ 'Quantité Commande'|trans }}</th>
                 <th>{{ 'Quantité déjà livrée'|trans }}</th>
-                <th>{{ 'Reste à livrer'|trans }}</th>
                 <th>{{ 'Quantité à livrer'|trans }}</th>
             </tr>
             </thead>
@@ -130,7 +129,7 @@
                 </td>
                 <td class="text-center">{{ commande.quantitelivrer }}</td>
 
-                <td class="text-center">{{ commande.quantitelivrer - commande.quantitelivrer }}</td>
+                <td class="text-center">{{ commande.quantitecommander - commande.quantitelivrer }}</td>
 
                 {% else %}
                 {% endfor %}
