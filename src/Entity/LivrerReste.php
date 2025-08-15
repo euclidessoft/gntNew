@@ -44,7 +44,10 @@ class LivrerReste
     private $session;
 
     #[ORM\Column]
-    private ?bool $credit = null;// tamp creance pour comppte de resultat et bilan
+    private ?bool $credit = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $tva = null;// tamp creance pour comppte de resultat et bilan
 
     /**
      * Constructor
@@ -189,6 +192,18 @@ class LivrerReste
     public function setCredit(bool $credit): static
     {
         $this->credit = $credit;
+
+        return $this;
+    }
+
+    public function getTva(): ?bool
+    {
+        return $this->tva;
+    }
+
+    public function setTva(?bool $tva): static
+    {
+        $this->tva = $tva;
 
         return $this;
     }

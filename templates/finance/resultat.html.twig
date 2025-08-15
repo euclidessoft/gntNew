@@ -59,7 +59,7 @@
                         <td>Ventes de marchandises</td>
                         <td>+</td>
                         <td>22</td>
-                        <td> {{ vente|number_format(0, '', ' ') }}</td>
+                        <td> {{ vente|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
@@ -67,7 +67,7 @@
                         <td>Achat de marchandises</td>
                         <td>-</td>
                         <td>21</td>
-                        <td> {{ achat|number_format(0, '', ' ') }} </td>
+                        <td> {{ achat|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </td>
                         <td>-</td>
                     </tr>
                     <tr>
@@ -76,7 +76,7 @@
                         <td>-/+</td>
                         <td>6</td>
                         <td> 
-                        {{ variation|number_format(0, '', ' ') }}
+                        {{ variation|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </td>
                         <td>-</td>
                     </tr>
@@ -87,7 +87,7 @@
                         <td></td>
                         <th> 
                         {% set xa = vente - (achat - variation) %}
-                        {{ xa|number_format(0, '', ' ') }}
+                        {{ xa|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </th>
                         <td>-</td>
                     </tr>
@@ -128,7 +128,7 @@
                        <td> 
                         {% set xb = vente + tb + tc + td  %}
                         </td>
-                        <th> {{ vente|number_format(0, '', ' ') }} </th>
+                        <th> {{ vente|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
                         <td>-</td>
                     </tr>
                     <tr>
@@ -277,7 +277,7 @@
                         {% set xc = xa + (tb + tc + td)+ (te + tf + tg + th + ti) - (rc + rd + re + rf + rg + rh + ri + rj ) %}
 
                           {# {% set xc = xa + vente + variation + (te + tf + tg + th + ti)  - (rc + rd + re + rf + rg + rh + ri + rj ) %} #}
-                         {{ xc|number_format(0, '', ' ')}}
+                         {{ xc|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
                          </th>
                         <td>-</td>
                     </tr>
@@ -377,7 +377,7 @@
                         <td>Dotations aux provisions et aux dépréciations financières</td>
                         <td>-</td>
                         <td>3C&28</td>
-                        <td>{{ amortissement|number_format(0, '', ' ')}} </td>
+                        <td>{{ amortissement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}} </td>
                         {# {{ rn != 0 ? rn|number_format(0,'', ' ') : '' }} #}
                         <td>-</td>
                     </tr>
@@ -388,7 +388,7 @@
                         <td></td>
                         <th> 
                         {% set xf = tk + tl + tm - (rm + amortissement) %}
-                        {{ xf|number_format(0, '', ' ') }}
+                        {{ xf|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </th>
                         <td>-</td>
                     </tr>
@@ -399,7 +399,7 @@
                         <td></td>
                         <th> 
                         {% set xg = xe + xf %}
-                        {{ xg|number_format(0, '', ' ') }}
+                        {{ xg|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </th>
                         <td>-</td>
                     </tr>
@@ -480,7 +480,7 @@
                         <td></td>
                         <th>
                         {% set xi = xg + xh - rq - rs %}
-                        {{ xi|number_format(0, '', ' ')}}
+                        {{ xi|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
                         </th>
                         <td>-</td>
                     </tr>

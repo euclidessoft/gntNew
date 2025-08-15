@@ -862,6 +862,7 @@ class LivrerController extends AbstractController
                         $reste = new LivrerReste($livrer, $commande, $produit, $commandeproduit->getQuantite(), $quantitelivrer, $commande->getUser());
                         $reste->setSession($commandeproduit->getSession());
                         if($commande->getCredit() == true) $reste->setCredit(true) ;
+                        if($commandeproduit->getTva() != 0) $reste->setTva(true);
 
                         $em->persist($reste);
                         $livrer->setReste(true);
@@ -872,6 +873,7 @@ class LivrerController extends AbstractController
                     $reste = new LivrerReste($livrer, $commande, $produit, $commandeproduit->getQuantite(), 0, $commande->getUser());
                     $reste->setSession($commandeproduit->getSession());
                     if($commande->getCredit() == true) $reste->setCredit(true) ;
+                    if($commandeproduit->getTva() != 0) $reste->setTva(true);
 
                     $em->persist($reste);
                     $livrer->setReste(true);

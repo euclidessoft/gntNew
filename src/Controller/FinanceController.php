@@ -2685,21 +2685,22 @@ class FinanceController extends AbstractController
             foreach($commandes as $commande){
                 if($commande->getLivraison() == true){
                 $vente = $vente + $commande->getMontant();
-                }else{// commande non livrer
+                }
+              /*  else{// commande non livrer
                     $commandeproduits = $this->entityManager->getRepository(CommandeProduit::class)->findBy(['commande' => $commande->getId()]);
                     foreach($commandeproduits as $commandeproduit){
                         $stoc = $this->entityManager->getRepository(Stock::class)->findOneBy(['produit' => $commandeproduit->getProduit()->getId()]);
                         if(!empty($stoc)){
                             $quant = $stoc->getQuantite() - $commandeproduit->getQuantite();
                             if($quant < 0){
-                                $autreschrages += -1 * $commandeproduit->getSession() * $quant;// -1 * la quatite 
+                                // $autreschrages += -1 * $commandeproduit->getSession() * $quant;// -1 * la quatite 
                             }
                         }else{
-                            $autreschrages += $commandeproduit->getQuantite() * $commandeproduit->getSession();
+                            // $autreschrages += $commandeproduit->getQuantite() * $commandeproduit->getSession();
                         }
                     }
                     
-                }
+                }*/
             }          
 
             foreach($credits as $credit){// ne tient pas compte des versement
@@ -2722,23 +2723,27 @@ class FinanceController extends AbstractController
             
 
             $restes = $this->entityManager->getRepository(LivrerReste::class)->findBy(['credit' => false]);
-            foreach($restes as $reste){    
-                $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
-                if(!empty($stoc)){
-                    $quant = $stoc->getQuantite() - ($reste->getQuantite() - $reste->getQuantitelivre());
-                    if($quant < 0){
-                        $autreschrages += -1 * $$reste->getProduit()->getSession() * $quant;// -1 * la quatite 
-                    }
-                }else{
-                    $autreschrages += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getPrix();
-                }
+            foreach($restes as $reste){// on enleve les reste a livrer sur le montant des vente 
+                // $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
+                $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
+                $tva = 0;
+                // if(!empty($stoc)){
+                //     $quant = $stoc->getQuantite() - $restelivrer;
+                //     if($quant < 0){
+                //         $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+                //         $vente -= -1 * $reste->getSession() * $quant + $tva;// -1 * la quatite 
+                //     }
+                // }else{
+                    $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+                    $vente -= $restelivrer * $reste->getSession() + $tva;
+                // } 
             }
             
-            $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
+   /*         $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
             foreach($avoirs as $avoir){    
                 $autreschrages += $avoir->getMontant(); 
             }
-
+*/
             // $credits = $repository->findBy(['paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]);// achat a credit
             // foreach($credits as $commande){
             //     $vente = $vente + $commande->getMontant();
@@ -3194,8 +3199,9 @@ class FinanceController extends AbstractController
             $avanceclient = 0;
             $commandes = $this->entityManager->getRepository(Commande::class)->findBy(['suivi' => true, 'payer' => true, 'livraison' => false ]);// achat deja paye
             foreach($commandes as $commande){
+                  $avanceclient += $commande->getMontant();
                
-                    $commandeproduits = $this->entityManager->getRepository(CommandeProduit::class)->findBy(['commande' => $commande->getId()]);
+              /*      $commandeproduits = $this->entityManager->getRepository(CommandeProduit::class)->findBy(['commande' => $commande->getId()]);
                     foreach($commandeproduits as $commandeproduit){
                         $stoc = $this->entityManager->getRepository(Stock::class)->findOneBy(['produit' => $commandeproduit->getProduit()->getId()]);
                         if(!empty($stoc)){
@@ -3208,7 +3214,7 @@ class FinanceController extends AbstractController
                         }else{
                             $avanceclient += $commandeproduit->getQuantite() * $commandeproduit->getSession();
                         }
-                    }
+                    }*/
                     
                 
             }
@@ -3216,15 +3222,19 @@ class FinanceController extends AbstractController
 
             $restes = $this->entityManager->getRepository(LivrerReste::class)->findBy(['credit' => false]);
             foreach($restes as $reste){    
-                $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
-                if(!empty($stoc)){
-                    $quant = $stoc->getQuantite() - ($reste->getQuantite() - $reste->getQuantitelivre());
-                    if($quant < 0){
-                        $avanceclient += -1 * $$reste->getProduit()->getPght() * $quant;// -1 * la quatite 
-                    }
-                }else{
-                    $avanceclient += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getPght();
-                }    
+            //    $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
+                $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
+                $tva = 0;
+                // if(!empty($stoc)){
+                //     $quant = $stoc->getQuantite() - $restelivrer;
+                //     if($quant < 0){
+                //         $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+                //         $avanceclient += -1 * $reste->getSession() * $quant + $tva;// -1 * la quatite 
+                //     }
+                // }else{
+                    $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+                    $avanceclient += $restelivrer * $reste->getSession() + $tva;
+                // }    
             }
 
 
@@ -3358,7 +3368,8 @@ class FinanceController extends AbstractController
             foreach($commandes as $commande){
                 if($commande->getLivraison() == true){
                 $vente = $vente + $commande->getMontant();
-                }else{// commande non livrer
+                }
+              /*  else{// commande non livrer
                     $commandeproduits = $this->entityManager->getRepository(CommandeProduit::class)->findBy(['commande' => $commande->getId()]);
                     foreach($commandeproduits as $commandeproduit){
                         $stoc = $this->entityManager->getRepository(Stock::class)->findOneBy(['produit' => $commandeproduit->getProduit()->getId()]);
@@ -3372,7 +3383,7 @@ class FinanceController extends AbstractController
                         }
                     }
                     
-                }
+                }*/
             } 
 
             //  foreach($commandes as $commande){
@@ -3414,23 +3425,27 @@ class FinanceController extends AbstractController
                 
             // }
 
-            $restes = $this->entityManager->getRepository(LivrerReste::class)->findby(['credit' => false]);
-            foreach($restes as $reste){    
-                $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
-                if(!empty($stoc)){
-                    $quant = $stoc->getQuantite() - ($reste->getQuantite() - $reste->getQuantitelivre());
-                    if($quant < 0){
-                        $charge += -1 * $reste->getProduit()->getSession() * $quant;// -1 * la quatite 
-                    }
-                }else{
-                    $charge += ($reste->getQuantite() - $reste->getQuantitelivre()) * $reste->getProduit()->getPrix();
-                }    
+         $restes = $this->entityManager->getRepository(LivrerReste::class)->findBy(['credit' => false]);
+            foreach($restes as $reste){// on enleve les reste a livrer sur le montant des vente 
+               // $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
+                $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
+                $tva = 0;
+                // if(!empty($stoc)){
+                //     $quant = $stoc->getQuantite() - $restelivrer;
+                //     if($quant < 0){
+                //         $reste->Tva() == true ? $tva = $restelivrer * 0.1925: null;
+                //         $vente -= -1 * $reste->getSession() * $quant + $tva;// -1 * la quatite 
+                //     }
+                // }else{
+                    $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+                    $vente -= $restelivrer * $reste->getSession() + $tva;
+                // } 
             }
             
-            $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
+     /*       $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
             foreach($avoirs as $avoir){    
                 $charge += $avoir->getMontant(); 
-            }
+            }*/
 
             // $credits = $repository->findBy(['paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]);// achat a credit
             // foreach($credits as $commande){

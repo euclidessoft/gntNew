@@ -82,13 +82,13 @@
             {% set ad = fond + brevet + developpement + autresincorp %}
             {% set adr = amortfond + amortbrevet + amortdeveloppement + amortautresincorp %}
             {% set add = ad - adr %}
-            {{ ad != 0 ? ad|number_format(0, '', ' ') : ''}}
+            {{ ad != 0 ? ad|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </th>
             <th>
-            {{ adr != 0 ? adr|number_format(0, '', ' ') : ''}}
+            {{ adr != 0 ? adr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </th>
             <th>
-            {{ add != 0 ? add|number_format(0, '', ' ') : ''}}
+            {{ add != 0 ? add|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </th>
             <th></th>
             </tr>
@@ -101,13 +101,13 @@
             {% set ae = developpement %}
             {% set aer = amortdeveloppement %}
             {% set aed = ae - aer %}
-            {{ ae != 0 ? ae|number_format(0, '', ' ') : ''}}
+            {{ ae != 0 ? ae|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ aer != 0 ? aer|number_format(0, '', ' ') : ''}}
+            {{ aer != 0 ? aer|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ aed != 0 ? aed|number_format(0, '', ' ') : ''}}
+            {{ aed != 0 ? aed|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             </tr>
             <tr>
@@ -117,13 +117,13 @@
             <td>
             {% set af = brevet %}
             {% set afr = amortbrevet %}
-            {{ af != 0 ? af|number_format(0, '', ' ') : ''}}
+            {{ af != 0 ? af|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ afr != 0 ? afr|number_format(0, '', ' ') : ''}}
+            {{ afr != 0 ? afr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ (af-afr) != 0 ? (af-afr)|number_format(0, '', ' ') : ''}}
+            {{ (af-afr) != 0 ? (af-afr)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -135,13 +135,13 @@
             {%  set ag = fond %}
             {%  set agr = amortfond %}
             {%  set agd = ag - agr %}
-            {{ ag != 0 ? ag|number_format(0, '', ' ') : ''}}
+            {{ ag != 0 ? ag|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ agr != 0 ? agr|number_format(0, '', ' ') : ''}}
+            {{ agr != 0 ? agr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ agd != 0 ? agd|number_format(0, '', ' ') : ''}}
+            {{ agd != 0 ? agd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -153,13 +153,13 @@
             {% set ah = autresincorp %}
             {% set ahr = amortautresincorp %}
             {% set ahd = ah - ahr %}
-            {{ ah != 0 ? ah|number_format(0, '', ' ') : ''}}
+            {{ ah != 0 ? ah|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-             {{ ahr != 0 ? ahr|number_format(0, '', ' ') : ''}}
+             {{ ahr != 0 ? ahr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-             {{ ahd != 0 ? ahd|number_format(0, '', ' ') : ''}}
+             {{ ahd != 0 ? ahd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -169,15 +169,15 @@
             <th>3</th>
             <th>
             {% set ai =  terrain + mobilier + transport + batiment + amenagement %}
-            {{ ai != 0 ? ai|number_format(0, '', ' ') : ''}}
+            {{ ai != 0 ? ai|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </th>
             <th>
             {% set air =  amortterrain + amortmobilier + amorttransport + amortbatiment + amortamenagement  %}
-            {{ air != 0 ? air|number_format(0, '', ' ') : ''}}
+            {{ air != 0 ? air|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </th>
             <th>
             {% set aid = ai - air %}
-            {{ aid != 0 ? aid|number_format(0, '', ' ') : ''}}
+            {{ aid != 0 ? aid|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </th>
             <td></td>
             </tr>
@@ -189,10 +189,10 @@
             <td>
             {% set aj = terrain %}
             {% set ajr = 0 %}
-             {{ aj != 0 ? aj|number_format(0, '', ' ') : ''}}
+             {{ aj != 0 ? aj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
-            <td> {{ aj != 0 ? aj|number_format(0, '', ' ') : ''}}</td>
+            <td> {{ aj != 0 ? aj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</td>
             <td></td>
             </tr>
             <tr>
@@ -204,13 +204,13 @@
             {% set ak = batiment %}
             {% set akr = amortbatiment %}
             {% set akd = ak - akr %}
-            {{ ak != 0 ? ak|number_format(0, '', ' ') : ''}}
+            {{ ak != 0 ? ak|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ akr != 0 ? akr|number_format(0, '', ' ') : ''}}
+            {{ akr != 0 ? akr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ akd != 0 ? akd|number_format(0, '', ' ') : ''}}
+            {{ akd != 0 ? akd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -222,13 +222,13 @@
              {% set al = amenagement %}
             {% set alr = amortamenagement %}
             {% set ald = al - alr %}
-             {{ al != 0 ? al|number_format(0, '', ' ') : ''}}
+             {{ al != 0 ? al|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-             {{ alr != 0 ? alr|number_format(0, '', ' ') : ''}}
+             {{ alr != 0 ? alr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ ald != 0 ? ald|number_format(0, '', ' ') : ''}}
+            {{ ald != 0 ? ald|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -238,15 +238,15 @@
             <td></td>
                 <td>
                 {% set am = mobilier %}
-                {{ am != 0 ? am|number_format(0, '', ' ') : ''}}
+                {{ am != 0 ? am|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
                 </td>
             <td>
             {% set amr = amortmobilier %}
-            {{ amr != 0 ? amr|number_format(0, '', ' ') : ''}}
+            {{ amr != 0 ? amr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
             {% set amd = am - amr %}
-            {{ amd != 0 ? amd|number_format(0, '', ' ') : ''}}
+            {{ amd != 0 ? amd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -258,13 +258,13 @@
              {% set  an = transport %}
             {% set  anr = amorttransport %}
             {% set  andd = an - anr %}
-            {{ an != 0 ? an|number_format(0, '', ' ') : ''}}
+            {{ an != 0 ? an|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-           {{ anr != 0 ? anr|number_format(0, '', ' ') : ''}}
+           {{ anr != 0 ? anr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ andd != 0 ? andd|number_format(0, '', ' ') : ''}}
+            {{ andd != 0 ? andd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -276,13 +276,13 @@
             {% set  ap = avanceimmo %}
             {% set  apr = amortavanceimmo %}
             {% set  apd = ap - apr %}
-            {{ ap != 0 ? ap|number_format(0, '', ' ') : ''}}
+            {{ ap != 0 ? ap|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ apr != 0 ? apr|number_format(0, '', ' ') : ''}}
+            {{ apr != 0 ? apr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ apd != 0 ? apd|number_format(0, '', ' ') : ''}}
+            {{ apd != 0 ? apd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -294,14 +294,14 @@
              {% set aq = titre + autresimmofin %}
             {% set aqr = amorttitre + amortautresimmofin %}
             {% set aqd = aq - aqr %}
-            {{ aq != 0 ? aq|number_format(0, '', ' ') : ''}}
+            {{ aq != 0 ? aq|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
            
-            {{ aqr != 0 ? aqr|number_format(0, '', ' ') : ''}}
+            {{ aqr != 0 ? aqr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ aqd != 0 ? aqd|number_format(0, '', ' ') : ''}}
+            {{ aqd != 0 ? aqd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -313,14 +313,14 @@
              {% set ar = titre  %}
             {% set arr = amorttitre %}
             {% set ard = ar - arr %}
-            {{ ar != 0 ? ar|number_format(0, '', ' ') : ''}}
+            {{ ar != 0 ? ar|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
            
-            {{ arr != 0 ? arr|number_format(0, '', ' ') : ''}}
+            {{ arr != 0 ? arr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ ard != 0 ? ard|number_format(0, '', ' ') : ''}}
+            {{ ard != 0 ? ard|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -332,14 +332,14 @@
             {% set ass = autresimmofin %}
             {% set assr = amortautresimmofin %}
             {% set assd = ass - assr %}
-            {{ ass != 0 ? ass|number_format(0, '', ' ') : ''}}
+            {{ ass != 0 ? ass|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
            
-            {{ assr != 0 ? assr|number_format(0, '', ' ') : ''}}
+            {{ assr != 0 ? assr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td>
-            {{ assd != 0 ? assd|number_format(0, '', ' ') : ''}}
+            {{ assd != 0 ? assd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -350,10 +350,10 @@
             <tH>
             {% set az =  ad + ai + ap + aq %}
             {% set azr =  adr + air + apr + aqr %}
-            {{ az|number_format(0, '', ' ')}}
+            {{ az|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
-            <tH>{{ azr|number_format(0, '', ' ')}}</tH>
-            <tH>{{ (az - azr)|number_format(0, '', ' ')}}</tH>
+            <tH>{{ azr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}</tH>
+            <tH>{{ (az - azr)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}</tH>
             <tH></tH>
             </tr>
             <tr>
@@ -371,7 +371,7 @@
             <td>5</td>
             <td>
             {% set ba = hao %}
-            {{ ba != 0 ? ba|number_format(0, '', ' ') : ''}}
+            {{ ba != 0 ? ba|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td></td>
@@ -384,11 +384,11 @@
             <td>
             {% set bb = stock %}
             {% set bbr = 0 %}
-            {{ bb != 0 ? bb|number_format(0, '', ' ') : ''}}
+            {{ bb != 0 ? bb|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-                {{ bb != 0 ? bb|number_format(0, '', ' ') : ''}}
+                {{ bb != 0 ? bb|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -399,11 +399,11 @@
             <td>
             {% set bg = creance + avancefournisseur + autrecreance %}
             {% set bgr = 0 %}
-            {{ bg != 0 ? bg|number_format(0, '', ' ') : ''}}
+            {{ bg != 0 ? bg|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-            {{ bg != 0 ? bg|number_format(0, '', ' ') : ''}}
+            {{ bg != 0 ? bg|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -413,11 +413,11 @@
             <td>17</td>
             <td>
             {% set bh = avancefournisseur %}
-           {{ bh != 0 ? bh|number_format(0, '', ' ') : ''}}
+           {{ bh != 0 ? bh|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-            {{ bh != 0 ? bh|number_format(0, '', ' ') : ''}}
+            {{ bh != 0 ? bh|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -427,11 +427,11 @@
             <td>7</td>
             <td>
             {% set bi = creance %}
-            {{ bi != 0 ? bi|number_format(0, '', ' ') : ''}}
+            {{ bi != 0 ? bi|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-            {{ bi != 0 ? bi|number_format(0, '', ' ') : ''}}
+            {{ bi != 0 ? bi|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -441,11 +441,11 @@
             <td>8</td>
             <td>
             {% set bj = autrecreance %}
-             {{ bj != 0 ? bj|number_format(0, '', ' ') : ''}}
+             {{ bj != 0 ? bj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-            {{ bj != 0 ? bj|number_format(0, '', ' ') : ''}}
+            {{ bj != 0 ? bj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -456,11 +456,11 @@
             <tH>
             {% set bk = bb + bg %}
             {% set bkr = 0 %}
-            {{ bk != 0 ? bk|number_format(0, '', ' ') : ''}}
+            {{ bk != 0 ? bk|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </tH>
             <tH>-</tH>
             <tH>
-                {{ bk != 0 ? bk|number_format(0, '', ' ') : ''}}
+                {{ bk != 0 ? bk|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </tH>
             <tH></tH>
             </tr>
@@ -470,11 +470,11 @@
             <td>9</td>
             <td>
             {% set bq = placement %}
-             {{ bq != 0 ? bq|number_format(0, '', ' ') : ''}}
+             {{ bq != 0 ? bq|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-             {{ bq != 0 ? bq|number_format(0, '', ' ') : ''}}
+             {{ bq != 0 ? bq|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -484,11 +484,11 @@
             <td>10</td>
             <td>
             {% set br = encaisser %}
-             {{ br != 0 ? br|number_format(0, '', ' ') : ''}}
+             {{ br != 0 ? br|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-             {{ br != 0 ? br|number_format(0, '', ' ') : ''}}
+             {{ br != 0 ? br|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -499,11 +499,11 @@
             <td>
             {% set bs = solde %}
             {% set bsr = 0 %}
-            {{ bs|number_format(0, '', ' ')}}
+            {{ bs|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </td>
             <td></td>
             <td>
-            {{ bs|number_format(0, '', ' ')}}
+            {{ bs|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </td>
             <td></td>
             </tr>
@@ -513,11 +513,11 @@
             <td></td>
             <tH>
             {% set bt = bq + br + bs %}
-            {{ bt|number_format(0, '', ' ')}}
+            {{ bt|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
             <tH></tH>
             <tH>
-            {{ bt|number_format(0, '', ' ')}}
+            {{ bt|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
             <tH></tH>
             </tr>
@@ -527,11 +527,11 @@
             <td>12</td>
             <td>
             {% set bu = ecartactif %}
-            {{ bu != 0 ? bu|number_format(0, '', ' ') : ''}}
+            {{ bu != 0 ? bu|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             <td>
-             {{ bu != 0 ? bu|number_format(0, '', ' ') : ''}}
+             {{ bu != 0 ? bu|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
             <td></td>
             </tr>
@@ -543,13 +543,13 @@
             <tH>
             {% set bz = az + ba + bk + bt + bu %}
             {% set bzr = azr  %}
-                {{ bz|number_format(0, '', ' ')}}
+                {{ bz|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
             <tH>
-                {{ bzr|number_format(0, '', ' ')}}
+                {{ bzr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
             <tH>
-                {{ (bz - bzr)|number_format(0, '', ' ')}}
+                {{ (bz - bzr)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
             <tH></tH>
             </tr>
@@ -584,7 +584,7 @@
             </td>
             <th>
                 {% set ca = capital %}
-                 {{ ca|number_format(0, '', ' ')}}                                                                
+                 {{ ca|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
             <td>
 
@@ -704,7 +704,7 @@
             </td>
             <th>
                 {% set cj = resultat %}
-                {{ cj|number_format(0, '', ' ')}}                                                                
+                {{ cj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
             <td>
 
@@ -756,7 +756,7 @@
             </td>
             <th>
                 {% set cp = ca + cb + cd + ce + cf + cg + ch + cj + cl + cm %}
-                {{ cp|number_format(0, '', ' ')}}                                                                
+                {{ cp|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
             <td>
 
@@ -774,7 +774,7 @@
             </td>
             <td>
                 {% set da = pret + detteavoir %}
-                 {{ da != 0 ? da|number_format(0, '', ' ') : ''}}                                                                 
+                 {{ da != 0 ? da|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                 
             </td>
             <td>
             
@@ -792,7 +792,7 @@
             </td>
             <td>
                 {% set db = 0 %}
-                 {{ db != 0 ? db|number_format(0, '', ' ') : ''}}                                                                
+                 {{ db != 0 ? db|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -810,7 +810,7 @@
             </td>
             <td>
                 {% set dc = 0 %}
-                 {{ dc != 0 ? dc|number_format(0, '', ' ') : ''}}                                                                  
+                 {{ dc != 0 ? dc|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                  
             </td>
             <td>
             
@@ -828,7 +828,7 @@
             </td>
             <th>
                 {% set dd = da + db + dc %}
-                 {{ dd != 0 ? dd|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dd != 0 ? dd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </th>
             <td>
 
@@ -846,7 +846,7 @@
             </td>
             <th>
                 {% set df = cp + dd %}
-                {{ df|number_format(0, '', ' ')}}                                                                
+                {{ df|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
             <td>
 
@@ -864,7 +864,7 @@
             </td>
             <td>
                 {% set dh = 0 %}
-                 {{ dh != 0 ? dh|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dh != 0 ? dh|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -882,7 +882,7 @@
             </td>
             <td>
                 {% set di = avanceclient %}
-                 {{ di != 0 ? di|number_format(0, '', ' ') : ''}}                                                                
+                 {{ di != 0 ? di|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -900,7 +900,7 @@
             </td>
             <td>
                 {% set dj = dettefournisseur %}
-                 {{ dj != 0 ? dj|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dj != 0 ? dj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -918,7 +918,7 @@
             </td>
             <td>
                 {% set dk = 0 %}
-                 {{ dk != 0 ? dk|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dk != 0 ? dk|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -936,7 +936,7 @@
             </td>
             <td>
                 {% set dm = 0 %}
-                 {{ dm != 0 ? dm|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dm != 0 ? dm|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -954,7 +954,7 @@
             </td>
             <td>
                 {% set dn = 0 %}
-                 {{ dn != 0 ? dn|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dn != 0 ? dn|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -972,7 +972,7 @@
             </td>
             <th>
                 {% set dp = dh + di + dj + dk + dm + dn %}
-                {{ dp|number_format(0, '', ' ')}}                                                                
+                {{ dp|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
             <td>
 
@@ -990,7 +990,7 @@
             </td>
             <td>
                 {% set dq = 0 %}
-                 {{ dq != 0 ? dq|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dq != 0 ? dq|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -1008,7 +1008,7 @@
             </td>
             <td>
                 {% set dr = 0 %}
-                 {{ dr != 0 ? dr|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dr != 0 ? dr|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -1026,7 +1026,7 @@
             </td>
             <th>
                 {% set dt = dq + dr %}
-                 {{ dt != 0 ? dt|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dt != 0 ? dt|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </th>
             <td>
 
@@ -1044,7 +1044,7 @@
             </td>
             <td>
                 {% set dv = 0 %}
-                 {{ dv != 0 ? dv|number_format(0, '', ' ') : ''}}                                                                
+                 {{ dv != 0 ? dv|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
             
@@ -1062,7 +1062,7 @@
             </td>
             <th>
                 {% set dz = df + dp + dt + dv %}
-                 {{ dz|number_format(0, '', ' ') }}                                                                
+                 {{ dz|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}                                                                
             </th>
             <td>
 

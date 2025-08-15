@@ -277,7 +277,7 @@
                     function () {
                         if($(this).val() != '') {
                             commande = Number(commande) + Number($(this).val());
-                            chaine = chaine + "#" + id + "/" +$(this).attr("id") + "/"+Number($(this).val());
+                            chaine = chaine + "#" + id + "{/" +$(this).attr("id") + "{/"+Number($(this).val());
                         }
                     });
                 if(commande == quantite &&  stock > 0){
