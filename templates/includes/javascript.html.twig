@@ -142,7 +142,6 @@
 
     function addinPanier(id, mincom, st) {// fonction pour ajouter un produit dans le panier
         var reg = new RegExp("^[0-9]+$");
-        alert(st +"-->"+$('#text' + id).val()+">" )
         if (reg.test($('#text' + id).val()) && mincom <= $('#text' + id).val()) {
           //  if (st >= $('#text' + id).val()) {
                 $('#btn' + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
