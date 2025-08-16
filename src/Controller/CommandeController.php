@@ -200,7 +200,10 @@ class CommandeController extends AbstractController
                     }
                     $this->entityManager->persist($commandeproduit);
                 }
-                $montant = $montant + $tva - $reduction;
+                $acompte = $montant * 0.02;
+                $montant = $montant + $acompte + $tva - $reduction;
+                // $montant = $montant + $tva - $reduction;
+                $commande->setAcompte(round($acompte,2));
                 $commande->setMontant(round($montant,2));
                 $commande->setTva(round($tva,2));
                 $commande->setReduction(round($reduction,2));
@@ -249,6 +252,7 @@ class CommandeController extends AbstractController
             $em = $this->entityManager;
             $commande = new Commande();
             $commande->setAdmin($this->getUser());
+            $commande->setNumerofacture(count($this->getUser()->getCommandes()) + 1);
 
             if (count($panier) >= 1) {
                 $client = $em->getRepository(User::class)->find($session->get('client'));
@@ -288,7 +292,10 @@ class CommandeController extends AbstractController
                     }
                     $this->entityManager->persist($commandeproduit);
                 }
-                $montant = $montant + $tva - $reduction;
+                $acompte = $montant * 0.02;
+                $montant = $montant + $acompte + $tva - $reduction;
+                // $montant = $montant + $tva - $reduction;
+                $commande->setAcompte(round($acompte,2));
                 $commande->setMontant(round($montant,2));
                 $commande->setTva(round($tva,2));
                 $commande->setReduction(round($reduction,2));

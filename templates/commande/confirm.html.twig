@@ -111,12 +111,22 @@
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
             </tr>
+            <tr>
+                <td colspan="7" class="text-end">
+                    {{ "Prélèvement (2%)"|trans }}
+                </td>
+                <td class="text-center">
+                {% set acompte = total * 0.02 %}
+                    <span id="">{{ acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <input type="hidden" value="{{ tva }}" id="totaltamp"/>
+                </td>
+            </tr>
             <tr class="text-bold">
                 <td colspan="7" class="text-end text-bold">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="text-center">
-                    <span id="total" class="text-bold">{{ (total +tva-reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id="total" class="text-bold">{{ (total + acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                     <input type="hidden" value="{{ total }}" id="totaltamp"/>
                 </td>
             </tr>

@@ -75,34 +75,51 @@
                 </div>
             </div>
         </div>
-        <h3 class="text-center text-bold text-uppercase my-5">
-            {{ 'Facture'|trans }}
+        <h3 class="text-center text-bold text-uppercase mt-4">
+            {{ ' Facture'|trans }}
         </h3>
+        <h6 class="text-center text-bold text-uppercase mb-3">
+        {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
+        </h6>
+        <div class="row">
 
-        <div class="row justify-content-end">
             <div class="col-lg-12">
-                <table class="table table-success-light text-center table-bordered">
+                <table class="table table-success-light table-bordered table-hover table-striped">
                     <thead>
                     <tr>
-                        <th>{{ 'Numero Commande'|trans }}</th>
+                        <th>{{ 'N° Commande'|trans }}</th>
                         <th>{{ 'Date'|trans }}</th>
                         <th>{{ 'Client'|trans }}</th>
-                        <th>{{ 'Date de Paiement'|trans }}</th>
-                        <th>{{ 'Type'|trans }}</th>
-                        <th>{{ 'Banque'|trans }}</th>
-                        <th>{{ 'Numero'|trans }}</th>
+                         <th>{{ 'NIU'|trans }}</th>
+                        {% if commande.paiement %}
+                            <th>{{ 'Date de Paiement'|trans }}</th>
+                            <th>{{ 'Type'|trans }}</th>
+                        {% else %}
+                            <th>{{ 'Type'|trans }}</th>
+                        {% endif %}
+
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>{{ commande.id }}</td>
-                        <td>{{ commande.date|date('d/m/Y') }}</td>
-                        <td>{{ commande.user.nom }}</td>
-                        <td>{{ commande.paiement ? paiement.date|date('d/m/Y') : '' }}</td>
-                        <td>{{ commande.paiement ? commande.paiement.type : '' }}</td>
-                        <td>{#{{ commande.paiement.banque ? commande.paiement.banque.nom : '' }}#}</td>
-                        <td>{#{{ commande.paiement ? commande.paiement.numero : '' }}#}</td>
-                    </tr>
+                    <td data-label="Numero Commande">{{ commande.id }}</td>
+                    <td data-label="Date">{{ commande.date|date('d/m/Y') }}</td>
+                    <td data-label="Client">{{ commande.user.nom }}</td>
+                     <td>{{ commande.user.niu }}</td>
+                    {% if commande.paiement %}
+                        <td data-label="Date de Paiement">{{ commande.paiement ? paiement.date|date('d/m/Y') : '' }}</td>
+                        <td data-label="Type">
+                            {% if commande.paiement.type == "Espece" %}
+                                Espèce
+                            {% else %}
+                                {{ commande.paiement ? commande.paiement.type : '' }} :
+                                {{ commande.paiement.banque ? commande.paiement.banque.nom : '' }} <br>
+                                N°: {{ commande.paiement ? commande.paiement.numero : '' }}
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td data-label="Credit">Credit </td>
+                    {% endif %}
+
                     </tbody>
                 </table>
             </div>
@@ -110,7 +127,7 @@
         {% set total=0 %}
         {% set reduction=0 %}
         {% set tva=0 %}
-        <table class="table table-success-light text-center table-bordered mt-5 w-100">
+        <table class="table table-success-light text-center table-bordered mt-2 w-100">
             <thead>
             <tr>
                 <th>Cod Prod</th>
@@ -206,13 +223,23 @@
             </tr>
 
             <tr>
-                <td colspan="7" class="text-end fw-bold">
+                <td colspan="7" class="text-end">
+                    {{ "Prélèvement (2%)"|trans }}
+                </td>
+                <td class="text-center">
+               
+                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
+                    <input type="hidden" value="{{ tva }}" id="totaltamp"/>
+                </td>
+            </tr>
+
+            <tr class="text-bold">
+                <td colspan="7" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>
-                <td>
-                    <span class="fw-bold text nowrap">{{ (total+ tva -reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                    <span id="total" class="text-nowrap"
-                          style="display:none;">{{ (total+ tva -reduction)|number_format(2, '.' , '') }}</span>
+                <td class="montant">
+                    <span class="text-nowrap">{{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                          <span id="total" class="text-nowrap" style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
                 </td>
             </tr>
         </table>

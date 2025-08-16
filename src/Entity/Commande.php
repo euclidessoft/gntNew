@@ -75,6 +75,9 @@ class Commande
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Numerofacture = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $acompte = null;
+
     /**
      * Constructor
      */
@@ -342,6 +345,18 @@ class Commande
     public function setNumerofacture(?string $Numerofacture): static
     {
         $this->Numerofacture = $Numerofacture;
+
+        return $this;
+    }
+
+    public function getAcompte(): ?float
+    {
+        return $this->acompte;
+    }
+
+    public function setAcompte(?float $acompte): static
+    {
+        $this->acompte = $acompte;
 
         return $this;
     }
