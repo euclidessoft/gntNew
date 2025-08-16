@@ -77,23 +77,37 @@
                         <div class="col-12 text">
                             info@gntpharma-cameroun.com / www.gnt-pharma.com
                         </div>
+                    <div class="col-12 text">
+                        RCCM N° : RC/YAE/2023/M/105 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIU : M122217881373Q
+                    </div>
+                    <div class="col-12 text">
+                       SARL au CAPITAL de 100 000 000 F CFA
+                    </div>
                         <!-- <div class="col-12 text-bold">
 
                 </div> -->
                     </div>
                 </div>
             </div>
-            <h3 class="text-center text-bold text-uppercase my-5">
-                {{ 'Facture'|trans }}
-            </h3>
+           <h3 class="text-center text-bold text-uppercase mt-5">
+            {{ ' Facture'|trans }}
+        </h3>
+        <h6 class="text-center text-bold text-uppercase mb-3">
+        {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
+        </h6>
 
-            <div class="row justify-content-end">
-                <div class="col-6">
+            <div class="row">
+            <div class="col-12">
                     <table class="table table-success-light text-center table-bordered">
                         <thead>
                             <tr>
-                                <th>{{ 'Numero Commande'|trans }}</th>
                                 <th>{{ 'Date Commande'|trans }}</th>
+                                <th>{{ 'Numero Commande'|trans }}</th>
+                        <th>{{ 'NIU'|trans }}</th>
+                        {% if commande.credit == 1 and commande.payer == 0 %}
+                        <th>{{ 'date d\'echeance de paiement'|trans }}</th>
+                        {% endif %}
+
                                 <th>{{ 'Status Commande'|trans }}</th>
                                 {#            <th>Date de Livraison</th>#}
                             </tr>
@@ -101,6 +115,10 @@
                         <tbody>
                             <td>{{ commande.date|date('d/m/Y') }}</td>
                             <td>{{ commande.id }}</td>
+                        <td>{{ commande.user.niu }}</td>
+                         {% if commande.credit == 1 and commande.payer == 0 %}
+                             <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
+                        {% endif %}
                             <td>
                                 {% if commande.payer == 0 %}
                                 <span class="text-danger">Non payée</span>

@@ -18,6 +18,10 @@ class ClientType extends AbstractType
             ->add('phone')
             ->add('adresse')
             ->add('password')
+            ->add('niu')
+            ->add('boitepostale')
+            ->add('rccm')
+            ->add('siteweb')
         ;
     }
 

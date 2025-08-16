@@ -13,7 +13,7 @@ class Commande
     #[ORM\OneToMany(targetEntity:"App\Entity\Versement", mappedBy:"commande") ]
     private $versements;
 
-    #[ORM\ManyToOne(targetEntity:"App\Entity\Client") ]
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Client", inversedBy:"commandes") ]
      #[ORM\JoinColumn(nullable:false) ]
     private $user;
 
@@ -72,6 +72,9 @@ class Commande
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: CommandeProduit::class)]
     private Collection $commandeProduits;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Numerofacture = null;
+
     /**
      * Constructor
      */
@@ -88,6 +91,7 @@ class Commande
         $this->versement = 0;
         $this->payer = false;
         $this->livrer = false;
+        $this->Numerofacture = false;
     }
 
 
@@ -326,6 +330,18 @@ class Commande
     public function setDateefectlivraison(?\DateTimeInterface $dateefectlivraison): self
     {
         $this->dateefectlivraison = $dateefectlivraison;
+
+        return $this;
+    }
+
+    public function getNumerofacture(): ?string
+    {
+        return str_pad($this->Numerofacture, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function setNumerofacture(?string $Numerofacture): static
+    {
+        $this->Numerofacture = $Numerofacture;
 
         return $this;
     }

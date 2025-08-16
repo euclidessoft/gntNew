@@ -34,6 +34,38 @@
                 {{ form_widget(form.phone, {'attr' : { 'placeholder' : 'Telephone *'}}) }}
             </div>
         </div>
+        <div class="col-md-6">
+            {{ form_errors(form.niu) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_errors(form.boitepostale) }}
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-4">
+                {{ form_widget(form.niu, {'attr' : { 'placeholder' : 'NIU *'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-4">
+                {{ form_widget(form.boitepostale, {'attr' : { 'placeholder' : 'Boite Postale *'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            {{ form_errors(form.rccm) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_errors(form.siteweb) }}
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-4">
+                {{ form_widget(form.rccm, {'attr' : { 'placeholder' : 'RCCM *'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-4">
+                {{ form_widget(form.siteweb, {'attr' : { 'placeholder' : 'Site web *'}}) }}
+            </div>
+        </div>
         <div class="col-md-12">
             {{ form_errors(form.adresse) }}
         </div>
