@@ -182,9 +182,10 @@
     <div class="container mt-4 mb-5 py-3 fond-7">
         <div class="centrer">
             <div class="row">
+            <div class="col-12">
                 {% if commande.suivi == 1 %}
 
-                <button type="button" class="btn btn-success"
+                <button type="button" class="btn btn-success me-5"
                         data-bs-toggle="modal" data-bs-target="#modal"
                         id="btn">
                     <i class="fa fa-money-bill"></i>
@@ -192,11 +193,17 @@
                 </button>
                 {% else %}
                     <a id="valid" onclick="load('valid')" href="{{ path('commande_panier_valider_credit', {'commande': commande.id}) }}" type="button"
-                       class="btn btn-success">
+                       class="btn btn-success me-5">
                         <i class="fa-solid fa-sack-dollar"></i>
                         {{' Valider Crédit'|trans }}
                     </a>
                 {% endif %}
+
+                 <a id="print" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
+                   class="btn btn-success-light float-end">
+                    <i class="fa fa-print"></i>
+                    {{ "Imprimer"|trans }}
+                </a>
 
 
                 <div class="modal fade" id="modal" tabindex="-1" tabindex="-1" aria-labelledby="" aria-hidden="true"
@@ -261,6 +268,7 @@
 
 
 
+            </div>
             </div>
         </div>
     </div>

@@ -191,13 +191,21 @@
     <div class="container mt-4 mb-5 py-3 fond-7">
         <div class="centrer">
             <div class="row">
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal" id="btn">
+            <div class="col-12">
+                <button type="button" class="btn btn-success me-5" data-bs-toggle="modal" data-bs-target="#modal" id="btn">
                     <i class="fa fa-money-bill"></i>
                     {{ 'Paiement'|trans }}
                 </button>
 
+                 <a id="print" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
+                   class="btn btn-success-light float-end">
+                    <i class="fa fa-print"></i>
+                    {{ "Imprimer"|trans }}
+                </a>
 
 
+
+            </div>
             </div>
         </div>
     </div>

@@ -173,6 +173,9 @@
             <tr class="text-bold">
                 <td colspan="7" class="text-end">
                     {{ "Net à payer"|trans }}
+                    <div class="col-12 text">
+                        RCCM N° : RC/YAE/2023/M/105 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIU : M122217881373Q
+                    </div>
                 </td>
                 <td class="montant">
                     <span class="text-nowrap">{{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
