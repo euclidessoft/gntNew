@@ -252,10 +252,11 @@ class CommandeController extends AbstractController
             $em = $this->entityManager;
             $commande = new Commande();
             $commande->setAdmin($this->getUser());
-            $commande->setNumerofacture(count($this->getUser()->getCommandes()) + 1);
 
             if (count($panier) >= 1) {
                 $client = $em->getRepository(User::class)->find($session->get('client'));
+
+            $commande->setNumerofacture(count($client->getCommandes()) + 1);
                 $session->remove('client');
                 $commande->setUser($client);
                 if ($session->get("credit")) {
