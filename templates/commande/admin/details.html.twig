@@ -219,10 +219,18 @@
                     <td colspan="2" class="text-end text-nowrap">{{ 'Total versement'|trans }}</td>
                     <td>{{ commande.versement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 </tr>
-                <tr>
-                    <td colspan="2" class="text-end">{{ 'Montant Restant'|trans }}</td>
-                    <td>{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                </tr>
+                {% if commande.escompte is null %}
+                    <tr>
+                        <td colspan="2" class="text-end">{{ 'Montant Restant'|trans }}</td>
+                        <td>{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="text-end">{{ 'Escompte de reglement'|trans }}</td>
+                        <td>{{commande.escompte}}%</td>
+                    </tr>
+                {% endif %}
+                
                 </tbody>
             </table>
         </div>

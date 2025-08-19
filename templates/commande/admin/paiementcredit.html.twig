@@ -212,7 +212,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                    {{'Règlement'|trans}}
+                                    {{'Règlement'|trans}}  <span id="valeur"></span>
                                 </h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close">
@@ -226,7 +226,7 @@
                                 <div class="form-group mt-2">
                                     {{ form_errors(form.montant) }}
                                     <div class="input-group">
-                                        {{ form_widget(form.montant, {'label':false, 'attr' : {'id' : 'nombre', 'placeholder':'Montant', 'value': total+ tva -reduction}}) }}
+                                        {{ form_widget(form.montant, {'label':false, 'attr' : {'id' : 'nombre', 'placeholder':'Montant', 'value': total + commande.acompte + tva - reduction}}) }}
                                         <input type="hidden" id="tamp"/>
                                         <input type="hidden" id="tamp1"/>
                                         <div class="input-group-append">
@@ -245,6 +245,9 @@
                                         {{ form_row(form.numero, {'label':false, 'attr' : {'placeholder':'Numéro'}}) }}
                                     </div>
                                 </div>
+                                {% if "Now"|date('Y-m-d') < commande.date|date_modify('+10 days')|date('Y-m-d') %}
+                                <input type="number" class="form-control mt-3" name="escompte" id="escompte" placeholder="Escompte de reglement" label="Escompte de reglement" onkeyup="valeur({{total + commande.acompte + tva - reduction}})" />
+                                {% endif %}
                                 {{ form_rest(form) }}
 
                                 {# fin paiement#}
@@ -299,10 +302,17 @@
     <td colspan="2" class="text-end text-nowrap">{{'Total règlement'|trans}}</td>
     <td>{{ commande.versement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
 </tr>
-            <tr>
-    <td colspan="2" class="text-end">{{ 'Montant Restant'|trans }}</td>
-    <td>{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-</tr>
+    {% if commande.escompte is null %}
+                    <tr>
+                        <td colspan="2" class="text-end">{{ 'Montant Restant'|trans }}</td>
+                        <td>{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="text-end">{{ 'Escompte de reglement'|trans }}</td>
+                        <td>{{commande.escompte}}%</td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
@@ -312,7 +322,8 @@
     <script>
         function number() {
             var reg = new RegExp("^[0-9]{3,9}$");
-            if (reg.test($('#versement_montant').val()) ) {
+            {# if (reg.test($('#versement_montant').val()) ) { #}
+            if ($('#versement_montant').val() != 0 ) {
                 if ($('#versement_type option:selected').val() == 'Cheque' || $('#versement_type option:selected').val() == 'Virement') {
                     if ($('#versement_montant').val() != '' && $('#versement_type').val() != '') {
                         $('#ajouter').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
@@ -335,6 +346,11 @@
                 $('#versement').hide();
                 $('#versement_numero').val();
             }
+        }
+        function valeur(montant){
+            
+            var val = Number(montant) - Number(montant) * $("#escompte").val() / 100;
+            $("#valeur").html(val.toFixed(2));
         }
     </script>
 {% endblock %}

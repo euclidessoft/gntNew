@@ -78,6 +78,9 @@ class Commande
     #[ORM\Column(nullable: true)]
     private ?float $acompte = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $escompte = null;
+
     /**
      * Constructor
      */
@@ -357,6 +360,18 @@ class Commande
     public function setAcompte(?float $acompte): static
     {
         $this->acompte = $acompte;
+
+        return $this;
+    }
+
+    public function getEscompte(): ?string
+    {
+        return $this->escompte;
+    }
+
+    public function setEscompte(?string $escompte): static
+    {
+        $this->escompte = $escompte;
 
         return $this;
     }

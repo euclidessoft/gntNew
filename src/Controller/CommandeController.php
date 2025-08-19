@@ -1092,15 +1092,21 @@ class CommandeController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                $escompte = 0;
+               
+                null !== $request->request->get('escompte') ? $escompte = $request->request->get('escompte') : null;
+                
+                $escompte = round($commande->getMontant() * $escompte / 100, 2);
 
                 $entityManager = $this->entityManager;
                 if ($versement->getMontant() <= ($commande->getMontant() - $commande->getVersement())) {
                     $commande->setVersement($commande->getVersement() + $versement->getMontant());// MAJ versement
-                    if ($commande->getVersement() == $commande->getMontant()) {
+                    if ($commande->getVersement() == $commande->getMontant()- $escompte) {
 
                         $commande->setPayer(true);
+                        $commande->setEscompte($request->request->get('escompte'));
                         $credit->setTva($commande->getTva());
-                         if($commande->getTva != 0){
+                         if($commande->getTva() != 0){
                              $tva = new Ecriture();
                             $tva->setComptecredit("443100");
                             $tva->setLibellecomptecredit("TVA");
