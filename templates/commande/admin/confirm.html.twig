@@ -119,6 +119,8 @@
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
             </tr>
+            {% set acompte = 0 %}
+            {% if prelevement == true %}
             <tr>
                 <td colspan="7" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
@@ -129,6 +131,7 @@
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
             </tr>
+            {% endif %}
             <tr class="text-bold">
                 <td colspan="7" class="text-end text-bold">
                     {{ "Net à payer"|trans }}

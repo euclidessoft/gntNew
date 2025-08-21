@@ -100,6 +100,7 @@ class CommandeController extends AbstractController
 
             if ($form->isSubmitted()) {
                 $session->set('extranet', $commande->getUser()->getId());
+                $session->set('prelevement', $commande->getUser()->getPrelevement());
                 $this->redirectToRoute('commande_panier_choix_paiement_extranet', ['commande' => 0]);
             }
 
@@ -200,10 +201,14 @@ class CommandeController extends AbstractController
                     }
                     $this->entityManager->persist($commandeproduit);
                 }
-                $acompte = $montant * 0.02;
-                $montant = $montant + $acompte + $tva - $reduction;
-                // $montant = $montant + $tva - $reduction;
-                $commande->setAcompte(round($acompte,2));
+                 if($this->getUser()->isPrelevement()){
+                    $acompte = $montant * 0.02;
+                    $montant = $montant + $acompte + $tva - $reduction;
+                    // $montant = $montant + $tva - $reduction;
+                    $commande->setAcompte(round($acompte,2));
+                }else{
+                    $montant = $montant + $tva - $reduction; 
+                }
                 $commande->setMontant(round($montant,2));
                 $commande->setTva(round($tva,2));
                 $commande->setReduction(round($reduction,2));
@@ -293,10 +298,15 @@ class CommandeController extends AbstractController
                     }
                     $this->entityManager->persist($commandeproduit);
                 }
-                $acompte = $montant * 0.02;
-                $montant = $montant + $acompte + $tva - $reduction;
-                // $montant = $montant + $tva - $reduction;
-                $commande->setAcompte(round($acompte,2));
+                if($client->isPrelevement()){
+                    $acompte = $montant * 0.02;
+                    $montant = $montant + $acompte + $tva - $reduction;
+                    // $montant = $montant + $tva - $reduction;
+                    $commande->setAcompte(round($acompte,2));
+                }else{
+                    $montant = $montant + $tva - $reduction; 
+                }
+                $session->remove('prelevement');
                 $commande->setMontant(round($montant,2));
                 $commande->setTva(round($tva,2));
                 $commande->setReduction(round($reduction,2));
@@ -737,6 +747,7 @@ class CommandeController extends AbstractController
             $response = $this->render('commande/admin/confirm.html.twig', [
 //                'produits' => $produitRepository->findAll(),
                 'panier' => $dataPanier,
+                'prelevement' => $session->get('prelevement'),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

@@ -31,6 +31,9 @@ class Client extends User implements UserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $siteweb = null;
 
+    #[ORM\Column]
+    private ?bool $prelevement = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -130,4 +133,16 @@ class Client extends User implements UserInterface
     // public function getNumCommande(){
     //     return str_pad(count($this->commandes), 4, '0', STR_PAD_LEFT);
     // }
+
+    public function isPrelevement(): ?bool
+    {
+        return $this->prelevement;
+    }
+
+    public function setPrelevement(bool $prelevement): static
+    {
+        $this->prelevement = $prelevement;
+
+        return $this;
+    }
 }

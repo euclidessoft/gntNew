@@ -110,7 +110,9 @@
                     <span id="">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
-            </tr>
+            </tr> 
+            {% set acompte = 0 %}
+            {% if app.user.prelevement == true %}
             <tr>
                 <td colspan="7" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
@@ -121,6 +123,7 @@
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
             </tr>
+            {% endif %}
             <tr class="text-bold">
                 <td colspan="7" class="text-end text-bold">
                     {{ "Net à payer"|trans }}
