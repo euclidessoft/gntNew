@@ -22,6 +22,7 @@ class ClientType extends AbstractType
             ->add('boitepostale')
             ->add('rccm')
             ->add('siteweb')
+            ->add('prelevement')
         ;
     }
 

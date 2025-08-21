@@ -10,7 +10,7 @@
 {% block client %}active{% endblock %}
 {% block all_client %}active{% endblock %}
 {% block body %}
-    <div class="container mt-4 fond-7">
+    <div class="container-fluid mt-4 fond-7">
         <h4 class="text-bold mt-3 mb-5">
             <i class="fa fa-user-tag"></i>
             {{ "Tous les clients"|trans }}
@@ -44,6 +44,7 @@
                 <th>{{ 'Téléphone'|trans }}</th>
                 <th>{{ 'Email'|trans }}</th>
                 <th>{{ 'Adresse'|trans }}</th>
+                <th>{{ 'Prelevement'|trans }}</th>
                 <th class="text-center">
                     {{ 'Statut'|trans }}
                 </th>
@@ -59,6 +60,7 @@
                 <td data-label="Téléphone">{{ client.phone }}</td>
                 <td data-label="Email">{{ client.email }}</td>
                 <td data-label="Adresse">{{ client.adresse }}</td>
+                <td data-label="Prelevement"  class="text-center">{{ client.prelevement ? 'OUI' : 'NON' }}</td>
                 <td data-label="Statut" class="text-center" id="statut{{ client.id }}">
                     {% if client.enabled == 1 %}
                         {{ "Actif"|trans }}
