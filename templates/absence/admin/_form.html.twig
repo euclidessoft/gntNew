@@ -1,7 +1,7 @@
-{{ form_start(form, {'attr': {'id': 'form'}}) }}
+{{ form_start(form, {'attr': {'id': 'form', 'class':'w-100'}}) }}
 
-<div class="col-lg-5 mt-5 fond-7 pb-5 pt-3 px-5">
-    <h4 class="text-bold mt-3 mb-5">
+<div class="col fond-7 mb-5 p-5">
+    <h4 class="text-bold mb-5">
         <i class="fa fa-user-slash"></i>
         {{ 'Nouvelle absence'|trans }}
     </h4>
@@ -15,8 +15,8 @@
 
     <div class="row">
 
-        <div class="col-12 mb-4">
-            {{ form_row(form.employe, {'attr': {'placeholder': 'Sélectionnez un employé *'}, 'label': false}) }}
+        <div class="col mb-4">
+            {{ form_row(form.employe, {'attr': {'placeholder': 'Sélectionnez un employé *'}, 'label': 'Sélectionnez un employé *'}) }}
         </div>
 
         {{ form_rest(form) }}

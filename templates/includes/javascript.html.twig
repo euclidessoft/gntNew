@@ -130,11 +130,11 @@
                     }
                 });
             } else {
-                var mess = "{{ 'Maximum disponible  ' }}" + st;
+                var mess = "{{ 'Maximum disponible'|trans }}" + " " + st;
                 alert(mess);
             }
         } else {
-            var mess = "{{ 'Commande minimun '|trans}}" + mincom;
+            var mess = "{{ 'Commande minimun'|trans}}" + " " + mincom;
             alert(mess);
         }
 
@@ -164,11 +164,11 @@
                     }
                 });
             /* } else {
-                var mess = "{{ 'Maximum disponible  ' }}" + st;
+                var mess = "{{ 'Maximum disponible'|trans }}" + " " + st;
                 alert(mess);
             } */
         } else {
-            var mess = "{{ 'Commande minimun '|trans}}" + mincom;
+            var mess = "{{ 'Commande minimun'|trans}}" + " " + mincom;
             alert(mess);
         }
 
@@ -199,7 +199,7 @@
                 alert("{{'Aucune modification'|trans}}");
             }
         } else {
-            var mess = "{{ 'Commande minimun '|trans}}" + mincom;
+            var mess = "{{ 'Commande minimun'|trans}}" + " " + mincom;
             alert(mess);
         }
 
@@ -709,7 +709,7 @@
                 reste = nb % 10;
                 if(  nb < 71 || (nb > 79 && nb < 91)  ){
                     if(  reste == 0  ) numberToLetter = Dizaine(quotient * 10);
-                    if(  reste == 1  ) numberToLetter = Dizaine(quotient * 10) + "-et-" + Unite(reste);
+                    if(  reste == 1  ) numberToLetter = Dizaine(quotient * 10) + "{{ '-et-'|trans }}" + Unite(reste);
                     if(  reste > 1   ) numberToLetter = Dizaine(quotient * 10) + "-" + Unite(reste);
                 }else numberToLetter = Dizaine((quotient - 1) * 10) + "-" + Dizaine(10 + reste);
             }else numberToLetter = Dizaine(nb);

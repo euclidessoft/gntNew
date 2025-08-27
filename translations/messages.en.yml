@@ -374,15 +374,16 @@ Prix Public *: Public price
 Commande minimum *: Min order
 Fabriquant *: Manufacturer
 Téléphone *: Phone number
-description *: description
+description *: description *
+Description *: Description *
 Adresse *: address
 Soumis à la TVA: Subject to VAT
-nombre U.G: number U.G
+nombre U.G: number F.U
 nombre acheté: number purchased
 types de promotion *: promotion types
 Unités Gratuites: Free Units
-Réduction: Reduction
-Commande Extranet: Extranet ordering
+Réduction: Discount
+Commande Extranet: Extranet order
 Liste de produits: List of products
 Modifier cet article: Modify this item
 veillez bien renseigner la quantité: Make sure you fill in the quantity
@@ -593,7 +594,7 @@ Suivant: Next
 Dernier: Last
 activer pour trier la colonne par ordre croissant: activate to sort column in ascending order
 activer pour trier la colonne par ordre décroissant: activate to sort column in descending order
-Commande minimun : Minimum order
+Commande minimun: Minimum order
 Veuillez saisir tous les champs: Please enter all fields
 Candidature enregistrée avec succée: Successful application
 Approvisionnement réussie: Successful procurement
@@ -669,3 +670,99 @@ millions: million
 un milliard: one billion
 milliards: billion
 francs CFA TTC: CFA francs incl. VAT
+Nouvelle absence: New absence
+Mes affaires: My stuffs
+Mon contrat: My contract
+Mes fiches de paie: My pay slips
+Mes primes et avantages: My bonuses and benefits
+Primes et avantages: Bonuses and benefits
+Mes permissions: My permissions
+Permissions: Permissions
+Mes absences: My absences
+Absences: Absences
+Mes demande d'explication: My explanation requests
+Demande d'explication: Explanation requests
+Mes sanctions: My sanctions
+Sanctions: Sanctions
+Mes performances: My performances
+Performance: Performance
+Finance: Finance
+Balance: Balance
+Journalière: Daily
+A une date: On a specific date
+Dans un interval: Within an interval
+Transfert des fonds: Fund transfers
+Caisse => Banque: Cash => Bank
+Banque => Caisse: Bank => Cash
+Tous les transferts: All transfers
+Remboursements: Refund
+Financements: Financing
+Tous les remboursements: All refunds
+Dépense: Expense
+Créer une dépense: Create expense
+Toutes les dépenses: All expenses
+Lignes de dépense: Expense lines
+Paiement fournisseur: Supplier payment
+Factures impayées: Outstanding invoices
+Tous les paiements: All payments
+Salaire: Salary
+Paiement acompte: Salary Advance
+Paiement Salaire: Salary payment
+Financement: Financing
+Journal: Journal
+Comptable: Accountant
+Repartition Resultat: Profit distribution
+Compte Resultat: Income statement
+Bilan: Balance sheet
+Amortissement: Amortization
+Affectation de résultat: Result allocation
+Commande et Promotion: Orders and Promotions
+Toutes les Commandes: All Orders
+Produits et Stock: Products and Stock
+Produits & Stock: Products & Stock
+Client et Réclamation: Customers and Complaints
+Client & Suivi: Customers
+Employés: Employees
+Contrat: Contracts
+Planning des congés: Leave Planning
+Configuration: Configuration
+Critere: Criteria
+Acompte: Advance Request
+Heure Supplementaire: Overtime Hours
+Fiche de paie: Payslip
+Fiche de paie à valider: Payslip approval pending
+Historique des paiements: Payment history
+Communication: Communication
+Messagerie interne: Internal messaging
+Notes de service: Memos & Circulars
+Événements: Events
+Catalogue des formations: Training catalog
+Formations en cours: Current training
+Compétences acquises: Acquired skills
+Fournisseur: Supplier
+Plan comptable: Accounting plan
+A propos de l'application: About application
+Tous droits réservés: All rights reserved
+Protégée par: Protected by
+La loi sur les droits d'auteurs: Copyright law
+La loi sur la propriété intellectuelle: Intellectual property law
+Balance journalière: Daily balance
+Quelle balance voulez-vous ?: Which balance do you want?
+Caisse: Cash Account
+Tous: All
+Sélectionnez un employé *: Select an employee *
+Selectionnez l'employé: Select employee
+Vérifier la quantité saisie: Check quantity entered
+Aucune modification: No changes
+invalide: Invalid entry
+Aucun élèment enregistré: No items saved
+Trier par ordre croissant: Sort Ascending
+Trier par ordre décroissant: Sort Descending
+messages: messages
+Affichage de message: Message display
+Affichage de message 0 à 0 sur 0 message: Message display 0 to 0 of 0 messages
+message au total: total messages
+Aucun message à afficher: No messages to display
+Aucun message: No messages
+Selectionnez Client *: Select customer *
+-et-: -and-

@@ -1385,6 +1385,10 @@ select#transfert_date_time_minute {
     .main {
         margin-top: 5rem;
     }
+
+    .v-center {
+        height: 80vh !important;
+    }
 }
 
 @media print {
@@ -2576,4 +2580,15 @@ textarea.rows-10 {
 }
 .w-95 {
     width: 95%;
+}
+
+.vh-90 {
+    height: 90vh !important;
+}
+
+.v-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
 }

@@ -25,6 +25,10 @@
                 {{ message|trans }}
             </div>
         {% endfor %}
+        <a href="{{ path('stock_retour') }}" class="btn btn-green my-4">
+            <i class="fa fa-plus"></i>
+            {{ "Nouveau"|trans }}
+        </a>
         <table class="table table-success-light table-bordered table-hover table-striped w-100 mt-4" id="liste">
             <thead>
             <tr>
