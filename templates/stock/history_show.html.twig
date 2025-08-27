@@ -80,7 +80,7 @@
                                          <button type="button"
                                                  id="btn{{ retourproduit.produit.id }}{{ retourproduit.lot }}"
                                                  class="btn btn-success mt-2"
-                                                 onclick="retour_reapprovisionner({{ retour.id }}, {{ retourproduit.produit.id }},{{ retourproduit.lot }},'{{ retourproduit.peremption|date('Y-m-d') }}',{{ retourproduit.quantite }})"><i
+                                                 onclick="retour_reapprovisionner({{ retour.id }}, {{ retourproduit.produit.id }},'{{ retourproduit.lot }}','{{ retourproduit.peremption|date('Y-m-d') }}',{{ retourproduit.quantite }})"><i
                                                      class="fas fa-warehouse"></i><i
                                                      class="fa fa-arrow-left"></i>  {{ "Réapprovisionner"|trans }}</button>
                                         </span>
@@ -117,7 +117,7 @@
                                                                     <div class="row">
                                                                         <button type="button"
                                                                                 class="btn btn-shadow btn-green me-3"
-                                                                                onclick="retour_valider_remboursement({{ retour.id }}, {{ retourproduit.produit.id }},{{ retourproduit.lot }})">
+                                                                                onclick="retour_valider_remboursement({{ retour.id }}, {{ retourproduit.produit.id }},'{{ retourproduit.lot }}')">
                                                                             &emsp;
                                                                             <i class="fa fa-truck-fast fa-lg"></i>
                                                                             {{ 'Nouvelle livraison'|trans }}
@@ -125,7 +125,7 @@
                                                                         </button>
                                                                         <button type="button"
                                                                                 class="btn btn-shadow btn-primary"
-                                                                                onclick="retour_creer_avoir({{ retourproduit.id }}, {{ retourproduit.produit.id }},{{ retourproduit.lot }})">
+                                                                                onclick="retour_creer_avoir({{ retourproduit.id }}, {{ retourproduit.produit.id }},'{{ retourproduit.lot }}')">
                                                                             &emsp;
                                                                             <i class="fa fa-sack-dollar fa-lg"></i>
                                                                             {{ 'Créer avoir'|trans }}

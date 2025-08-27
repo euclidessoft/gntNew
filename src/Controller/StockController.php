@@ -366,7 +366,7 @@ class StockController extends AbstractController
             $retour = $em->getRepository(RetourProduit::class)->findOneBy(['retour' => $retour, 'produit' => $produit, 'lot' => $lot]);
             $retour->setReapprovisionner(true);
             $em->persist($retour);
-            $approvisionnenment = new Approvisionnement($produit, $approvisionner, $quantite);
+            $approvisionnenment = new Approvisionnement($produit, $approvisionner, $quantite, null);
             $approvisionnenment->setLot($lot);
             $approvisionnenment->setPeremption(new \DateTime($peremption));
             $stock = $em->getRepository(Stock::class)->findOneBy(['produit' => $produit, 'lot' => $lot]);

@@ -37,7 +37,7 @@ class RetourProduit
     #[ORM\Column(type:"string", length:255) ]
     private $motif;
 
-    #[ORM\Column(type:"integer") ]
+    #[ORM\Column(type:"string", length:255) ]
     private $lot;
 
     #[ORM\Column(type:"date") ]
@@ -147,12 +147,12 @@ class RetourProduit
         return $this;
     }
 
-    public function getLot(): ?int
+    public function getLot(): ?string
     {
         return $this->lot;
     }
 
-    public function setLot(int $lot): self
+    public function setLot(string $lot): self
     {
         $this->lot = $lot;
 

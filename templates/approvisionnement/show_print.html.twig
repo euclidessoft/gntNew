@@ -110,6 +110,7 @@
             <tr>
                 <th>{{ 'Code Produit'|trans }}</th>
                 <th class="text-start">{{ 'Désignation'|trans }}</th>
+                <th>{{'Fournisseur'|trans}}</th>
                 <th>{{'N° Lot'|trans}}</th>
                 <th>{{'Péremption'|trans}}</th>
                 {#            <th>etat stosk</th>#}
@@ -121,6 +122,7 @@
                 <tr>
                     <td> {{ approvisionnement.produit.id }} </td>
                     <td class="text-start">{{ approvisionnement.produit.desigantion }} </td>
+                    <td>{{ approvisionnement.fournisseur ? approvisionnement.fournisseur.designation : 'Retour Produit'}} </td>
                     <td>{{ approvisionnement.lot }} </td>
                     <td>{{ approvisionnement.peremption|date('d/m/Y') }} </td>
                     {#                <td> {{ approvisionnement.produit.stock }} </td>#}
@@ -128,6 +130,9 @@
 
 
                 </tr>
+
+            {% else %}
+              
             {% endfor %}
             </tbody>
         </table>

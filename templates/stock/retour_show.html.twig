@@ -122,7 +122,7 @@
 
                                                 <button type="button" class="btn btn-success ms-3"
                                                         id="ajouter{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}"
-                                                        onclick="ajouter({{ commandeproduit.produit.id }}, {{ commandeproduit.quantitelivrer }}, {{ commandeproduit.lot }}, '{{ commandeproduit.peremption|date('Y-m-d') }}')">
+                                                        onclick="ajouter({{ commandeproduit.produit.id }}, {{ commandeproduit.quantitelivrer }}, '{{ commandeproduit.lot }}', '{{ commandeproduit.peremption|date('Y-m-d') }}')">
                                                     <i class="fa fa-plus"></i> Ajouter
                                                 </button>
                                                 <div id="modification{{ commandeproduit.produit.id }}"></div>
@@ -205,6 +205,7 @@
 {% block scripts %}
     <script>
         function ajouter(produit, quantite,lot,peremption) {
+            
 
             var quant = $("#quant" + produit+lot);
             var motif = $("#motif" + produit+lot);
@@ -224,7 +225,7 @@
                                     "                        <td>" + peremption + "</td>\n" +
                                     "                        <td class='text-center'><span id='changequantite" + produit + "'>" + data['quantite'] + "</span></td>" +
                                     "<td rowspan='2'><button class='btn btn-danger me-2 mb-2'\n" +
-                                    "                                   title='Supprimer cet article' onclick='retour_supprim(" + produit +  lot + ")'>\n" +
+                                    "                                   title='Supprimer cet article' onclick=\"retour_supprim(" + produit + "'"+ lot + "')\">\n" +
                                     "                                    <i class='fa fa-trash'></i>\n" +
                                     "                                </button></td></tr>" +
                                     "<tr id='trs" + produit + lot +"'>\n" +
@@ -243,7 +244,7 @@
                             }
                         },
                         error: function () {
-                            alert("{{ "La requête n'a pas abouti"|trans }}");
+                            alert("{{ 'La requête n\'a pas abouti'|trans }}");
                         }
                     });
                 } else {
@@ -277,7 +278,7 @@
                         }
                     },
                     error: function () {
-                        alert("{{ "La requête n'a pas abouti"|trans }}");
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
                     }
                 });
             }
@@ -297,7 +298,7 @@
                         }
                     },
                     error: function () {
-                        alert("{{ "La requête n'a pas abouti"|trans }}");
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
                     }
                 });
             }

@@ -39,13 +39,13 @@ class Approvisionnement
     #[ORM\ManyToOne(targetEntity:Fournisseur::class, inversedBy:"approvisionnements") ]
     private $fournisseur;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable : true)]
     private ?float $pght = null;
 
     /**
      * Constructor
      */
-    public function __construct(Produit $produit, Approvisionner $approvisionner, $quantite, Fournisseur $fournisseur)
+    public function __construct(Produit $produit, Approvisionner $approvisionner, $quantite, $fournisseur)
     {
         $this->date = new \Datetime();
         $this->produit = $produit;
