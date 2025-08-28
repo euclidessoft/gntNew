@@ -2662,7 +2662,7 @@ class FinanceController extends AbstractController
             $impotettaxe = 0;
             $autresachats = 0;
 
-            $approvisionnements = $Approrepository->findAll();
+            $approvisionnements = $Approrepository->resultat();
 
             // variation stock produit
             $variation = 0;
@@ -2684,7 +2684,7 @@ class FinanceController extends AbstractController
 
             foreach($commandes as $commande){
                 if($commande->getLivraison() == true){
-                $vente = $vente + $commande->getMontant();
+                $vente = $vente + $commande->getMontant() - $commande->getAcompte();
                 }
               /*  else{// commande non livrer
                     $commandeproduits = $this->entityManager->getRepository(CommandeProduit::class)->findBy(['commande' => $commande->getId()]);
@@ -2710,7 +2710,7 @@ class FinanceController extends AbstractController
                     $rest += ($reste->getQuantite()- $reste->getQuantitelivre()) * $reste->getSession();
                 }
              
-                $vente = $vente + $credit->getMontant() - $rest;
+                $vente = $vente + $credit->getMontant() - $rest - $credit->getAcompte() - $commande->getEscompte();
                 
             }          
 
@@ -3347,7 +3347,7 @@ class FinanceController extends AbstractController
             $reapprro = 0;
             $chargepersonnel= 0;
             $charge = 0;
-            $approvisionnements = $this->entityManager->getRepository(Approvisionnement::class)->findAll();
+            $approvisionnements = $this->entityManager->getRepository(Approvisionnement::class)->resultat();
 
             // variation stock produit
             $variation = 0;
@@ -3367,7 +3367,7 @@ class FinanceController extends AbstractController
 
             foreach($commandes as $commande){
                 if($commande->getLivraison() == true){
-                $vente = $vente + $commande->getMontant();
+                $vente = $vente + $commande->getMontant() - $commande->getAcompte();
                 }
               /*  else{// commande non livrer
                     $commandeproduits = $this->entityManager->getRepository(CommandeProduit::class)->findBy(['commande' => $commande->getId()]);
@@ -3413,7 +3413,7 @@ class FinanceController extends AbstractController
                 foreach($restes as $reste){
                     $rest += ($reste->getQuantite()- $reste->getQuantitelivre()) * $reste->getSession();
                 }
-                $vente = $vente + $credit->getMontant() - $rest;
+                $vente = $vente + $credit->getMontant() - $rest - $credit->getAcompte() - $commande->getEscompte();
                 
             }
             

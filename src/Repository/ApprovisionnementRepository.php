@@ -38,6 +38,14 @@ class ApprovisionnementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function resultat()
+    {
+         $query = $this->createQueryBuilder('a');
+           return $query->andWhere('a.fournisseur IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Approvisionnement[] Returns an array of Approvisionnement objects
     //  */
