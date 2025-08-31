@@ -7,24 +7,24 @@ namespace Composer\Autoload;
 class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
 {
     public static $files = array (
+        '9d2b9fc6db0f153a0a149fefb182415e' => __DIR__ . '/..' . '/symfony/polyfill-php84/bootstrap.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '6a47392539ca2329373e0d33e1dba053' => __DIR__ . '/..' . '/symfony/polyfill-intl-icu/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
-        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
-        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
-        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
-        'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
+        '92c8763cd6170fce6fcfe7e26b4e8c10' => __DIR__ . '/..' . '/symfony/phpunit-bridge/bootstrap.php',
         '89efb1254ef2d1c5d80096acd12c4098' => __DIR__ . '/..' . '/twig/twig/src/Resources/core.php',
         'ffecb95d45175fd40f75be8a23b34f90' => __DIR__ . '/..' . '/twig/twig/src/Resources/debug.php',
         'c7baa00073ee9c61edf148c51917cfb4' => __DIR__ . '/..' . '/twig/twig/src/Resources/escaper.php',
         'f844ccf1d25df8663951193c3fc307c8' => __DIR__ . '/..' . '/twig/twig/src/Resources/string_loader.php',
-        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
-        '9d2b9fc6db0f153a0a149fefb182415e' => __DIR__ . '/..' . '/symfony/polyfill-php84/bootstrap.php',
-        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
-        '6a47392539ca2329373e0d33e1dba053' => __DIR__ . '/..' . '/symfony/polyfill-intl-icu/bootstrap.php',
-        'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
-        '92c8763cd6170fce6fcfe7e26b4e8c10' => __DIR__ . '/..' . '/symfony/phpunit-bridge/bootstrap.php',
+        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
+        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
+        'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
+        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
     );
 
@@ -84,6 +84,7 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
             'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\' => 44,
             'Symfony\\Component\\Messenger\\' => 28,
             'Symfony\\Component\\Mailer\\' => 25,
+            'Symfony\\Component\\Lock\\' => 23,
             'Symfony\\Component\\Intl\\' => 23,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
@@ -116,6 +117,42 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
             'Symfony\\Bridge\\PhpUnit\\' => 23,
             'Symfony\\Bridge\\Monolog\\' => 23,
             'Symfony\\Bridge\\Doctrine\\' => 24,
+            'SchedulerBundle\\Worker\\ExecutionPolicy\\' => 39,
+            'SchedulerBundle\\Worker\\' => 23,
+            'SchedulerBundle\\Transport\\Configuration\\' => 40,
+            'SchedulerBundle\\Transport\\' => 26,
+            'SchedulerBundle\\Test\\Constraint\\Scheduler\\' => 42,
+            'SchedulerBundle\\Test\\Constraint\\Probe\\' => 38,
+            'SchedulerBundle\\Test\\Constraint\\' => 32,
+            'SchedulerBundle\\Test\\' => 21,
+            'SchedulerBundle\\Task\\Builder\\' => 29,
+            'SchedulerBundle\\Task\\' => 21,
+            'SchedulerBundle\\TaskBag\\' => 24,
+            'SchedulerBundle\\Serializer\\' => 27,
+            'SchedulerBundle\\SchedulePolicy\\' => 31,
+            'SchedulerBundle\\Runner\\' => 23,
+            'SchedulerBundle\\Probe\\' => 22,
+            'SchedulerBundle\\Pool\\Configuration\\' => 35,
+            'SchedulerBundle\\Pool\\' => 21,
+            'SchedulerBundle\\Middleware\\' => 27,
+            'SchedulerBundle\\Messenger\\' => 26,
+            'SchedulerBundle\\Fiber\\' => 22,
+            'SchedulerBundle\\Expression\\' => 27,
+            'SchedulerBundle\\Exception\\' => 26,
+            'SchedulerBundle\\Event\\' => 22,
+            'SchedulerBundle\\EventListener\\' => 30,
+            'SchedulerBundle\\DependencyInjection\\' => 36,
+            'SchedulerBundle\\DataCollector\\' => 30,
+            'SchedulerBundle\\Command\\' => 24,
+            'SchedulerBundle\\Bridge\\Redis\\Transport\\' => 39,
+            'SchedulerBundle\\Bridge\\Redis\\' => 29,
+            'SchedulerBundle\\Bridge\\Doctrine\\Transport\\Configuration\\' => 56,
+            'SchedulerBundle\\Bridge\\Doctrine\\Transport\\' => 42,
+            'SchedulerBundle\\Bridge\\Doctrine\\SchemaListener\\' => 47,
+            'SchedulerBundle\\Bridge\\Doctrine\\Connection\\' => 43,
+            'SchedulerBundle\\Bridge\\Doctrine\\' => 32,
+            'SchedulerBundle\\Bridge\\' => 23,
+            'SchedulerBundle\\' => 16,
         ),
         'P' => 
         array (
@@ -157,6 +194,7 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         ),
         'C' => 
         array (
+            'Cron\\' => 5,
             'Composer\\Semver\\' => 16,
         ),
         'A' => 
@@ -169,9 +207,9 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
     public static $prefixDirsPsr4 = array (
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'Webmozart\\Assert\\' => 
         array (
@@ -345,6 +383,10 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         array (
             0 => __DIR__ . '/..' . '/symfony/mailer',
         ),
+        'Symfony\\Component\\Lock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/lock',
+        ),
         'Symfony\\Component\\Intl\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/intl',
@@ -473,6 +515,150 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         array (
             0 => __DIR__ . '/..' . '/symfony/doctrine-bridge',
         ),
+        'SchedulerBundle\\Worker\\ExecutionPolicy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Worker/ExecutionPolicy',
+        ),
+        'SchedulerBundle\\Worker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Worker',
+        ),
+        'SchedulerBundle\\Transport\\Configuration\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Transport/Configuration',
+        ),
+        'SchedulerBundle\\Transport\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Transport',
+        ),
+        'SchedulerBundle\\Test\\Constraint\\Scheduler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Test/Constraint/Scheduler',
+        ),
+        'SchedulerBundle\\Test\\Constraint\\Probe\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Test/Constraint/Probe',
+        ),
+        'SchedulerBundle\\Test\\Constraint\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Test/Constraint',
+        ),
+        'SchedulerBundle\\Test\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Test',
+        ),
+        'SchedulerBundle\\Task\\Builder\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Task/Builder',
+        ),
+        'SchedulerBundle\\Task\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Task',
+        ),
+        'SchedulerBundle\\TaskBag\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/TaskBag',
+        ),
+        'SchedulerBundle\\Serializer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Serializer',
+        ),
+        'SchedulerBundle\\SchedulePolicy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/SchedulePolicy',
+        ),
+        'SchedulerBundle\\Runner\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Runner',
+        ),
+        'SchedulerBundle\\Probe\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Probe',
+        ),
+        'SchedulerBundle\\Pool\\Configuration\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Pool/Configuration',
+        ),
+        'SchedulerBundle\\Pool\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Pool',
+        ),
+        'SchedulerBundle\\Middleware\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Middleware',
+        ),
+        'SchedulerBundle\\Messenger\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Messenger',
+        ),
+        'SchedulerBundle\\Fiber\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Fiber',
+        ),
+        'SchedulerBundle\\Expression\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Expression',
+        ),
+        'SchedulerBundle\\Exception\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Exception',
+        ),
+        'SchedulerBundle\\Event\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Event',
+        ),
+        'SchedulerBundle\\EventListener\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/EventListener',
+        ),
+        'SchedulerBundle\\DependencyInjection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/DependencyInjection',
+        ),
+        'SchedulerBundle\\DataCollector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/DataCollector',
+        ),
+        'SchedulerBundle\\Command\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Command',
+        ),
+        'SchedulerBundle\\Bridge\\Redis\\Transport\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge/Redis/Transport',
+        ),
+        'SchedulerBundle\\Bridge\\Redis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge/Redis',
+        ),
+        'SchedulerBundle\\Bridge\\Doctrine\\Transport\\Configuration\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge/Doctrine/Transport/Configuration',
+        ),
+        'SchedulerBundle\\Bridge\\Doctrine\\Transport\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge/Doctrine/Transport',
+        ),
+        'SchedulerBundle\\Bridge\\Doctrine\\SchemaListener\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge/Doctrine/SchemaListener',
+        ),
+        'SchedulerBundle\\Bridge\\Doctrine\\Connection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge/Doctrine/Connection',
+        ),
+        'SchedulerBundle\\Bridge\\Doctrine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge/Doctrine',
+        ),
+        'SchedulerBundle\\Bridge\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src/Bridge',
+        ),
+        'SchedulerBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guikingone/scheduler-bundle/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
@@ -576,6 +762,10 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Cron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
         ),
         'Composer\\Semver\\' => 
         array (

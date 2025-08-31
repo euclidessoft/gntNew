@@ -1,0 +1,10 @@
+scheduler_bundle:
+    timezone: 'Africa/Dakar'
+    transport:
+        dsn: 'doctrine://default'   # stockage en base (Doctrine)
+    tasks:
+        demo_task:
+            type: http
+            url: 'https://gnt-pharma.com/fr/Promotions/Activer/'
+            expression: '*/2 * * * *' # toutes les 2 minutes
+            description: 'Commande de test'

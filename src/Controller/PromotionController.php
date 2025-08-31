@@ -361,27 +361,37 @@ class PromotionController extends AbstractController
 
 
     #[Route("/Activer/", name :"promotion_activer", methods : ["GET"]) ]
-    public function activer(PromotionProduitRepository $produitrepo, SessionInterface $session): Response
+    public function activer(): Response
     {
 
         $date = new \DateTime();
         $em = $this->entityManager;
+        // $start = $em->getRepository(Promotion::class)->findAll();
         $start = $em->getRepository(Promotion::class)->findBy(['debut' => $date]);
         $end = $em->getRepository(Promotion::class)->findBy(['fin' => $date]);
 
 
-        foreach ($start as $promo) {
-            $promoproduits = $produitrepo->findBy(['promotion' => $promo]);
-            foreach ($promoproduits as $promoproduit) {
-                $promoproduit->getProduit()->setPromotion($promo);
-                $em->persist($promoproduit);
+        foreach ($start as $promotion) {
+            foreach($promotion->getProduits() as $produit){
+                $produit->setPromotion($promotion);
+            
+        $end = $em->getRepository(Promotion::class)->findBy(['fin' => $date]);
+                $em->persist($produit);
             }
-            $em->flush();
+        $end = $em->getRepository(Promotion::class)->findBy(['fin' => $date]);
+           
         }
-        return $this->render('promotion/admin/index.html.twig', [
-            'promotions' => $end,
-        ]);
-
+        
+        foreach ($end as $promo) {
+            foreach($promo->getProduits() as $produit){
+                $produit->setPromotion($null);
+            
+                $em->persist($produit);
+            }
+           
+        }
+         $em->flush();
+         return new Response("✅ tâches mises à jour.");
     }
 
 
