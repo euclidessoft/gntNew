@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProduitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -78,8 +79,8 @@ class Produit
     #[ORM\Column(type:"float") ]
     private $pght;
 
-    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: PromotionProduit::class)]
-    private Collection $promotionProduits;
+    #[ORM\ManyToMany(targetEntity:"App\Entity\Promotion", mappedBy:"produits") ]
+    private $promotions;
 
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: CommandeProduit::class)]
     private Collection $commandeProduits;
@@ -92,8 +93,9 @@ class Produit
         $this->tva = false;
 //        $this->fournisseurProduits = new ArrayCollection();
         $this->fournisseurs = new ArrayCollection();
-        $this->promotionProduits = new ArrayCollection();
+        // $this->promotionProduits = new ArrayCollection();
         $this->commandeProduits = new ArrayCollection();
+        $this->promotions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -370,6 +372,68 @@ class Produit
     public function removeFournisseur(Fournisseur $fournisseur): self
     {
         $this->fournisseurs->removeElement($fournisseur);
+
+        return $this;
+    }
+
+    public function isTva(): ?bool
+    {
+        return $this->tva;
+    }
+
+    /**
+     * @return Collection<int, Promotion>
+     */
+    public function getPromotions(): Collection
+    {
+        return $this->promotions;
+    }
+
+    public function addPromotion(Promotion $promotion): static
+    {
+        if (!$this->promotions->contains($promotion)) {
+            $this->promotions->add($promotion);
+            $promotion->addProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromotion(Promotion $promotion): static
+    {
+        if ($this->promotions->removeElement($promotion)) {
+            $promotion->removeProduit($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CommandeProduit>
+     */
+    public function getCommandeProduits(): Collection
+    {
+        return $this->commandeProduits;
+    }
+
+    public function addCommandeProduit(CommandeProduit $commandeProduit): static
+    {
+        if (!$this->commandeProduits->contains($commandeProduit)) {
+            $this->commandeProduits->add($commandeProduit);
+            $commandeProduit->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommandeProduit(CommandeProduit $commandeProduit): static
+    {
+        if ($this->commandeProduits->removeElement($commandeProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($commandeProduit->getProduit() === $this) {
+                $commandeProduit->setProduit(null);
+            }
+        }
 
         return $this;
     }

@@ -13,10 +13,11 @@
 
     {% block body %}
 <div class="container mt-4 fond-7">
-    <h3 class="mt-4 mb-5 text-bold">
+    <h3 class="mt-4 mb-2 text-bold">
         <i class="fa fa-shop me-2"></i>
         {{ "Promotion"|trans }}
     </h3>
+    <a class='btn btn-success mb-3' href="{{ path('promotion_edit', {'id' : promotion.id})}}"> <i class="fa fa-edit"></i> modifier promotion </a>
     <table class="table table-success-light table-bordered table-hover table-striped w-100">
         <thead>
         <tr>
@@ -69,14 +70,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for promotionproduit in produitspromotion %}
+                {% for produit in promotion.produits %}
                     <tr>
-                        <td>{{ promotionproduit.produit.reference }}</td>
-                        <td>{{ promotionproduit.produit.desigantion }}</td>
-                        <td>{{ promotionproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        <td>{{ promotionproduit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        <td>{{ promotionproduit.produit.mincommande }}</td>
-                        <td>{{ promotionproduit.produit.fabriquant }}</td>
+                        <td>{{ produit.reference }}</td>
+                        <td>{{ produit.desigantion }}</td>
+                        <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                        <td>{{ produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                        <td>{{ produit.mincommande }}</td>
+                        <td>{{ produit.fabriquant }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

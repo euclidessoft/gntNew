@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PromotionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -73,13 +74,17 @@ class Promotion
     #[ORM\Column(type:"integer", nullable:true) ]
     private $reduction;
 
-    #[ORM\OneToMany(mappedBy: 'promotion', targetEntity: PromotionProduit::class)]
-    private Collection $promotionProduits;
+    #[ORM\ManyToMany(targetEntity:"App\Entity\Produit", inversedBy:"promotions") ]
+#[ORM\JoinTable(name:"promotion_produit") ]
+    private $produits;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $active = null;
 
     public function __construct()
     {
-
-        $this->promotionProduits = new ArrayCollection();
+        $this->produits = new ArrayCollection();
+        $this->active = true;
     }
 
 
@@ -91,6 +96,8 @@ class Promotion
     public function getDesignation(): ?string
     {
         return $this->designation;
+
+        $this->promotionProduits = new ArrayCollection();
     }
 
     public function setDesignation(string $designation): self
@@ -278,5 +285,46 @@ class Promotion
         $this->ugcinquieme = $ugcinquieme;
 
         return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Produit>
+     */
+    public function getProduits(): Collection
+    {
+        return $this->produits;
+    }
+
+    public function addProduit(Produit $produit): static
+    {
+        if (!$this->produits->contains($produit)) {
+            $this->produits->add($produit);
+        }
+
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): static
+    {
+        $this->produits->removeElement($produit);
+
+        return $this;
+    }
+
+    public function editPromo(ArrayCollection $produits){
+
+        $this->produits = $produits;
     }
 }

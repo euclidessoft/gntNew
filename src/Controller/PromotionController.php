@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Promotion;
+use App\Entity\Produit;
 use App\Entity\Panier;
 use App\Entity\PromotionProduit;
 use App\Form\PromotionType;
@@ -103,16 +104,15 @@ class PromotionController extends AbstractController
                 $promo = $session->get("promo", []);
                 if (count($promo) >= 1) {
                     $promotion->setUser($this->getUser());
-                    $em->persist($promotion);
                     foreach ($promo as $product) {
                         $produit = $produitRepository->find($product['produit']->getId());
                         // $produit->setPromotion($promotion);
-                        //$em->persist($produit);
-                        $promotionproduit = new PromotionProduit($produit, $promotion);
+                        // $em->persist($produit);
+                        $promotion->addProduit($produit);
 
-                        $em->persist($promotionproduit);
+                        
                     }
-                    // dd($promotion);;
+                   $em->persist($promotion);
                     $em->flush();
                     $session->remove("promo");
                     $this->addFlash('notice', 'Promotion crée');
@@ -215,7 +215,7 @@ class PromotionController extends AbstractController
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('promotion/encours.html.twig', [
-                'promotions' => $promotionRepository->CouranteClient(),
+                'promotions' => $promotionRepository->Courante(),
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
@@ -326,28 +326,25 @@ class PromotionController extends AbstractController
         }
     }
 
-    #[Route("/arreter", name :"promotion_arreter") ]
-    public function arreter(Request $request, ProduitRepository $repository, SessionInterface $session)
+    #[Route("/arreter/{id}", name :"promotion_arreter") ]
+    public function arreter(Request $request,Promotion $promotion, ProduitRepository $repository, SessionInterface $session)
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
 
-            // On récupère le panier actuel
-            $promo = $session->get("promo", []);
-            $id = $repository->find($request->get('prod'))->getId();
-
-            if (!empty($promo[$id])) {
-                unset($promo[$id]);
+            if ($this->isCsrfTokenValid('arreter' . $promotion->getId(), $request->request->get('_token'))) {
+                $entityManager = $this->entityManager;
+                $promotion->setActive(false);
+                foreach ($promotion->getProduits() as $produit) {
+                    $produit->setPromotion(null);
+                    $entityManager->persist($produit);
+                }
+                $entityManager->persist($promotion);
+                $entityManager->flush();
+                $this->addFlash('notice', 'Promotion arretée');
             }
 
-            // On sauvegarde dans la session
-            $session->set("promo", $promo);
-            $res['id'] = 'ok';
-            $res['nb'] = count($promo);
-            $response = new Response();
-            $response->headers->set('content-type', 'application/json');
-            $re = json_encode($res);
-            $response->setContent($re);
-            return $response;
+            return $this->redirectToRoute('promotion_courante', [], Response::HTTP_SEE_OTHER);
+
         } else {
             $response = $this->redirectToRoute('security_login');
             $response->setSharedMaxAge(0);
@@ -389,13 +386,13 @@ class PromotionController extends AbstractController
 
 
     #[Route("/{id}", name :"promotion_show", methods : ["GET"]) ]
-    public function show(Promotion $promotion, PromotionProduitRepository $produitrepo, SessionInterface $session): Response
+    public function show(Promotion $promotion, SessionInterface $session): Response
     {
         if ($this->security->isGranted('ROLE_BACK')) {
 
             return $this->render('promotion/admin/show.html.twig', [
                 'promotion' => $promotion,
-                'produitspromotion' => $produitrepo->findBy(['promotion' => $promotion])
+                // 'produitspromotion' => $produitrepo->findBy(['promotion' => $promotion])
             ]);
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
             $date = new \DateTime();
@@ -417,7 +414,6 @@ class PromotionController extends AbstractController
 
             return $this->render('promotion/show.html.twig', [
                 'promotion' => $promotion,
-                'produitspromotion' => $produitrepo->findBy(['promotion' => $promotion]),
                 'panier' => $dataPanier,
                 'promo' => $promo,
             ]);
@@ -436,37 +432,100 @@ class PromotionController extends AbstractController
     }
 
     #[Route("/{id}/edit", name :"promotion_edit", methods : ["GET","POST"]) ]
-    public function edit(Request $request, Promotion $promotion): Response
+    public function edit(Request $request,Promotion $promotion, ProduitRepository $produitRepository, SessionInterface $session): Response
     {
-        $form = $this->createForm(PromotionType::class, $promotion);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            
+        
+            $promo = $session->get("promo", []);
 
-            return $this->redirectToRoute('promotion_index', [], Response::HTTP_SEE_OTHER);
+            $produits = $produitRepository->findAll();
+
+             if (!$request->isMethod('POST')) {
+                foreach($promotion->getProduits() as $produit){
+                    $id = $produit->getId();
+
+                        $promo[$id] = [// placement produit et quantite dans le panier
+                            "produit" => $produit,
+                        ];
+
+                        // On sauvegarde dans la session
+                        
+                }
+                $session->set("promo", $promo);
+             }
+
+            
+            $dataPanier = [];
+
+            foreach ($promo as $commande) {
+                $dataPanier[] = [
+                    "produit" => $commande['produit'],
+                ];
+            }
+            $form = $this->createForm(PromotionType::class, $promotion);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->entityManager;
+                $promo = $session->get("promo", []);
+                if (count($promo) >= 1) {
+
+                   $editPromo = new Promotion();
+                    foreach ($promo as $product) {
+                        $produit = $produitRepository->find($product['produit']->getId());
+                        $editPromo->addProduit($produit);
+                        
+                    }
+                    $promotion->editPromo($editPromo->getProduits());
+                    $em->persist($promotion);
+                    // dd($promotion);;
+                    $em->flush();
+                    $session->remove("promo");
+                    $this->addFlash('notice', 'Promotion modifiée');
+                    $response = $this->redirectToRoute('promotion_courante', [], Response::HTTP_SEE_OTHER);
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                } else {
+                    $this->addFlash('danger', 'Veuillez ajouter des produits à la promotion');
+                }
+            }
+
+            return $this->render('promotion/admin/edit.html.twig', [
+                'promotion' => $promotion,
+                    'produits' => $produits,
+                    'panier' => $dataPanier,
+                    'form' => $form->createView(),
+            ]);
         }
-
-        return $this->render('promotion/admin/edit.html.twig', [
-            'promotion' => $promotion,
-            'form' => $form->createView(),
-        ]);
     }
 
     #[Route("/cancel/{id}", name :"promotion_cancel", methods : ["POST"]) ]
     public function cancel(Request $request, Promotion $promotion): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $promotion->getId(), $request->request->get('_token'))) {
+        $date = new \Datetime();
+        if ($this->isCsrfTokenValid('delete' . $promotion->getId(), $request->request->get('_token')) && $promotion->getDebut() > $date) {
             $entityManager = $this->entityManager;
-            $promotionproduits = $entityManager->getRepository(PromotionProduit::class)->findBy(['promotion' => $promotion]);
-            foreach ($promotionproduits as $promotionproduit) {
-                $entityManager->remove($promotionproduit);
+
+            foreach ($promotion->getProduits() as $produit) {
+                $produit->setPromotion(null);
+                $entityManager->persist($produit);
             }
             $entityManager->remove($promotion);
             $entityManager->flush();
             $this->addFlash('notice', 'Promotion supprimée');
+        }else{
+             $this->addFlash('notice', 'Impossible de supprimer cette promotion');   
         }
 
-        return $this->redirectToRoute('promotion_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('promotion_courante', [], Response::HTTP_SEE_OTHER);
     }
 }

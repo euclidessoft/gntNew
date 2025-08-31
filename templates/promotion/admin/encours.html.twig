@@ -47,41 +47,16 @@
                         <i class="fa fa-list"></i>
                         {{ 'Afficher'|trans }}
                     </a>
-{#                    {% if is_granted('ROLE_ADMIN') %}#}
-{#                    <button type="button" class="btn btn-success" id="btn{{ promotion.id }}"  onclick="arreter({{ promotion.id }})">#}
-{#                        <i class="fa fa-stop-circle"></i>#}
-{#                        {{'Arrêter'|trans}}#}
-{#                    </button>#}
-{#                {{ include('promotion/admin/_delete_form.html.twig') }}#}
-{#                    {% endif %}#}
+                   {% if is_granted('ROLE_ADMIN') %}
+                        {% if promotion.debut|date('Y-m-d') < 'now'|date('Y-m-d') and promotion.fin|date('Y-m-d') > 'now'|date('Y-m-d') and promotion.active != false %}
+                            {{ include('promotion/admin/_arreter_form.html.twig') }}
+                        {% endif %}
+                        {{ include('promotion/admin/_delete_form.html.twig') }}
+                   {% endif %}
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
-    {% block scripts %}
-        <script>
-            function arreter(id) {
-                if (confirm("{{ 'Voulez-vous vraiment arrêter la promotion?'|trans }}")) {
-                    $('#btn' + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ path('promotion_arreter') }}",
-                        data: "promo=" + id,
-                        success: function (data) {
-                            if (data['ok'] != '') {
-                                document.location.href= data['ok'];
-                            }
-                        },
-                        error: function () {
-                            alert('{{ "La requête n'a pas abouti"|trans }}');
-                        }
-                    });
-                }
-
-            }
-
-        </script>
-    {% endblock %}
 {% endblock %}

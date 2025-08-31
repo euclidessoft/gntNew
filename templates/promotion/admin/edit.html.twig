@@ -1,13 +1,193 @@
-<!DOCTYPE html>
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+    {% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+    {% block promotion %}active{% endblock %}
+    {% block new_promotion %}active{% endblock %}
 
-<title>{{ 'Editer Promotion'|trans }}</title>
+    {% block body %}
+        <div class="container-fluid mt-4 fond-7">
+            <h3 class="mt-4 text-bold">
+                <i class="fa fa-shop me-2"></i>
+                {{ "Nouvelle Promotion"|trans }}
+            </h3>
+            {{ include('promotion/admin/_form_edit.html.twig') }}
+            <div class="row">
+                <div class="col-lg-7">
 
-{% block body %}
-    <h1>{{ 'Editer Promotion'|trans }}</h1>
 
-    {{ include('promotion/_form.html.twig', {'button_label': 'Update'}) }}
+                    {% set inlist = [] %}
+                    {% for produit in panier %}
 
-    <a href="{{ path('promotion_index') }}">back to list</a>
+                        {% set inlist = inlist|merge([produit['produit'].id]) %}
+                    {% else %}
 
-    {{ include('promotion/_delete_form.html.twig') }}
-{% endblock %}
+                    {% endfor %}
+
+                    <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+                        <thead>
+                        <tr>
+                            <th>{{ 'Référence'|trans }}</th>
+                            <th>{{ 'Désignation'|trans }}</th>
+                            <th>{{ 'Fabricant'|trans }}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for produit in produits %}
+                            <tr id="listprod{{ produit.id }}">
+                                <td>{{ produit.reference }}</td>
+                                <td>{{ produit.desigantion }}</td>
+                                <td>{{ produit.fabriquant }}</td>
+                                <td>
+
+                                    <!-- Button trigger modal -->
+                                    <button type="button"
+                                            class="btn btn-success {% if produit.id in inlist %} disabled {% endif %}"
+                                            id="ajouter{{ produit.id }}" onclick="ajouter_promotion({{ produit.id }})">
+                                        <i class="fa fa-plus"></i>
+                                        {{ 'Ajouter'|trans }}
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-5 mt-5">
+
+                    <table class="table table-success-light table-bordered table-hover table-striped w-100"
+                           id="aprovision">
+                        <thead>
+                        <tr>
+                            <th>{{ 'Référence'|trans }}</th>
+                            <th>{{ 'Désignation'|trans }}</th>
+                            <th>{{ 'Fabricant'|trans }}</th>
+
+                            <th>{{ 'Actions'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody id="selectprod">
+                        {% for produit in panier %}
+                            <tr id="tr{{ produit['produit'].id }}">
+                                <td>{{ produit['produit'].reference }}</td>
+                                <td>{{ produit['produit'].desigantion }}</td>
+                                <td>{{ produit['produit'].fabriquant }}</td>
+
+
+                                <td>
+                                    <button class="btn btn-danger"
+                                            title="{{ 'Supprimer cet article'|trans }}"
+                                            onclick="supprim_prod({{ produit.produit.id }})">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+
+                                </td>
+                            </tr>
+
+                        {% else %}
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+
+            </div>
+        </div>
+    {% endblock %}
+    {% block scripts %}
+        <script>
+            function ajouter_promotion(produit) {
+
+
+                $("#ajouter" + produit).html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('promotion_add') }}",
+                    data: "prod=" + produit,
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                            $('#selectprod').append(" <tr id='tr" + produit + "'>\n" +
+                                "                        <td>" + data['ref'] + "</td>\n" +
+                                "                        <td>" + data['designation'] + "</td>\n" +
+                                "                        <td>" + data['fabriquant'] + "</td>\n" +
+                                "                        <td>" +
+                                "                                <button class='btn btn-danger'\n" +
+                                "                                   title='Supprimer cet article' onclick='supprim_prod(" + produit + ")'>\n" +
+                                "                                    <i class='fa fa-trash'></i>\n" +
+                                "                                </button></td>\n" +
+                                "\n" +
+                                "                    </tr>");
+                            $('#ajouter' + produit).addClass('disabled');
+                            $('#valider1').removeClass('disabled');
+                            $('#valider2').removeClass('disabled');
+                            $("#annuler" + produit).trigger('click');
+                            $("#ajouter" + produit).html("<i class='fa fa-plus'></i> {{ 'Ajouter'|trans }}");
+                        } else {
+                            alert("{{ 'vérifier la quantité saisie'|trans }}")
+                        }
+                    },
+                    error: function () {
+                        alert('{{ "La requête n'a pas abouti"|trans }}');
+                    }
+                });
+            }
+
+            function supprim_prod(produit) {
+
+                if (confirm("Etes-vous sûr de vouloir supprimer?")) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('promotion_delete') }}",
+                        data: "prod=" + produit,
+                        success: function (data) {
+                            if (data['id'] == 'ok') {
+                                $("#tr" + produit).remove();
+                                $('#ajouter' + produit).removeClass('disabled');
+                                if (data['nb'] == 0) {
+                                    $('#valider1').addClass('disabled');
+                                    $('#valider2').addClass('disabled');
+                                }
+                            }
+                        },
+                        error: function () {
+                            alert('{{ "La requête n'a pas abouti"|trans }}');
+                        }
+                    });
+                }
+            }
+
+            function gestdate() {
+                var fin = $('#promotion_fin');
+                var debut = $('#promotion_debut');
+                var date1 = new Date($('#promotion_debut').val());
+                var date2 = new Date($('#promotion_fin').val());
+                if (date1 != 'Invalid Date' && date1 >= new Date()) {
+                    if (date2 != 'Invalid Date') {
+                        if (date1 < date2) {
+
+                        } else {
+                            {#alert("{{ 'Vérifiez les dates saisies'|trans }}");#}
+                            fin.val('');
+                        }
+                    }
+                } else {
+                    fin.val('');
+                    debut.val('');
+                }
+            }
+
+        </script>
+
+
+    {% endblock %}
+

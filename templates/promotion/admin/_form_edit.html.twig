@@ -1,0 +1,135 @@
+{{ form_start(form, {'attr' : { 'id' : 'form'}}) }}
+
+<div class="col-lg-10 offset-lg-1 my-4 fond-7 pb-5 pt-3 px-5">
+    <h4 class="mb-3">
+        <i class="fa fa-rotate me-2"></i><i class="fa fa-plus me-2"></i>
+        {{ 'Nouvelle promotion'|trans }}
+    </h4>
+    {% for message in app.flashes('notice') %}
+        <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{ message|trans }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div role="alert" class="alert alert-danger alert-dismissible fade show radius-10 shadow-black">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{ message|trans }}
+        </div>
+    {% endfor %}
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+            {{ form_row(form.designation, {'attr':{'placeholder':'Désignation *'}, 'label':'Désignation *'}) }}
+        </div>
+        <div class="col-md-6 mb-4">
+            {{ form_row(form.type, {'attr':{'placeholder':'Type *'}, 'label':'Type *'}) }}
+        </div>
+        <div class="col-md-6 mb-4">
+            {{ form_row(form.debut, {'label':'Date de debut', 'attr' : {'onchange' : 'gestdate()'}}) }}
+        </div>
+        <div class="col-md-6 mb-4">
+            {{ form_row(form.fin, {'label':'date fin', 'attr' : {'onchange' : 'gestdate()'}}) }}
+        </div>
+        <div class="row offset-1" id="tranche">
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        {{ 'Premier tranche'|trans }}
+
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.premier, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugpremier, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        {{ 'Deuxième tranche'|trans }}
+
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.deuxieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugdeuxieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        {{'Troisième tranche'|trans }}
+
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.troisieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugtroisieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        {{'Quatrième tranche'|trans }}
+
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.quatrieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugquatrieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        {{'Cinquième tranche'|trans }}
+
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.cinquieme, {'attr':{'placeholder':'nombre acheté'}, 'label':'nombre acheté'}) }}
+                        {{ form_row(form.ugcinquieme, {'attr':{'placeholder':'nombre U.G','class': 'mt-4'}, 'label':'nombre U.G'}) }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-md-12 mb-4" id="reduction">
+            <div class="input-group ">
+                {{ form_widget(form.reduction, {'attr':{'placeholder':'Réduction'}, 'label':'Réduction'}) }}
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">%</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-6 offset-md-3 mt-4 pt-3 fond-7">
+        <div class="centrer">
+            {#                <div class="row">#}
+            <button type="button" class="btn btn-shadow btn-green btn-normal mb-2 me-3" id="send"
+                    onclick="promosubmit()">
+                <i class="fa fa-save"></i>
+                {{ 'Enregistrer'|trans }}
+            </button>
+
+            <button type="reset" class="btn btn-shadow btn-danger btn-normal mb-2">
+                <i class="fa fa-delete-left"></i>
+                {{ 'Effacer'|trans }}
+            </button>
+            {{ form_rest(form) }}
+            {#                </div>#}
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+    {{ form_end(form) }}
+</div>

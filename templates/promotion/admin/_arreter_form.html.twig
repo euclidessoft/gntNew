@@ -1,0 +1,7 @@
+<form method="post" action="{{ path('promotion_arreter', {'id': promotion.id}) }}" onsubmit="return confirm('{{ 'Etes vous sûr de vouloir arreter cette promotion?'|trans }}');" style="display: inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('arreter' ~ promotion.id) }}">
+    <button class="btn btn-success">
+    <i class="fa fa-stop-circle"></i>
+                       {{'Arrêter'|trans}}
+    </button>
+</form>
