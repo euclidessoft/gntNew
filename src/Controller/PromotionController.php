@@ -483,6 +483,12 @@ class PromotionController extends AbstractController
                     foreach ($promo as $product) {
                         $produit = $produitRepository->find($product['produit']->getId());
                         $editPromo->addProduit($produit);
+                        $date = new \Datetime();
+                        if($promotion->getDebut() <=  $date){
+                            $produit->setPromotion($promotion);
+                            $em->persist($produit);
+
+                        }
                         
                     }
                     $promotion->editPromo($editPromo->getProduits());
