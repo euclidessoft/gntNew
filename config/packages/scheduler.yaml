@@ -6,5 +6,5 @@ scheduler_bundle:
         Promotion:
             type: command
             command: 'AppCommandPromotionsCron'
-            expression: '*/2 * * * *' # toutes les 2 minutes
+            expression: '0 0 * * *' # tous les jours a minuit
             description: 'Commande de test'
