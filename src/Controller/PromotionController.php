@@ -374,11 +374,8 @@ class PromotionController extends AbstractController
         foreach ($start as $promotion) {
             foreach($promotion->getProduits() as $produit){
                 $produit->setPromotion($promotion);
-            
-        $end = $em->getRepository(Promotion::class)->findBy(['fin' => $date]);
                 $em->persist($produit);
             }
-        $end = $em->getRepository(Promotion::class)->findBy(['fin' => $date]);
            
         }
         

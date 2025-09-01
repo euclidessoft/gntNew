@@ -4,12 +4,12 @@
 .env.local
 .env.local.php
 .env.*.local
-/config/secrets/prod/prod.decrypt.private.php
+/config/secrets/prod/prod.de/fr/Promotions/Activer/crypt.private.php
 /public/bundles/
 /public/uploads/
 /public/Documents/
 /var/
-#/vendor/
+/vendor/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
