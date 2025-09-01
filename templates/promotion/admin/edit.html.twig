@@ -171,7 +171,7 @@
                 var debut = $('#promotion_debut');
                 var date1 = new Date($('#promotion_debut').val());
                 var date2 = new Date($('#promotion_fin').val());
-                if (date1 != 'Invalid Date' && date1 >= new Date()) {
+                if (date1 != 'Invalid Date') {
                     if (date2 != 'Invalid Date') {
                         if (date1 < date2) {
 
@@ -185,6 +185,72 @@
                     debut.val('');
                 }
             }
+
+          function promoeditsubmit() {// fonction enregistrement promotion
+        var valider=$('#send');
+        var date1 = new Date($('#promotion_debut').val());
+        var date2 = new Date($('#promotion_fin').val());
+        let premier = $('#promotion_premier').val();
+        let ugpremier = $('#promotion_ugpremier').val();
+        let deuxieme = $('#promotion_deuxieme').val();
+        let ugdeuxieme = $('#promotion_ugdeuxieme').val();
+        let troisieme = $('#promotion_troisieme').val();
+        let ugtroisieme = $('#promotion_ugtroisieme').val();
+        let quatrieme = $('#promotion_quatrieme').val();
+        let ugquatrieme = $('#promotion_ugquatrieme').val();
+        let cinquieme = $('#promotion_cinquieme').val();
+        let ugcinquieme = $('#promotion_ugcinquieme').val();
+        // valider.addClass("disabled");
+        if ($('#promotion_type option:selected').val() == 'Unités Gratuites') {
+
+
+            if($('#promotion_premier').val() != '' &&
+                $('#promotion_ugpremier').val() != '' &&
+                $('#promotion_deuxieme').val() != '' &&
+                $('#promotion_ugdeuxieme').val() != '' &&
+                $('#promotion_troisieme').val() != '' &&
+                $('#promotion_ugtroisieme').val() != '' &&
+                $('#promotion_quatrieme').val() != '' &&
+                $('#promotion_ugquatrieme').val() != '' &&
+                $('#promotion_cinquieme').val() != '' &&
+                $('#promotion_ugcinquieme').val() != '' &&
+                $('#promotion_designation').val() != '' &&
+                date1 != 'Invalid Date' &&
+                date2 != 'Invalid Date') {
+
+                // if(premier >= ugpremier &&
+                //     deuxieme >= ugdeuxieme &&
+                //     troisieme >= ugtroisieme &&
+                //     quatrieme >= ugquatrieme &&
+                //     cinquieme >= ugcinquieme &&
+                //     premier <= deuxieme  &&
+                //     deuxieme <= troisieme &&
+                //     troisieme <= quatrieme &&
+                //     quatrieme <= cinquieme
+                // ) {
+                    valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                    $('#form').submit();
+                // }else alert("Veuillez verifier les valeurs de la promotion");
+
+            }else{
+                alert('{{ "Veuillez saisir tous les champs"|trans }}');
+            }
+
+        }else if ($('#promotion_type option:selected').val() == 'Réduction') {
+
+            if($('#promotion_reduction').val() != '' &&
+                $('#promotion_designation').val() != '' &&
+                date1 != 'Invalid Date' &&
+                date2 != 'Invalid Date') {
+                valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                $('#form').submit();
+            }else{
+                alert('{{ "Veuillez saisir tous les champs"|trans }}');
+            }
+        }else {
+            alert('{{ "Veuillez saisir tous les champs"|trans }}');
+        }
+    }
 
         </script>
 
