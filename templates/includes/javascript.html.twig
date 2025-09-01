@@ -432,19 +432,23 @@
                 date2 != 'Invalid Date' &&
                 date1 >= new Date()) {
 
-                // if(premier >= ugpremier &&
-                //     deuxieme >= ugdeuxieme &&
-                //     troisieme >= ugtroisieme &&
-                //     quatrieme >= ugquatrieme &&
-                //     cinquieme >= ugcinquieme &&
-                //     premier <= deuxieme  &&
-                //     deuxieme <= troisieme &&
-                //     troisieme <= quatrieme &&
-                //     quatrieme <= cinquieme
-                // ) {
+                  if(Number(premier) > Number(ugpremier) &&
+                     Number(deuxieme) > Number(ugdeuxieme) &&
+                     Number(troisieme) > Number(ugtroisieme) &&
+                     Number(quatrieme) > Number(ugquatrieme) &&
+                     Number(cinquieme) > Number(ugcinquieme) &&
+                     Number(ugpremier) < Number(ugdeuxieme) &&
+                     Number(ugdeuxieme) < Number(ugtroisieme) &&
+                     Number(ugtroisieme) < Number(ugquatrieme) &&
+                     Number(ugquatrieme) < Number(ugcinquieme) &&
+                     Number(premier) < Number(deuxieme)  &&
+                     Number(deuxieme) < Number(troisieme) &&
+                     Number(troisieme) < Number(quatrieme) &&
+                     Number(quatrieme) < Number(cinquieme)
+                 ) {
                     valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
                     $('#form').submit();
-                // }else alert("Veuillez verifier les valeurs de la promotion");
+                 }else alert("Veuillez verifier les valeurs de la promotion");
 
             }else{
                 alert('{{ "Veuillez saisir tous les champs"|trans }}');
