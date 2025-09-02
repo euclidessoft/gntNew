@@ -65,38 +65,38 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for promotionproduit in produitspromotion %}
+                {% for produit in promotion.produits %}
                     <tr>
-                        <td>{{ promotionproduit.produit.reference }}</td>
-                        <td>{{ promotionproduit.produit.desigantion }}</td>
-                        <td>{{ promotionproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        <td>{{ promotionproduit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        <td>{{ promotionproduit.produit.mincommande }}</td>
-                        <td>{{ promotionproduit.produit.fabriquant }}</td>
+                        <td>{{ produit.reference }}</td>
+                        <td>{{ produit.desigantion }}</td>
+                        <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                        <td>{{ produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                        <td>{{ produit.mincommande }}</td>
+                        <td>{{ produit.fabriquant }}</td>
                         {% set tamp ='no' %}
-                        <td class="text-center" id="tdprod{{ promotionproduit.produit.id }}">
+                        <td class="text-center" id="tdprod{{ produit.id }}">
 
                             {% for pan in panier %}
-                                {% if pan['produit'].id == promotionproduit.produit.id %}
+                                {% if pan['produit'].id == produit.id %}
                                     {% set tamp = pan['produit'].quantite %}
                                 {% endif %}
                             {% endfor %}
                             {% if tamp != 'no' %}
                                 {{ tamp }}
                             {% else %}
-                                <input type="number" id="text{{ promotionproduit.produit.id }}" class="form-control"
-                                       onfocus="focu({{ promotionproduit.produit.id }}, {{ promotionproduit.produit.mincommande }}, {{ promotionproduit.produit.stock }})" onblur="nofocu()" style="padding:0 10px" {% if promotionproduit.produit.stock <= promotionproduit.produit.mincommande or promo == 0 %} disabled {%  endif %}>
-                                <label for="text{{ promotionproduit.produit.id }}"></label>
+                                <input type="number" id="text{{ produit.id }}" class="form-control"
+                                       onfocus="focu({{ produit.id }}, {{ produit.mincommande }}, {{ produit.stock }})" onblur="nofocu()" style="padding:0 10px" {% if produit.stock <= produit.mincommande or promo == 0 %} disabled {%  endif %}>
+                                <label for="text{{ produit.id }}"></label>
                             {% endif %}
                         </td>
                         <td>
                             {% if tamp != 'no' %}
-                                <button type="button" class="btn btn-success disabled" id="btn{{ promotionproduit.produit.id }}">
+                                <button type="button" class="btn btn-success disabled" id="btn{{ produit.id }}">
                                     <i class="fa fa-cart-shopping"></i>
                                 </button>
                             {% else %}
-                                <button type="button" class="btn btn-success{% if promotionproduit.produit.stock <= promotionproduit.produit.mincommande or promo == 0 %} disabled {%  endif %}" id="btn{{ promotionproduit.produit.id }}"
-                                        onclick="addinPanier({{ promotionproduit.produit.id }}, {{ promotionproduit.produit.mincommande }}, {{ promotionproduit.produit.stock }})">
+                                <button type="button" class="btn btn-success{% if produit.stock <= produit.mincommande or promo == 0 %} disabled {%  endif %}" id="btn{{ produit.id }}"
+                                        onclick="addinPanier({{ produit.id }}, {{ produit.mincommande }}, {{ produit.stock }})">
                                     <i class="fa fa-cart-shopping"></i>
                                 </button>
                             {% endif %}

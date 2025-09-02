@@ -35,7 +35,12 @@
             {% for produit in produits %}
                 <tr>
                     <td>{{ produit.reference }}</td>
-                    <td>{{ produit.desigantion }}</td>
+                    <td>{{ produit.desigantion }}
+                      {% if produit.promotion is not null %}
+                                    {# {{ "indisponible"|trans }} #}
+                                    <button type="button" class="btn btn-danger"> {{ "Promo"|trans }}</button>
+                        {% endif %}
+                    </td>
                     <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ produit.mincommande }}</td>
@@ -51,12 +56,17 @@
                         {% if tamp != 'no' %}
                             {{ tamp }}
                         {% else %}
-                            <input type="number" id="text{{ produit.id }}" class="form-control"
-                                   onfocus="focu({{ produit.id }}, {{ produit.mincommande }}, {{ produit.stock }})" onblur="nofocu()" style="padding:0 10px" {% if produit.stock <= produit.mincommande %} disabled {%  endif %}>
-                            <label for="text{{ produit.id }}"></label>
-                            {% if produit.stock <= produit.mincommande %}
-                                {{ "indisponible"|trans }}
-                            {% endif %}
+                               {% if produit.stock <= produit.mincommande %}
+                                    {# {{ "indisponible"|trans }} #}
+                                    <button type="button" class="btn btn-outline-danger"> {{ "Rupture"|trans }}</button>
+                            {% else %}
+                                <input type="number" id="text{{ produit.id }}" class="form-control"
+                                    onfocus="focu({{ produit.id }}, {{ produit.mincommande }}, {{ produit.stock }})" onblur="nofocu()"
+                                    style="vertical-align: middle; margin: auto; width: 80px; height: 40px;"  {% if produit.stock <= produit.mincommande %} disabled {% endif %}>
+                                <label for="text{{ produit.id }}"></label>
+                            
+                                    
+                                {% endif %}
                         {% endif %}
                     </td>
                     <td>
