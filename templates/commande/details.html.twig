@@ -84,9 +84,9 @@
 
                                 {% if commandeproduit.quantite / commandeproduit.promotion.cinquieme >= 1 %}
 
-                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.qcinquieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commandeproduit.promotion.ugqcinquieme %}
-                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.qcinquieme %}
+                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.cinquieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commandeproduit.promotion.ugcinquieme %}
+                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.cinquieme %}
 
                                     {% if suite / commandeproduit.promotion.quatrieme >= 1 %}
 
