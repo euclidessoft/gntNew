@@ -75,6 +75,14 @@ public function reapprovisionnement(): array
         ->getResult();
 }
 
+public function promo(): array
+{/** produits avec au moins un fournisseur */
+    return $this->createQueryBuilder('p')
+        ->where('p.promotion IS NOT NULL')
+        ->getQuery()
+        ->getResult();
+}
+
 
 
 

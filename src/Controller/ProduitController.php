@@ -82,6 +82,64 @@ class ProduitController extends AbstractController
             return $response;
         }
     }
+    
+    #[Route("/Promotions", name :"produit_promo", methods : ["GET"]) ]
+    public function promo(SessionInterface $session, ProduitRepository $produitRepository): Response
+    {
+        if ($this->security->isGranted('ROLE_CLIENT')) {
+
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+            $dataPanier = [];
+
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
+                $dataPanier[] = [
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
+                ];
+            }
+
+            $response = $this->render('produit/promotions.html.twig', [
+                'produits' => $produitRepository->promo(),
+                'panier' => $dataPanier,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+        else if ($this->security->isGranted('ROLE_BACK')) {
+
+            $response = $this->render('produit/admin/index.html.twig', [
+                'produits' => $produitRepository->findAll(),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else  {
+            $response = $this->redirectToRoute('security_login');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
 
     #[Route("/new", name :"produit_new", methods : ["GET","POST"]) ]
     public function new(Request $request): Response

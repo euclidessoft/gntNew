@@ -57,6 +57,13 @@
                             </a>
                         </li>
                         <li class="dropdown-item">
+                            <a class="nav-link {% block promo %}{% endblock %}"
+                               href="{{ path('produit_promo') }}">
+                                <i class="fas fa-list"></i>
+                                {{ 'Promotions'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
                             <a class="nav-link {% block arrivage %}{% endblock %}"
                                href="{{ path('produit_arrivage') }}">
                                 <i class="fa-solid fa-plane-arrival"></i>
