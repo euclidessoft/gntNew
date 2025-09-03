@@ -37,7 +37,23 @@
                     <td>{{ produit.desigantion }}
                         {% if produit.promotion is not null %}
                                     {# {{ "indisponible"|trans }} #}
-                                    <button type="button" class="btn btn-danger"> {{ "Promo"|trans }}</button>
+                                    <div class="dropdown d-inline">
+                                <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Promo
+                                </button>
+                                <ul class="dropdown-menu text-center">
+                                {% if produit.promotion.premier is not null %}
+                                    <li><b>{{produit.promotion.premier}} pour {{produit.promotion.ugpremier}} {{'gratuits'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.deuxieme}} pour {{produit.promotion.ugdeuxieme}} {{'gratuits'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.troisieme}} pour {{produit.promotion.ugtroisieme}} {{'gratuits'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.quatrieme}} pour {{produit.promotion.ugquatrieme}} {{'gratuits'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.cinquieme}} pour {{produit.promotion.ugcinquieme}} {{'gratuits'|trans}}</b></li>
+                                     {% else %}
+                                    <li><b>{{ "Reduction de"|trans}} {{produit.promotion.reduction}}%</b></li>
+                                    {% endif %}
+                                    <li>{{"jusqu'au"|trans}} <h6 class="d-inline"><b>{{produit.promotion.fin|date('d/m/Y')}}</b></h6></li>
+                                </ul>
+                                </div>
                         {% endif %}
                     </td>
                     <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
