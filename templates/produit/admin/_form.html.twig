@@ -139,13 +139,13 @@
         {{ form_row(form.tva, {'label':'Soumis à la TVA'}) }}
     </div>
     <div class="col-md-5 text-bold">
-        &emsp;
+        {{ form_widget(form.fournisseurs, {'label':'Fournisseur'}) }}
     </div>
-    <div class="col-md-5 text-bold">
+    {#<div class="col-md-5 text-bold">
         &emsp;
     </div>
     <div class="col-md-5 text-bold mt-5">
          {{ form_row(form.fournisseurs, {'label':'Fournisseur'}) }}
-    </div>
+    </div>#}
         {{ form_rest(form) }}
 </div>
