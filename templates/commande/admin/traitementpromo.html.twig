@@ -90,14 +90,14 @@
     {% block scripts %}
         <script>
             function choix() {
-                 if ($('input[type=radio][name=payment]:checked').val() == 'AMEX') {
+                if ($('input[type=radio][name=payment]:checked').val() == 'AMEX') {
                     var url = $(location).attr("href");
-                    url = url.replace("/Choix_Paiement_extranet/0", "/ConfirmationPaiement_extranet/");
+                    url = url.replace("/Choix_Paiement_extranet_promo/0", "/ConfirmationPaiement_extranet_promo/");
                     document.location.href = url;
 
                 } else if ($('input[type=radio][name=payment]:checked').val() == 'Credit') {
                     var url = $(location).attr("href");
-                    url = url.replace("/Choix_Paiement_extranet/0", "/ConfirmationCredit_extranet/");
+                    url = url.replace("/Choix_Paiement_extranet_promo/0", "/ConfirmationCredit_extranet_promo/");
                     document.location.href = url;
 
                 } else alert('{{'Bientôt disponible'|trans}}')
