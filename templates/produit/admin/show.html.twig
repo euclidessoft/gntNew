@@ -60,14 +60,16 @@
 
     <div class="col-md-7 offset-md-3 mt-4 p-3 fond-7">
         <div class="centrer gap-3">
+            {% if is_granted('ROLE_ADMIN') %}
             <a class="btn btn-success" href="{{ path('produit_edit', {'id': produit.id}) }}">
                 <i class="fa fa-edit"></i> Modifier
             </a>
+            {{ include('produit/admin/_delete_form.html.twig') }}
+            {% endif %}
             <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success-light btn-normal" href="{{ path('produit_index') }}">
                 <i class="fa fa-undo"></i>
                 {{ 'Retour'|trans }}
             </a>
-            {{ include('produit/admin/_delete_form.html.twig') }}
         </div>
     </div>
 
