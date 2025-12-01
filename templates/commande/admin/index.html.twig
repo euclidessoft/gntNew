@@ -17,7 +17,38 @@
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Commande Extranet"|trans }}
         </h3>
+ <!-- Button trigger modal -->
+                                <button type="button" style="display: none;"
+                                        class="btn btn-success"
+                                        data-bs-toggle="modal" data-bs-target="#modalvalider"
+                                        id="btnmodalvalider">
+                                    {{ 'Ajouter'|trans }}
+                                </button>
 
+                                <!-- Modal -->
+                                <div class="modal fade" id="modalvalider" tabindex="-1" tabindex="-1" aria-labelledby="" aria-hidden="true"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered text-center modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fs-5" id="exampleModalLabel">
+                                                   Validation Commande</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+
+                                                </button>
+                                            </div>
+                                            <div class="modal-body px-5">
+                                               <button class="btn btn-success" onclick="validerappro()"> tenir compte des promos</button>
+                                               <button class="btn btn-success-light  ms-2"  onclick="validersans()"> ne pas tenir compte des promos</button>
+
+                                            </div>
+                                            <div class="modal-footer px-5 py-4">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
         <div class="row">
             <div class="col-lg-6 fond-7">
@@ -164,7 +195,7 @@
                     </tbody>
                 </table>
 
-                <button onclick="validerappro()"
+                <button onclick="validercommande()"
                         class="btn btn-success float-right  {% if inlist|length == 0 %} disabled {% endif %}"
                         id="valider2"
                         title="Valider">
@@ -175,6 +206,7 @@
             </div>
         </div>
     </div>
+     
 {% endblock %}
 {% block scripts %}
     <script>
@@ -291,7 +323,29 @@
 
         function validerappro() {
             if ($('#commande_user option:selected').val() != '') {
-                if (confirm("{{ 'Confirmation validation?'|trans }}")) {
+                if (confirm("{{ 'Confirmation validation en tenant compte des promos?'|trans }}")) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('commande_panier_client_extranet') }}",
+                        data: {client: $('#commande_user option:selected').val()},
+                        success: function (data) {
+                            if (data['id'] == 'ok') {
+                                document.location.href = "{{ path("commande_panier_choix_paiement_extranet_promo", {'commande': 0}) }}";
+                            }
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                        }
+                    });
+
+
+                }
+            } else alert('{{ 'Veillez sélectionner un client'|trans }}')
+        }
+
+         function validersans() {
+            if ($('#commande_user option:selected').val() != '') {
+                if (confirm("{{ 'Confirmation validation sans tenir compte des promos?'|trans }}")) {
                     $.ajax({
                         type: "POST",
                         url: "{{ path('commande_panier_client_extranet') }}",
@@ -308,6 +362,12 @@
 
 
                 }
+            } else alert('{{ 'Veillez sélectionner un client'|trans }}')
+        }
+
+         function validercommande() {
+            if ($('#commande_user option:selected').val() != '') {
+                $("#btnmodalvalider").trigger('click');
             } else alert('{{ 'Veillez sélectionner un client'|trans }}')
         }
 
