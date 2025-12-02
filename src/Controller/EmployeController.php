@@ -78,6 +78,11 @@ class EmployeController extends AbstractController
             $employe = new Employe();
             $form = $this->createForm(EmployeType::class, $employe);
             $form->remove('password');
+
+            if ($this->security->isGranted('ROLE_ADMIN'))
+                    $form->remove('niveau2');
+            else  $form->remove('fonction');
+
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -95,10 +100,24 @@ class EmployeController extends AbstractController
                 $posteEmploye = new PosteEmploye();
                 $hashpass = $encoder->hashPassword($employe, 'GNTPharma');
                 $employe->setPassword($hashpass);
+                
+                if ($this->security->isGranted('ROLE_ADMIN'))
+                    $fonction = $employe->getFonction();
+                else  $fonction = $employe->getNiveau2();
+
                 $employe->setUsername($employe->getNom());
-                switch ($employe->getFonction()) {
+                switch ($fonction) {
+                    
                     case 'ADMINISTRATEUR': {
+                         if ($this->security->isGranted('ROLE_ADMIN'))
                             $employe->setRoles(['ROLE_ADMIN']);
+                         else  $employe->setRoles(['ROLE_EMPLOYER']);
+                            break;
+                        }  
+                    case 'SUPERVISEUR': {
+                         if ($this->security->isGranted('ROLE_ADMIN')) 
+                            $employe->setRoles(['ROLE_SUPERVISEUR']);
+                        else  $employe->setRoles(['ROLE_EMPLOYER']);
                             break;
                         }
                     case 'FINANCE': {
@@ -171,18 +190,79 @@ class EmployeController extends AbstractController
     #[Route("/{id}/edit", name :"employe_edit", methods : ["POST","GET"]) ]
     public function edit(Request $request, Employe $employe, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(EmployeType::class, $employe);
-        $form->remove('password');
-        $form->remove('fonction');
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            $this->addFlash('notice', 'Employé modifié avec succès');
-            return $this->redirectToRoute('employe_index', [], Response::HTTP_SEE_OTHER);
+        if ($this->security->isGranted('ROLE_SUPERVISEUR')) {
+            $form = $this->createForm(EmployeType::class, $employe);
+            $form->remove('password');
+
+            if (!$this->security->isGranted('ROLE_ADMIN')) {
+                 $form->remove('fonction');
+                 $form->remove('niveau2');
+                 $form->remove('poste');
+                 $form->remove('hiredate');
+             }else  $form->remove('niveau2');
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                 if ($this->security->isGranted('ROLE_ADMIN'))
+                    $fonction = $employe->getFonction();
+                else  $fonction = $employe->getNiveau2();
+
+                $employe->setUsername($employe->getNom());
+                switch ($fonction) {
+                    
+                    case 'ADMINISTRATEUR': {
+                         if ($this->security->isGranted('ROLE_ADMIN'))
+                            $employe->setRoles(['ROLE_ADMIN']);
+                         else  $employe->setRoles(['ROLE_EMPLOYER']);
+                            break;
+                        }  
+                    case 'SUPERVISEUR': {
+                         if ($this->security->isGranted('ROLE_ADMIN')) 
+                            $employe->setRoles(['ROLE_SUPERVISEUR']);
+                        else  $employe->setRoles(['ROLE_EMPLOYER']);
+                            break;
+                        }
+                    case 'FINANCE': {
+                            $employe->setRoles(['ROLE_FINANCE']);
+                            break;
+                        }
+                    case 'RH': {
+                            $employe->setRoles(['ROLE_RH']);
+                            break;
+                        }
+                    case 'EMPLOYE': {
+                            $employe->setRoles(['ROLE_EMPLOYER']);
+                            break;
+                        }
+                    case 'STOCK': {
+                            $employe->setRoles(['ROLE_STOCK']);
+                            break;
+                        }
+                    case 'LIVREUR': {
+                            $employe->setRoles(['ROLE_LIVREUR']);
+                            $employe->setLivreur(true);
+                            break;
+                        }
+                }
+                $entityManager->flush();
+                $this->addFlash('notice', 'Employé modifié avec succès');
+                return $this->redirectToRoute('employe_index', [], Response::HTTP_SEE_OTHER);
+            }
+            return $this->render('employe/edit.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
         }
-        return $this->render('employe/edit.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
 
 

@@ -32,6 +32,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     const jobs = [
 
         'ADMINISTRATEUR' => 'ADMINISTRATEUR',
+        'SUPERVISEUR' => 'SUPERVISEUR',
         'FINANCE' => 'FINANCE' ,
         'RH' => 'RH' ,
         'STOCK' => 'STOCK' ,
@@ -39,6 +40,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         'EMPLOYE' => 'EMPLOYE' ,
     ];
 
+     const jobsimple = [
+
+        'FINANCE' => 'FINANCE' ,
+        'RH' => 'RH' ,
+        'STOCK' => 'STOCK' ,
+        'LIVREUR' => 'LIVREUR' ,
+        'EMPLOYE' => 'EMPLOYE' ,
+    ];
    #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -55,6 +64,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     public $confirm;
 
     public $test;
+    public $niveau2;
 
     #[ORM\Column(type:"string", length:255) ]
     #[Assert\NotBlank(message:"champ obligatoire") ]
@@ -425,6 +435,19 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         }
 
         return $this;
+    }
+
+    
+    public function setNiveau2(string $niveau2): self
+    {
+        $this->niveau2 = $niveau2;
+
+        return $this;
+    }
+
+    public function getniveau2(): ?string
+    {
+        return $this->niveau2;
     }
 
 }

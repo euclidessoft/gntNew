@@ -519,12 +519,49 @@ class ProduitController extends AbstractController
     {
 
         if ($this->security->isGranted('ROLE_STOCK')) {
+            $prixtamp = $produit;
             $form = $this->createForm(ProduitType::class, $produit);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
 
                 if($produit->getPrix() < $produit->getPrixpublic()){
+                    
+                if($produit->getPrix() != $prixtamp->getPrix() 
+                    || $produit->getPrixpublic() != $prixtamp->getPrixpublic() 
+                || $produit->getPght() != $prixtamp->getPght() ){
+
+                    if ($this->security->isGranted('ROLE_ADMIN')) {
+                            $this->entityManager->flush();
+                            $this->addFlash('notice', 'Produit modifié avec succès');
+
+                            $response = $this->redirectToRoute('produit_show', ['id' => $produit->getId()], Response::HTTP_SEE_OTHER);
+                            $response->setSharedMaxAge(0);
+                            $response->headers->addCacheControlDirective('no-cache', true);
+                            $response->headers->addCacheControlDirective('no-store', true);
+                            $response->headers->addCacheControlDirective('must-revalidate', true);
+                            $response->setCache([
+                                'max_age' => 0,
+                                'private' => true,
+                            ]);
+                            return $response;
+
+                    }
+                    else{
+                        $response = $this->redirectToRoute('security_login');
+                        $response->setSharedMaxAge(0);
+                        $response->headers->addCacheControlDirective('no-cache', true);
+                        $response->headers->addCacheControlDirective('no-store', true);
+                        $response->headers->addCacheControlDirective('must-revalidate', true);
+                        $response->setCache([
+                            'max_age' => 0,
+                            'private' => true,
+                        ]);
+                        return $response;
+                    }
+
+                }
+                    
                     $this->entityManager->flush();
                     $this->addFlash('notice', 'Produit modifié avec succès');
 

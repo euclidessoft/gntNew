@@ -7,6 +7,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -15,15 +16,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class Employe extends User implements UserInterface
 {
     #[ORM\Column(type:"date") ]
+    #[Assert\NotNull(message:"champ obligatoire") ]
     private $hireDate;
 
     #[ORM\Column(type:"date") ]
+   #[Assert\NotNull(message:"champ obligatoire") ]
     private $dateNaissance;
 
     #[ORM\Column(type:"string", length:255) ]
+    #[Assert\NotBlank(message:"champ obligatoire") ]
     private $lieuNaissance;
 
     #[ORM\Column(type:"string", length:255) ]
+    #[Assert\NotBlank(message:"champ obligatoire") ]
     private $sexe;
 
     #[ORM\Column(type:"string", length:255) ]
@@ -33,6 +38,7 @@ class Employe extends User implements UserInterface
     private $nationalite;
 
     #[ORM\Column(type:"string", length:255) ]
+    #[Assert\NotBlank(message:"champ obligatoire") ]
     private $matricule;
 
     #[ORM\ManyToOne(targetEntity:Poste::class, inversedBy:"employes") ]

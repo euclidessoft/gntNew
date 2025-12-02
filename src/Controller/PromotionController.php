@@ -518,12 +518,24 @@ class PromotionController extends AbstractController
                     'panier' => $dataPanier,
                     'form' => $form->createView(),
             ]);
+         } else {
+            $response = $this->redirectToRoute('security_login');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
         }
     }
 
     #[Route("/cancel/{id}", name :"promotion_cancel", methods : ["POST"]) ]
     public function cancel(Request $request, Promotion $promotion): Response
     {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
         $date = new \Datetime();
         if ($this->isCsrfTokenValid('delete' . $promotion->getId(), $request->request->get('_token')) && $promotion->getDebut() > $date) {
             $entityManager = $this->entityManager;
@@ -540,5 +552,17 @@ class PromotionController extends AbstractController
         }
 
         return $this->redirectToRoute('promotion_courante', [], Response::HTTP_SEE_OTHER);
+         } else {
+            $response = $this->redirectToRoute('security_login');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
     }
 }

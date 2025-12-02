@@ -77,6 +77,12 @@ class EmployeType extends AbstractType
                 'label' => false,
                 'required' => true
             ])
+              ->add('niveau2', ChoiceType::class, [
+            'choices' => User::jobsimple,
+            'placeholder' => 'types d\'utilisateur *',
+            'label' => false,
+            'required' => true
+        ])
             ->add('password', PasswordType::class, ['label' => 'Mot de password'])
             ->add('bloodgroup', BloodGroupType::class,array('placeholder' => 'Groupe sanguin'))
             ->add('diabete', CheckboxType::class, [

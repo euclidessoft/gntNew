@@ -32,7 +32,7 @@ class ApprovisionnementController extends AbstractController
     public function index(SessionInterface $session, ApprovisionnementRepository $approvisionnementRepository, ProduitRepository $produitRepository, FournisseurRepository $fournisseurRepository): Response
     {
 
-        if ($this->security->isGranted('ROLE_STOCK')) {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             $produits = $produitRepository->reapprovisionnement();
 
             $approv = $session->get("approv", []);
