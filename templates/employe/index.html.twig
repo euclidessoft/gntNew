@@ -35,8 +35,8 @@
                 <th>{{ 'Nom'|trans }}</th>
                 <th>{{ 'Prénom'|trans }}</th>
                 <th class="text-center">{{ 'Age'|trans }}</th>
-                <th class="text-center">{{ 'Sexe'|trans }}</th>
-                <th>{{ 'Téléphone'|trans }}</th>
+                {#                <th class="text-center">{{ 'Sexe'|trans }}</th>#}
+                {#                <th>{{ 'Téléphone'|trans }}</th>#}
                 <th>{{ 'Email'|trans }}</th>
                 <th>{{ 'Poste'|trans }}</th>
                 <th>{{ 'Département'|trans }}</th>
@@ -45,7 +45,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for employe in employes %}
+            {% for employe in employes|filter(e => e.username != 'admin') %}
             <tr>
                 <td data-label="{{ 'Matricule'|trans }}">
                     {{ employe.matricule }}
@@ -60,12 +60,12 @@
                     {{ 'now'|date('Y') - employe.dateNaissance|date('Y') }}
                     {{ "ans"|trans }}
                 </td>
-                <td data-label="{{ 'Sexe'|trans }}" class="text-center">
+                {# <td data-label="{{ 'Sexe'|trans }}" class="text-center">
                     {{ employe.sexe }}
                 </td>
                 <td data-label="{{ 'Téléphone'|trans }}">
                     {{ employe.phone }}
-                </td>
+                </td>#}
                 <td data-label="{{ 'Email'|trans }}">
                     {{ employe.email }}
                 </td>
