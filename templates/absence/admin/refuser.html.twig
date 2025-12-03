@@ -1,5 +1,6 @@
 {% extends
     is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
     is_granted('ROLE_RH') ? 'rh.html.twig' :
     is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
     is_granted('ROLE_STOCK') ? 'stock.html.twig' :
