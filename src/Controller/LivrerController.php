@@ -19,6 +19,7 @@ use App\Repository\LivrerResteRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\RetourProduitRepository;
 use App\Repository\StockRepository;
+use App\Service\WhatsAppService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -285,7 +286,7 @@ class LivrerController extends AbstractController
             $em->persist($livrer->getCommande());
             $em->flush();
             $this->addFlash('notice', 'livraison effectué avec succès');
-
+            
 
             $response = $this->redirectToRoute('livraison_index');
             $response->setSharedMaxAge(0);
@@ -879,11 +880,17 @@ class LivrerController extends AbstractController
                     $livrer->setReste(true);
                 }
             }
-
+            
             $em->persist($livrer);
             $em->persist($commande);
             $em->flush();
             $this->addFlash('notice', 'Livraison enregistrée avec succés');
+            // envoie sms notification
+            $text = "sortie de stock com:". $livrer->getCommande()->getId()." client:". $livrer->getCommande()->getUser()->getNom();
+            
+            $ws = new WhatsAppService("","","JambaarCorp");//connect
+            $ws->sendMessage('+221755238383', $text);
+            // fin sms
             // $response = $this->redirectToRoute('livraison_index');
             $response = $this->redirectToRoute('livraison_historique_show_print', ['id' => $commande->getId()]);
 

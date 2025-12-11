@@ -315,7 +315,9 @@
         {% else %}
         {% endfor %}
         <div class="col-4 mb-2 text-end">
-            <img src="{{ asset(livrer[0].signature) }}" alt="">
+            {% if commandereference.livrer == 1 %}
+                <img src="{{ asset(livrer[0].signature) }}" alt="">
+            {% endif %}
         </div>
     </div>
 </div>
