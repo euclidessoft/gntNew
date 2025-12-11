@@ -33,7 +33,7 @@ class NotificationController extends AbstractController
     #[Route('/test-whatsapp')]
 public function test()
 {
-    $ws = new WhatsAppService("","","JambaarCorp");//connect
+    $ws = new WhatsAppService("","","JambaarCorp");
     $ws->sendMessage('+221755238383', 'Boy Kine');
     return new Response("Message WhatsApp envoyé !");
 }
