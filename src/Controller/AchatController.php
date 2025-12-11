@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 
-#[Route("/{_locale}/achat") ]
+#[Route("/{_locale}/achat") ]//achat
 class AchatController extends AbstractController
 {
       public function __construct(private Security $security, private EntityManagerInterface $entityManager)
