@@ -27,11 +27,13 @@ use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\AbstractAsset;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Comparator;
+use Doctrine\DBAL\Schema\ComparatorConfig;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaDiff;
 use Doctrine\DBAL\Schema\Synchronizer\SchemaSynchronizer;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
+use Satag\DoctrineFirebirdDriver\Platforms\FirebirdPlatform;
 use Symfony\Component\Messenger\Exception\InvalidArgumentException;
 use Symfony\Component\Messenger\Exception\TransportException;
 use Symfony\Contracts\Service\ResetInterface;
@@ -110,13 +112,13 @@ class Connection implements ResetInterface
         // check for extra keys in options
         $optionsExtraKeys = array_diff(array_keys($options), array_keys(static::DEFAULT_OPTIONS));
         if (0 < \count($optionsExtraKeys)) {
-            throw new InvalidArgumentException(sprintf('Unknown option found: [%s]. Allowed options are [%s].', implode(', ', $optionsExtraKeys), implode(', ', array_keys(static::DEFAULT_OPTIONS))));
+            throw new InvalidArgumentException(\sprintf('Unknown option found: [%s]. Allowed options are [%s].', implode(', ', $optionsExtraKeys), implode(', ', array_keys(static::DEFAULT_OPTIONS))));
         }
 
         // check for extra keys in options
         $queryExtraKeys = array_diff(array_keys($query), array_keys(static::DEFAULT_OPTIONS));
         if (0 < \count($queryExtraKeys)) {
-            throw new InvalidArgumentException(sprintf('Unknown option found in DSN: [%s]. Allowed options are [%s].', implode(', ', $queryExtraKeys), implode(', ', array_keys(static::DEFAULT_OPTIONS))));
+            throw new InvalidArgumentException(\sprintf('Unknown option found in DSN: [%s]. Allowed options are [%s].', implode(', ', $queryExtraKeys), implode(', ', array_keys(static::DEFAULT_OPTIONS))));
         }
 
         return $configuration;
@@ -132,7 +134,7 @@ class Connection implements ResetInterface
     public function send(string $body, array $headers, int $delay = 0): string
     {
         $now = new \DateTimeImmutable('UTC');
-        $availableAt = $now->modify(sprintf('%+d seconds', $delay / 1000));
+        $availableAt = $now->modify(\sprintf('%+d seconds', $delay / 1000));
 
         $queryBuilder = $this->driverConnection->createQueryBuilder()
             ->insert($this->configuration['table_name'])
@@ -164,12 +166,12 @@ class Connection implements ResetInterface
         if ($this->driverConnection->getDatabasePlatform() instanceof MySQLPlatform) {
             try {
                 $this->driverConnection->delete($this->configuration['table_name'], ['delivered_at' => '9999-12-31 23:59:59']);
-            } catch (DriverException $e) {
-                // Ignore the exception
             } catch (TableNotFoundException $e) {
                 if ($this->autoSetup) {
                     $this->setup();
                 }
+            } catch (DriverException $e) {
+                // Ignore the exception
             }
         }
 
@@ -214,8 +216,8 @@ class Connection implements ResetInterface
             } elseif (preg_match('/FROM (.+) WHERE/', (string) $sql, $matches)) {
                 $fromClause = $matches[1];
                 $sql = str_replace(
-                    sprintf('FROM %s WHERE', $fromClause),
-                    sprintf('FROM %s WHERE', $this->driverConnection->getDatabasePlatform()->appendLockHint($fromClause, LockMode::PESSIMISTIC_WRITE)),
+                    \sprintf('FROM %s WHERE', $fromClause),
+                    \sprintf('FROM %s WHERE', $this->driverConnection->getDatabasePlatform()->appendLockHint($fromClause, LockMode::PESSIMISTIC_WRITE)),
                     $sql
                 );
             }
@@ -307,7 +309,7 @@ class Connection implements ResetInterface
             }
 
             if (!\is_string($tableName)) {
-                throw new \TypeError(sprintf('The table name must be an instance of "%s" or a string ("%s" given).', AbstractAsset::class, get_debug_type($tableName)));
+                throw new \TypeError(\sprintf('The table name must be an instance of "%s" or a string ("%s" given).', AbstractAsset::class, get_debug_type($tableName)));
             }
 
             return $tableName === $this->configuration['table_name'];
@@ -380,7 +382,7 @@ class Connection implements ResetInterface
     private function createAvailableMessagesQueryBuilder(): QueryBuilder
     {
         $now = new \DateTimeImmutable('UTC');
-        $redeliverLimit = $now->modify(sprintf('-%d seconds', $this->configuration['redeliver_timeout']));
+        $redeliverLimit = $now->modify(\sprintf('-%d seconds', $this->configuration['redeliver_timeout']));
 
         return $this->createQueryBuilder()
             ->where('m.queue_name = ?')
@@ -404,7 +406,9 @@ class Connection implements ResetInterface
 
         $alias .= '.';
 
-        if (!$this->driverConnection->getDatabasePlatform() instanceof OraclePlatform) {
+        if (!$this->driverConnection->getDatabasePlatform() instanceof FirebirdPlatform
+            && !$this->driverConnection->getDatabasePlatform() instanceof OraclePlatform
+        ) {
             return $queryBuilder->select($alias.'*');
         }
 
@@ -614,6 +618,10 @@ class Connection implements ResetInterface
 
     private function createComparator(AbstractSchemaManager $schemaManager): Comparator
     {
+        if (class_exists(ComparatorConfig::class)) {
+            return $schemaManager->createComparator((new ComparatorConfig())->withReportModifiedIndexes(false));
+        }
+
         return method_exists($schemaManager, 'createComparator')
             ? $schemaManager->createComparator()
             : new Comparator();

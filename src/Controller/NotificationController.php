@@ -2,12 +2,19 @@
 // src/Controller/NotificationController.php
 namespace App\Controller;
 
-use App\Entity\Notification;
-use App\Repository\NotificationRepository;
+// use App\Entity\Notification;
+// use App\Repository\NotificationRepository;
+// use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+// use Symfony\Component\HttpFoundation\JsonResponse;
+// use Symfony\Component\Routing\Annotation\Route;
+// use Symfony\Component\Security\Core\Security;
+
+use App\Service\WhatsAppNotifier;
+use App\Service\WhatsAppService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route("/{_locale}/notifications") ]
 class NotificationController extends AbstractController
@@ -15,6 +22,37 @@ class NotificationController extends AbstractController
     public function __construct(private \Symfony\Bundle\SecurityBundle\Security $security)
     {
     }
+
+    #[Route('/test/whatsapp', name: 'test_whatsapp')]
+    public function testWhatsApp(WhatsAppNotifier $wa)
+{
+    $wa->send('Hello depuis Symfony via WhatsApp !');
+    return new Response("Message WhatsApp envoyé !");
+}
+
+    #[Route('/test-whatsapp')]
+public function test()
+{
+    $ws = new WhatsAppService("","","JambaarCorp");
+    $ws->sendMessage('+221755238383', 'Boy Kine');
+    return new Response("Message WhatsApp envoyé !");
+}
+
+    #[Route('/webhook/whatsapp', name: 'whatsapp_webhook', methods: ['POST'])]
+    public function index(Request $request): Response
+    {
+        $from = $request->request->get('From');
+        $body = $request->request->get('Body');
+
+        // Log pour vérifier
+        file_put_contents(__DIR__ . '/webhook.log', "FROM: $from | MESSAGE: $body\n", FILE_APPEND);
+
+        // Réponse automatique
+        return new Response("<Response><Message>Message reçu: $body</Message></Response>", 200, [
+            'Content-Type' => 'text/xml'
+        ]);
+    }
+
 
 //
 //    /**

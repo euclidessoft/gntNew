@@ -9,7 +9,6 @@
 /public/uploads/
 /public/Documents/
 /var/
-/vendor/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

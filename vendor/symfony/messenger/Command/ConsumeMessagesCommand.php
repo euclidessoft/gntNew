@@ -23,7 +23,6 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -133,7 +132,7 @@ EOF
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
+        $io = new SymfonyStyle($input, $output);
 
         if ($this->receiverNames && !$input->getArgument('receivers')) {
             if (1 === \count($this->receiverNames)) {
@@ -146,7 +145,7 @@ EOF
 
             $io->writeln('Choose which receivers you want to consume messages from in order of priority.');
             if (\count($this->receiverNames) > 1) {
-                $io->writeln(sprintf('Hint: to consume from multiple, use a list of their names, e.g. <comment>%s</comment>', implode(', ', $this->receiverNames)));
+                $io->writeln(\sprintf('Hint: to consume from multiple, use a list of their names, e.g. <comment>%s</comment>', implode(', ', $this->receiverNames)));
             }
 
             $question = new ChoiceQuestion('Select receivers to consume:', $this->receiverNames, 0);
@@ -166,9 +165,9 @@ EOF
         $rateLimiters = [];
         foreach ($receiverNames = $input->getArgument('receivers') as $receiverName) {
             if (!$this->receiverLocator->has($receiverName)) {
-                $message = sprintf('The receiver "%s" does not exist.', $receiverName);
+                $message = \sprintf('The receiver "%s" does not exist.', $receiverName);
                 if ($this->receiverNames) {
-                    $message .= sprintf(' Valid receivers are: %s.', implode(', ', $this->receiverNames));
+                    $message .= \sprintf(' Valid receivers are: %s.', implode(', ', $this->receiverNames));
                 }
 
                 throw new RuntimeException($message);
@@ -187,7 +186,7 @@ EOF
         $stopsWhen = [];
         if (null !== $limit = $input->getOption('limit')) {
             if (!is_numeric($limit) || 0 >= $limit) {
-                throw new InvalidOptionException(sprintf('Option "limit" must be a positive integer, "%s" passed.', $limit));
+                throw new InvalidOptionException(\sprintf('Option "limit" must be a positive integer, "%s" passed.', $limit));
             }
 
             $stopsWhen[] = "processed {$limit} messages";
@@ -206,7 +205,7 @@ EOF
 
         if (null !== $timeLimit = $input->getOption('time-limit')) {
             if (!is_numeric($timeLimit) || 0 >= $timeLimit) {
-                throw new InvalidOptionException(sprintf('Option "time-limit" must be a positive integer, "%s" passed.', $timeLimit));
+                throw new InvalidOptionException(\sprintf('Option "time-limit" must be a positive integer, "%s" passed.', $timeLimit));
             }
 
             $stopsWhen[] = "been running for {$timeLimit}s";
@@ -215,19 +214,20 @@ EOF
 
         $stopsWhen[] = 'received a stop signal via the messenger:stop-workers command';
 
-        $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
-        $io->success(sprintf('Consuming messages from transport%s "%s".', \count($receivers) > 1 ? 's' : '', implode(', ', $receiverNames)));
+        $io = new SymfonyStyle($input, $output);
+        $errorIo = $io->getErrorStyle();
+        $io->success(\sprintf('Consuming messages from transport%s "%s".', \count($receivers) > 1 ? 's' : '', implode(', ', $receiverNames)));
 
         if ($stopsWhen) {
             $last = array_pop($stopsWhen);
             $stopsWhen = ($stopsWhen ? implode(', ', $stopsWhen).' or ' : '').$last;
-            $io->comment("The worker will automatically exit once it has {$stopsWhen}.");
+            $errorIo->comment("The worker will automatically exit once it has {$stopsWhen}.");
         }
 
-        $io->comment('Quit the worker with CONTROL-C.');
+        $errorIo->comment('Quit the worker with CONTROL-C.');
 
         if (OutputInterface::VERBOSITY_VERBOSE > $output->getVerbosity()) {
-            $io->comment('Re-run the command with a -vv option to see logs about consumed messages.');
+            $errorIo->comment('Re-run the command with a -vv option to see logs about consumed messages.');
         }
 
         $bus = $input->getOption('bus') ? $this->routableBus->getMessageBus($input->getOption('bus')) : $this->routableBus;
@@ -289,7 +289,7 @@ EOF
         } elseif (str_starts_with($max, '0')) {
             $max = \intval($max, 8);
         } else {
-            $max = (int) $max;
+            $max = (float) $max;
         }
 
         switch (substr(rtrim($memoryLimit, 'b'), -1)) {
@@ -302,6 +302,6 @@ EOF
             case 'k': $max *= 1024;
         }
 
-        return $max;
+        return (int) $max;
     }
 }
