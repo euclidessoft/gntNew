@@ -19,7 +19,7 @@ use App\Repository\LivrerResteRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\RetourProduitRepository;
 use App\Repository\StockRepository;
-use App\Service\WhatsAppService;
+use App\Service\SMSService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +27,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 #[Route("/{_locale}/livraison", name :"livraison_") ]
 class LivrerController extends AbstractController
@@ -739,7 +740,7 @@ class LivrerController extends AbstractController
     }
 
     #[Route("/valider/{id}", name :"valider") ]
-    public function valider(Request $request, Commande $commande, CommandeProduitRepository $comprodrepository, ProduitRepository $repository, SessionInterface $session)
+    public function valider(Request $request,ParameterBagInterface $params, Commande $commande, CommandeProduitRepository $comprodrepository, ProduitRepository $repository, SessionInterface $session)
     {
         if ($this->security->isGranted('ROLE_STOCK')) {
 
@@ -885,13 +886,20 @@ class LivrerController extends AbstractController
             $em->persist($commande);
             $em->flush();
             $this->addFlash('notice', 'Livraison enregistrée avec succés');
-            // envoie sms notification
-            $text = "sortie de stock com:". $livrer->getCommande()->getId()." client:". $livrer->getCommande()->getUser()->getNom();
             
-            $ws = new WhatsAppService("","","JambaarCorp");//connect
-            $ws->sendMessage('+221755238383', $text);
+            // envoie sms notification
+            try{
+                $text = "GNTPharma - sortie de stock com:". $livrer->getCommande()->getId()." client:". $livrer->getCommande()->getUser()->getNom();
+            
+                $ws = new SMSService($params);//connect
+                $ws->sendMessage($text);
+            }
+            catch(throwable $e){
+                Goto suit;
+            }
             // fin sms
             // $response = $this->redirectToRoute('livraison_index');
+            suit:
             $response = $this->redirectToRoute('livraison_historique_show_print', ['id' => $commande->getId()]);
 
             $session->remove('traitement');

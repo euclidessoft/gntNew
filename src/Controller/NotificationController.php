@@ -10,11 +10,12 @@ namespace App\Controller;
 // use Symfony\Component\Security\Core\Security;
 
 use App\Service\WhatsAppNotifier;
-use App\Service\WhatsAppService;
+use App\Service\SMSService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 #[Route("/{_locale}/notifications") ]
 class NotificationController extends AbstractController
@@ -31,10 +32,10 @@ class NotificationController extends AbstractController
 }
 
     #[Route('/test-whatsapp')]
-public function test()
+public function test(ParameterBagInterface $params)
 {
-    $ws = new WhatsAppService("","","JambaarCorp");//connect
-    $ws->sendMessage('+221755238383', 'Boy Kine');
+    $ws = new SMSService($params);//connect
+    $ws->sendMessage('Boy Kine');
     return new Response("Message WhatsApp envoyé !");
 }
 
