@@ -38,10 +38,14 @@ class ApprovisionnementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function resultat()
+    public function resultat(int $year)
     {
          $query = $this->createQueryBuilder('a');
            return $query->andWhere('a.fournisseur IS NOT NULL')
+            ->andWhere('a.date >= :start')
+            ->andWhere('a.date < :end')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
             ->getQuery()
             ->getResult();
     }

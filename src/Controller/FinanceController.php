@@ -12,6 +12,7 @@ use App\Entity\CommandeProduit;
 use App\Entity\Approvisionnement;
 use App\Entity\Facture;
 use App\Entity\Stock;
+use App\Entity\EtatStock;
 use App\Entity\Accompte;
 use App\Entity\Avoir;
 use App\Entity\Categorie;
@@ -2646,8 +2647,9 @@ class FinanceController extends AbstractController
     public function CompteResultat(Amortissement $amortis, Request $request, CommandeRepository $repository, CommandeProduitRepository $CommandeProduitRepository, ApprovisionnementRepository $Approrepository, PaieRepository $paieRepository): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            $commandes = $repository->findBy(['suivi' => true, 'payer' => true ]);// achat deja paye
-            $credits = $repository->findBy(['suivi' => true, 'payer' => false, 'livraison' => true, 'credit' => true ]);// achat a credit deja livree
+            $annee = date('Y');
+            $commandes = $repository->Annuelle($annee);// achat deja paye
+            $credits = $repository->credits($annee);// achat a credit deja livree
             // $creditavances = $repository->creditAvance();// achat a credit non livrer avec avance recu
             $vente = 0;
             $achat = 0;
@@ -2662,19 +2664,24 @@ class FinanceController extends AbstractController
             $impotettaxe = 0;
             $autresachats = 0;
 
-            $approvisionnements = $Approrepository->resultat();
+            $approvisionnements = $Approrepository->resultat($annee);
 
             // variation stock produit
-            $variation = 0;
+            
+            $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
+            $stockfinal = 0;// a definir
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $stock){
-                $variation += $stock->getQuantite() * $stock->getProduit()->getPght();
+                //definition stockfinal
+                $stockfinal += $stock->getQuantite() * $stock->getProduit()->getPght();
                 //$approvs = $Approrepository->findBy(['produit' => $stock->getProduit()->getId()]);
 
             }
+            $variation = $stockfinal - $stockinitial;
+            //fin variation
 
             foreach($approvisionnements as $approvisionnement){
-              // achat  
+              // achat annuel 
                // $reapprro = $reapprro + $approvisionnement->getQuantite() * $approvisionnement->getPght();
                 $achat = $achat  + $approvisionnement->getQuantite() * $approvisionnement->getPght();
                 
@@ -2722,7 +2729,7 @@ class FinanceController extends AbstractController
             // }
             
 
-            $restes = $this->entityManager->getRepository(LivrerReste::class)->findBy(['credit' => false]);
+            $restes = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee);
             foreach($restes as $reste){// on enleve les reste a livrer sur le montant des vente 
                 // $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
                 $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
@@ -2755,7 +2762,7 @@ class FinanceController extends AbstractController
 
 
             //charge personnel
-            $salaires = $paieRepository->compteResultat(date('Y'));
+            $salaires = $paieRepository->compteResultat($annee);
             foreach($salaires as $salaire){
                 $chargepersonnel = $chargepersonnel + $salaire->getSalaireNet() + $salaire->getTotalchargepatronal() + $salaire->getTotalChargeEmploye();
 
@@ -2867,7 +2874,7 @@ class FinanceController extends AbstractController
 
                  }  
                 
-                 $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+                 $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat($annee);
             
                 foreach($depenses as $depense){
                       $lignedepense = $depense->getCategorie();
@@ -2955,6 +2962,7 @@ class FinanceController extends AbstractController
     public function bilan(Amortissement $amortis, Solde $solde, Request $request, EcritureRepository $repository): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
+            $annee = date('Y');
             
             $ecritures = $repository->findAll();
             $caisse = 0;
@@ -2983,12 +2991,14 @@ class FinanceController extends AbstractController
             }
 
             $stockfinal = 0;
+            $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $stock){
                 $stockfinal += $stock->getQuantite() * $stock->getProduit()->getPght();
                 //$approvs = $Approrepository->findBy(['produit' => $stock->getProduit()->getId()]);
 
             }
+            $stock = $stockfinal - $stockinitial;
 
            $solde = ($caisse - $debitcaisse) + ($banque - $debitbanque);
             // amortissement
@@ -3112,7 +3122,7 @@ class FinanceController extends AbstractController
                     }
                 }
 
-                 $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+                 $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat($annee);
             
                 foreach($depenses as $depense){
                       $lignedepense = $depense->getCategorie();
@@ -3168,7 +3178,7 @@ class FinanceController extends AbstractController
             
 
             $detteavoir = 0;
-            $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
+            $avoirs = $this->entityManager->getRepository(Avoir::class)->Annuelle($annee);
             foreach($avoirs as $avoir){    
                 $detteavoir += $avoir->getMontant(); 
             }
@@ -3197,7 +3207,7 @@ class FinanceController extends AbstractController
 
             // avance client
             $avanceclient = 0;
-            $commandes = $this->entityManager->getRepository(Commande::class)->findBy(['suivi' => true, 'payer' => true, 'livraison' => false ]);// achat deja paye
+            $commandes = $this->entityManager->getRepository(Commande::class)->avances($annee);// achat deja paye
             foreach($commandes as $commande){
                   $avanceclient += $commande->getMontant();
                
@@ -3220,7 +3230,7 @@ class FinanceController extends AbstractController
             }
             
 
-            $restes = $this->entityManager->getRepository(LivrerReste::class)->findBy(['credit' => false]);
+            $restes = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee);
             foreach($restes as $reste){    
             //    $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
                 $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
@@ -3238,7 +3248,7 @@ class FinanceController extends AbstractController
             }
 
 
-            $creditavances = $this->entityManager->getRepository(Commande::class)->creditAvance();// achat a credit non livrer avec avance recu
+            $creditavances = $this->entityManager->getRepository(Commande::class)->creditAvance($annee);// achat a credit non livrer avec avance recu
             foreach($creditavances as $creditavance){
                
              
@@ -3274,7 +3284,7 @@ class FinanceController extends AbstractController
               
                 'detteavoir' => $detteavoir,
                 'solde' => $solde,
-                'stock' => $stockfinal,
+                'stock' => $stock,
                 'capital' => $capital,
                 'pret' => $montantpret - $remboursement,
                 'avanceclient' => $avanceclient,
@@ -3339,24 +3349,28 @@ class FinanceController extends AbstractController
     {
         
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            $commandes = $this->entityManager->getRepository(Commande::class)->findBy(['suivi' => true, 'payer' => true ]);// achat deja paye
-            $credits = $this->entityManager->getRepository(Commande::class)->findBy(['suivi' => true, 'payer' => false, 'livraison' => true, 'credit' => true ]);// achat a credit
+            $annee = date('Y');
+            $commandes = $this->entityManager->getRepository(Commande::class)->Annuelle($annee);// achat deja paye
+            $credits = $this->entityManager->getRepository(Commande::class)->credits($annee);// achat a credit
             // $creditavances = $this->entityManager->getRepository(Commande::class)->creditAvance();// achat a credit non livrer avec avance recu
             $vente = 0;
             $achat = 0;
             $reapprro = 0;
             $chargepersonnel= 0;
             $charge = 0;
-            $approvisionnements = $this->entityManager->getRepository(Approvisionnement::class)->resultat();
+            $approvisionnements = $this->entityManager->getRepository(Approvisionnement::class)->resultat($annee);
 
             // variation stock produit
-            $variation = 0;
+            $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
+            $stockfinal = 0;// a definir
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $stock){
-                $variation += $stock->getQuantite() * $stock->getProduit()->getPght();
+                //definition stockfinal
+                $stockfinal += $stock->getQuantite() * $stock->getProduit()->getPght();
                 //$approvs = $Approrepository->findBy(['produit' => $stock->getProduit()->getId()]);
 
             }
+            $variation = $stockfinal - $stockinitial;
 
             foreach($approvisionnements as $approvisionnement){
               // achat  
@@ -3425,7 +3439,7 @@ class FinanceController extends AbstractController
                 
             // }
 
-         $restes = $this->entityManager->getRepository(LivrerReste::class)->findBy(['credit' => false]);
+         $restes = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee);
             foreach($restes as $reste){// on enleve les reste a livrer sur le montant des vente 
                // $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
                 $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
@@ -3458,7 +3472,7 @@ class FinanceController extends AbstractController
 
 
             //charge personnel
-            $salaires = $this->entityManager->getRepository(Paie::class)->compteResultat(date('Y'));
+            $salaires = $this->entityManager->getRepository(Paie::class)->compteResultat($annee);
             foreach($salaires as $salaire){
                 $chargepersonnel = $chargepersonnel + $salaire->getSalaireNet() + $salaire->getTotalchargepatronal() + $salaire->getTotalChargeEmploye();
 
@@ -3566,7 +3580,7 @@ class FinanceController extends AbstractController
                 }
             }
             
-             $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat(date('Y'));
+             $depenses = $this->entityManager->getRepository(Depense::class)->compteResultat($annee);
             
                 foreach($depenses as $depense){
                       $lignedepense = $depense->getCategorie();

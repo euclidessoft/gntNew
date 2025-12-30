@@ -75,7 +75,7 @@ class CommandeRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function creditAvance()
+    public function creditAvance(int $year)
     {
         // achat a credit non livrer avec avance recu
         $query = $this ->createQueryBuilder('a')
@@ -84,6 +84,10 @@ class CommandeRepository extends ServiceEntityRepository
             ->AndWhere('a.livraison = :livraison')
             ->AndWhere('a.credit = :credit')
             ->AndWhere('a.versement > :versement')
+            ->andWhere('a.date >= :start')
+            ->andWhere('a.date < :end')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
             ->setParameter('payer', false)
             ->setParameter('suivi', true)
             ->setParameter('livraison', false)
@@ -91,6 +95,56 @@ class CommandeRepository extends ServiceEntityRepository
             ->setParameter('versement', 0)
         ;
         return $query->getQuery()
+            ->getResult();
+    }
+
+    public function Annuelle(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.date < :end')
+            ->andWhere('c.payer = :payer')
+            ->AndWhere('c.suivi = :suivi')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->setParameter('payer', true)
+            ->setParameter('suivi', true)
+            ->getQuery()
+            ->getResult();
+    }
+    public function avances(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.date < :end')
+            ->andWhere('c.payer = :payer')
+            ->AndWhere('c.suivi = :suivi')
+            ->AndWhere('c.livraison = :livraison')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->setParameter('payer', true)
+            ->setParameter('suivi', true)
+            ->setParameter('livraison', false)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function credits(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.date < :end')
+            ->andWhere('c.payer = :payer')
+            ->AndWhere('c.suivi = :suivi')
+            ->AndWhere('c.livraison = :livraison')
+            ->AndWhere('c.credit = :credit')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->setParameter('payer', false)
+            ->setParameter('suivi', true)
+            ->setParameter('livraison', true)
+            ->setParameter('credit', true)
+            ->getQuery()
             ->getResult();
     }
 

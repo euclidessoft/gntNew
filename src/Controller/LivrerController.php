@@ -889,7 +889,7 @@ class LivrerController extends AbstractController
             
             // envoie sms notification
             try{
-                $text = "GNTPharma - sortie de stock com:". $livrer->getCommande()->getId()." client:". $livrer->getCommande()->getUser()->getNom();
+                $text = "GNTPharma - sortie de stock\n Commande: ". $livrer->getCommande()->getId()."\n Client: ". $livrer->getCommande()->getUser()->getNom()."\n Montant: ".number_format($livrer->getCommande()->getMontant(), 2, ',', ' ');
             
                 $ws = new SMSService($params);//connect
                 $ws->sendMessage($text);

@@ -38,6 +38,20 @@ class FinancementRepository extends ServiceEntityRepository
             ->setParameter('val', false)
         ;
     }
+     public function Annuelle(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.date < :end')
+            ->AndWhere('c.rembourser = :rembourser')
+            ->AndWhere('c.apport = :apport')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->setParameter('rembourser', false)
+            ->setParameter('apport', false)
+            ->getQuery()
+            ->getResult();
+    }
   
 
     /*

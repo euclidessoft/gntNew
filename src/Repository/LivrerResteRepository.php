@@ -32,6 +32,19 @@ class LivrerResteRepository extends ServiceEntityRepository
         ;
     }
 
+    public function Annuelle(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.date < :end')
+            ->AndWhere('c.credit = :credit')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->setParameter('credit', false)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return LivrerReste[] Returns an array of LivrerReste objects
     //  */

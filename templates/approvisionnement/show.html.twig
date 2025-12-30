@@ -57,7 +57,7 @@
             {% for approvisionnement in approvisionnements %}
                 <tr>
                     <td> {{ approvisionnement.produit.id }} </td>
-                    <td class="text-start">{{ approvisionnement.produit.desigantion }} </td>
+                    <td class="text-start"><a href="{{ path('produit_show', {'id': approvisionnement.produit.id}) }}">{{ approvisionnement.produit.desigantion }}</a> </td>
                     <td>{{ approvisionnement.fournisseur ? approvisionnement.fournisseur.designation : 'Retour Produit'}} </td>
                     <td>{{ approvisionnement.lot }} </td>
                     <td>{{ approvisionnement.peremption|date('d/m/Y') }} </td>

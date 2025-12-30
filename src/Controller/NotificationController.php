@@ -34,9 +34,11 @@ class NotificationController extends AbstractController
     #[Route('/test-whatsapp')]
 public function test(ParameterBagInterface $params)
 {
-    $ws = new SMSService($params);//connect
-    $ws->sendMessage('Boy Kine');
-    return new Response("Message WhatsApp envoyé !");
+    // JAMBAAR_CORPORATION_01
+    // kf10yY6Jx7F04fw
+    // $ws = new SMSService($params);//connect number_format($livrer->getCommande()->getMontant(), 0, ',', ' ')
+    // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
+    return new Response("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500, 0, ',', ' '));
 }
 
     #[Route('/webhook/whatsapp', name: 'whatsapp_webhook', methods: ['POST'])]
