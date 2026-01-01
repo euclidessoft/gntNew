@@ -49,6 +49,7 @@ class FinanceController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             $ecritures = $repository->findAll();
+            $journal = $repository->journalAnnuelle(date('Y'));
             $caisse = 0;
             $banque = 0;
             $debitbanque = 0;
@@ -77,7 +78,7 @@ class FinanceController extends AbstractController
             return $this->render('finance/index.html.twig', [
                 'caisse' => $caisse - $debitcaisse,
                 'banque' => $banque - $debitbanque,
-                'ecritures' => $ecritures,
+                'ecritures' => $journal,
             ]);
         } else {
             $response = $this->redirectToRoute('security_logout');
@@ -2990,15 +2991,15 @@ class FinanceController extends AbstractController
 
             }
 
-            $stockfinal = 0;
-            $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
+            $stock = 0;
+           // $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
-            foreach($stocks as $stock){
-                $stockfinal += $stock->getQuantite() * $stock->getProduit()->getPght();
+            foreach($stocks as $sto){
+                $stock += $sto->getQuantite() * $sto->getProduit()->getPght();
                 //$approvs = $Approrepository->findBy(['produit' => $stock->getProduit()->getId()]);
 
             }
-            $stock = $stockfinal - $stockinitial;
+            // $stock = $stockfinal - $stockinitial;
 
            $solde = ($caisse - $debitcaisse) + ($banque - $debitbanque);
             // amortissement
@@ -3278,7 +3279,11 @@ class FinanceController extends AbstractController
                     $dettefournisseur += $facture->getMontant();
                    
             }
-           
+
+            //repport $
+            $repport = 0;
+          $rep = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 1]);
+           $rep !== null ?  $repport = $rep->getMontant() : null;
 
             $response = $this->render('finance/bilan.html.twig',[
               
@@ -3321,6 +3326,7 @@ class FinanceController extends AbstractController
                 'amortautresincorp' => $amortautresincorp,
                 'amortdeveloppement' => $amortdeveloppement,
                 'resultat' => $this->ResultatInterne(),
+                'repport' => $repport,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

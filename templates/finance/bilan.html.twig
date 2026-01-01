@@ -687,7 +687,8 @@
                 14
             </td>
             <td>
-                {% set ch = 0 %}                                                               
+                {% set ch = repport %} 
+                {{ ch != 0 ? ch|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                               
             </td>
             <td>
             

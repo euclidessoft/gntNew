@@ -171,4 +171,14 @@ class EcritureRepository extends ServiceEntityRepository
             ->getQuery();
         return $query->getResult();
     }
+     public function journalAnnuelle(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.date < :end')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->getQuery()
+            ->getResult();
+    }
 }

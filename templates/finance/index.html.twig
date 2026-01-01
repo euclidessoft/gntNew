@@ -107,10 +107,10 @@
                                         {% endif %}
                                     </td>
                                     <td data-label="{{ 'Débit'|trans }}">
-                                        <a href="{{ path('finance_journal_compte',{ 'compte': ecriture.comptecredit  }) }}">
+                                        {# <a href="{{ path('finance_journal_compte',{ 'compte': ecriture.comptecredit  }) }}"> #}
                                             {#                                    {{ ecriture.debit ? ecriture.comptedebit : '' }}#}
                                             {{ ecriture.comptecredit ~" - "~ ecriture.libellecomptecredit }}
-                                        </a>
+                                        {# </a> #}
                                     </td>
                                     {#                                    <td data-label="{{ 'Référence'|trans }}">#}
 

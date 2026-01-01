@@ -11,11 +11,13 @@ namespace App\Controller;
 
 use App\Service\WhatsAppNotifier;
 use App\Service\SMSService;
+use App\Service\LamService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route("/{_locale}/notifications") ]
 class NotificationController extends AbstractController
@@ -54,6 +56,25 @@ public function test(ParameterBagInterface $params)
         return new Response("<Response><Message>Message reçu: $body</Message></Response>", 200, [
             'Content-Type' => 'text/xml'
         ]);
+    }
+
+       #[Route('/test-lam')]
+    public function testlam(HttpClientInterface $client)
+    {
+        $lam = new lamService("755238383", "GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500, 2, ',', ' '), $client);
+        
+        try{
+            $response = $lam->send();
+        }
+        catch(throwable $e){
+            $result = false;
+        }
+        
+        // JAMBAAR_CORPORATION_01
+        // kf10yY6Jx7F04fw
+        // $ws = new SMSService($params);//connect number_format($livrer->getCommande()->getMontant(), 0, ',', ' ')
+        // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
+        return new Response($response);
     }
 
 
