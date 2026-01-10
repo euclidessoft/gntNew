@@ -19,6 +19,19 @@ class FactureRepository extends ServiceEntityRepository
         parent::__construct($registry, Facture::class);
     }
 
+     public function Annuelle(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+        ->join('c.approvisionner', 'a')
+        ->where('a.date BETWEEN :start AND :end')
+            ->andWhere('c.payer = :payer')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->setParameter('payer', false)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Facture[] Returns an array of Facture objects
     //  */

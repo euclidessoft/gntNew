@@ -391,7 +391,10 @@
             <td>
                 {{ bb != 0 ? bb|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
-            <td></td>
+            <td>
+              {% set bbpassee = stockpassee %}
+                {{ bbpassee != 0 ? bbpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
+            </td>
             </tr>
             <tr>
             <td>BG</td>
@@ -406,7 +409,11 @@
             <td>
             {{ bg != 0 ? bg|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
-            <td></td>
+            <td>
+            {% set bgpassee = creancepassee + avancefournisseurpassee + autrecreancepassee %}
+
+            {{ bgpassee != 0 ? bgpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
+            </td>
             </tr>
             <tr>
             <td>BH</td>
@@ -434,7 +441,10 @@
             <td>
             {{ bi != 0 ? bi|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </td>
-            <td></td>
+            <td>
+            {% set bipassee = creancepassee %}
+            {{ bipassee != 0 ? bipassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
+            </td>
             </tr>
             <tr>
             <td>BJ</td>
@@ -463,7 +473,10 @@
             <tH>
                 {{ bk != 0 ? bk|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
             </tH>
-            <tH></tH>
+            <tH>
+             {% set bkpassee = bbpassee + bgpassee %}
+                {{ bkpassee != 0 ? bkpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}
+            </tH>
             </tr>
             <tr>
             <td>BQ</td>
@@ -506,7 +519,10 @@
             <td>
             {{ bs|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </td>
-            <td></td>
+            <td>
+             {% set bspassee = soldepassee %}
+            {{ bspassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
+            </td>
             </tr>
             <tr>
             <tH>BT</tH>
@@ -520,7 +536,10 @@
             <tH>
             {{ bt|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
-            <tH></tH>
+            <tH>
+             {% set btpassee = bq + br + bspassee %}
+            {{ btpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
+            </tH>
             </tr>
             <tr>
             <td>BU</td>
@@ -552,7 +571,10 @@
             <tH>
                 {{ (bz - bzr)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
             </tH>
-            <tH></tH>
+            <tH>
+             {% set bzpassee = az + ba + bkpassee + btpassee + bu %}
+                {{ bzpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
+            </tH>
             </tr>
             
             </tbody>
@@ -587,9 +609,10 @@
                 {% set ca = capital %}
                  {{ ca|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+            {% set capassee = capital %}
+                 {{ capassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
+            </th>
         </tr>
         <tr>
             <td>
@@ -691,7 +714,8 @@
                 {{ ch != 0 ? ch|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                               
             </td>
             <td>
-            
+                {% set chpassee = repportpassee %} 
+                {{ chpassee != 0 ? chpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                               
             </td>
         </tr>
         <tr>
@@ -705,12 +729,13 @@
             
             </td>
             <th>
-                {% set cj = resultat %}
+                {% set cj = resultat['xi'] %}
                 {{ cj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+                {% set cjpassee = resultat['xipassee'] %}
+                {{ cjpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
+            </th>
         </tr>
         <tr>
             <td>
@@ -760,9 +785,10 @@
                 {% set cp = ca + cb + cd + ce + cf + cg + ch + cj + cl + cm %}
                 {{ cp|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+                {% set cppassee = capassee + cb + cd + ce + cf + cg + chpassee + cjpassee + cl + cm %}
+                {{ cppassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
+            </th>
         </tr>
         <tr>
             <td>
@@ -779,7 +805,8 @@
                  {{ da != 0 ? da|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                 
             </td>
             <td>
-            
+                {% set dapassee = pret + detteavoirpassee %}
+                 {{ dapassee != 0 ? dapassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                 
             </td>
         </tr>
         <tr>
@@ -832,9 +859,10 @@
                 {% set dd = da + db + dc %}
                  {{ dd != 0 ? dd|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+                {% set ddpassee = dapassee + db + dc %}
+                 {{ ddpassee != 0 ? ddpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
+            </th>
         </tr>
         <tr>
             <th>
@@ -850,9 +878,10 @@
                 {% set df = cp + dd %}
                 {{ df|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+                {% set dfpassee = cppassee + ddpassee %}
+                {{ dfpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
+            </th>
         </tr>
         <tr>
             <td>
@@ -887,7 +916,8 @@
                  {{ di != 0 ? di|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
-            
+                {% set dipassee = avanceclientpassee %}
+                 {{ dipassee != 0 ? dipassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
         </tr>
         <tr>
@@ -905,7 +935,8 @@
                  {{ dj != 0 ? dj|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
             <td>
-            
+                {% set djpassee = dettefournisseurpassee %}
+                 {{ djpassee != 0 ? djpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </td>
         </tr>
         <tr>
@@ -976,9 +1007,10 @@
                 {% set dp = dh + di + dj + dk + dm + dn %}
                 {{ dp|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+                {% set dppassee = dh + dipassee + djpassee + dk + dm + dn %}
+                {{ dppassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}                                                                
+            </th>
         </tr>
         <tr>
             <td>
@@ -1030,9 +1062,10 @@
                 {% set dt = dq + dr %}
                  {{ dt != 0 ? dt|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+                {% set dtpassee = dq + dr %}
+                 {{ dtpassee != 0 ? dtpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}                                                                
+            </th>
         </tr>
         <tr>
             <td>
@@ -1066,9 +1099,10 @@
                 {% set dz = df + dp + dt + dv %}
                  {{ dz|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}                                                                
             </th>
-            <td>
-
-            </td>
+            <th>
+                {% set dzpassee = dfpassee + dppassee + dtpassee + dv %}
+                 {{ dzpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}                                                                
+            </th>
         </tr>
         </tbody>
     </table>

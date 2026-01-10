@@ -61,7 +61,8 @@
                         <td>+</td>
                         <td>22</td>
                         <td> {{ vente|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        <td>-</td>
+                        <td> {{ ventepassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                        
                     </tr>
                     <tr>
                         <td>TA</td>
@@ -69,7 +70,8 @@
                         <td>-</td>
                         <td>21</td>
                         <td> {{ achat|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </td>
-                        <td>-</td>
+                        <td> {{ achatpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </td>
+                       
                     </tr>
                     <tr>
                         <td>RB</td>
@@ -78,8 +80,11 @@
                         <td>6</td>
                         <td> 
                         {{ variation|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        </td> 
+                        <td> 
+                        {{ variationpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </td>
-                        <td>-</td>
+                        
                     </tr>
                     <tr>
                         <td>XA</td>
@@ -90,7 +95,11 @@
                         {% set xa = vente - (achat - variation) %}
                         {{ xa|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </th>
-                        <td>-</td>
+                         <th> 
+                        {% set xapassee = ventepassee - (achatpassee - variationpassee) %}
+                        {{ xapassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        </th>
+                      
                     </tr>
                     <tr>
                         <td>TB</td>
@@ -100,7 +109,9 @@
                         <td> 
                         {% set tb = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tbpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TC</td>
@@ -110,7 +121,9 @@
                         <td> 
                         {% set tc = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tcpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TD</td>
@@ -120,7 +133,9 @@
                        <td> 
                         {% set td = 0 %}
                         </td>
-                        <td>-</td>
+                       <td> 
+                        {% set tdpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>XB</td>
@@ -130,7 +145,8 @@
                         {% set xb = vente + tb + tc + td  %}
                         </td>
                         <th> {{ vente|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
-                        <td>-</td>
+                        <th> {{ ventepassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
+                       
                     </tr>
                     <tr>
                         <td>TE</td>
@@ -140,7 +156,9 @@
                         <td> 
                         {% set te = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tepassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TF</td>
@@ -150,7 +168,9 @@
                         <td> 
                         {% set tf = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tfpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TG</td>
@@ -160,7 +180,9 @@
                         <td> 
                         {% set tg = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tgpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TH</td>
@@ -170,7 +192,9 @@
                         <td> 
                         {% set th = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set thpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TI</td>
@@ -180,7 +204,9 @@
                        <td> 
                         {% set ti = 0 %}
                         </td>
-                        <td>-</td>
+                       <td> 
+                        {% set tipassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RC</td>
@@ -190,7 +216,9 @@
                         <td> 
                         {% set rc = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rcpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RD</td>
@@ -200,7 +228,9 @@
                        <td> 
                         {% set rd = 0 %}
                         </td>
-                        <td>-</td>
+                         <td> 
+                        {% set rdpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RE</td>
@@ -211,7 +241,10 @@
                         {% set re = autresachats %}
                          {{ re != 0 ? re|number_format(0,'',' ')}}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set repassee = autresachatspassee %}
+                         {{ repassee != 0 ? repassee|number_format(0,'',' ')}}
+                        </td>
                     </tr>
                     <tr>
                         <td>RF</td>
@@ -221,7 +254,9 @@
                         <td> 
                         {% set rf = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rfpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RG</td>
@@ -232,7 +267,10 @@
                         {% set rg = transport %}
                         {{ rg != 0 ? rg|number_format(0,'',' ')}}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rgpassee = transportpassee %}
+                        {{ rgpassee != 0 ? rgpassee|number_format(0,'',' ')}}
+                        </td>
                     </tr>
                     <tr>
                         <td>RH</td>
@@ -243,7 +281,10 @@
                         {% set rh = servicesexternes %}
                         {{ rh != 0 ? rh|number_format(0,'',' ')}}
                         </td>
-                        <td>-</td>
+                       <td> 
+                        {% set rhpassee = servicesexternespassee %}
+                        {{ rhpassee != 0 ? rhpassee|number_format(0,'',' ')}}
+                        </td>
                     </tr>
                     <tr>
                         <td>RI</td>
@@ -252,10 +293,12 @@
                         <td>25</td>
                         <td> 
                         {% set ri = impotettaxe %}
-                        {{ ri != 0 ? ri|number_format(0,'',' ')}}
-                         
+                        {{ ri != 0 ? ri|number_format(0,'',' ')}}   
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set ripassee = impotettaxepassee %}
+                        {{ ripassee != 0 ? ripassee|number_format(0,'',' ')}}   
+                        </td>
                     </tr>
                     <tr>
                         <td>RJ</td>
@@ -263,10 +306,13 @@
                         <td>-</td>
                         <td>26</td>
                         <td> 
-                        {% set rj = autreschrages %}
+                        {% set rj = autrescharges %}
                         {{ rj != 0 ? rj|number_format(0,'',' ')}}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rjpassee = autreschargespassee %}
+                        {{ rjpassee != 0 ? rjpassee|number_format(0,'',' ')}}
+                        </td>
                     </tr>
                     <tr>
                         <td>XC</td>
@@ -280,7 +326,13 @@
                           {# {% set xc = xa + vente + variation + (te + tf + tg + th + ti)  - (rc + rd + re + rf + rg + rh + ri + rj ) %} #}
                          {{ xc|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
                          </th>
-                        <td>-</td>
+                        <th>
+                        {# {% set xc = xa + tb + tc + td + te + tf + tg + th + ti - (rc + rd + re + rf + rg + rh + ri + rj ) %} #}
+                        {% set xcpassee = xapassee + (tbpassee + tcpassee + tdpassee)+ (tepassee + tfpassee + tgpassee + thpassee + tipassee) - (rcpassee + rdpassee + repassee + rfpassee + rgpassee + rhpassee + ripassee + rjpassee ) %}
+
+                          {# {% set xc = xa + vente + variation + (te + tf + tg + th + ti)  - (rc + rd + re + rf + rg + rh + ri + rj ) %} #}
+                         {{ xcpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
+                         </th>
                     </tr>
                     <tr>
                         <td>RK</td>
@@ -288,7 +340,7 @@
                         <td>-</td>
                         <td>27</td>
                         <td>{{ chargepersonnel|number_format(0,'', ' ') }}</td>
-                        <td>-</td>
+                        <td>{{ chargepersonnelpassee|number_format(0,'', ' ') }}</td>
                     </tr>
                     <tr>
                         <td>XD</td>
@@ -299,7 +351,10 @@
                         {% set xd = xc - chargepersonnel %}
                         {{ xd|number_format(0,'', ' ') }}
                         </th>
-                        <td>-</td>
+                        <th> 
+                        {% set xdpassee = xcpassee - chargepersonnelpassee %}
+                        {{ xdpassee|number_format(0,'', ' ') }}
+                        </th>
                     </tr>
                     <tr>
                         <td>TJ</td>
@@ -309,7 +364,9 @@
                        <td> 
                         {% set tj = 0 %}
                         </td>
-                        <td>-</td>
+                       <td> 
+                        {% set tjpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RL</td>
@@ -319,7 +376,9 @@
                         <td> 
                         {% set rl = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rlpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>XE</td>
@@ -330,7 +389,10 @@
                         {% set xe = xd + tj + rl %}
                         {{ xe|number_format(0,'', ' ') }}
                         </th>
-                        <td>-</td>
+                        <th>
+                        {% set xepassee = xdpassee + tjpassee + rlpassee %}
+                        {{ xepassee|number_format(0,'', ' ') }}
+                        </th>
                     </tr>
                     <tr>
                         <td>TK</td>
@@ -340,7 +402,9 @@
                         <td> 
                         {% set tk = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tkpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TL</td>
@@ -350,7 +414,9 @@
                         <td> 
                         {% set tl = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tlpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TM</td>
@@ -360,7 +426,9 @@
                         <td> 
                         {% set tm = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tmpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RM</td>
@@ -371,7 +439,10 @@
                         {% set rm = interet + charge %}
                          {{ rm != 0 ? rm|number_format(0,'',' ')}}
                         </td>
-                        <td>-</td>
+                        <td>
+                        {% set rmpassee = interetpassee + chargepassee %}
+                         {{ rmpassee != 0 ? rmpassee|number_format(0,'',' ')}}
+                        </td>
                     </tr>
                     <tr>
                         <td>RN</td>
@@ -379,8 +450,8 @@
                         <td>-</td>
                         <td>3C&28</td>
                         <td>{{ amortissement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}} </td>
-                        {# {{ rn != 0 ? rn|number_format(0,'', ' ') : '' }} #}
-                        <td>-</td>
+                        <td>{{ amortissementpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}} </td>
+                      
                     </tr>
                     <tr>
                         <td>XF</td>
@@ -391,7 +462,10 @@
                         {% set xf = tk + tl + tm - (rm + amortissement) %}
                         {{ xf|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </th>
-                        <td>-</td>
+                        <th> 
+                        {% set xfpassee = tkpassee + tlpassee + tmpassee - (rmpassee + amortissementpassee) %}
+                        {{ xfpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        </th>
                     </tr>
                     <tr>
                         <td>XG</td>
@@ -402,7 +476,10 @@
                         {% set xg = xe + xf %}
                         {{ xg|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </th>
-                        <td>-</td>
+                        <th> 
+                        {% set xgpassee = xepassee + xfpassee %}
+                        {{ xgpassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        </th>
                     </tr>
                     <tr>
                         <td>TN</td>
@@ -412,7 +489,9 @@
                         <td> 
                         {% set tn = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set tnpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>TO</td>
@@ -422,7 +501,9 @@
                        <td> 
                         {% set to = 0 %}
                         </td>
-                        <td>-</td>
+                       <td> 
+                        {% set topassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RO</td>
@@ -432,7 +513,9 @@
                        <td> 
                         {% set ro = 0 %}
                         </td>
-                        <td>-</td>
+                       <td> 
+                        {% set ropassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RP</td>
@@ -442,7 +525,9 @@
                         <td> 
                         {% set rp = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rppassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>XH</td>
@@ -452,7 +537,9 @@
                         <td> 
                         {% set xh = ( tn + to ) - ( ro + rp) %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set xhpassee = ( tnpassee + topassee ) - ( ropassee + rppassee) %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RQ</td>
@@ -462,7 +549,9 @@
                         <td> 
                         {% set rq = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rqpassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RS</td>
@@ -472,7 +561,9 @@
                         <td> 
                         {% set rs = 0 %}
                         </td>
-                        <td>-</td>
+                        <td> 
+                        {% set rspassee = 0 %}
+                        </td>
                     </tr>
                     <tr>
                         <td>XI</td>
@@ -483,7 +574,10 @@
                         {% set xi = xg + xh - rq - rs %}
                         {{ xi|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
                         </th>
-                        <td>-</td>
+                        <th>
+                        {% set xipassee = xgpassee + xhpassee - rqpassee - rspassee %}
+                        {{ xipassee|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}
+                        </th>
                     </tr>
                     
                     </tbody>

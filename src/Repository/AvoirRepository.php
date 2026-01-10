@@ -19,13 +19,13 @@ class AvoirRepository extends ServiceEntityRepository
         parent::__construct($registry, Avoir::class);
     }
 
-     public function Annuelle(int $year): array
+     public function Annuellepassee(int $year): array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.date >= :start')
-            ->andWhere('c.date < :end')
-            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
-            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->andWhere('c.rebourser = :rembourser')
+            ->andWhere('c.date <= :end')
+            ->setParameter('rembourser', false)
+            ->setParameter('end', new \DateTimeImmutable(($year - 1) . "-12-31"))
             ->getQuery()
             ->getResult();
     }

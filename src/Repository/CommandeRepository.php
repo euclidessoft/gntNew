@@ -115,12 +115,12 @@ class CommandeRepository extends ServiceEntityRepository
     public function avances(int $year): array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.date >= :start')
+            // ->andWhere('c.date >= :start')
             ->andWhere('c.date < :end')
             ->andWhere('c.payer = :payer')
             ->AndWhere('c.suivi = :suivi')
             ->AndWhere('c.livraison = :livraison')
-            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            // ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
             ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
             ->setParameter('payer', true)
             ->setParameter('suivi', true)

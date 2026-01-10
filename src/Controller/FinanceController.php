@@ -2650,26 +2650,42 @@ class FinanceController extends AbstractController
         if ($this->security->isGranted('ROLE_FINANCE')) {
             $annee = date('Y');
             $commandes = $repository->Annuelle($annee);// achat deja paye
+            $commandespassee = $repository->Annuelle($annee-1);// achat deja paye
             $credits = $repository->credits($annee);// achat a credit deja livree
+            $creditspassee = $repository->credits($annee-1);// achat a credit deja livree
             // $creditavances = $repository->creditAvance();// achat a credit non livrer avec avance recu
             $vente = 0;
+            $ventepassee = 0;
             $achat = 0;
+            $achatpassee = 0;
             $reapprro = 0;
+            $reapprropassee = 0;
             $provision = 0;
-            $chargepersonnel= 0;
+            $provisionpassee = 0;
+            $chargepersonnel = 0;
+            $chargepersonnelpassee = 0;
             $charge = 0;
+            $chargepassee = 0;
             $amortissement = 0;
+            $amortissementpassee = 0;
             $transport = 0;
+            $transportpassee = 0;
             $servicesexternes = 0;
-            $autreschrages = 0;
+            $servicesexternespassee = 0;
+            $autrescharges = 0;
+            $autreschargespassee = 0;
             $impotettaxe = 0;
+            $impotettaxepassee = 0;
             $autresachats = 0;
+            $autresachatspassee = 0;
 
             $approvisionnements = $Approrepository->resultat($annee);
+            $approvisionnementspassee = $Approrepository->resultat($annee-1);
 
             // variation stock produit
             
-            $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
+            $stockpassee = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1]);
+            $stockinitial = $stockpassee->getStockfinal();
             $stockfinal = 0;// a definir
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $stock){
@@ -2679,12 +2695,19 @@ class FinanceController extends AbstractController
 
             }
             $variation = $stockfinal - $stockinitial;
+            $variationpassee = $stockpassee->getStockfinal() - $stockpassee->getStockinitial();
             //fin variation
 
             foreach($approvisionnements as $approvisionnement){
               // achat annuel 
                // $reapprro = $reapprro + $approvisionnement->getQuantite() * $approvisionnement->getPght();
                 $achat = $achat  + $approvisionnement->getQuantite() * $approvisionnement->getPght();
+                
+            }
+             foreach($approvisionnementspassee as $approvisionnement){
+              // achat annuel 
+               // $reapprro = $reapprro + $approvisionnement->getQuantite() * $approvisionnement->getPght();
+                $achatpassee = $achatpassee  + $approvisionnement->getQuantite() * $approvisionnement->getPght();
                 
             }
 
@@ -2709,6 +2732,12 @@ class FinanceController extends AbstractController
                     }
                     
                 }*/
+            } 
+            foreach($commandespassee as $commande){
+                if($commande->getLivraison() == true){
+                $ventepassee = $ventepassee + $commande->getMontant() - $commande->getAcompte();
+                }
+             
             }          
 
             foreach($credits as $credit){// ne tient pas compte des versement
@@ -2719,6 +2748,17 @@ class FinanceController extends AbstractController
                 }
              
                 $vente = $vente + $credit->getMontant() - $rest - $credit->getAcompte() - $commande->getEscompte();
+                
+            } 
+
+            foreach($creditspassee as $credit){// ne tient pas compte des versement
+                $rest = 0;
+                $restes = $this->entityManager->getRepository(LivrerReste::class)->findby(['commande' => $credit]);
+                foreach($restes as $reste){
+                    $rest += ($reste->getQuantite()- $reste->getQuantitelivre()) * $reste->getSession();
+                }
+             
+                $ventepassee = $ventepassee + $credit->getMontant() - $rest - $credit->getAcompte() - $commande->getEscompte();
                 
             }          
 
@@ -2746,12 +2786,27 @@ class FinanceController extends AbstractController
                     $vente -= $restelivrer * $reste->getSession() + $tva;
                 // } 
             }
-            
-   /*         $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
-            foreach($avoirs as $avoir){    
-                $autreschrages += $avoir->getMontant(); 
+            $restespassee = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee-1);
+            foreach($restespassee as $reste){// on enleve les reste a livrer sur le montant des vente 
+                // $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
+                $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
+                $tva = 0;
+
+                    $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+                    $ventepassee -= $restelivrer * $reste->getSession() + $tva;
             }
-*/
+            
+            $avoirs = $this->entityManager->getRepository(Avoir::class)->findby(['rebourser' => false]);
+            foreach($avoirs as $avoir){    
+                $autrescharges += $avoir->getMontant(); 
+            }
+            
+            $avoirspassee = $this->entityManager->getRepository(Avoir::class)->Annuellepassee($annee);
+            foreach($avoirspassee as $avoir){    
+                $autreschargespassee += $avoir->getMontant(); 
+            }
+            $autrescharges = $autrescharges - $autreschargespassee;// on enleve les charges des annees passees
+
             // $credits = $repository->findBy(['paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]);// achat a credit
             // foreach($credits as $commande){
             //     $vente = $vente + $commande->getMontant();
@@ -2770,6 +2825,13 @@ class FinanceController extends AbstractController
                 
             }
 
+            $salairespassee = $paieRepository->compteResultat($annee-1);
+            foreach($salairespassee as $salaire){
+                $chargepersonnelpassee = $chargepersonnelpassee + $salaire->getSalaireNet() + $salaire->getTotalchargepatronal() + $salaire->getTotalChargeEmploye();
+
+                
+            }
+
             // interet pret bancaire
             $interet = 0;
              $prets = $this->entityManager->getRepository(Financement::class)->findBy(['rembourser' => false, 'apport' => false]);
@@ -2778,6 +2840,13 @@ class FinanceController extends AbstractController
 
                 $interet = $interet + ((($pret->getMontant() * $pret->getTaux()/100) / $pret->getDuree()) * count($pret->getRemboursements()));    
             }
+            $interetpassee = 0;
+            //  $pretpassees = $this->entityManager->getRepository(Financement::class)->findBy(['rembourser' => false, 'apport' => false]);
+            //  foreach($pretspassee as $pret){
+                
+
+            //     $interetpassee = $interetpassee + ((($pret->getMontant() * $pret->getTaux()/100) / $pret->getDuree()) * count($pret->getRemboursements()));    
+            // }
             
             // amortissement et charge
             
@@ -2918,23 +2987,79 @@ class FinanceController extends AbstractController
 
                       
                 }
+             $depensespassee = $this->entityManager->getRepository(Depense::class)->compteResultat($annee-1);
+            
+                foreach($depensespassee as $depense){
+                      $lignedepense = $depense->getCategorie();
+
+
+                    if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
+
+                    //terrain pas amortissement
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 3) === "604" 
+                    || substr($lignedepense->getCompte(), 0, 3) === "605" 
+                    || substr($lignedepense->getCompte(), 0, 3) === "608") {
+
+                        $autresachatspassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "62"
+                    || substr($lignedepense->getCompte(), 0, 2) === "63") {
+
+                        $servicesexternespassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "61") {
+
+                        $transportpassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "65") {
+
+                        $autreschragespassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "64") {
+
+                        $impotettaxepassee += $depense->getMontant(); 
+                
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "67") {
+                        $chargepassee += $depense->getMontant(); 
+                    }elseif (substr($lignedepense->getCompte(), 0, 3) === "697") {
+                        $provisionpassee += $depense->getMontant(); 
+                    }
+                    
+                    
+
+                      
+                }
             
            
 
             $response = $this->render('finance/resultat.html.twig',[
                 'vente' => $vente,
+                'ventepassee' => $ventepassee,
                 'achat' => $achat,
+                'achatpassee' => $achatpassee,
                 'transport' => $transport,
+                'transportpassee' => $transportpassee,
                 'provision' => $provision,
+                'provisionpassee' => $provisionpassee,
                 'chargepersonnel' => $chargepersonnel,
+                'chargepersonnelpassee' => $chargepersonnelpassee,
                 'interet' => $interet,
+                'interetpassee' => $interetpassee,
                 'amortissement' => $amortissement,
+                'amortissementpassee' => $amortissementpassee,
                 'variation' => $variation,
+                'variationpassee' => $variationpassee,
                 'charge' => $charge,
+                'chargepassee' => $chargepassee,
                 'servicesexternes' => $servicesexternes,
-                'autreschrages' => $autreschrages,
+                'servicesexternespassee' => $servicesexternespassee,
+                'autrescharges' => $autrescharges,
+                'autreschargespassee' => $autreschargespassee,
                 'impotettaxe' => $impotettaxe,
+                'impotettaxepassee' => $impotettaxepassee,
                 'autresachats' => $autresachats,
+                'autresachatspassee' => $autresachatspassee,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -2991,8 +3116,34 @@ class FinanceController extends AbstractController
 
             }
 
+            $ecriturespassee = $repository->Annuelle($annee-1);
+            $caissepassee = 0;
+            $banquepassee = 0;
+            $debitbanquepassee = 0;
+            $debitcaissepassee = 0;
+            foreach ($ecriturespassee as $ecriture) {
+                if($ecriture->getType() != null){
+                    $credit = null;
+                    $debit = null;
+                    if ($ecriture->getCredit() != null) {
+                        $credit = $ecriture->getCredit();
+                        $credit->getType() == 'Espece' ?
+                            $caissepassee = $caissepassee + $credit->getMontant() :
+                            $banquepassee = $banquepassee + $credit->getMontant();
+                    } else {
+
+                        $debit = $ecriture->getDebit();
+                        $debit->getType() == 'Espece' ?
+                            $debitcaissepassee = $debitcaissepassee + $debit->getMontant() :
+                            $debitbanquepassee = $debitbanquepassee + $debit->getMontant();
+
+                    }
+                }
+
+            }
+
             $stock = 0;
-           // $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
+            $stockpassee = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $sto){
                 $stock += $sto->getQuantite() * $sto->getProduit()->getPght();
@@ -3002,6 +3153,7 @@ class FinanceController extends AbstractController
             // $stock = $stockfinal - $stockinitial;
 
            $solde = ($caisse - $debitcaisse) + ($banque - $debitbanque);
+           $soldepassee = ($caissepassee - $debitcaissepassee) + ($banquepassee - $debitbanquepassee);
             // amortissement
             $terrain  = 0;
             $amortterrain  = 0;
@@ -3012,7 +3164,9 @@ class FinanceController extends AbstractController
             $encaisser = 0;
             $ecartactif = 0;
             $autrecreance = 0;
+            $autrecreancepassee = 0;
             $avancefournisseur = 0;
+            $avancefournisseurpassee = 0;
             $autresimmofin = 0;
             $avanceimmo = 0;
             $amortbrevet = 0;
@@ -3179,9 +3333,15 @@ class FinanceController extends AbstractController
             
 
             $detteavoir = 0;
-            $avoirs = $this->entityManager->getRepository(Avoir::class)->Annuelle($annee);
+            $avoirs = $this->entityManager->getRepository(Avoir::class)->findBy(['rebourser' => false]);
             foreach($avoirs as $avoir){    
                 $detteavoir += $avoir->getMontant(); 
+            }
+            
+            $detteavoirpassee = 0;
+            $avoirspassee = $this->entityManager->getRepository(Avoir::class)->Annuellepassee($annee);// 
+            foreach($avoirspassee as $avoir){    
+                $detteavoirpassee += $avoir->getMontant(); 
             }
 
             // capital
@@ -3230,23 +3390,29 @@ class FinanceController extends AbstractController
                 
             }
             
-
-            $restes = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee);
-            foreach($restes as $reste){    
-            //    $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
-                $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
-                $tva = 0;
-                // if(!empty($stoc)){
-                //     $quant = $stoc->getQuantite() - $restelivrer;
-                //     if($quant < 0){
-                //         $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
-                //         $avanceclient += -1 * $reste->getSession() * $quant + $tva;// -1 * la quatite 
-                //     }
-                // }else{
-                    $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
-                    $avanceclient += $restelivrer * $reste->getSession() + $tva;
-                // }    
+            $avanceclientpassee = 0;
+            $commandespassee = $this->entityManager->getRepository(Commande::class)->avances($annee-1);// achat deja paye
+            foreach($commandespassee as $commande){
+                  $avanceclientpassee += $commande->getMontant();   
             }
+            
+
+            // $restes = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee);
+            // foreach($restes as $reste){    
+            // //    $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
+            //     $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
+            //     $tva = 0;
+            //     // if(!empty($stoc)){
+            //     //     $quant = $stoc->getQuantite() - $restelivrer;
+            //     //     if($quant < 0){
+            //     //         $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+            //     //         $avanceclient += -1 * $reste->getSession() * $quant + $tva;// -1 * la quatite 
+            //     //     }
+            //     // }else{
+            //         $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+            //         $avanceclient += $restelivrer * $reste->getSession() + $tva;
+            //     // }    
+            // }
 
 
             $creditavances = $this->entityManager->getRepository(Commande::class)->creditAvance($annee);// achat a credit non livrer avec avance recu
@@ -3256,18 +3422,35 @@ class FinanceController extends AbstractController
                 $avanceclient += $creditavance->getVersement();
                 
             }
+
+             $creditavancespassee = $this->entityManager->getRepository(Commande::class)->creditAvance($annee-1);// achat a credit non livrer avec avance recu
+            foreach($creditavancespassee as $creditavance){
+               
+             
+                $avanceclientpassee += $creditavance->getVersement();
+                
+            }
             // fin avance client
 
             // creaces clients
             $creance= 0;
             $credits = $this->entityManager->getRepository(Commande::class)->findBy(['suivi' => true, 'payer' => false, 'livraison' => true, 'credit' => true ]);// achat a credit
             foreach($credits as $credit){
-               $rest = 0;
-                $restes = $this->entityManager->getRepository(LivrerReste::class)->findby(['commande' => $credit]);
-                foreach($restes as $reste){
-                    $rest += ($reste->getQuantite()- $reste->getQuantitelivre()) * $reste->getSession();
-                }
-                $creance = $creance + $credit->getMontant() - $credit->getVersement() - $rest;
+            //    $rest = 0;
+            //     $restes = $this->entityManager->getRepository(LivrerReste::class)->findby(['commande' => $credit]);
+            //     foreach($restes as $reste){
+            //         $rest += ($reste->getQuantite()- $reste->getQuantitelivre()) * $reste->getSession();
+            //     }
+                // $creance = $creance + $credit->getMontant() - $credit->getVersement() - $rest;
+                $creance = $creance + $credit->getMontant() - $credit->getVersement();
+                
+            }
+            
+            $creancepassee= 0;
+            $creditspassee = $this->entityManager->getRepository(Commande::class)->credits($annee-1);// achat a credit
+            foreach($creditspassee as $credit){
+               
+                $creancepassee = $creancepassee + $credit->getMontant() - $credit->getVersement();
                 
             }
 
@@ -3279,22 +3462,39 @@ class FinanceController extends AbstractController
                     $dettefournisseur += $facture->getMontant();
                    
             }
+            
+            $dettefournisseurpassee = 0;
+            $facturespassee = $this->entityManager->getRepository(Facture::class)->Annuelle($annee-1);
+            foreach($facturespassee as $facture){    
+               
+                    $dettefournisseurpassee += $facture->getMontant();
+                   
+            }
 
             //repport $
             $repport = 0;
           $rep = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 1]);
            $rep !== null ?  $repport = $rep->getMontant() : null;
+            $repportpassee = 0;
+          $rep = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 2]);
+           $rep !== null ?  $repportpassee = $rep->getMontant() : null;
 
             $response = $this->render('finance/bilan.html.twig',[
               
                 'detteavoir' => $detteavoir,
+                'detteavoirpassee' => $detteavoirpassee,
                 'solde' => $solde,
+                'soldepassee' => $soldepassee,
                 'stock' => $stock,
+                'stockpassee' => $stockpassee,
                 'capital' => $capital,
                 'pret' => $montantpret - $remboursement,
                 'avanceclient' => $avanceclient,
+                'avanceclientpassee' => $avanceclientpassee,
                 'creance' => $creance,
+                'creancepassee' => $creancepassee,
                 'dettefournisseur' => $dettefournisseur,
+                'dettefournisseurpassee' => $dettefournisseurpassee,
                 'terrain' => $terrain,
                 'mobilier' => $mobilier,
                 'transport' => $transport,
@@ -3307,7 +3507,9 @@ class FinanceController extends AbstractController
                 'encaisser' => $encaisser,
                 'ecartactif' => $ecartactif,
                 'autrecreance' => $autrecreance,
+                'autrecreancepassee' => $autrecreancepassee,
                 'avancefournisseur' => $avancefournisseur,
+                'avancefournisseurpassee' => $avancefournisseurpassee,
                 'autresimmofin' => $autresimmofin,
                 'titre' => $titre,
                 'avanceimmo' => $avanceimmo,
@@ -3327,6 +3529,7 @@ class FinanceController extends AbstractController
                 'amortdeveloppement' => $amortdeveloppement,
                 'resultat' => $this->ResultatInterne(),
                 'repport' => $repport,
+                'repportpassee' => $repportpassee,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -3357,17 +3560,29 @@ class FinanceController extends AbstractController
         if ($this->security->isGranted('ROLE_FINANCE')) {
             $annee = date('Y');
             $commandes = $this->entityManager->getRepository(Commande::class)->Annuelle($annee);// achat deja paye
+            $commandespassee = $this->entityManager->getRepository(Commande::class)->Annuelle($annee-1);// achat deja paye
             $credits = $this->entityManager->getRepository(Commande::class)->credits($annee);// achat a credit
+            $creditspassee = $this->entityManager->getRepository(Commande::class)->credits($annee-1);// achat a credit
             // $creditavances = $this->entityManager->getRepository(Commande::class)->creditAvance();// achat a credit non livrer avec avance recu
             $vente = 0;
+            $ventepassee = 0;
             $achat = 0;
+            $achatpassee = 0;
             $reapprro = 0;
+            $reapprropassee = 0;
             $chargepersonnel= 0;
+            $chargepersonnelpassee = 0;
             $charge = 0;
+            $chargepassee = 0;
+            $interet = 0;
+            $interetpassee = 0;
+            $amortissementpassee = 0;
             $approvisionnements = $this->entityManager->getRepository(Approvisionnement::class)->resultat($annee);
+            $approvisionnementspassee = $this->entityManager->getRepository(Approvisionnement::class)->resultat($annee-1);
 
             // variation stock produit
-            $stockinitial = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
+             $stockpassee = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1]);
+            $stockinitial = $stockpassee->getStockfinal();
             $stockfinal = 0;// a definir
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $stock){
@@ -3377,11 +3592,18 @@ class FinanceController extends AbstractController
 
             }
             $variation = $stockfinal - $stockinitial;
+            $variationpassee = $stockpassee->getStockfinal() - $stockpassee->getStockinitial();
 
             foreach($approvisionnements as $approvisionnement){
               // achat  
                // $reapprro = $reapprro + $approvisionnement->getQuantite() * $approvisionnement->getPght();
                 $achat = $achat  + $approvisionnement->getQuantite() * $approvisionnement->getPght();
+                
+            }
+             foreach($approvisionnementspassee as $approvisionnement){
+              // achat  
+               // $reapprro = $reapprro + $approvisionnement->getQuantite() * $approvisionnement->getPght();
+                $achatpassee = $achatpassee  + $approvisionnement->getQuantite() * $approvisionnement->getPght();
                 
             }
 
@@ -3405,27 +3627,13 @@ class FinanceController extends AbstractController
                     
                 }*/
             } 
+            
+            foreach($commandespassee as $commande){
+                if($commande->getLivraison() == true){
+                $ventepassee = $ventepassee + $commande->getMontant() - $commande->getAcompte();
+                }
+            } 
 
-            //  foreach($commandes as $commande){
-            //     $vente = $vente + $commande->getMontant();
-                
-            //     if($commande->getLivraison() == false){// commande non livrer
-            //         $commandeproduits = $this->entityManager->getRepository(CommandeProduit::class)->findBy(['commande' => $commande->getId()]);
-            //         foreach($commandeproduits as $commandeproduit){
-            //             $stoc = $this->entityManager->getRepository(Stock::class)->find($commandeproduit->getProduit()->getId());
-            //             if(!empty($stoc)){
-            //                 $quant = $stoc->getQuantite() - $commandeproduit->getQuantite();
-            //                 if($quant < 0){
-            //                     $charge += -1 * $commandeproduit->getPght() * $quant;// -1 * la quatite 
-            //                 }
-            //             }else{
-            //                 $charge += $commandeproduit->getQuantite() * $commandeproduit->getPght();
-            //             }
-            //         }
-                    
-            //     }
-            // }  
-           
             foreach($credits as $credit){// ne tient pas compte des versemet effectue sur le credit
                
                 $rest = 0;
@@ -3437,14 +3645,19 @@ class FinanceController extends AbstractController
                 
             }
             
-            
-            // foreach($creditavances as $creditavance){// credit avec avance sans livraison
+            foreach($creditspassee as $credit){// ne tient pas compte des versemet effectue sur le credit
                
-             
-            //     $charge += $creditavance->getVersement();
+                $rest = 0;
+                $restes = $this->entityManager->getRepository(LivrerReste::class)->findby(['commande' => $credit]);
+                foreach($restes as $reste){
+                    $rest += ($reste->getQuantite()- $reste->getQuantitelivre()) * $reste->getSession();
+                }
+                $ventepassee = $ventepassee + $credit->getMontant() - $rest - $credit->getAcompte() - $commande->getEscompte();
                 
-            // }
-
+            }
+            
+            
+           
          $restes = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee);
             foreach($restes as $reste){// on enleve les reste a livrer sur le montant des vente 
                // $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
@@ -3462,19 +3675,28 @@ class FinanceController extends AbstractController
                 // } 
             }
             
-     /*       $avoirs = $this->entityManager->getRepository(Avoir::class)->findAll();
+            $restespassee = $this->entityManager->getRepository(LivrerReste::class)->Annuelle($annee-1);
+            foreach($restespassee as $reste){// on enleve les reste a livrer sur le montant des vente 
+               // $stoc = $this->entityManager->getRepository(Stock::class)->find($reste->getProduit());
+                $restelivrer = $reste->getQuantite() - $reste->getQuantitelivre();
+                $tva = 0;
+               
+                    $reste->getTva() == true ? $tva = $restelivrer * 0.1925: null;
+                    $ventepassee -= $restelivrer * $reste->getSession() + $tva;
+             
+            }
+            
+    
+            $avoirs = $this->entityManager->getRepository(Avoir::class)->findby(['rebourser' => false]);
             foreach($avoirs as $avoir){    
                 $charge += $avoir->getMontant(); 
-            }*/
-
-            // $credits = $repository->findBy(['paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]);// achat a credit
-            // foreach($credits as $commande){
-            //     $vente = $vente + $commande->getMontant();
-            //     $commandesproduits = $Produitrepository->findBy(['commande' => $commande->getid()]);
-            //     foreach($commandesproduits as $commandeproduit){
-            //         $achat = $achat + $commandeproduit->getQuantite() * $commandeproduit->getPght();
-            //     }
-            // }
+            }
+            
+            $avoirspassee = $this->entityManager->getRepository(Avoir::class)->Annuellepassee($annee);
+            foreach($avoirspassee as $avoir){    
+                $chargepassee += $avoir->getMontant(); 
+            }
+            $charge = $charge - $chargepassee;
 
 
             //charge personnel
@@ -3484,9 +3706,14 @@ class FinanceController extends AbstractController
 
                 
             }
+            $salairespassee = $this->entityManager->getRepository(Paie::class)->compteResultat($annee-1);
+            foreach($salairespassee as $salaire){
+                $chargepersonnelpassee = $chargepersonnelpassee + $salaire->getSalaireNet() + $salaire->getTotalchargepatronal() + $salaire->getTotalChargeEmploye();
+
+                
+            }
 
             // interet pret bancaire
-            $interet = 0;
              $prets = $this->entityManager->getRepository(Financement::class)->findBy(['rembourser' => false, 'apport' => false]);
              foreach($prets as $pret){
                 
@@ -3629,6 +3856,50 @@ class FinanceController extends AbstractController
 
                       
                 }
+                
+                $depensespassee = $this->entityManager->getRepository(Depense::class)->compteResultat($annee-1);
+            
+                foreach($depensespassee as $depense){
+                      $lignedepense = $depense->getCategorie();
+
+
+                    if (substr($lignedepense->getCompte(), 0, 2) === "22" ) {
+
+                    //terrain pas amortissement
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 3) === "604" 
+                    || substr($lignedepense->getCompte(), 0, 3) === "605" 
+                    || substr($lignedepense->getCompte(), 0, 3) === "608") {
+
+                        $chargepassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "62"
+                    || substr($lignedepense->getCompte(), 0, 2) === "63") {
+
+                        $chargepassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "61") {
+
+                        $chargepassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "65") {
+
+                        $chargepassee += $depense->getMontant(); 
+                    
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "64") {
+
+                        $chargpassee += $depense->getMontant(); 
+                
+                    } elseif (substr($lignedepense->getCompte(), 0, 2) === "67") {
+                        $chargepassee += $depense->getMontant(); 
+                    }elseif (substr($lignedepense->getCompte(), 0, 3) === "697") {
+                        $chargepassee += $depense->getMontant(); 
+                    }
+                    
+                    
+
+                      
+                }
             //  $amortis = $this->entityManager->getRepository(Categorie::class)->resultat();
             //  foreach($amortis as $amorti){
             //     $depenses = $this->entityManager->getRepository(Depense::class)->findBy(['categorie' => $amorti->getId()]);
@@ -3647,10 +3918,12 @@ class FinanceController extends AbstractController
             // }
 
             $xa = $vente - ($achat - $variation);
+            $xapassee = $ventepassee - ($achatpassee - $variationpassee);
             $tb = 0;
             $tc = 0;
             $td = 0;
             $xb = $vente + $tb + $tc + $td;
+            $xbpassee = $ventepassee + $tb + $tc + $td;
             $te = 0;
             $tf = 0;
             $tg = 0;
@@ -3666,16 +3939,22 @@ class FinanceController extends AbstractController
             $ri = 0;
             $rj = 0;
             $xc = $xa + ($tb + $tc + $td)+ ($te + $tf + $tg + $th + $ti) - ($rc + $rd + $re + $rf + $rg + $rh + $ri + $rj );
+            $xcpassee = $xapassee + ($tb + $tc + $td)+ ($te + $tf + $tg + $th + $ti) - ($rc + $rd + $re + $rf + $rg + $rh + $ri + $rj );
             $xd = $xc - $chargepersonnel;
+            $xdpassee = $xcpassee - $chargepersonnelpassee;
             $tj = 0;
             $rl = 0;
             $xe = $xd + $tj + $rl;
+            $xepassee = $xdpassee + $tj + $rl;
             $tk = 0;
             $tl = 0;
             $tm = 0;
             $rm = $interet + $charge;
+            $rmpassee = $interetpassee + $chargepassee;
             $xf = $tk + $tl + $tm - ($rm + $amortissement);
+            $xfpassee = $tk + $tl + $tm - ($rmpassee + $amortissementpassee);
             $xg = $xe + $xf;
+            $xgpassee = $xepassee + $xfpassee;
             $tn = 0;
             $to = 0;
             $ro = 0;
@@ -3683,8 +3962,14 @@ class FinanceController extends AbstractController
             $rq = 0;
             $rs = 0;
             $xh = ( $tn + $to ) - ( $ro + $rp);
+            $xhpassee = ( $tn + $to ) - ( $ro + $rp);
             $xi = $xg + $xh - $rq - $rs;
-            return $xi;
+            $xipassee = $xgpassee + $xhpassee - $rq - $rs;
+            $result = [
+                'xi' => $xi,
+                'xipassee' => $xipassee
+            ];
+            return $result;
         } 
     }
 
