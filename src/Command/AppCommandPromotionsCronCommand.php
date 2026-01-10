@@ -62,7 +62,7 @@ class AppCommandPromotionsCronCommand extends Command
         
         foreach ($end as $promo) {
             foreach($promo->getProduits() as $produit){
-                $produit->setPromotion($null);
+                $produit->setPromotion(null);
             
                 $em->persist($produit);
             }
