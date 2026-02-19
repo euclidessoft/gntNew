@@ -2684,8 +2684,8 @@ class FinanceController extends AbstractController
 
             // variation stock produit
             
-            $stockpassee = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1]);
-            $stockinitial = $stockpassee->getStockfinal();
+            $repport = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => date('Y')-1]);
+            $repport !== null ? $stockinitial = $repport->getStockfinal() : $stockinitial = 0;
             $stockfinal = 0;// a definir
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $stock){
@@ -2695,7 +2695,8 @@ class FinanceController extends AbstractController
 
             }
             $variation = $stockfinal - $stockinitial;
-            $variationpassee = $stockpassee->getStockfinal() - $stockpassee->getStockinitial();
+            $repport !== null ? $variationpassee = $repport->getStockfinal() - $repport->getStockinitial() : $variationpassee = 0;
+            
             //fin variation
 
             foreach($approvisionnements as $approvisionnement){
@@ -3143,7 +3144,9 @@ class FinanceController extends AbstractController
             }
 
             $stock = 0;
-            $stockpassee = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1])->getStockfinal();
+            $repport = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 1]);
+            $repport !== null ? $stockpassee = $repport->getStockfinal() : $stockpassee = 0;
+            //$stockpassee = 0;
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $sto){
                 $stock += $sto->getQuantite() * $sto->getProduit()->getPght();
@@ -3472,12 +3475,12 @@ class FinanceController extends AbstractController
             }
 
             //repport $
-            $repport = 0;
-          $rep = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 1]);
-           $rep !== null ?  $repport = $rep->getMontant() : null;
-            $repportpassee = 0;
-          $rep = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 2]);
-           $rep !== null ?  $repportpassee = $rep->getMontant() : null;
+            $rep = 0;
+          $repp = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 1]);
+           $repp !== null ?  $rep = $repp->getMontant() : null;
+            $rep_passee = 0;
+          $repp = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => $annee - 2]);
+           $repp !== null ?  $rep_passee = $repp->getMontant() : null;
 
             $response = $this->render('finance/bilan.html.twig',[
               
@@ -3528,8 +3531,8 @@ class FinanceController extends AbstractController
                 'amortautresincorp' => $amortautresincorp,
                 'amortdeveloppement' => $amortdeveloppement,
                 'resultat' => $this->ResultatInterne(),
-                'repport' => $repport,
-                'repportpassee' => $repportpassee,
+                'repport' => $rep,
+                'repportpassee' => $rep_passee,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -3581,8 +3584,8 @@ class FinanceController extends AbstractController
             $approvisionnementspassee = $this->entityManager->getRepository(Approvisionnement::class)->resultat($annee-1);
 
             // variation stock produit
-             $stockpassee = $this->entityManager->getRepository(EtatStock::class)->findOneBy(['annee' => date('Y')-1]);
-            $stockinitial = $stockpassee->getStockfinal();
+             $repport = $this->entityManager->getRepository(Repport::class)->findOneBy(['annee' => date('Y')-1]);
+            $repport !== null ?  $stockinitial = $repport->getStockfinal() : $stockinitial = 0;
             $stockfinal = 0;// a definir
             $stocks = $this->entityManager->getRepository(Stock::class)->findAll();
             foreach($stocks as $stock){
@@ -3592,7 +3595,9 @@ class FinanceController extends AbstractController
 
             }
             $variation = $stockfinal - $stockinitial;
-            $variationpassee = $stockpassee->getStockfinal() - $stockpassee->getStockinitial();
+            $variationpassee = 0;
+            $repport !== null ?  $variationpassee = $repport->getStockfinal() - $repport->getStockinitial() : $stockinitial = 0;
+            
 
             foreach($approvisionnements as $approvisionnement){
               // achat  
