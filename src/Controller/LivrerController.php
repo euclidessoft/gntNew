@@ -20,6 +20,7 @@ use App\Repository\ProduitRepository;
 use App\Repository\RetourProduitRepository;
 use App\Repository\StockRepository;
 use App\Service\SMSService;
+use App\Service\LamService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

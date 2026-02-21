@@ -40,6 +40,11 @@
                         <i class="fa fa-list"></i>
                             {{ 'Détails'|trans }}
                         </a>
+
+                         <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
+                        <i class="fa fa-list"></i>
+                            {{ 'Bon'|trans }}
+                        </a>
                     </td>
                 </tr>
             {% else %}

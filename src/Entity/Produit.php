@@ -24,6 +24,9 @@ class Produit
     #[ORM\Column(type:"string", length:255, nullable:true) ]
     private $reference;
 
+     #[ORM\Column(type:"string", length:255, nullable:true) ]
+    private $dci;
+
     #[ORM\Column(type:"string", length:255) ]
      #[Assert\NotBlank(  message : "Champ obligatoire") ]
     private $desigantion;
@@ -434,6 +437,18 @@ class Produit
                 $commandeProduit->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDci(): ?string
+    {
+        return $this->dci;
+    }
+
+    public function setDci(?string $dci): static
+    {
+        $this->dci = $dci;
 
         return $this;
     }

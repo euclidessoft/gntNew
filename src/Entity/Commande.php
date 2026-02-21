@@ -35,7 +35,7 @@ class Commande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type:"date") ]
+    #[ORM\Column(type:"datetime") ]
     private $date;
 
     #[ORM\Column(type:"float") ]
