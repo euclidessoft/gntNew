@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route("/{_locale}/livraison", name :"livraison_") ]
 class LivrerController extends AbstractController
@@ -740,7 +741,7 @@ class LivrerController extends AbstractController
     }
 
     #[Route("/valider/{id}", name :"valider") ]
-    public function valider(Request $request,ParameterBagInterface $params, Commande $commande, CommandeProduitRepository $comprodrepository, ProduitRepository $repository, SessionInterface $session)
+    public function valider(Request $request,ParameterBagInterface $params,HttpClientInterface $client, Commande $commande, CommandeProduitRepository $comprodrepository, ProduitRepository $repository, SessionInterface $session)
     {
         if ($this->security->isGranted('ROLE_STOCK')) {
 
@@ -888,14 +889,25 @@ class LivrerController extends AbstractController
             $this->addFlash('notice', 'Livraison enregistrée avec succés');
             
             // envoie sms notification
-            try{
-                $text = "GNTPharma - sortie de stock\n Commande: ". $livrer->getCommande()->getId()."\n Client: ". $livrer->getCommande()->getUser()->getNom()."\n Montant: ".number_format($livrer->getCommande()->getMontant(), 2, ',', ' ');
+             $text = "GNTPharma - sortie de stock\n Commande: ". $livrer->getCommande()->getId()."\n Client: ". $livrer->getCommande()->getUser()->getNom()."\n Montant: ".number_format($livrer->getCommande()->getMontant(), 2, ',', ' ');
             
-                $ws = new SMSService($params);//connect
-                $ws->sendMessage($text);
+            try{
+        
+                $lam = new lamService($text, $client, $params);
+        
+                // $response = $lam->send();
+                $lam->send();
+                
             }
             catch(throwable $e){
-                Goto suit;
+                try{
+               
+                    $ws = new SMSService($params);//connect
+                    $ws->sendMessage($text);
+                }
+                catch(throwable $e){
+                    Goto suit;
+                }
             }
             // fin sms
             // $response = $this->redirectToRoute('livraison_index');

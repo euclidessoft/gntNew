@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:CommandeRepository::class) ]
@@ -80,6 +81,9 @@ class Commande
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $escompte = null;
+
+     #[ORM\Column(type:"date", nullable:true) ]// pour la gestion du bilan financier
+    private $traitement;
 
     /**
      * Constructor
@@ -372,6 +376,73 @@ class Commande
     public function setEscompte(?string $escompte): static
     {
         $this->escompte = $escompte;
+
+        return $this;
+    }
+
+    public function isSuivi(): ?bool
+    {
+        return $this->suivi;
+    }
+
+    public function isLivraison(): ?bool
+    {
+        return $this->livraison;
+    }
+
+    public function isCredit(): ?bool
+    {
+        return $this->credit;
+    }
+
+    public function isPayer(): ?bool
+    {
+        return $this->payer;
+    }
+
+    public function isLivrer(): ?bool
+    {
+        return $this->livrer;
+    }
+
+    public function getTraitement(): ?\DateTime
+    {
+        return $this->traitement;
+    }
+
+    public function setTraitement(?\DateTime $traitement): static
+    {
+        $this->traitement = $traitement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CommandeProduit>
+     */
+    public function getCommandeProduits(): Collection
+    {
+        return $this->commandeProduits;
+    }
+
+    public function addCommandeProduit(CommandeProduit $commandeProduit): static
+    {
+        if (!$this->commandeProduits->contains($commandeProduit)) {
+            $this->commandeProduits->add($commandeProduit);
+            $commandeProduit->setCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommandeProduit(CommandeProduit $commandeProduit): static
+    {
+        if ($this->commandeProduits->removeElement($commandeProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($commandeProduit->getCommande() === $this) {
+                $commandeProduit->setCommande(null);
+            }
+        }
 
         return $this;
     }

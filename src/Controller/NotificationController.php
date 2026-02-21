@@ -7,22 +7,25 @@ namespace App\Controller;
 // use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 // use Symfony\Component\HttpFoundation\JsonResponse;
 // use Symfony\Component\Routing\Annotation\Route;
-// use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Security;
 
 use App\Service\WhatsAppNotifier;
 use App\Service\SMSService;
 use App\Service\LamService;
+use App\Entity\Commande;
+use App\Entity\Versement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route("/{_locale}/notifications") ]
 class NotificationController extends AbstractController
 {
-    public function __construct(private \Symfony\Bundle\SecurityBundle\Security $security)
+    public function __construct(private Security $security, private EntityManagerInterface $entityManager)
     {
     }
 
@@ -59,22 +62,45 @@ public function test(ParameterBagInterface $params)
     }
 
        #[Route('/test-lam')]
-    public function testlam(HttpClientInterface $client)
+    public function testlam(HttpClientInterface $client,ParameterBagInterface $params)
     {
-        $lam = new lamService("755238383", "GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500, 2, ',', ' '), $client);
-        
+        $lam = new lamService("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500, 2, ',', ' '), $client, $params);
+        $response = true;
         try{
-            $response = $lam->send();
+            $lam->send();
         }
         catch(throwable $e){
-            $result = false;
+            $response = false;
         }
         
-        // JAMBAAR_CORPORATION_01
-        // kf10yY6Jx7F04fw
-        // $ws = new SMSService($params);//connect number_format($livrer->getCommande()->getMontant(), 0, ',', ' ')
-        // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
+        // // JAMBAAR_CORPORATION_01
+        // // kf10yY6Jx7F04fw
+        // // $ws = new SMSService($params);//connect number_format($livrer->getCommande()->getMontant(), 0, ',', ' ')
+        // // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
         return new Response($response);
+
+
+        //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
+        // foreach($commandes as $commande){
+        //     if($commande->getTraitement() == null){
+        //     if($commande->getPaiement() !== null){
+        //    $commande->setTraitement($commande->getDatelivrer());
+        //     $this->entityManager->persist($commande);
+        //     //$this->entityManager->flush();
+        //     }else if($commande->getversement() != 0){
+        //         $versement =  $this->entityManager->getRepository(Versement::Class)->findOneby(['commande' => $commande],['id'=> 'ASC']);
+        //        $commande->setTraitement($commande->getDatelivrer());
+        //         $this->entityManager->persist($commande);
+        //         //$this->entityManager->flush();
+        //     }else if($commande->getPaiement() === null && $commande->getversement() == 0 && $commande->getLivrer() == true){
+        //         $commande->setTraitement($commande->getDatelivrer());
+        //         $this->entityManager->persist($commande);
+        //         //$this->entityManager->flush();
+        //     }
+        // }
+        // }
+        // $this->entityManager->flush();
+        // return new Response("okay");
     }
 
 

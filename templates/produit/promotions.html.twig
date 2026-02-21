@@ -44,11 +44,11 @@
                                 </button>
                                 <ul class="dropdown-menu text-center">
                                 {% if produit.promotion.premier is not null %}
-                                    <li><b>{{produit.promotion.premier}} pour {{produit.promotion.ugpremier}} {{'gratuits'|trans}}</b></li>
-                                    <li><b>{{produit.promotion.deuxieme}} pour {{produit.promotion.ugdeuxieme}} {{'gratuits'|trans}}</b></li>
-                                    <li><b>{{produit.promotion.troisieme}} pour {{produit.promotion.ugtroisieme}} {{'gratuits'|trans}}</b></li>
-                                    <li><b>{{produit.promotion.quatrieme}} pour {{produit.promotion.ugquatrieme}} {{'gratuits'|trans}}</b></li>
-                                    <li><b>{{produit.promotion.cinquieme}} pour {{produit.promotion.ugcinquieme}} {{'gratuits'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.premier}} pour {{produit.promotion.ugpremier}} {{'U.G'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.deuxieme}} pour {{produit.promotion.ugdeuxieme}} {{'U.G'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.troisieme}} pour {{produit.promotion.ugtroisieme}} {{'U.G'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.quatrieme}} pour {{produit.promotion.ugquatrieme}} {{'U.G'|trans}}</b></li>
+                                    <li><b>{{produit.promotion.cinquieme}} pour {{produit.promotion.ugcinquieme}} {{'U.G'|trans}}</b></li>
                                      {% else %}
                                     <li><b>{{ "Reduction de"|trans}} {{produit.promotion.reduction}}%</b></li>
                                     {% endif %}

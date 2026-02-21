@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class LamService
 {
@@ -18,11 +19,12 @@ class LamService
     private $text;
     // private HttpClientInterface $client;
     
-    public function __construct($to, $text,private HttpClientInterface $client)
+    public function __construct($text,private HttpClientInterface $client, ParameterBagInterface $params)
     {
-        
-        $this->to = '00221'.preg_replace('/\s/','',$to);
-        $this->sender = "GNTPharma";
+       
+        $this->to = $params->get('TWILIO_TO');
+        // $this->to = '00221'.preg_replace('/\s/','',$to);
+        $this->sender = "JambaarCorp";
         $this->text = urlencode($text);
         $this->accountid ='JAMBAAR_CORPORATION_01';
         $this->password ='kf10yY6Jx7F04fw';
@@ -39,7 +41,12 @@ class LamService
       
         // try {
             $response = $this->client->request('GET', $full_url_called);
-            $result = $response->getContent(); // exception auto si erreur HTTP
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode !== 200) {
+                throw new \Exception('Erreur HTTP : '.$statusCode);
+            }
+            $result = $response->getContent(false); // exception auto si erreur HTTP
         // }
         // catch(throwable $e){
         //     $result = false;
