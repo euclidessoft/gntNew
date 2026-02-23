@@ -23,8 +23,8 @@
                 <tbody>
                 <tr>
                     <td>{{ promotion.designation }}</td>
-                    <td>{{ promotion.debut ? promotion.debut|date('Y-m-d') : '' }}</td>
-                    <td>{{ promotion.fin ? promotion.fin|date('Y-m-d') : '' }}</td>
+                    <td>{{ promotion.debut ? promotion.debut|date('d/m/Y') : '' }}</td>
+                    <td>{{ promotion.fin ? promotion.fin|date('d/m/Y') : '' }}</td>
                     <td>{{ promotion.type }}</td>
                     <td>
                         {% if promotion.premier is null %}
@@ -85,7 +85,8 @@
                                 {{ tamp }}
                             {% else %}
                                 <input type="number" id="text{{ produit.id }}" class="form-control"
-                                       onfocus="focu({{ produit.id }}, {{ produit.mincommande }}, {{ produit.stock }})" onblur="nofocu()" style="padding:0 10px" {% if produit.stock <= produit.mincommande or promo == 0 %} disabled {%  endif %}>
+                                       onfocus="focu({{ produit.id }}, {{ produit.mincommande }}, {{ produit.stock }})" onblur="nofocu()"
+                                        style="vertical-align: middle; margin: auto; width: 80px; height: 40px;" {% if produit.stock <= produit.mincommande or promo == 0 %} disabled {%  endif %}>
                                 <label for="text{{ produit.id }}"></label>
                             {% endif %}
                         </td>

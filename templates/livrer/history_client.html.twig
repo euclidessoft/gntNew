@@ -21,7 +21,6 @@
             <thead>
             <tr>
                 <th>{{'N° commande'|trans}} </th>
-                <th>{{'Client'|trans}}</th>
                 <th>{{ 'Date de livraison'|trans }}</th>
                 <th>{{ 'Détails'|trans }}</th>
             </tr>
@@ -30,7 +29,6 @@
             {% for livrer in livrers %}
                 <tr>
                     <td>{{ livrer.commande.id }}</td>
-                    <td>{{ livrer.commande.user.nom }}</td>
                     <td>{{ livrer.dateefectlivraison|date('d/m/Y') }}</td>
                     <td>
                         <a class="btn btn-success" href="{{ path('livraison_historique_show', {'id': livrer.commande.id}) }}">

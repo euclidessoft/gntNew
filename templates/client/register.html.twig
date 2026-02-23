@@ -1,0 +1,18 @@
+{% extends
+    'client.html.twig'
+%}
+{% block title %} {{ "Nouvelle banque"|trans }} - GNT Pharma {% endblock %}
+{% block employe %}active{% endblock %}
+{% block employe_new %}active{% endblock %}
+
+{% block body %}
+    <div class="col-lg-5 offset-lg-2 mt-4 fond-7 pb-5 pt-3 px-5">
+        <h4 class="mb-5">
+            <i class="fa-solid fa-user-tag"></i><i class="fa fa-plus"></i>
+            {{ 'Nouveau client'|trans }}
+        </h4>
+
+        {{ include('client/_register.html.twig') }}
+    </div>
+
+{% endblock %}

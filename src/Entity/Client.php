@@ -38,6 +38,7 @@ class Client extends User implements UserInterface
     {
         parent::__construct();
         $this->commandes = new ArrayCollection();
+        $this->prelevement = false;
     }
 
     public function getCompte(): ?string

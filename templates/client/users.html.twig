@@ -1,0 +1,154 @@
+{% extends 'client.html.twig' %}
+{% block title %} {{ "Tous les clients"|trans }} - GNT Pharma {% endblock %}
+{% block client %}active{% endblock %}
+{% block all_client %}active{% endblock %}
+{% block body %}
+    <div class="container-fluid mt-4 fond-7">
+        <h4 class="text-bold mt-3 mb-5">
+            <i class="fa fa-user-tag"></i>
+            {{ "Tous les utilisateurs"|trans }}
+        </h4>
+        {#{% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black mb-5">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}#}
+        {% for message in app.flashes('notice') %}
+            <div class="col-lg-12 my-4">
+                <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true"></button>
+                    {{ message|trans }}
+                </div>
+            </div>
+        {% endfor %}
+        {% if is_granted('ROLE_CLIENT') %}
+            <a class="btn btn-green mb-4" href="{{ path('client_register') }}">
+                <i class="fa-solid fa-user-tag"></i><i class="fa-solid fa-plus"></i>
+                {{ 'Nouvel utilisateur'|trans }}
+            </a>
+        {% endif %}
+        <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+            <thead>
+            <tr>
+                <th>{{ 'Nom'|trans }}</th>
+                <th>{{ 'Prénom'|trans }}</th>
+                <th>{{ 'Téléphone'|trans }}</th>
+                <th>{{ 'Email'|trans }}</th>
+                <th>{{ 'Adresse'|trans }}</th>
+                <th class="text-center">
+                    {{ 'Statut'|trans }}
+                </th>
+                <th class="text-center">{{ 'Actions'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for client in client %}
+            <tr>
+                <td data-label="Nom">{{ client.nom }}</td>
+                <td data-label="Prénom">{{ client.prenom }}</td>
+                <td data-label="Téléphone">{{ client.phone }}</td>
+                <td data-label="Email">{{ client.email }}</td>
+                <td data-label="Adresse">{{ client.adresse }}</td>
+               <td data-label="Statut" class="text-center" id="statut{{ client.id }}">
+                    {% if client.enabled == 1 %}
+                        {{ "Actif"|trans }}
+                    {% else %}
+                        {{ "Inactif"|trans }}
+                    {% endif %}
+                </td>
+                <td data-label="Actions" class="text-center">
+                    <a href="{{ path('client_edit', {'id': client.id}) }}" class="btn btn-success-light me-2"
+                       title="{{ "Modifier"|trans }}">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    {% if client.enabled == 1 %}
+                        <button class="btn btn-danger" id="btn{{ client.id }}" onclick="userdisable({{ client.id }})" title="{{ "Désactiver ce client"|trans }}">
+                            <i class="fa fa-user-lock"></i>
+                        </button>
+                    {% else %}
+                        <button class="btn btn-green" id="btn{{ client.id }}" onclick="userenable({{ client.id }})" title="{{ "Activer ce client"|trans }}">
+                            <i class="fa fa-user-check"></i>
+                        </button>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% block scripts %}
+        <script>
+            function userdisable(id) {
+                let bouton = $('#btn' + id);
+                let etat = $('#statut' + id);
+                if (confirm("{{ 'Voulez-vous vraiment désactiver ce client ?'|trans }}")) {
+                    bouton.html("<i class='fa fa-spinner'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('security_user_disable') }}",
+                        data: "usr=" + id,
+                        success: function (data) {
+                            if (data['ok'] !== '') {
+                                bouton.attr('class', 'btn btn-green');
+                                bouton.attr('onclick', 'userenable(' + id + ')');
+                                bouton.attr('title', ' {{ "Activer ce client"|trans }}');
+                                bouton.html("<i class='fa fa-user-check'></i>");
+                                etat.html("{{ 'Inactif'|trans }}");
+                            }
+                        },
+                        error: function () {
+                            alert('{{ "La requête n'a pas abouti"|trans }}');
+                        }
+                    });
+                }
+            }
+
+            function userenable(id) {
+                let bouton = $('#btn' + id);
+                let etat = $('#statut' + id);
+                if (confirm("{{ 'Voulez-vous vraiment activer ce client ?'|trans }}")) {
+                    bouton.html("<i class='fa fa-spinner'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('security_user_enable') }}",
+                        data: "usr=" + id,
+                        success: function (data) {
+                            if (data['ok'] !== '') {
+                                bouton.attr('class', 'btn btn-danger');
+                                bouton.attr('onclick', 'userdisable(' + id + ')');
+                                bouton.attr('title', ' {{ "Désactiver ce client"|trans }}');
+                                bouton.html("<i class='fa fa-user-lock'></i>");
+                                etat.html("{{ 'Actif'|trans }}");
+                            }
+                        },
+                        error: function () {
+                            alert('{{ "La requête n'a pas abouti"|trans }}');
+                        }
+                    });
+                }
+
+            }
+
+            function del(id) {
+                if (confirm("{{ 'Voulez-vous vraiment supprimer ce client ?'|trans }}")) {
+                    $('#btn' + id).html("<i class='fa fa-spinner'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('security_user_delete') }}",
+                        data: "usr=" + id,
+                        success: function (data) {
+                            if (data['ok'] !== '') {
+                                document.location.href = data['ok'];
+                            }
+                        },
+                        error: function () {
+                            alert('{{ "La requête n'a pas abouti"|trans }}');
+                        }
+                    });
+                }
+
+            }
+
+        </script>
+    {% endblock %}
+{% endblock %}

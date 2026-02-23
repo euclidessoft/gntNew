@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Client;
+use App\Entity\Pharmacie;
+use App\Entity\Panier;
 use App\Form\ClientType;
+use App\Form\ClientEmployerType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -42,6 +45,41 @@ class ClientController extends AbstractController
         }
     }
 
+     #[Route("/Users", name :"client_users") ]
+    public function users(EntityManagerInterface $entityManager): Response
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+            $dataPanier = [];
+
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
+                $dataPanier[] = [
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
+                ];
+            }
+
+            $client = $entityManager->getRepository(Client::class)
+                                        ->findBy(['pharmacie' => $this->getUser()->getPharmacie()]);
+            return $this->render('client/users.html.twig', [
+                'client' => $client,
+                'panier' => $dataPanier,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
 
     #[Route("/new", name :"client_new", methods : ["GET","POST"]) ]
     public function new(Request $request, UserPasswordHasherInterface $encoder, TokenGeneratorInterface $tokenGenerator): Response
@@ -53,12 +91,21 @@ class ClientController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $entityManager = $this->entityManager;
+                
+                // creation de la pharmacie
+                $pharmacie = new Pharmacie();
+                $pharmacie->setNom($client->getPrenom()." ".$client->getNom());
+                $entityManager->persist($pharmacie);
+                $entityManager->flush();
+                //fin
 
                 $hashpass = $encoder->hashPassword($client, $client->getPassword());
+                
 
+                $client->setPharmacie($pahrmacie);
                 $client->setPassword($hashpass);
                 $client->setUsername($client->getNom());
-                $client->setRoles(["ROLE_CLIENT"]);
+                $client->setRoles(["ROLE_CLIENT_ADMIN"]);
                 $client->setClient(true);
                 $client->setFonction('Client');
                 $token = $tokenGenerator->generateToken();
@@ -80,6 +127,80 @@ class ClientController extends AbstractController
             return $this->render('client/new.html.twig', [
                 'form' => $form->createView(),
                 'client' => $client
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("/Registration", name :"client_register", methods : ["GET","POST"]) ]
+    public function registration(Request $request, UserPasswordHasherInterface $encoder, TokenGeneratorInterface $tokenGenerator): Response
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+            $dataPanier = [];
+
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
+                $dataPanier[] = [
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
+                ];
+            }
+
+            $client = new Client();
+            $form = $this->createForm(ClientEmployerType::class, $client);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager = $this->entityManager;
+                
+                // creation de la pharmacie
+                $pharmacie = $entityManager->getRepository(Pharmacie::class)
+                                                    ->find($this->getUser()->getPharmacie()->getId());
+
+                $hashpass = $encoder->hashPassword($client, $client->getPassword());
+                
+
+                $client->setPharmacie($pharmacie);
+                $client->setCompte(null);
+                $client->setPassword($hashpass);
+                $client->setUsername($client->getNom());
+                $client->setRoles(["ROLE_CLIENT"]);
+                $client->setClient(true);
+                $client->setFonction('Client');
+                $token = $tokenGenerator->generateToken();
+                $client->setResetToken($token);
+
+                $entityManager->persist($client);
+                $entityManager->flush();
+                $compte = '411' . str_pad($client->getId() + 1, 4, '0', STR_PAD_LEFT);
+                $client->setCompte($compte);
+
+                $entityManager->persist($client);
+                $entityManager->flush();
+
+                $this->addFlash('notice', "Compte client crée avec succée");
+                return $this->redirectToRoute("client_users");
+            }
+
+
+            return $this->render('client/register.html.twig', [
+                'form' => $form->createView(),
+                'client' => $client,
+                'panier' => $dataPanier,
             ]);
         } else {
             $response = $this->redirectToRoute('security_logout');

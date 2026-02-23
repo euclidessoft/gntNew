@@ -21,7 +21,7 @@
                     <thead>
                     <tr>
                         <th>{{ 'N° Commande'|trans }}</th>
-                        <th>{{ 'Client'|trans }}</th>
+                        {# <th>{{ 'Client'|trans }}</th> #}
                         <th>{{ 'Date de commande'|trans }}</th>
                         <th>{{ 'Date de Paiement'|trans }}</th>
 
@@ -29,7 +29,7 @@
                     </thead>
                     <tbody>
                     <td>{{ commandereference.id }}</td>
-                    <td>{{ commandereference.user.nom }}</td>
+                    {# <td>{{ commandereference.user.nom }}</td> #}
                     <td>{{ commandereference.date ? commandereference.date|date('d/m/Y') : '' }}</td>
                     <td>{{ commandereference.paiement ? commandereference.paiement.date|date('d/m/Y') : '' }}</td>
 
@@ -53,7 +53,7 @@
                                 <thead>
                                 <tr>
                                     <th>{{'N° Bordereau'|trans}}</th>
-                                    <th>{{'Date d\'émission'|trans}}</th>
+                                    {# <th>{{'Date d\'émission'|trans}}</th> #}
                                     <th>{{'Date de livraison'|trans}}</th>
 
                                 </tr>
@@ -61,7 +61,7 @@
                                 <tbody>
                                 <tr>
                                 <td>{{ commande.livrer.id }}</td>
-                                <td>{{ commande.date|date('d/m/Y') }}</td>
+                                {# <td>{{ commande.date|date('d/m/Y') }}</td> #}
                                 <td>{{ commande.livrer.dateefectlivraison|date('d/m/Y') }}</td>
                                 </tr>
                                 <tr>

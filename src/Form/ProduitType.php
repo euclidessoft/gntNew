@@ -16,6 +16,7 @@ class ProduitType extends AbstractType
         $builder
             ->add('reference')
             ->add('desigantion')
+            ->add('dci')
             ->add('prix')
             ->add('prixpublic')
             ->add('mincommande')

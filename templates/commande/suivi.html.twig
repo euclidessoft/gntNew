@@ -24,7 +24,7 @@
                 <th>{{'Numero Commande'|trans}}</th>
                 <th>{{ 'Date'|trans }}</th>
 {#                <!-- <th>{{ 'Client'|trans }} </th> -->#}
-                <th>{{ 'Montant'|trans }}</th>
+             {% if is_granted("ROLE_CLIENT_ADMIN")%}   <th>{{ 'Montant'|trans }}</th> {% endif %}
                 <th>Actions</th>
             </tr>
             </thead>
@@ -34,16 +34,18 @@
                     <td>{{ commande.id }}</td>
                     <td>{{ commande.date|date('d/m/Y') }}</td>
 {#                    <!-- <td> {{ commande.user.nom }}</td> -->#}
-                    <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                  {% if is_granted("ROLE_CLIENT_ADMIN")%}  <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td> {% endif %}
                     <td>
+                    {% if is_granted("ROLE_CLIENT_ADMIN")%}
                         <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
-                        <i class="fa fa-list"></i>
-                            {{ 'Détails'|trans }}
+                        <i class="fa fa-money-bill"></i>
+                            {{ 'Facture'|trans }}
                         </a>
+                    {% endif %}
 
                          <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
                         <i class="fa fa-list"></i>
-                            {{ 'Bon'|trans }}
+                            {{ 'Bon de commande'|trans }}
                         </a>
                     </td>
                 </tr>

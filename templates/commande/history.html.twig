@@ -12,12 +12,16 @@
     <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
             <a class="nav-link" href="{{ path('commande_panier_suivi') }}">
-                {{' Validation paiement'|trans }}
+                {{'En attente de validation'|trans }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link active" href="#">
+            {% if is_granted("ROLE_CLIENT_ADMIN")%}
                 {{'Commandes déjà payées'|trans}}
+                {% else %}
+                 {{'Commandes déjà validées'|trans}}
+                {% endif %}
             </a>
         </li>
     </ul>
@@ -34,7 +38,7 @@
             <th>{{ 'Date de commande'|trans }}</th>
             <th>{{ 'Date de Livraison'|trans }}</th>
 {#            <!-- <th>{{ 'Client'|trans }} </th> -->#}
-            <th>{{ 'Montant'|trans }}</th>
+            {% if is_granted("ROLE_CLIENT_ADMIN")%} <th>{{ 'Montant'|trans }}</th> {% endif %}
             <th>Actions</th>
         </tr>
         </thead>
@@ -45,12 +49,21 @@
                 <td>{{ commande.date|date('d/m/Y') }}</td>
                 <td>{{ commande.datelivrer ? commande.datelivrer|date('d/m/Y') : '' }}</td>
 {#                <!-- <td> {{ commande.user.nom }}</td> -->#}
-                <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                 {% if is_granted("ROLE_CLIENT_ADMIN")%}
+                    <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                {% endif %}
                 <td>
-                    <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
+                 {% if is_granted("ROLE_CLIENT_ADMIN")%}
+                        <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
+                        <i class="fa fa-money-bill"></i>
+                            {{ 'Facture'|trans }}
+                        </a>
+                    {% endif %}
+
+                         <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
                         <i class="fa fa-list"></i>
-                        {{ 'Détails'|trans }}
-                    </a>
+                            {{ 'Bon de commande'|trans }}
+                        </a>
                 </td>
             </tr>
         {% endfor %}
