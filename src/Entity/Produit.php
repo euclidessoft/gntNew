@@ -22,7 +22,13 @@ class Produit
     private ?int $id = null;
 
     #[ORM\Column(type:"string", length:255, nullable:true) ]
-    private $reference;
+    private $reference;// code CIP
+
+     #[ORM\Column(type:"string", length:255, nullable:true) ]
+    private $alternatif;// code CIp alternatif
+
+     #[ORM\Column(type:"string", length:255, nullable:true) ]
+    private $interne;// code interne
 
      #[ORM\Column(type:"string", length:255, nullable:true) ]
     private $dci;
@@ -449,6 +455,30 @@ class Produit
     public function setDci(?string $dci): static
     {
         $this->dci = $dci;
+
+        return $this;
+    }
+
+    public function getAlternatif(): ?string
+    {
+        return $this->alternatif;
+    }
+
+    public function setAlternatif(?string $alternatif): static
+    {
+        $this->alternatif = $alternatif;
+
+        return $this;
+    }
+
+    public function getInterne(): ?string
+    {
+        return $this->interne;
+    }
+
+    public function setInterne(?string $interne): static
+    {
+        $this->interne = $interne;
 
         return $this;
     }

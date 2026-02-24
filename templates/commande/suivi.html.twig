@@ -36,12 +36,11 @@
 {#                    <!-- <td> {{ commande.user.nom }}</td> -->#}
                   {% if is_granted("ROLE_CLIENT_ADMIN")%}  <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td> {% endif %}
                     <td>
-                    {% if is_granted("ROLE_CLIENT_ADMIN")%}
+                   
                         <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
                         <i class="fa fa-money-bill"></i>
                             {{ 'Facture'|trans }}
                         </a>
-                    {% endif %}
 
                          <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
                         <i class="fa fa-list"></i>

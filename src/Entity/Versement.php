@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass:VersementRepository::class) ]
 class Versement
 {
-    #[ORM\ManyToOne(targetEntity:"App\Entity\Commande") ]
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Commande", inversedBy:"versements") ]
      #[ORM\JoinColumn(nullable:false) ]
     private $commande;
 
