@@ -511,7 +511,7 @@
         }
     }
 
-    let table = new DataTable('#liste', {
+     let table = new DataTable('#liste', {
     // let table = $('#liste').DataTable({
         responsive: true,
         pageLength: 100,
@@ -556,13 +556,81 @@
 
     });
 
-    document.getElementById('exportExcel').addEventListener('click', function () {
+    {# document.getElementById('exportExcel').addEventListener('click', function () {
         table.button(0).trigger();
     });
 
     document.getElementById('exportPdf').addEventListener('click', function () {
         table.button(1).trigger();
+    }); #}
+
+     let facturation = new DataTable('#facture', {
+    // let table = $('#liste').DataTable({
+        responsive: true,
+        searching: false,
+        info: false,
+        paging: false, 
+        pageLength: 100,
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fa fa-file-excel fa-lg"></i> {{ "Export vers Excel"|trans }}',
+                title: null,
+                footer: false,
+                className: 'btn btn-shadow btn-green',
+                exportOptions: {
+                    columns: ':not(.noExport)' // exclut toutes les colonnes avec .noExport
+                }
+            },
+            {
+                extend: 'csvHtml5', 
+                text: '<i class="fa fa-file-csv fa-lg"></i> {{ "Export vers CSV"|trans }}',
+                fieldSeparator: ';',
+                title: null,
+                footer: false,
+                className: 'btn btn-shadow btn-info',
+                exportOptions: {
+                    columns: ':not(.noExport)'
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                text: '<i class="fa fa-file-pdf fa-lg"></i> {{ "Export vers PDF"|trans }}',
+                title: null,
+                footer: false,
+                className: 'btn btn-shadow btn-danger',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                exportOptions: {
+                    columns: ':not(.noExport)'
+                }
+            }
+        ],
+        language: {
+            processing: "{{ 'Traitement en cours...'|trans }}",
+            search: "{{ 'Rechercher'|trans }} :",
+            lengthMenu: "{{ 'Afficher'|trans }} _MENU_ {{'élèments'|trans}}",
+            info: "{{'Affichage de l\'élement'|trans}} _START_ {{'à'|trans}} _END_ {{ 'sur'|trans }} _TOTAL_ {{'élèments'|trans}}",
+            infoEmpty: "{{'Affichage de l\'élèment 0 à 0 sur 0 élèments'|trans}}",
+            infoFiltered: "({{'filtré de'|trans}} _MAX_ {{'élèment au total'|trans}})",
+            infoPostFix: "",
+            loadingRecords: "{{ 'Chargement en cours...'|trans }}",
+            zeroRecords: "{{'Aucun élèment à afficher'|trans}}",
+            emptyTable: "{{'Aucun élèment enregistré'|trans}}",
+            paginate: {
+                first: "{{ 'Premier'|trans }}",
+                previous: "{{'Précédent'|trans}}",
+                next: "{{ 'Suivant'|trans }}",
+                last: "{{ 'Dernier'|trans }}"
+            },
+            aria: {
+                sortAscending: ": {{ 'Trier par ordre croissant'|trans }}",
+                sortDescending: ": {{'Trier par ordre décroissant'|trans}}"
+            }
+        }
+
     });
+     facturation.buttons().container().appendTo('#exportexcel');
 
     let messagerie = new DataTable('#message', {
 
