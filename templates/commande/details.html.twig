@@ -301,9 +301,7 @@
         {#/***** end*****/#}
     </div>
     <div class="container mt-4 mb-5 p-3 fond-7">
-     {% set total=0 %}
-        {% set reduction=0 %}
-        {% set tva=0 %}
+    
         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="facture" style="display:none;">
             <thead>
             <tr>
@@ -346,7 +344,16 @@
                     {#                </td>#}
                     {#                <td> </td>#}
                     <td>
-                      
+                    {# determination quantite livreee #}
+                    {% set quantite = 0 %}
+                    {% for livrerproduit  in livrerproduits  %}
+                        {% if livrerproduit.commande.id  == commande.id and livrerproduit.produit.id == commandeproduit.produit.id %}
+                            {% set quantite = quantite + livrerproduit.quantitelivrer %}
+                        {% endif %}
+
+                    {% else %}
+                    {% endfor %}
+                      {{ quantite != 0 ? quantite : ''  }}
 
                     </td> 
                      <td>
@@ -494,6 +501,7 @@
             <tbody>
            
         </table>
+        <input type="hidden" id="numfact" value="{{ commande.id}}-{{ commande.numerofacture }}"/>
         <div class="centrer">
             <a id="print" onclick="load('print')"
                href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"

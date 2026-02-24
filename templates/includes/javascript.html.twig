@@ -563,7 +563,7 @@
     document.getElementById('exportPdf').addEventListener('click', function () {
         table.button(1).trigger();
     }); #}
-
+    let numfact = $("#numfact").val();
      let facturation = new DataTable('#facture', {
     // let table = $('#liste').DataTable({
         responsive: true,
@@ -576,6 +576,9 @@
                 extend: 'excelHtml5',
                 text: '<i class="fa fa-file-excel fa-lg"></i> {{ "Export vers Excel"|trans }}',
                 title: null,
+                filename: function () {
+                return numfact;
+                 },
                 footer: false,
                 className: 'btn btn-shadow btn-green',
                 exportOptions: {
@@ -587,6 +590,9 @@
                 text: '<i class="fa fa-file-csv fa-lg"></i> {{ "Export vers CSV"|trans }}',
                 fieldSeparator: ';',
                 title: null,
+                filename: function () {
+                return numfact;
+                 },
                 footer: false,
                 className: 'btn btn-shadow btn-info',
                 exportOptions: {
@@ -597,6 +603,9 @@
                 extend: 'pdfHtml5',
                 text: '<i class="fa fa-file-pdf fa-lg"></i> {{ "Export vers PDF"|trans }}',
                 title: null,
+                filename: function () {
+                return numfact;
+                 },
                 footer: false,
                 className: 'btn btn-shadow btn-danger',
                 orientation: 'landscape',

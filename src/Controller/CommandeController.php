@@ -14,6 +14,7 @@ use App\Form\CommandeType;
 use App\Form\PaiementFormType;
 use App\Form\VersementType;
 use App\Repository\CommandeProduitRepository;
+use App\Repository\LivrerProduitRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\PaiementRepository;
 use App\Repository\ProduitRepository;
@@ -1527,13 +1528,14 @@ class CommandeController extends AbstractController
 
 
     #[Route("/Details_commande/{commande}", name :"Detail") ]
-    public function details(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
+    public function details(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, LivrerProduitRepository $livrerRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('commande/details.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                'livrerproduits' => $livrerRepository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'panier' => $panier,
             ]);
