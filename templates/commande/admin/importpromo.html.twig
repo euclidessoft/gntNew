@@ -1,0 +1,45 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Nouveau produit"|trans }} - GNT Pharma {% endblock %}
+{% block produit %}active{% endblock %}
+{% block all_produits %}active{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-8 justify-content-center fond-7 my-5 p-4">
+        <h4 class="text-bold mb-5">
+            <i class="fa fa-upload"></i>
+            {{ 'Importation Commande sans tenir compte des promos'|trans }}
+        </h4>
+        {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+
+         {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+        {# <form method="POST" action="{{ path('adminimportation')}}" enctype="multipart/form-data" id="form"> #}
+            <input type="file" name="import" id="import" class="form-control mt-3">
+            {# </form> #}
+        <div class="col-lg-4 justify-content-center fond-7 my-5 p-3">
+                <div class="centrer gap-4">
+                    <button type="button" class="btn btn-success mt-3" id="send" onclick="importcommande()"><i class="fa fa-upload"></i> Suivant</button>
+        
+                </div>
+            </div>
+    </div>
+    
+    {{ form_end(form) }}
+
+{% endblock %}

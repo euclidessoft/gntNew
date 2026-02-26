@@ -317,6 +317,14 @@
                                 {{ 'Toutes les Commandes'|trans }}
                             </a>
                         </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block importation %}{% endblock %}" 
+                                data-bs-toggle="modal"  data-bs-target="#choiximport"
+                               href="{{ path('commande_panier_suivi_extranet') }}">
+                                <i class="fa fa-upload"></i>
+                                {{ 'importer'|trans }}
+                            </a>
+                        </li>
                         {#<li class="dropdown-item">
                                 <a class="nav-link" href="#">
                                     <i class="fas fa-list me-2"></i>
