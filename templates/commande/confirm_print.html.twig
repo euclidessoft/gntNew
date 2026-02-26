@@ -126,7 +126,7 @@
         <table class="table table-success-light text-center table-bordered mt-5 w-100">
             <thead>
             <tr>
-                <th>{{ 'N° Prod'|trans }}</th>
+                <th>{{ 'CIP'|trans }}</th>
                 <th class="tt">{{ 'Désignation'|trans }}</th>
                 <th>{{ 'Qté'|trans }}</th>
                 <th>{{ 'Prix Ces.'|trans }}</th>
@@ -141,7 +141,7 @@
              {% set ug = 0 %}
                 {% set reductionproduit = 0 %}
                 <tr>
-                    <td> {{ commandeproduit.produit.id }} </td>
+                    <td> {{ commandeproduit.produit.reference }} </td>
                     <td class="tt">{{ commandeproduit.produit.desigantion }} </td>
                     <td> 
                     {{ commandeproduit.quantite }} 

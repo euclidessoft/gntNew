@@ -17,6 +17,12 @@
                 {{ 'Valider la commande'|trans }}
             </a>
         {% endif %}
+         {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+         {% endfor %}
         <table class="table table-success-light table-bordered table-hover table-striped w-100">
             <thead>
             <tr>

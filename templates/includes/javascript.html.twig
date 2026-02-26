@@ -379,6 +379,21 @@
         valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
         $('#form').submit();
     }
+    function importcommande() {
+        let fileInput = $('#import')[0];
+
+        if (fileInput.files.length !== 0) {
+        var valider=$('#send');
+        var originalHtml = valider.html();
+        // var originalClasses = valider.attr('class') || '';
+        // alert(originalHtml, originalClasses)
+        valider.addClass("disabled");
+        valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+        $('#form').submit();
+        }else{
+            alert("{{'Selectionnez un fichier de commande'}}");
+        }
+    }
     function initialisationpromo() {
         if ($('#promotion_type option:selected').val() == 'Unités Gratuites') {
             $('#tranche').show();

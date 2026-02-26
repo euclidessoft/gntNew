@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Produit;
 use App\Entity\Panier;
 use App\Entity\CommandeProduit;
 use App\Entity\Credit;
@@ -36,20 +37,38 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/", name :"panier") ]
-    public function index(SessionInterface $session, ProduitRepository $produitRepository)
+    public function index(Request $request, SessionInterface $session, ProduitRepository $produitRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
             $total = 0;
-
-              foreach($panier as $commande){
+            $notfound = 0;
+            $sheet = $session->get('sheet',[]);
+            if(count($sheet) > 0){// commande par importation
+                foreach($sheet as $commande){
+                    $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
+                   if( $produit != null){ 
+                    $produit->setQuantite($commande[1]);
+                    $dataPanier[] = [
+                        "produit" => $produit,
+                        "promotion" => 0,
+                    ];
+                   }else{
+                    $notfound += 1;
+                   }
+                }
+                $session->set('sheetchoix',$sheet);//creation d'une session pour le choix paiement
+                $session->remove('sheet');// suppression session chargement
+                $notfound !== 0 ? $this->addFlash('notice', $notfound . " produit(s) non trouvé(s)") : null;
+            }else{// commande normal
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+                foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
                     "produit" => $commande->getProduit(),
                     "promotion" => $commande->getReduction(),
                 ];
+            }
             }
 
             $response = $this->render('commande/index.html.twig', [
@@ -155,16 +174,39 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/valider", name :"valider") ]
-    public function valider(SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
+    public function valider(Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_CLIENT')) {
+        if ($this->security->isGranted('ROLE_CLIENT') && $this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
+             $sheet = $session->get('sheetvalider',[]);
+             $panier = [];
+            if(count($sheet) > 0){// commande par importation
+                foreach($sheet as $commandeimp){
+                    $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commandeimp[0]]);
+                   if( $produit != null){ 
+                    $produit->setQuantite($commandeimp[1]);
+                     $pan = new Panier();
+                     $pan->setProduit($produit);
+                     $pan->setQuantite($commandeimp[1]);
+                     $panier[] = $pan;
+                    // $dataPanier[] = [
+                    //     "produit" => $produit,
+                    //     "promotion" => 0,
+                    // ];
+                   }else{
+                    continue;
+                   }
+                }
+                //$panier = $dataPanier;
+                $session->remove('sheetvalider');
 
+            }else{
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
-            $dataPanier = [];
+           } 
+           //$dataPanier = [];
 //            $em = $this->getDoctrine()->getManager();
             $commande = new Commande();
             $commande->setNumerofacture(count($this->getUser()->getCommandes()) + 1);
-
+            
             if (count($panier) >= 1) {
 
                 $commande->setUser($this->getUser());
@@ -231,8 +273,8 @@ class CommandeController extends AbstractController
                     'private' => true,
                 ]);
                 return $response;
+            
             }
-
 
         } else {
             $response = $this->redirectToRoute('security_logout');
@@ -782,19 +824,48 @@ class CommandeController extends AbstractController
     public function confirm(SessionInterface $session)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $dataPanier = [];
+             $dataPanier = [];
             $total = 0;
+            $sheet = $session->get('sheetconfirm',[]);
+            if(count($sheet) > 0){// commande par importation
+                foreach($sheet as $commande){
+                    $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
+                   if( $produit != null){ 
+                    $produit->setQuantite($commande[1]);
+                    $dataPanier[] = [
+                        "produit" => $produit,
+                        "promotion" => 0,
+                    ];
+                   }else{
+                    continue;
+                   }
+                }
+                $session->set('sheetvalider', $sheet);
+                $session->remove('sheetconfirm');
 
-              foreach($panier as $commande){
-                $commande->getProduit()->setQuantite($commande->getQuantite());
-                $dataPanier[] = [
-                    "produit" => $commande->getProduit(),
-                    "promotion" => $commande->getReduction(),
-                ];
+            }else{
+                 $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+           
+                foreach($panier as $commande){
+                    $commande->getProduit()->setQuantite($commande->getQuantite());
+                    $dataPanier[] = [
+                        "produit" => $commande->getProduit(),
+                        "promotion" => $commande->getReduction(),
+                    ];
+                }
             }
-
+             if(count($dataPanier) == 0){
+                $response = $this->redirectToRoute("commande_panier_panier");
+                $response->setSharedMaxAge(0);
+                $response->headers->addCacheControlDirective('no-cache', true);
+                $response->headers->addCacheControlDirective('no-store', true);
+                $response->headers->addCacheControlDirective('must-revalidate', true);
+                $response->setCache([
+                    'max_age' => 0,
+                    'private' => true,
+                ]);
+                return $response;
+            }
             $response = $this->render('commande/confirm.html.twig', [
 //                'produits' => $produitRepository->findAll(),
                 'panier' => $dataPanier,
@@ -918,20 +989,49 @@ class CommandeController extends AbstractController
     public function confirmcredit(SessionInterface $session)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $session->set("credit", 'credit');
-            $dataPanier = [];
+ $dataPanier = [];
             $total = 0;
+            $sheet = $session->get('sheetconfirm',[]);
+            if(count($sheet) > 0){// commande par importation
+                foreach($sheet as $commande){
+                    $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
+                   if( $produit != null){ 
+                    $produit->setQuantite($commande[1]);
+                    $dataPanier[] = [
+                        "produit" => $produit,
+                        "promotion" => 0,
+                    ];
+                   }else{
+                    continue;
+                   }
+                }
+                $session->set('sheetvalider', $sheet);
+                $session->remove('sheetconfirm');
 
-           foreach($panier as $commande){
+            }else{
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+           
+              foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
                     "produit" => $commande->getProduit(),
                     "promotion" => $commande->getReduction(),
                 ];
             }
-
+            }
+            if(count($dataPanier) == 0){
+                $response = $this->redirectToRoute("commande_panier_panier");
+                $response->setSharedMaxAge(0);
+                $response->headers->addCacheControlDirective('no-cache', true);
+                $response->headers->addCacheControlDirective('no-store', true);
+                $response->headers->addCacheControlDirective('must-revalidate', true);
+                $response->setCache([
+                    'max_age' => 0,
+                    'private' => true,
+                ]);
+                return $response;
+            }
+             $session->set("credit", 'credit');
             $response = $this->render('commande/confirm.html.twig', [
 //                'produits' => $produitRepository->findAll(),
                 'panier' => $dataPanier,
@@ -1057,13 +1157,46 @@ class CommandeController extends AbstractController
     public function paiementChoix(SessionInterface $session, CommandeProduitRepository $repository, $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+        $dataPanier = [];
+             $sheet = $session->get('sheetchoix',[]);
+            if(count($sheet) > 0){// commande par importation
+                foreach($sheet as $commandeimp){
+                    $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commandeimp[0]]);
+                   if( $produit != null){ 
+                    $produit->setQuantite($commandeimp[1]);
+                    $dataPanier[] = [
+                        "produit" => $produit,
+                        "promotion" => 0,
+                    ];
+                   }else{
+                    continue;
+                   }
+                }
+                $panier = $dataPanier;
+                $session->set('sheetconfirm', $sheet);
+                $session->remove('sheetchoix');
+
+            }else{
+                $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+            }
             $session->remove('credit');
+             if(count($dataPanier) == 0 && count($panier) == 0){
+                $response = $this->redirectToRoute("commande_panier_panier");
+                $response->setSharedMaxAge(0);
+                $response->headers->addCacheControlDirective('no-cache', true);
+                $response->headers->addCacheControlDirective('no-store', true);
+                $response->headers->addCacheControlDirective('must-revalidate', true);
+                $response->setCache([
+                    'max_age' => 0,
+                    'private' => true,
+                ]);
+                return $response;
+            }
 
 
             $response = $this->render('commande/traitement.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
-                'commande' => $this->entityManager->getRepository(Commande::class)->find($commande),
+                'commande' => $commande,
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);

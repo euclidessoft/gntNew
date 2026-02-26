@@ -82,7 +82,7 @@ class Commande
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $escompte = null;
 
-     #[ORM\Column(type:"date", nullable:true) ]// pour la gestion du bilan financier
+     #[ORM\Column(type:"datetime", nullable:true) ]// pour la gestion du bilan financier
     private $traitement;
 
     /**

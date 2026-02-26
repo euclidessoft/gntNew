@@ -13,7 +13,7 @@
         <table class="table table-success-light table-bordered table-hover table-striped w-100">
             <thead>
             <tr>
-                <th>{{ 'Reference'|trans }}</th>
+                <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Réduction'|trans }}</th>
@@ -142,11 +142,13 @@
         <div class="centrer">
             <div class="row">
 
-                <a id="valid" onclick="load('valid')" href="{{ path('commande_panier_valider') }}"
+            {{ include('commande/_confirmation.html.twig')}}
+
+                {# <a id="valid" onclick="load('valid')" href="{{ path('commande_panier_valider') }}"
                    class="ms-3 btn btn-success float-end">
                     <i class="fa fa-money-bill"></i>
                     {{ "Valider"|trans }}
-                </a>
+                </a> #}
 
 
             </div>
