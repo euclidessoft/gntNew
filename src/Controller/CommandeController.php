@@ -59,7 +59,7 @@ class CommandeController extends AbstractController
                 }
                 $session->set('sheetchoix',$sheet);//creation d'une session pour le choix paiement
                 $session->remove('sheet');// suppression session chargement
-                $notfound !== 0 ? $this->addFlash('notice', $notfound . " produit(s) non trouvé(s)") : null;
+                $notfound !== 0 ? $this->addFlash('notice', $notfound . " CIP  produit(s) non trouvé(s)") : null;
             }else{// commande normal
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
                 foreach($panier as $commande){
