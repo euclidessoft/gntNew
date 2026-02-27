@@ -1,5 +1,5 @@
 {% extends 'client.html.twig' %}
-{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block title %} {{ "Bon de commande"|trans }} - GNT Pharma {% endblock %}
 {% block commande %}active{% endblock %}
 {% block my_commande %}active{% endblock %}
 
@@ -16,7 +16,7 @@
             {{ ' Bon de commande'|trans }}
         </h3>
         <h6 class="text-center text-bold text-uppercase mb-3">
-        {{ 'Numero'|trans }} : BC{{ commande.id}}{{ commande.numerofacture }}
+            {{ 'Numero'|trans }} : BC{{ commande.id }}{{ commande.numerofacture }}
         </h6>
         <div class="row">
             <div class="col-md-12">
@@ -25,29 +25,31 @@
                     <tr>
                         <th>{{ 'Date'|trans }}</th>
                         <th>{{ 'N° Commande'|trans }}</th>
-                         <th>{{ 'NIU'|trans }}</th>
+                        <th>{{ 'NIU'|trans }}</th>
                         {% if commande.credit == 1 and commande.payer == 0 %}
-                        <th>{{ 'date d\'echeance de paiement'|trans }}</th>
+                            <th>{{ 'date d\'echeance de paiement'|trans }}</th>
                         {% endif %}
                         {# <th>{{ 'Status Commande'|trans }}</th> #}
-                        {#            <th>Date de Livraison</th>#}
+                        {#            <th>Date de Livraison</th> #}
                     </tr>
                     </thead>
                     <tbody>
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
-                    <td>{{ commande.id }}</td>
-                     <td>{{ commande.user.niu }}</td>
-                         {% if commande.credit == 1 and commande.payer == 0 %}
-                             <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
+                    <tr>
+                        <td>{{ commande.date|date('d/m/Y H:m:s') }}</td>
+                        <td>{{ commande.id }}</td>
+                        <td>{{ commande.user.niu }}</td>
+                        {% if commande.credit == 1 and commande.payer == 0 %}
+                            <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y H:m:s') }}</td>
                         {% endif %}
-                    {# <td class="text-bold">
+                        {# <td class="text-bold">
                         {% if commande.payer == 0 %}
                             <span class="text-danger">Non payée</span>
                         {% else %}
                             <span class="text-success">Payée</span>
                         {% endif %}
                     </td> #}
-                    {#        <td> </td>#}
+                        {#        <td> </td> #}
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -61,8 +63,8 @@
                 <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
                 <th>{{ 'Quantité Commandée'|trans }}</th>
-                {#            <th>Quantite Livree</th>#}
-                {#            <th>Quantite Restante</th>#}
+                {#            <th>Quantite Livree</th> #}
+                {#            <th>Quantite Restante</th> #}
                 {# <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Réduction'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
@@ -190,14 +192,14 @@
                                     {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
 
                                 {% endif %}
-                                {% if ug != 0 %} <span class='badge bg-danger'> + {{ug}} "U.G"</span> {% endif %}
+                                {% if ug != 0 %} <span class='badge bg-danger'> + {{ ug }} "U.G"</span> {% endif %}
                             {% endif %}
                         {% endif %}
                     </td>
-                    {#                <td>#}
-                    {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }}#}
-                    {#                </td>#}
-                    {#                <td> </td>#}
+                    {#                <td> #}
+                    {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }} #}
+                    {#                </td> #}
+                    {#                <td> </td> #}
                     {# <td class="montant">
                         {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
@@ -290,7 +292,7 @@
             </tbody>
         </table>
 
-       
+
     </div>
     <div class="container mt-4 mb-5 p-3 fond-7">
         <div class="centrer">

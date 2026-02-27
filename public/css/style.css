@@ -981,7 +981,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--light);
+    color: var(--blanc);
     font-weight: normal;
     border: 1px solid var(--blanc);
     border-radius: 35px;
@@ -1031,7 +1031,7 @@ footer {
 }
 
 .footer .copyright a {
-    color: var(--light);
+    color: var(--blanc);
 }
 
 .footer-shape::before {
