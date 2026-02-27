@@ -120,7 +120,7 @@ class CommandeController extends AbstractController
 
             if ($form->isSubmitted()) {
                 $session->set('extranet', $commande->getUser()->getId());
-                $session->set('prelevement', $commande->getUser()->getPrelevement());
+                $session->set('prelevement', $commande->getUser()->isPrelevement());
                 $this->redirectToRoute('commande_panier_choix_paiement_extranet', ['commande' => 0]);
             }
 

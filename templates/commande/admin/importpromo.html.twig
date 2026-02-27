@@ -26,11 +26,16 @@
             </div>
         {% endfor %}
 
-         {{ form_start(form) }}
-                {{ form_widget(form) }}
-                {{ form_end(form) }}
+         {{ form_start(form,{'attr' : { 'id' : 'form'}}) }}
+                <div class="col-md-12 text-bold">
+        {{ form_row(form.user, {'label':'Selectionnez client'}) }}
+    </div>
+    <div class="col-md-12 text-bold mt-3">
+        {{ form_widget(form.import, {'label':'importer un fichier'}) }}
+    </div>
+               
         {# <form method="POST" action="{{ path('adminimportation')}}" enctype="multipart/form-data" id="form"> #}
-            <input type="file" name="import" id="import" class="form-control mt-3">
+            {# <input type="file" name="import" id="import" class="form-control mt-3"> #}
             {# </form> #}
         <div class="col-lg-4 justify-content-center fond-7 my-5 p-3">
                 <div class="centrer gap-4">
@@ -38,8 +43,9 @@
         
                 </div>
             </div>
+             {{ form_end(form) }}
     </div>
     
-    {{ form_end(form) }}
+    {# {{ form_end(form) }} #}
 
 {% endblock %}

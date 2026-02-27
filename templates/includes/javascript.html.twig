@@ -380,13 +380,41 @@
         $('#form').submit();
     }
     function importcommande() {
-        let fileInput = $('#import')[0];
+       
+        let impo = document.querySelector('#import');
+        let fileInput ;
+
+        if(impo !== null) fileInput = $('#import')[0];
+        else fileInput = $('#commande_import')[0];
+        
+         let client = $('#commande_user');
+        if (client !== null && $('#commande_user option:selected').val() == ""){
+            
+                alert("{{'Selectionnez un client'|trans}}");
+                return false;
+        
+        }
 
         if (fileInput.files.length !== 0) {
         var valider=$('#send');
         var originalHtml = valider.html();
-        // var originalClasses = valider.attr('class') || '';
-        // alert(originalHtml, originalClasses)
+        let file = fileInput.files[0];
+            let extension = file.name.split('.').pop().toLowerCase();
+
+            let allowedExtensions = ['xls', 'xlsx', 'csv'];
+
+            let allowedMimeTypes = [
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'text/csv',
+                'application/csv'
+            ];
+
+            if (!allowedExtensions.includes(extension) || !allowedMimeTypes.includes(file.type)) {
+                
+                alert('Format invalide. Fichiers autorisés : Excel ou CSV.');
+                return false;
+            }
         valider.addClass("disabled");
         valider.html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
         $('#form').submit();

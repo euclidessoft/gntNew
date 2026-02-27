@@ -112,29 +112,7 @@
     </div>
 </div>
 
-    <div class="modal fade" id="importer" tabindex="-1" aria-labelledby="importer" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered text-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title fs-5" id="importer">
-                        <i class="fa-solid fa-upload"></i>
-                        {{ 'Importation commande'|trans }}
-                    </h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body px-5 pb-5">
-                    <p class="">
-                        <b>{{ 'Importez un fichier'|trans }}</b>
-                    </p>
-                    <form method="POST" action="{{ path('adminimportation')}}" enctype="multipart/form-data" id="form">
-                        <input type="file" name="import" id="import" class="form-control">
-                        <button type="button" class="btn btn-success mt-3" id="send" onclick="importcommande()"><i class="fa fa-upload"></i> Suivant</button>
-                    </form>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
      <div class="modal fade" id="choiximport" tabindex="-1" tabindex="-1" aria-labelledby="" aria-hidden="true"
             aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 // use Symfony\Component\Security\Core\Security;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-// use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 
 #[Route("{_locale}/Importation") ]
@@ -112,17 +112,45 @@ class ImportationController extends AbstractController
             $commande = new Commande();
 
             $form = $this->createForm(CommandeType::class, $commande);
-            // $form->add('import', FileType::class, [
-            //             'label' => 'Importer un fichier Excel',
-            //             'mapped' => false, // IMPORTANT si ce champ n'existe pas dans l'entité
-            //             'required' => true,
-            //         ]);
+            $form->add('import', FileType::class, [
+                        'label' => 'Importer un fichier Excel',
+                        'mapped' => false, //  n'existe pas dans l'entité
+                        'required' => true,
+                    ]);
             $form->handleRequest($request);
 
              if ($form->isSubmitted()) {
+            // if ($request->isMethod('POST')) {
+                 
                 $session->set('extranet', $commande->getUser()->getId());
-                $session->set('prelevement', $commande->getUser()->getPrelevement());
-                $this->redirectToRoute('commande_panier_choix_paiement_extranet', ['commande' => 0]);
+                $session->set('prelevement', $commande->getUser()->isPrelevement());
+                $file = $request->files->get('commande')['import'];
+               
+                if (!$file) {
+                    return new Response('Aucun fichier envoyé');
+                   // dd($request);
+                }
+
+                try {
+                    $spreadsheet = IOFactory::load($file->getPathname());
+                    $sheet = $spreadsheet->getActiveSheet()->toArray();
+                    $session->set('sheet', $sheet);
+                
+                
+                    $response = $this->redirectToRoute('commande_panier_choix_paiement_extranet', ['commande' => 0]);
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+
+                } catch (\Exception $e) {
+                    return new Response('Erreur : ' . $e->getMessage());
+                }
             }
 
 
