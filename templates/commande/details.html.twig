@@ -1,5 +1,5 @@
 {% extends 'client.html.twig' %}
-{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block title %} {{ "Facture "|trans }} {{ commande.id}}-{{ commande.numerofacture }} - GNT Pharma {% endblock %}
 {% block commande %}active{% endblock %}
 {% block my_commande %}active{% endblock %}
 
@@ -61,7 +61,7 @@
                 <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
                 <th>{{ 'Quantité Commandée'|trans }}</th>
-                {#            <th>Quantite Livree</th>#}
+                            <th>Quantite Livree</th>
                 {#            <th>Quantite Restante</th>#}
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th class="noExport">{{ 'Réduction'|trans }}</th>
@@ -196,9 +196,18 @@
                             {% endif %}
                         {% endif %}
                     </td>
-                    {#                <td>#}
+                                    <td>
                     {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }}#}
-                    {#                </td>#}
+                                        {% set quantite = 0 %}
+                                        {% for livrerproduit  in livrerproduits  %}
+                                            {% if livrerproduit.commande.id  == commande.id and livrerproduit.produit.id == commandeproduit.produit.id %}
+                                                {% set quantite = quantite + livrerproduit.quantitelivrer %}
+                                            {% endif %}
+
+                                        {% else %}
+                                        {% endfor %}
+                                        {{ quantite != 0 ? quantite : ''  }}
+                                    </td>
                     {#                <td> </td>#}
                     <td class="montant noExport">
                         {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
@@ -246,7 +255,7 @@
             <tbody>
             <tfoot>
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total HT"|trans }}
                 </td>
                 <td class="montant">
@@ -255,7 +264,7 @@
             </tr>
             {% if reduction != 0 %}
                 <tr>
-                    <td colspan="7" class="text-end">
+                    <td colspan="8" class="text-end">
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td class="montant">
@@ -264,7 +273,7 @@
                 </tr>
             {% endif %}
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total TVA"|trans }}
                 </td>
                 <td class="montant">
@@ -272,7 +281,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
@@ -283,7 +292,7 @@
             </tr>
 
             <tr class="text-bold">
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="montant">
