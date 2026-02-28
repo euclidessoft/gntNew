@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Commande;
 use App\Form\CommandeType;
+use App\Repository\ProduitRepository;
 use Symfony\Component\HttpFoundation\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -104,7 +105,7 @@ class ImportationController extends AbstractController
 
      
     #[Route("/ImportPromo", name :"importpromo") ]
-    public function importpromo(SessionInterface $session, Request $request)
+    public function importpromo(SessionInterface $session, Request $request, ProduitRepository $produitRepository)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
@@ -120,8 +121,9 @@ class ImportationController extends AbstractController
             $form->handleRequest($request);
 
              if ($form->isSubmitted()) {
-            // if ($request->isMethod('POST')) {
+                 // if ($request->isMethod('POST')) {
                  
+                $session->set('client', $commande->getUser()->getId());
                 $session->set('extranet', $commande->getUser()->getId());
                 $session->set('prelevement', $commande->getUser()->isPrelevement());
                 $file = $request->files->get('commande')['import'];
@@ -134,7 +136,42 @@ class ImportationController extends AbstractController
                 try {
                     $spreadsheet = IOFactory::load($file->getPathname());
                     $sheet = $spreadsheet->getActiveSheet()->toArray();
-                    $session->set('sheet', $sheet);
+                    $res = [];
+                    $panier = [];
+                    foreach($sheet as $commande){
+                        $id = $commande[0];
+                        $quantite = $commande[1];
+                        $reduction = null;
+                        $produit = $produitRepository->findOneby(['reference' => $id]); // recuperation de id produit dans la db
+                       
+                        if($produit !== null){
+                            if(!empty($produit->getPromotion())) {// verification promo reduction
+                                if(!empty($produit->getPromotion()->getReduction())) {
+                                    $reduction = $produit->getPromotion()->getReduction();
+                                }
+                            }
+                            if($produit->getMincommande() <= $quantite) {// verification quantite minimum
+                            $produit->setQuantite($quantite);
+
+                            $panier[$id] = [// placement produit et quantite dans le panier
+                                "produit" => $produit,
+                                "promotion" => $reduction,
+                            ];
+
+                            // On sauvegarde dans la session
+                            //$session->set("panier", $panier);
+
+                            // $res['id'] = 'ok';
+                            // $res['ref'] = $produit->getReference();
+                            // $res['designation'] = $produit->getDesigantion();
+                            // $res['fabriquant'] = $produit->getFabriquant();
+                            // $res['quantite'] = $produit->getQuantite();
+                        }else{
+                            $res['id'] = 'no';
+                        }
+                       }
+                    }
+                    $session->set('sheet', $panier);
                 
                 
                     $response = $this->redirectToRoute('commande_panier_choix_paiement_extranet', ['commande' => 0]);

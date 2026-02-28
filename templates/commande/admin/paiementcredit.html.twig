@@ -38,6 +38,7 @@
                     <tr>
                         <th>{{ 'Date'|trans }}</th>
                         <th>{{ 'N° Commande'|trans }}</th>
+                         <th>{{ 'Client'|trans }}</th>
                          <th>{{ 'NIU'|trans }}</th>
                         {% if commande.credit == 1 and commande.payer == 0 %}
                         <th>{{ 'date d\'echeance de paiement'|trans }}</th>
@@ -49,6 +50,7 @@
                     <tbody>
                     <td>{{ commande.date|date('d/m/Y') }}</td>
                     <td>{{ commande.id }}</td>
+                     <td>{{ commande.user.nom ~ " " ~ commande.user.prenom }}</td>
                      <td>{{ commande.user.niu }}</td>
                          {% if commande.credit == 1 and commande.payer == 0 %}
                              <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
@@ -71,7 +73,7 @@
     <table class="table table-success-light table-bordered table-hover table-striped w-100">
         <thead>
         <tr>
-            <th>{{ 'Code Produit'|trans }}</th>
+            <th>{{ 'CIP'|trans }}</th>
             <th>{{ 'Désignation'|trans }}</th>
             <th>{{ 'Quantité Commandée'|trans }}</th>
             <th>{{ 'Prix Cession'|trans }}</th>
@@ -86,7 +88,7 @@
           {% set ug = 0 %}
             {% set reductionproduit = 0 %}
             <tr>
-                <td> {{ commandeproduit.produit.id }} </td>
+                <td> {{ commandeproduit.produit.reference }} </td>
                 <td>{{ commandeproduit.produit.desigantion }} </td>
                 <td> {{ commandeproduit.quantite }}
                   {% if commandeproduit.promotion is not null %}

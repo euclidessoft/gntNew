@@ -295,7 +295,12 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
-            $panier = $session->get("panier", []);
+             $panier= [];
+            if($session->get("sheetvalider") !== null ){ 
+                $panier = $session->get("sheetvalider", []);
+                $session->remove("sheetvalider");
+            }
+            else $panier = $session->get("panier", []);
             $dataPanier = [];
             $em = $this->entityManager;
             $commande = new Commande();
@@ -389,8 +394,12 @@ class CommandeController extends AbstractController
     public function validerextranet(SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
-
-            $panier = $session->get("panier", []);
+             $panier= [];
+            if($session->get("sheetvalider") !== null ){ 
+                $panier = $session->get("sheetvalider", []);
+                $session->remove("sheetvalider");
+            }
+            else $panier = $session->get("panier", []);
             $dataPanier = [];
             $em = $this->entityManager;
             $commande = new Commande();
@@ -898,7 +907,13 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
-            $panier = $session->get("panier", []);
+            $panier= [];
+            if($session->get("sheetchoix") !== null ){ 
+                $panier = $session->get("sheetchoix", []);
+                $session->set("sheetvalider", $panier);
+                $session->remove("sheetchoix");
+            }
+            else $panier = $session->get("panier", []);
             $dataPanier = [];
             $total = 0;
 
@@ -944,7 +959,13 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
-            $panier = $session->get("panier", []);
+            $panier= [];
+            if($session->get("sheetchoix") !== null ){ 
+                $panier = $session->get("sheetchoix", []);
+                $session->set("sheetvalider", $panier);
+                $session->remove("sheetchoix");
+            }
+            else $panier = $session->get("panier", []);
             $dataPanier = [];
             $total = 0;
 
@@ -1064,7 +1085,13 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
-            $panier = $session->get("panier", []);
+           $panier= [];
+             if($session->get("sheetchoix") !== null ){ 
+                $panier = $session->get("sheetchoix", []);
+                $session->remove("sheetchoix");
+                $session->get("sheetvalider", []);
+            }
+            else $panier = $session->get("panier", []);
             $session->set("credit", 'credit');
             $dataPanier = [];
             $total = 0;
@@ -1111,7 +1138,13 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
-            $panier = $session->get("panier", []);
+           $panier= [];
+             if($session->get("sheetchoix") !== null ){ 
+                $panier = $session->get("sheetchoix", []);
+                $session->remove("sheetchoix");
+                $session->set("sheetvalider", $panier);
+            }
+            else $panier = $session->get("panier", []);
             $session->set("credit", 'credit');
             $dataPanier = [];
             $total = 0;
@@ -1231,7 +1264,12 @@ class CommandeController extends AbstractController
     public function paiementChoixextranetpromo(SessionInterface $session, CommandeProduitRepository $repository, $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            $panier = $session->get("panier", []);
+            $panier= [];
+            if($session->get("sheet") !== null ){ 
+                $panier = $session->get("sheet", []);
+                $session->remove("sheet");
+            }
+            else $panier = $session->get("panier", []);
             $session->remove('credit');
 
 
@@ -1272,7 +1310,13 @@ class CommandeController extends AbstractController
     public function paiementChoixextranet(SessionInterface $session, CommandeProduitRepository $repository, $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            $panier = $session->get("panier", []);
+             $panier= [];
+            if($session->get("sheet") !== null ){ 
+                $panier = $session->get("sheet", []);
+                $session->remove("sheet");
+                $session->set("sheetchoix", $panier);
+            }
+            else $panier = $session->get("panier", []);
             $session->remove('credit');
 
 
@@ -1971,7 +2015,7 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
-
+            $session->get("sheet") !== null ? $panier = $session->get("sheet", []):
             $panier = $session->get("panier", []);
 
             $response = $this->render('commande/admin/confirmpromo_print.html.twig', [
