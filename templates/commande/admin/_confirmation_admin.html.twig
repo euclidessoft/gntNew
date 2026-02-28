@@ -1,5 +1,5 @@
-<form method="post" action="{{ path('commande_panier_valider') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir valider?');" class="d-inline-block">
+<form method="post" action="{{ path('commande_panier_valider_extranet') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir valider?');" class="d-inline-block">
     <input type="hidden" name="_token" value="{{ csrf_token('delete') }}">
-    <button class="ms-3 btn btn-success float-end">
+    <button class="ms-3 btn btn-success float-end" id="load">
                     <i class="fa fa-money-bill"></i>{{ "Valider"|trans }}</button>
 </form>

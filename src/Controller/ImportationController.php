@@ -138,9 +138,14 @@ class ImportationController extends AbstractController
                     $sheet = $spreadsheet->getActiveSheet()->toArray();
                     $res = [];
                     $panier = [];
+                    $compt = 0;
                     foreach($sheet as $commande){
                         $id = $commande[0];
                         $quantite = $commande[1];
+                        if (!preg_match('/^[0-9]+$/', $id) || !preg_match('/^[0-9]+$/', $quantite)) {
+                            $compt +=1;
+                            continue;
+                        }
                         $reduction = null;
                         $produit = $produitRepository->findOneby(['reference' => $id]); // recuperation de id produit dans la db
                        
@@ -166,12 +171,133 @@ class ImportationController extends AbstractController
                             // $res['designation'] = $produit->getDesigantion();
                             // $res['fabriquant'] = $produit->getFabriquant();
                             // $res['quantite'] = $produit->getQuantite();
-                        }else{
-                            $res['id'] = 'no';
                         }
-                       }
+                       }else{
+                            $compt +=1;
+                        }
                     }
                     $session->set('sheet', $panier);
+                    $session->set('compte', $compt);
+                
+                
+                    $response = $this->redirectToRoute('commande_panier_choix_paiement_extranet_promo', ['commande' => 0]);
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+
+                } catch (\Exception $e) {
+                    return new Response('Erreur : ' . $e->getMessage());
+                }
+            }
+
+
+            $response = $this->render('commande/admin/importpromo.html.twig', [
+                'form' => $form->createView(),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    
+    
+    #[Route("/ImportSansPromo", name :"importsanspromo") ]
+    public function importsanspromo(SessionInterface $session, Request $request, ProduitRepository $produitRepository)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+           
+            $commande = new Commande();
+
+            $form = $this->createForm(CommandeType::class, $commande);
+            $form->add('import', FileType::class, [
+                        'label' => 'Importer un fichier Excel',
+                        'mapped' => false, //  n'existe pas dans l'entité
+                        'required' => true,
+                    ]);
+            $form->handleRequest($request);
+
+             if ($form->isSubmitted()) {
+                 // if ($request->isMethod('POST')) {
+                 
+                $session->set('client', $commande->getUser()->getId());
+                $session->set('extranet', $commande->getUser()->getId());
+                $session->set('prelevement', $commande->getUser()->isPrelevement());
+                $file = $request->files->get('commande')['import'];
+               
+                if (!$file) {
+                    return new Response('Aucun fichier envoyé');
+                   // dd($request);
+                }
+
+                try {
+                    $spreadsheet = IOFactory::load($file->getPathname());
+                    $sheet = $spreadsheet->getActiveSheet()->toArray();
+                    $res = [];
+                    $panier = [];
+                    $compt = 0;
+                    foreach($sheet as $commande){
+                        $id = $commande[0];
+                        $quantite = $commande[1];
+                        if (!preg_match('/^[0-9]+$/', $id) || !preg_match('/^[0-9]+$/', $quantite)) {
+                            $compt +=1;
+                            continue;
+                        }
+                        $reduction = null;
+                        $produit = $produitRepository->findOneby(['reference' => $id]); // recuperation de id produit dans la db
+                       
+                        if($produit !== null){
+                            if(!empty($produit->getPromotion())) {// verification promo reduction
+                                if(!empty($produit->getPromotion()->getReduction())) {
+                                    $reduction = $produit->getPromotion()->getReduction();
+                                }
+                            }
+                            if($produit->getMincommande() <= $quantite) {// verification quantite minimum
+                            $produit->setQuantite($quantite);
+
+                            $panier[$id] = [// placement produit et quantite dans le panier
+                                "produit" => $produit,
+                                "promotion" => $reduction,
+                            ];
+
+                            // On sauvegarde dans la session
+                            //$session->set("panier", $panier);
+
+                            // $res['id'] = 'ok';
+                            // $res['ref'] = $produit->getReference();
+                            // $res['designation'] = $produit->getDesigantion();
+                            // $res['fabriquant'] = $produit->getFabriquant();
+                            // $res['quantite'] = $produit->getQuantite();
+                        }
+                       }else{
+                            $compt +=1;
+                        }
+                    }
+                    $session->set('sheet', $panier);
+                    $session->set('compte', $compt);
                 
                 
                     $response = $this->redirectToRoute('commande_panier_choix_paiement_extranet', ['commande' => 0]);
@@ -191,7 +317,7 @@ class ImportationController extends AbstractController
             }
 
 
-            $response = $this->render('commande/admin/importpromo.html.twig', [
+            $response = $this->render('commande/admin/importsanspromo.html.twig', [
                 'form' => $form->createView(),
             ]);
             $response->setSharedMaxAge(0);

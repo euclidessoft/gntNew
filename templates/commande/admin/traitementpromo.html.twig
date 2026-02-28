@@ -82,7 +82,7 @@
                 </label>
             </div>
 
-            <button type="button" class="btn btn-success mt-3" onclick="choix()">
+            <button type="button" class="btn btn-success mt-3" onclick="choix()" id="valider">
                 <i class="fa fa-money-bill"></i>
                 Validez
             </button>
@@ -92,11 +92,15 @@
         <script>
             function choix() {
                 if ($('input[type=radio][name=payment]:checked').val() == 'AMEX') {
+                     $("#valider").addClass("disabled");
+                $("#valider").html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
                     var url = $(location).attr("href");
                     url = url.replace("/Choix_Paiement_extranet_promo/0", "/ConfirmationPaiement_extranet_promo/");
                     document.location.href = url;
 
                 } else if ($('input[type=radio][name=payment]:checked').val() == 'Credit') {
+                     $("#valider").addClass("disabled");
+                $("#valider").html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
                     var url = $(location).attr("href");
                     url = url.replace("/Choix_Paiement_extranet_promo/0", "/ConfirmationCredit_extranet_promo/");
                     document.location.href = url;

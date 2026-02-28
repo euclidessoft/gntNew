@@ -46,6 +46,10 @@ class CommandeController extends AbstractController
             $sheet = $session->get('sheet',[]);
             if(count($sheet) > 0){// commande par importation
                 foreach($sheet as $commande){
+                    if (!preg_match('/^[0-9]+$/', $commande[0]) || !preg_match('/^[0-9]+$/', $commande[1])) {
+                            $notfound +=1;
+                            continue;
+                        }
                     $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
                    if( $produit != null){ 
                     $produit->setQuantite($commande[1]);
@@ -59,7 +63,7 @@ class CommandeController extends AbstractController
                 }
                 $session->set('sheetchoix',$sheet);//creation d'une session pour le choix paiement
                 $session->remove('sheet');// suppression session chargement
-                $notfound !== 0 ? $this->addFlash('notice', $notfound . " CIP  produit(s) non trouvé(s)") : null;
+                $notfound !== 0 ? $this->addFlash('notice', $notfound . " CIP  produit(s) non trouvé(s) ou quantité(s) erronée(s)") : null;
             }else{// commande normal
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
                 foreach($panier as $commande){
@@ -291,9 +295,9 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/valider_extranet_promo", name :"valider_extranet_promo") ]
-    public function validerextranetpromo(SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
+    public function validerextranetpromo(Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_FINANCE')  && $this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
 
              $panier= [];
             if($session->get("sheetvalider") !== null ){ 
@@ -391,9 +395,9 @@ class CommandeController extends AbstractController
     }
 
      #[Route("/valider_extranet", name :"valider_extranet") ]
-    public function validerextranet(SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
+    public function validerextranet(Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_FINANCE') && $this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
              $panier= [];
             if($session->get("sheetvalider") !== null ){ 
                 $panier = $session->get("sheetvalider", []);
@@ -916,6 +920,11 @@ class CommandeController extends AbstractController
             else $panier = $session->get("panier", []);
             $dataPanier = [];
             $total = 0;
+             $compte = $session->get('compte');
+             if($compte > 0){
+                $this->addFlash('notice', $compte. " CIP produits non trouvé(s) ou quantité(s) erronée(s)");
+                $session->remove('compte');
+            }
 
             foreach ($panier as $commande) {
 //                $product = $produitRepository->find($id);
@@ -968,6 +977,10 @@ class CommandeController extends AbstractController
             else $panier = $session->get("panier", []);
             $dataPanier = [];
             $total = 0;
+             $compte = $session->get('compte');
+             if($compte > 0){
+                $this->addFlash('notice', $compte. " CIP produits non trouvé(s) ou quantité(s) erronée(s)");$session->remove('compte');
+            }
 
             foreach ($panier as $commande) {
 //                $product = $produitRepository->find($id);
@@ -1089,10 +1102,14 @@ class CommandeController extends AbstractController
              if($session->get("sheetchoix") !== null ){ 
                 $panier = $session->get("sheetchoix", []);
                 $session->remove("sheetchoix");
-                $session->get("sheetvalider", []);
+                $session->set("sheetvalider", $panier);
             }
             else $panier = $session->get("panier", []);
             $session->set("credit", 'credit');
+            $compte = $session->get('compte');
+             if($compte > 0){
+                $this->addFlash('notice', $compte. " CIP produits non trouvé(s) ou quantité(s) erronée(s)");$session->remove('compte');
+            }
             $dataPanier = [];
             $total = 0;
 
@@ -1146,6 +1163,10 @@ class CommandeController extends AbstractController
             }
             else $panier = $session->get("panier", []);
             $session->set("credit", 'credit');
+            $compte = $session->get('compte');
+            if($compte > 0){
+                $this->addFlash('notice', $compte. " CIP produits non trouvé(s) ou quantité(s) erronée(s)");$session->remove('compte');
+            }
             $dataPanier = [];
             $total = 0;
 
@@ -1268,6 +1289,7 @@ class CommandeController extends AbstractController
             if($session->get("sheet") !== null ){ 
                 $panier = $session->get("sheet", []);
                 $session->remove("sheet");
+                $session->set("sheetchoix", $panier);
             }
             else $panier = $session->get("panier", []);
             $session->remove('credit');

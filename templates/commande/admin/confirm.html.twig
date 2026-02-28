@@ -18,7 +18,12 @@
             {{ "Validation de la commande"|trans }}
         </h3>
 
-
+        {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+         {% endfor %}
         <table class="table table-success-light table-bordered table-hover table-striped w-100">
             <thead>
             <tr>
@@ -159,13 +164,13 @@
     <div class="container mt-4 mb-5 pt-3 pb-3 fond-7">
         <div class="centrer">
             <div class="row">
-
-                <a id="valider" onclick="load('valider')" href="{{ path('commande_panier_valider_extranet') }}"
+                 {{ include('commande/admin/_confirmation_admin.html.twig')}}
+                {# <a id="valider" onclick="load('valider')" href="{{ path('commande_panier_valider_extranet') }}"
                    class="ms-3 btn btn-success float-end">
                     <i class="fa fa-money-bill">
 
                     </i> {{ "Valider"|trans }}
-                </a>
+                </a> #}
 
 
             </div>
