@@ -14,6 +14,8 @@ use App\Service\SMSService;
 use App\Service\LamService;
 use App\Entity\Commande;
 use App\Entity\Versement;
+use App\Entity\Client;
+use App\Entity\Pharmacie;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -64,21 +66,33 @@ public function test(ParameterBagInterface $params)
        #[Route('/test-lam')]
     public function testlam(HttpClientInterface $client,ParameterBagInterface $params)
     {
-        $lam = new lamService("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500, 2, ',', ' '), $client, $params);
-        $response = true;
-        try{
-            $lam->send();
-        }
-        catch(throwable $e){
-            $response = false;
-        }
+        // $lam = new lamService("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500, 2, ',', ' '), $client, $params);
+        // $response = true;
+        // try{
+        //     $lam->send();
+        // }
+        // catch(throwable $e){
+        //     $response = false;
+        // }
         
         // // JAMBAAR_CORPORATION_01
         // // kf10yY6Jx7F04fw
         // // $ws = new SMSService($params);//connect number_format($livrer->getCommande()->getMontant(), 0, ',', ' ')
         // // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
-        return new Response($response);
+       // return new Response($response);
+        $clients = $this->entityManager->getRepository(Client::class)->findAll();
+        foreach($clients as $client){
+            $pharmacie = new Pharmacie();
+            $pharmacie->setNom($client->getNom()." ".$client->getPrenom());
+            $this->entityManager->persist($pharmacie);
+            $this->entityManager->flush();
+            // $client->setRoles(["ROLE_CLIENT_ADMIN"]);
+            $client->setPharmacie($pharmacie);
+            $this->entityManager->persist($client);
+            $this->entityManager->flush();
 
+        }
+        return new Response("okay");
 
         //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
         // foreach($commandes as $commande){

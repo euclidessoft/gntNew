@@ -94,7 +94,7 @@ class ClientController extends AbstractController
                 
                 // creation de la pharmacie
                 $pharmacie = new Pharmacie();
-                $pharmacie->setNom($client->getPrenom()." ".$client->getNom());
+                $pharmacie->setNom($client->getNom()." ".$client->getPrenom());
                 $entityManager->persist($pharmacie);
                 $entityManager->flush();
                 //fin
@@ -179,15 +179,15 @@ class ClientController extends AbstractController
                 $client->setPassword($hashpass);
                 $client->setUsername($client->getNom());
                 $client->setRoles(["ROLE_CLIENT"]);
-                $client->setClient(true);
-                $client->setFonction('Client');
+                $client->setClient(false);
+                $client->setFonction('Emplyer-Client');
                 $token = $tokenGenerator->generateToken();
                 $client->setResetToken($token);
 
                 $entityManager->persist($client);
                 $entityManager->flush();
-                $compte = '411' . str_pad($client->getId() + 1, 4, '0', STR_PAD_LEFT);
-                $client->setCompte($compte);
+                // $compte = '411' . str_pad($client->getId() + 1, 4, '0', STR_PAD_LEFT);
+                // $client->setCompte($compte);
 
                 $entityManager->persist($client);
                 $entityManager->flush();

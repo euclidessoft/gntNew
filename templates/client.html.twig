@@ -30,6 +30,36 @@
                         </div>
                     </a>
                 </li>
+                {% if is_granted("ROLE_CLIENT_ADMIN")%}
+                    <li class="nav-item dropend" title="{{ 'Utilisateur'|trans }}">
+                        <a class="nav-link dropdown-toggle {% block user %}{% endblock %}" href="#" id="user"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                            <div class="icone">
+                                <i class="fa fa-users fa-lg"></i>
+                            </div>
+                            <div class="title">
+                                {{ 'Utilisateurs'|trans }}
+                            </div>
+                        </a>
+                        <ul class=" dropdown-menu" aria-labelledby="officine">
+                            <li class="dropdown-item">
+                                <a class="nav-link {% block user_user %}{% endblock %}" href="{{ path('client_register') }}">
+                                    <i class="fa fa-user"></i>
+                                    {{ 'Nouveau'|trans }}
+                                </a>
+                            </li>
+                            <li class="dropdown-item">
+                                <a class="nav-link {% block user_users %}{% endblock %}"
+                                href="{{ path('client_users') }}">
+                                    <i class="fa fa-users"></i>
+                                    {{ 'tous les utilisateurs'|trans }}
+                                </a>
+                            </li>
+                        
+                        </ul>
+                    </li>
+                {% endif %}
                 <li class="nav-item dropend" title="{{ 'Produits'|trans }}">
                     <a class="nav-link dropdown-toggle {% block produit %}{% endblock %}" href="#" id="produits"
                        data-bs-toggle="dropdown"
@@ -201,10 +231,9 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item dropend" title="{{ 'Officine'|trans }}">
-                    <a class="nav-link dropdown-toggle {% block officine %}{% endblock %}" href="#" id="officine"
-                       data-bs-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
+                {% if is_granted("ROLE_CLIENT_ADMIN") %}
+                 <li class="nav-item" title="{{ 'Officine'|trans }}">
+                    <a class="nav-link {% block officine %}{% endblock %}" href="{{ path('commande_panier_officine') }}">
                         <div class="icone">
                             <i class="fas fa-staff-snake fa-lg"></i>
                         </div>
@@ -212,28 +241,9 @@
                             {{ 'Officine'|trans }}
                         </div>
                     </a>
-                    <ul class=" dropdown-menu" aria-labelledby="officine">
-                        <li class="dropdown-item">
-                            <a class="nav-link {% block avoir %}{% endblock %}" href="{{ path('avoir_index') }}">
-                                <i class="fas fa-sack-dollar"></i>
-                                {{ 'Avoirs'|trans }}
-                            </a>
-                        </li>
-                        <li class="dropdown-item">
-                            <a class="nav-link {% block dette %}{% endblock %}"
-                               href="{{ path('finance_dette', {'user': app.user.id}) }}">
-                                <i class="fas fa-sack-xmark "></i>
-                                {{ 'Dettes'|trans }}
-                            </a>
-                        </li>
-                        {#<li class="dropdown-item">
-                            <a class="nav-link" href="{{ path('security_profile') }}">
-                                <i class="fas fa-user"></i>
-                                {{ 'Compte Client'|trans }}
-                            </a>
-                        </li>#}
-                    </ul>
                 </li>
+                {% endif %}
+              
 
 
                 <li class="nav-item dropend" title="{{ 'Aide'|trans }}">
@@ -317,6 +327,7 @@
                         <i class="fa fa-redo history-btn ms-3" title="Actualiser la page"
                            onclick="window.location.reload()"></i>
                     </span>
+                    {{ app.user.pharmacie.nom }}
 
                         <button type="button" id="install_button" onclick="installApp()" hidden></button>
                     </div>

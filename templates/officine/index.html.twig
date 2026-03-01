@@ -1,0 +1,63 @@
+{% extends 'client.html.twig' %}
+{% block title %} {{ "Officine"|trans }} - GNT Pharma {% endblock %}
+{% block officine %}active{% endblock %}
+
+{% block body %}
+    <div class="container mt-4 fond-7">
+        <h3 class="mt-4 mb-5 text-bold">
+            <i class="fas fa-staff-snake fa-lg"></i>
+            {{ "Officine"|trans }} :  {{ "Factures"|trans }}
+        </h3>
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">{{ 'Facture'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('avoir_officine') }}">{{'Avoir'|trans}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_history') }}">{{'Restourne'|trans}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_history') }}">{{'Dette'|trans}}</a>
+            </li>
+        </ul>
+
+         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="liste">
+            <thead>
+            <tr>
+                <th>{{'Numero Commande'|trans}}</th>
+                <th>{{ 'Date'|trans }}</th>
+{#                <!-- <th>{{ 'Client'|trans }} </th> -->#}
+             {% if is_granted("ROLE_CLIENT_ADMIN")%}   <th>{{ 'Montant'|trans }}</th> {% endif %}
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande.id }}</td>
+                    <td>{{ commande.date|date('d/m/Y') }}</td>
+{#                    <!-- <td> {{ commande.user.nom }}</td> -->#}
+                  {% if is_granted("ROLE_CLIENT_ADMIN")%}  <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td> {% endif %}
+                    <td>
+                   
+                        <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
+                        <i class="fa fa-money-bill"></i>
+                            {{ 'Facture'|trans }}
+                        </a>
+
+                         <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
+                        <i class="fa fa-list"></i>
+                            {{ 'Bon de commande'|trans }}
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

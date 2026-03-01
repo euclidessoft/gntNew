@@ -8,15 +8,4 @@
         <i class="fa fa-lock"></i>
         {{ 'Changer mot de passe'|trans }}
     </a>
-    {% if is_granted("ROLE_CLIENT_ADMIN")%}
-     <a href="{{ path('client_users') }}" class="btn btn-shadow btn-normal btn-info mb-2 mr-2 l-5">
-        <i class="fa fa-users fa-lg"></i>
-        {{ 'Tous les utilisateurs'|trans }}
-    </a>
-
-    <a href="{{ path('client_register') }}" class="btn btn-shadow btn-normal btn-green mb-2 mr-2">
-        <i class="fa fa-user-plus"></i>
-        {{ 'Nouvel utilisateur'|trans }}
-    </a>
-    {% endif %}
 </div>

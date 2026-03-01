@@ -2193,6 +2193,40 @@ class CommandeController extends AbstractController
         }
     }
 
+    #[Route("/Officine/", name :"officine") ]
+    public function officine(SessionInterface $session, CommandeRepository $repository)
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
+
+            $response = $this->render('officine/index.html.twig', [
+                'commandes' => $repository->findBy(['user' => $this->getUser()->getId()]),
+                'panier' => $panier,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+
    
 
 }

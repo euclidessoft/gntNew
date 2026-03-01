@@ -370,6 +370,38 @@ class AvoirController extends AbstractController
 //        }
 //    }
 
+     #[Route("/Officine/", name :"avoir_officine", methods : ["GET"]) ]
+    public function officine(AvoirRepository $avoirRepository, SessionInterface $session): Response
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+            
+            $response = $this->render('officine/avoir.html.twig', [
+                'avoirs' => $avoirRepository->findby(['client' => $this->getUser()]),
+                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
     #[Route("/{id}", name :"avoir_show", methods : ["GET"]) ]
     public function show(Avoir $avoir, AvoirResteRepository $avoirResteRepository, SessionInterface $session): Response
     {
@@ -495,4 +527,5 @@ class AvoirController extends AbstractController
 
     //     return $this->redirectToRoute('avoir_index', [], Response::HTTP_SEE_OTHER);
     // }
+   
 }
