@@ -675,11 +675,11 @@ class CommandeController extends AbstractController
                 'private' => true,
             ]);
             return $response;
-        } else if ($this->security->isGranted('ROLE_CLIENT')) {
+        } else if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
             $panier = $session->get("panier", []);
 
-            $response = $this->render('commande/credit.html.twig', [
-                'commandes' => $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => true]),
+            $response = $this->render('officine/credit.html.twig', [
+                'commandes' => $repository->findBy(['user' => $this->getUser()->getId(), 'paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]),
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
