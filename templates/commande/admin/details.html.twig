@@ -31,7 +31,8 @@
                     <thead>
                     <tr>
                         <th>{{ 'N° Commande'|trans }}</th>
-                        <th>{{ 'Date'|trans }}</th>
+                        <th>{{ 'Date commande'|trans }}</th>
+                        <th>{{ 'Date Traitement'|trans }}</th>
                         <th>{{ 'Client'|trans }}</th>
                          <th>{{ 'NIU'|trans }}</th>
                         {% if commande.paiement %}
@@ -45,7 +46,8 @@
                     </thead>
                     <tbody>
                     <td data-label="Numero Commande">{{ commande.id }}</td>
-                    <td data-label="Date">{{ commande.date|date('d/m/Y') }}</td>
+                    <td data-label="Date commande">{{ commande.date|date('d/m/Y H:i:s') }}</td>
+                    <td data-label="Date traitement">{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
                     <td data-label="Client">{{ commande.user.nom }}</td>
                      <td>{{ commande.user.niu }}</td>
                     {% if commande.paiement %}

@@ -23,8 +23,9 @@
                 <table class="table table-success-light table-bordered table-hover table-striped">
                     <thead>
                     <tr>
-                        <th>{{ 'Date'|trans }}</th>
                         <th>{{ 'N° Commande'|trans }}</th>
+                        <th>{{ 'Date Commande'|trans }}</th>
+                        <th>{{ 'Date Traitement'|trans }}</th>
                          <th>{{ 'NIU'|trans }}</th>
                         {% if commande.credit == 1 and commande.payer == 0 %}
                         <th>{{ 'date d\'echeance de paiement'|trans }}</th>
@@ -34,8 +35,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
                     <td>{{ commande.id }}</td>
+                    <td>{{ commande.date|date('d/m/Y H:is') }}</td>
+                    <td>{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
                      <td>{{ commande.user.niu }}</td>
                          {% if commande.credit == 1 and commande.payer == 0 %}
                              <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
