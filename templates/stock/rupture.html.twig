@@ -49,8 +49,9 @@
         <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
             <thead>
             <tr>
-                <th>{{ 'Reference'|trans }}</th>
+                <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'DCI'|trans }}</th>
                 <th>{{ 'Fabriquant'|trans }}</th>
             </tr>
             </thead>
@@ -59,6 +60,7 @@
                 <tr>
                     <td>{{ produit.reference }}</td>
                     <td>{{ produit.desigantion }}</td>
+                    <td>{{ produit.dci }}</td>
                     <td>{{ produit.fabriquant }}</td>
                 </tr>
             {% endfor %}

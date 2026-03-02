@@ -51,8 +51,9 @@
                        id="liste">
                     <thead>
                     <tr>
-                        <th>{{ "Référence"|trans }}</th>
+                        <th>{{ "CIP"|trans }}</th>
                         <th class="text-start">{{ "Désignation"|trans }}</th>
+                        <th>{{ "DCI"|trans }}</th>
                         <th>{{ "N° lot"|trans }}</th>
                         {#                        <th>{{ "Pereption"|trans }}</th> #}
                         <th>{{ "Motif"|trans }}</th>
@@ -67,6 +68,7 @@
                         <tr id="listprod{{ retourproduit.produit.id }}">
                             <td>{{ retourproduit.produit.reference }}</td>
                             <td class="text-start">{{ retourproduit.produit.desigantion }}</td>
+                            <td>{{ retourproduit.dci }}</td>
                             <td>{{ retourproduit.lot }}</td>
                             <td>{{ retourproduit.motif }}</td>
                             <td>{{ retourproduit.quantite }}</td>

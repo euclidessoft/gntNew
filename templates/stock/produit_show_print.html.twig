@@ -99,7 +99,11 @@
             <tr>
                 <th>{{ 'Désignation'|trans }}</th>
                 <td>{{ produit.desigantion }}</td>
-                <td rowspan="5" class="text-center text-bolder w-25">{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                <td rowspan="6" class="text-center text-bolder w-25">{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'DCI'|trans }}</th>
+                <td>{{ produit.dci }}</td>
             </tr>
             <tr>
                 <th>{{ 'Prix Session'|trans }}</th>

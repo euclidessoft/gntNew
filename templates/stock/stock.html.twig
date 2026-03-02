@@ -48,8 +48,9 @@
     <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
         <thead>
         <tr>
-            <th>{{ 'Référence'|trans }}</th>
+            <th>{{ 'CIP'|trans }}</th>
             <th>{{ 'Désignation'|trans }}</th>
+            <th>{{ 'DCI'|trans }}</th>
             <th>{{ 'Fabricant'|trans }}</th>
 {#            <th>N° Lot</th>#}
 {#            <th>Peremptio</th>#}
@@ -64,6 +65,7 @@
             <tr>
                 <td>{{ produit.produit.reference }}</td>
                 <td>{{ produit.produit.desigantion }}</td>
+                <td>{{ produit.produit.dci }}</td>
                 <td>{{ produit.produit.fabriquant }}</td>
 {#                <td>{{ produit.lot }}</td>#}
 {#                <td>{{ produit.peremption|date('d/m/Y') }}</td>#}

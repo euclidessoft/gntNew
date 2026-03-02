@@ -28,8 +28,9 @@
         <table class="table table-success-light table-bordered table-hover text-center table-striped w-100" id="liste">
             <thead>
             <tr>
-                <th>{{ 'Référence'|trans }}</th>
+                <th>{{ 'CIP'|trans }}</th>
                 <th class="text-start">{{ 'Désignation'|trans }}</th>
+                <th>{{ 'DCI'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
                 <th class="text-start">{{ 'Fabricant'|trans }}</th>
@@ -40,6 +41,7 @@
                 <tr>
                     <td>{{ approvisionnement.produit.reference }}</td>
                     <td class="text-start">{{ approvisionnement.produit.desigantion }}</td>
+                    <td>{{ approvisionnement.produit.dci }}</td>
                     <td>{{ approvisionnement.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ approvisionnement.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td class="text-start">{{ approvisionnement.produit.fabriquant }}</td>

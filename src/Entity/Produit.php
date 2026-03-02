@@ -27,8 +27,8 @@ class Produit
      #[ORM\Column(type:"string", length:255, nullable:true) ]
     private $alternatif;// code CIp alternatif
 
-     #[ORM\Column(type:"string", length:255, nullable:true) ]
-    private $interne;// code interne
+    //  #[ORM\Column(type:"string", length:255, nullable:true) ]
+    // private $interne;// code interne
 
      #[ORM\Column(type:"string", length:255, nullable:true) ]
     private $dci;
@@ -471,15 +471,15 @@ class Produit
         return $this;
     }
 
-    public function getInterne(): ?string
-    {
-        return $this->interne;
-    }
+    // public function getInterne(): ?string
+    // {
+    //     return $this->interne;
+    // }
 
-    public function setInterne(?string $interne): static
-    {
-        $this->interne = $interne;
+    // public function setInterne(?string $interne): static
+    // {
+    //     $this->interne = $interne;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 }

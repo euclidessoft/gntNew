@@ -53,8 +53,9 @@
             <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
                 <thead>
                 <tr>
-                    <th>{{ 'Référence'|trans }}</th>
+                    <th>{{ 'CIP'|trans }}</th>
                     <th>{{ 'Désignation'|trans }}</th>
+                    <th>{{ 'DCI'|trans }}</th>
                     <th>{{ 'Cession'|trans }}</th>
                     <th>{{ 'Public'|trans }}</th>
                     <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th>
@@ -69,6 +70,7 @@
                     <tr>
                         <td>{{ produit.reference }}</td>
                         <td>{{ produit.desigantion }}</td>
+                        <td>{{ produit.dci }}</td>
                         <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                         <td>{{ produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                         <td>{{ produit.mincommande }}</td>

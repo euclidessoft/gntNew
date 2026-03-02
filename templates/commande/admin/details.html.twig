@@ -73,9 +73,11 @@
         <table class="table table-success-light table-bordered table-hover table-striped w-100">
             <thead>
             <tr>
-                <th>Code Produit</th>
+                <th>{{'CIP'|trans}}</th>
                 <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'DCI'|trans }}</th>
                 <th>{{ 'Quantité Commandée'|trans }}</th>
+                <th>{{ 'Quantité Livrée'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Réduction'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
@@ -88,8 +90,9 @@
               {% set ug = 0 %}
                 {% set reductionproduit = 0 %}
                 <tr>
-                    <td> {{ commandeproduit.produit.id }} </td>
+                    <td> {{ commandeproduit.produit.reference }} </td>
                     <td>{{ commandeproduit.produit.desigantion }} </td>
+                    <td>{{ commandeproduit.produit.dci }} </td>
                     <td> {{ commandeproduit.quantite }} 
                      {% if commandeproduit.promotion is not null %}
                             {% if commandeproduit.promotion.premier is not null %}
@@ -208,6 +211,18 @@
                             {% endif %}
                         {% endif %}
                     </td>
+                     <td>
+                    {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }}#}
+                                        {% set quantite = 0 %}
+                                        {% for livrerproduit  in livrerproduits  %}
+                                            {% if livrerproduit.commande.id  == commande.id and livrerproduit.produit.id == commandeproduit.produit.id %}
+                                                {% set quantite = quantite + livrerproduit.quantitelivrer %}
+                                            {% endif %}
+
+                                        {% else %}
+                                        {% endfor %}
+                                        {{ quantite != 0 ? quantite : ''  }}
+                                    </td>
                     <td>
                         {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
@@ -252,7 +267,7 @@
                 </tr>
             {% endfor %}
             <tr>
-                <td colspan="7" class="text-end text-bold">
+                <td colspan="9" class="text-end text-bold">
                     {{ "Total HT"|trans }}
                 </td>
                 <td class=" text-bold">
@@ -261,7 +276,7 @@
             </tr>
             {% if reduction != 0 %}
                 <tr>
-                    <td colspan="7" class="text-end">
+                    <td colspan="9" class="text-end">
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td>
@@ -270,7 +285,7 @@
                 </tr>
             {% endif %}
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="9" class="text-end">
                     {{ "Total TVA"|trans }}
                 </td>
                 <td>
@@ -279,7 +294,7 @@
             </tr>
 
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="9" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
@@ -290,7 +305,7 @@
             </tr>
 
             <tr class="text-bold">
-                <td colspan="7" class="text-end">
+                <td colspan="9" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="montant">
@@ -300,7 +315,7 @@
             </tr>
             {#        /***Conversion prix en lettre **/#}
             <tr>
-                <td colspan="10" class="text-end">
+                <td colspan="11" class="text-end">
                     <span class="text-bold"></span>
                     {{ 'Arrêtée la présente à la somme de'|trans }}&nbsp;<b id="conversion"></b><b id="virgule"></b> <b>{{ 'francs CFA TTC'|trans }}</b>
                 </td>

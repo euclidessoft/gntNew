@@ -1752,6 +1752,7 @@ class CommandeController extends AbstractController
 
             $response = $this->render('commande/admin/details.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                  'livrerproduits' => $livrerRepository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
             ]);

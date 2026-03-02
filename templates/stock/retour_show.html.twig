@@ -60,6 +60,7 @@
                 <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
                     <thead>
                     <tr>
+                        <th>{{ "CIP"|trans }}</th>
                         <th>{{ "Designation"|trans }}</th>
                         <th>{{ "N° Lot"|trans }}</th>
                         <th>{{ "Peremption"|trans }}</th>
@@ -70,6 +71,7 @@
                     <tbody>
                     {% for commandeproduit in commandeproduits %}
                         <tr id="listprod{{ commandeproduit.produit.id }}">
+                            <td>{{ commandeproduit.produit.reference }}</td>
                             <td>{{ commandeproduit.produit.desigantion }}</td>
                             <td>{{ commandeproduit.lot }}</td>
                             <td>{{ commandeproduit.peremption|date('d/m/Y') }}</td>

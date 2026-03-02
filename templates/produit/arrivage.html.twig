@@ -20,8 +20,9 @@
         <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
             <thead>
             <tr>
-                <th>{{ 'Référence'|trans }}</th>
+                <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'DCI'|trans }}</th>
                 <th>{{ 'Cession'|trans }}</th>
                 <th>{{ 'Public'|trans }}</th>
                 <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th>
@@ -36,6 +37,7 @@
                 <tr>
                     <td>{{ approvisionnement.produit.reference }}</td>
                     <td>{{ approvisionnement.produit.desigantion }}
+                   
                       {% if approvisionnement.produit.promotion is not null %}
                                     {# {{ "indisponible"|trans }} #}
                                     <div class="dropdown d-inline">
@@ -58,6 +60,7 @@
                                 </div>
                         {% endif %}
                     </td>
+                     <td>{{ approvisionnement.produit.dci }}</td>
                     <td>{{ approvisionnement.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ approvisionnement.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ approvisionnement.produit.mincommande }}</td>

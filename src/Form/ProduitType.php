@@ -16,7 +16,7 @@ class ProduitType extends AbstractType
         $builder
             ->add('reference')//code cip
             ->add('alternatif')// code cip alternatif
-            ->add('interne')// code interne
+            // ->add('interne')// code interne
             ->add('desigantion')
             ->add('dci')
             ->add('prix')

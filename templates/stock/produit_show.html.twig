@@ -25,7 +25,7 @@
 
             <tr>
                 <th class="w-25">
-                    {{'Code Produit'|trans }}
+                    {{'CIP'|trans }}
                 </th>
                 <td>{{ produit.reference }}</td>
                 <th class="text-center">
@@ -38,7 +38,13 @@
                     {{'Designation'|trans }}
                 </th>
                 <td>{{ produit.desigantion }}</td>
-                <td rowspan="6" class="text-center text-bolder w-25">{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                <td rowspan="7" class="text-center text-bolder w-25">{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+            </tr>
+            <tr>
+                <th>
+                    {{'DCI'|trans }}
+                </th>
+                <td>{{ produit.dci }}</td>
             </tr>
             <tr>
                 <th>{{ 'PGHT'|trans }}</th>

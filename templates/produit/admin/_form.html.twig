@@ -13,7 +13,20 @@
                 </span>
         {% endif %}
 #}
-        {{ form_row(form.reference, {'attr':{'placeholder':'Code produit *'}, 'label':'Code produit *'}) }}
+        {{ form_row(form.reference, {'attr':{'placeholder':'CIP *'}, 'label':'CIP *'}) }}
+        {#        </div>#}
+    </div>
+    <div class="col-md-5">
+        {#        <div class="">#}
+        {#{% if form_errors(form.reference) is not empty %}
+            {{ form_errors(form.reference) }}
+        {% else %}
+            <span class="valid-feedback d-block">
+                        <span>&nbsp; </span>
+                </span>
+        {% endif %}
+#}
+        {{ form_row(form.alternatif, {'attr':{'placeholder':'CIP Alternatif *'}, 'label':'CIP Alternatif'}) }}
         {#        </div>#}
     </div>
     <div class="col-md-5">
@@ -27,6 +40,19 @@
              {% endif %}
  #}
         {{ form_row(form.desigantion, {'attr':{'placeholder':'Désignation *'}, 'label':'Désignation *'}) }}
+        {#        </div>#}
+    </div>
+    <div class="col-md-5">
+        {# <div class="input-group">
+             {% if form_errors(form.desigantion) is not empty %}
+                 {{ form_errors(form.desigantion) }}
+             {% else %}
+                 <span class="valid-feedback d-block">
+                             <span>&nbsp; </span>
+                     </span>
+             {% endif %}
+ #}
+        {{ form_row(form.dci, {'attr':{'placeholder':'DCI *'}, 'label':'DCI'}) }}
         {#        </div>#}
     </div>
     <div class="col-md-5">

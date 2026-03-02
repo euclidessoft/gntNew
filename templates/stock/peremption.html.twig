@@ -51,6 +51,7 @@
             <tr>
                 <th>{{ 'Reference'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'DCI'|trans }}</th>
                 <th>{{ 'Fabriquant'|trans }}</th>
                 <th>{{'N° Lot'|trans}}</th>
                 <th>{{'Péremption'|trans}}</th>
@@ -61,6 +62,7 @@
                 <tr>
                     <td>{{ stock.produit.reference }}</td>
                     <td>{{ stock.produit.desigantion }}</td>
+                    <td>{{ stock.produit.dci }}</td>
                     <td>{{ stock.produit.fabriquant }}</td>
                     <td>{{ stock.lot }}</td>
                     <td>{{ stock.peremption|date('d/m/Y') }}</td>
