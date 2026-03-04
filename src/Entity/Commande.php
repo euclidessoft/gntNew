@@ -18,6 +18,10 @@ class Commande
      #[ORM\JoinColumn(nullable:false) ]
     private $user;
 
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Client", inversedBy:"employecommandes") ]
+     #[ORM\JoinColumn(nullable:true) ]
+    private $pharmaemploye;
+
     #[ORM\ManyToOne(targetEntity:"App\Entity\Employe") ]
 #[ORM\JoinColumn(nullable:true) ]
     private $admin;
@@ -443,6 +447,18 @@ class Commande
                 $commandeProduit->setCommande(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPharmaemploye(): ?Client
+    {
+        return $this->pharmaemploye;
+    }
+
+    public function setPharmaemploye(?Client $pharmaemploye): static
+    {
+        $this->pharmaemploye = $pharmaemploye;
 
         return $this;
     }

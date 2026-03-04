@@ -15,6 +15,13 @@ class Client extends User implements UserInterface
 {
      #[ORM\OneToMany(targetEntity:"App\Entity\Commande", mappedBy:"user") ]
     private $commandes;
+    
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Client") ]
+     #[ORM\JoinColumn(nullable:true) ]
+    private $tuteur;
+    
+    #[ORM\OneToMany(targetEntity:"App\Entity\Commande", mappedBy:"pharmaemploye") ]
+    private $employecommandes;
 
     #[ORM\Column(type:"string",length:255, nullable:true) ]
     private $compte;
@@ -38,6 +45,7 @@ class Client extends User implements UserInterface
     {
         parent::__construct();
         $this->commandes = new ArrayCollection();
+        $this->employecommandes = new ArrayCollection();
         $this->prelevement = false;
     }
 
@@ -143,6 +151,48 @@ class Client extends User implements UserInterface
     public function setPrelevement(bool $prelevement): static
     {
         $this->prelevement = $prelevement;
+
+        return $this;
+    }
+
+    public function getTuteur(): ?self
+    {
+        return $this->tuteur;
+    }
+
+    public function setTuteur(?self $tuteur): static
+    {
+        $this->tuteur = $tuteur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getEmployecommandes(): Collection
+    {
+        return $this->employecommandes;
+    }
+
+    public function addEmployecommande(Commande $employecommande): static
+    {
+        if (!$this->employecommandes->contains($employecommande)) {
+            $this->employecommandes->add($employecommande);
+            $employecommande->setPharmaemploye($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmployecommande(Commande $employecommande): static
+    {
+        if ($this->employecommandes->removeElement($employecommande)) {
+            // set the owning side to null (unless already changed)
+            if ($employecommande->getPharmaemploye() === $this) {
+                $employecommande->setPharmaemploye(null);
+            }
+        }
 
         return $this;
     }

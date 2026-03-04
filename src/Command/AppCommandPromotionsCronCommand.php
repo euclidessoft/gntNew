@@ -14,7 +14,7 @@ use App\Entity\Promotion;
 
 #[AsCommand(
     name: 'AppCommandPromotionsCron',
-    description: 'Add a short description for your command',
+    description: 'Commande d activation et de deactivation des promos',
 )]
 class AppCommandPromotionsCronCommand extends Command
 {

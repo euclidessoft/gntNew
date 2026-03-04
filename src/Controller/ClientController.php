@@ -179,7 +179,8 @@ class ClientController extends AbstractController
                 $client->setPassword($hashpass);
                 $client->setUsername($client->getNom());
                 $client->setRoles(["ROLE_CLIENT"]);
-                $client->setClient(false);
+                $client->setTuteur($this->getUser());// definition superieur
+                // $client->setClient(false);
                 $client->setFonction('Emplyer-Client');
                 $token = $tokenGenerator->generateToken();
                 $client->setResetToken($token);

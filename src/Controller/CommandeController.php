@@ -213,7 +213,14 @@ class CommandeController extends AbstractController
             
             if (count($panier) >= 1) {
 
+                
+            if($this->User()->getTuteur() === null)
                 $commande->setUser($this->getUser());
+            else{
+                $commande->setUser($this->getUser()->getTuteur());
+                $commande->setPharmaemploye($this->getUser());
+            }
+
                 if ($session->get("credit")) {
                     $commande->setCredit(true);
                     $session->remove('credit');
