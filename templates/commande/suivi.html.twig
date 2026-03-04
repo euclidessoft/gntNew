@@ -23,6 +23,9 @@
             <tr>
                 <th>{{'Numero Commande'|trans}}</th>
                 <th>{{ 'Date'|trans }}</th>
+                    {% if is_granted("ROLE_CLIENT_ADMIN") %}
+                <th>{{ 'Passée par'|trans }}</th>
+                {% endif %}
 {#                <!-- <th>{{ 'Client'|trans }} </th> -->#}
              {% if is_granted("ROLE_CLIENT_ADMIN")%}   <th>{{ 'Montant'|trans }}</th> {% endif %}
                 <th>Actions</th>
@@ -33,6 +36,9 @@
                 <tr>
                     <td>{{ commande.id }}</td>
                     <td>{{ commande.date|date('d/m/Y') }}</td>
+                    {% if is_granted("ROLE_CLIENT_ADMIN") %}
+                    <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : "" }}</td>
+                    {% endif %}
 {#                    <!-- <td> {{ commande.user.nom }}</td> -->#}
                   {% if is_granted("ROLE_CLIENT_ADMIN")%}  <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td> {% endif %}
                     <td>

@@ -35,6 +35,9 @@
         <thead>
         <tr>
             <th>{{ 'Numero Commande'|trans }}</th>
+            {% if is_granted("ROLE_CLIENT_ADMIN") %}
+                <th>{{ 'Passée par'|trans }}</th>
+            {% endif %}
             <th>{{ 'Date de commande'|trans }}</th>
             <th>{{ 'Date de Livraison'|trans }}</th>
 {#            <!-- <th>{{ 'Client'|trans }} </th> -->#}
@@ -46,6 +49,9 @@
         {% for commande in commandes %}
             <tr>
                 <td>{{ commande.id }}</td>
+                {% if is_granted("ROLE_CLIENT_ADMIN") %}
+                    <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : "" }}</td>
+                {% endif %}
                 <td>{{ commande.date|date('d/m/Y') }}</td>
                 <td>{{ commande.datelivrer ? commande.datelivrer|date('d/m/Y') : '' }}</td>
 {#                <!-- <td> {{ commande.user.nom }}</td> -->#}

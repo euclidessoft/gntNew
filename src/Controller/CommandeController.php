@@ -214,7 +214,7 @@ class CommandeController extends AbstractController
             if (count($panier) >= 1) {
 
                 
-            if($this->User()->getTuteur() === null)
+            if($this->getUser()->getTuteur() === null)
                 $commande->setUser($this->getUser());
             else{
                 $commande->setUser($this->getUser()->getTuteur());
@@ -506,9 +506,11 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
-
+            $this->getUser()->getTuteur() === null ? 
+            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false]) :
+            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => false]);
             $response = $this->render('commande/suivi.html.twig', [
-                'commandes' => $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false]),
+                'commandes' => $commandes,
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
@@ -630,9 +632,12 @@ class CommandeController extends AbstractController
             return $response;
         } else if ($this->security->isGranted('ROLE_CLIENT')) {
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-
+            $this->getUser()->getTuteur() === null ? 
+            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false]) :
+            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => false]);
+            
             $response = $this->render('commande/history.html.twig', [
-                'commandes' => $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => true]),
+                'commandes' => $commandes,
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);

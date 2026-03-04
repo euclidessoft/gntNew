@@ -73,12 +73,23 @@ class LivrerController extends AbstractController
             ]);
             return $response;
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
-
+             $livrers = null;
+            $retours = null;
+            if($this->getUser()->getTuteur() === null){ 
+                $livrers = $livrerRepository->findBy(['reste' => true, 'user' => $this->getUser()->getId()]);
+                $retours = $retourProduitRepository->retour_client($this->getUser()->getId());
+                $commandes = $repository->findBy(['suivi' => true, 'livraison' => false, 'user' => $this->getUser()->getId()]);
+            }
+            else{
+                $livrers = $livrerRepository->findBy(['reste' => true, 'user' => $this->getUser()->getTuteur()->getId()]);
+                $retours = $retourProduitRepository->retour_client($this->getUser()->getTuteur()->getId());
+                $commandes = $repository->findBy(['suivi' => true, 'livraison' => false, 'user' => $this->getUser()->getTuteur()->getId()]);
+            }
 
             $response = $this->render('livrer/index_client.html.twig', [
-                'retours' => $retourProduitRepository->retour_client($this->getUser()->getId()),
-                'livrers' => $livrerRepository->findBy(['reste' => true, 'user' => $this->getUser()->getId()]),
-                'commandes' => $repository->findBy(['suivi' => true, 'livraison' => false, 'user' => $this->getUser()->getId()]),
+                'retours' => $retours ,
+                'livrers' => $livrers,
+                'commandes' => $commandes,
                 'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);
@@ -141,9 +152,12 @@ class LivrerController extends AbstractController
             return $response;
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-
+             $this->getUser()->getTuteur() === null ? 
+            $livrers = $repository->historique_client($this->getUser()->getId()) :
+            $livrers = $repository->historique_client($this->getUser()->getTuteur()->getId());
+            
             $response = $this->render('livrer/history_client.html.twig', [
-                'livrers' => $repository->historique_client($this->getUser()->getId()),
+                'livrers' => $livrers,
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);

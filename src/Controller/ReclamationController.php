@@ -28,7 +28,7 @@ class ReclamationController extends AbstractController
     public function index(SessionInterface $session, ReclamationRepository $reclamationRepository, User $user): Response
     {
         if ($this->security->isGranted('ROLE_BACK')) {
-
+            
             $response = $this->render('reclamation/admin/index.html.twig', [
                 'reclamations' => $reclamationRepository->findBy(['cloture' => null]),
             ]);
@@ -45,9 +45,12 @@ class ReclamationController extends AbstractController
         }else if ($this->security->isGranted('ROLE_CLIENT')) {
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
+             $this->getUser()->getTuteur() === null ? 
+             $reclamations = $reclamationRepository->findBy(['user' => $user, 'cloture' => null]) : 
+             $reclamations = $reclamationRepository->findBy(['user' => $user->getTuteur()->getId(), 'cloture' => null]);
 
             $response = $this->render('reclamation/index.html.twig', [
-                'reclamations' => $reclamationRepository->findBy(['user' => $user, 'cloture' => null]),
+                'reclamations' => $reclamations,
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
@@ -94,9 +97,12 @@ class ReclamationController extends AbstractController
         }elseif ($this->security->isGranted('ROLE_CLIENT')) {
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
             $dataPanier = [];
+              $this->getUser()->getTuteur() === null ? 
+             $reclamations = $reclamationRepository->findBy(['user' =>$user->getId(), 'status' => true]) : 
+             $reclamations = $reclamationRepository->findBy(['user' =>$user->getTuteur()->getId(), 'status' => true]);
 
             $response = $this->render('reclamation/cloturer.html.twig', [
-                'reclamations' => $reclamationRepository->findBy(['user' =>$user->getId(), 'status' => true]),
+                'reclamations' => $reclamations,
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
