@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LivrerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:LivrerRepository::class) ]
@@ -49,6 +50,16 @@ class Livrer
 
     #[ORM\Column(type:"string", length:255, nullable:true) ]
     private $signature;
+
+     #[ORM\ManyToOne(targetEntity:"App\Entity\Client") ]
+     #[ORM\JoinColumn(nullable:true) ]
+    private $recepteur;
+
+    #[ORM\Column(type:"string", length:255, nullable:true) ]
+    private $nom;
+    
+    #[ORM\Column(type:"string", length:255, nullable:true) ]
+    private $phone;
 
     /**
      * Constructor
@@ -201,6 +212,52 @@ class Livrer
     public function setRetour(?Retour $retour): self
     {
         $this->retour = $retour;
+
+        return $this;
+    }
+
+    public function isReste(): ?bool
+    {
+        return $this->reste;
+    }
+
+    public function isLivrer(): ?bool
+    {
+        return $this->livrer;
+    }
+
+    public function getRecepteur(): ?Client
+    {
+        return $this->recepteur;
+    }
+
+    public function setRecepteur(?Client $recepteur): static
+    {
+        $this->recepteur = $recepteur;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(?string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }

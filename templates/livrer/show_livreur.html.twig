@@ -152,7 +152,7 @@
         </table>
         <div class="col-md-3 offset-md-4 mt-5 mb-5 p-3 fond-7">
             <div class="centrer">
-                <a id="valider" onclick="load('valider')" href="" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#livreurshow">
+                <a id="valid" href="" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#livreurshow">
                     <i class="fa fa-check"></i>
                     {{ "Valider"|trans }}
                 </a>
@@ -177,8 +177,15 @@
 
                     </div>
                     <input id="signature64" name="signed" style="display: none"/>
+                    <div>
+                 {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_rest(form) }}
+                </div>
                 </div>
                 <div id="source"></div>
+                
+                
                 <div class="modal-footer centrer">
                     <button id="clear" class="btn btn-success-light me-3">
                         {{ 'Recommencer'|trans }}

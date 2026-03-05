@@ -321,13 +321,16 @@
 
         function image(commande) {
             var image = $('#signature64').val();
-            if (image !== "") {
+            var recepteur = $('#pharmauser_user option:selected').val();
+            alert($('#pharmauser_user option:selected').val())
+            if (image !== "" && recepteur !== "") {
                 $("#valider").html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                $("#valid").html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
                 image = image.replace(/\n/g, "");
                 $.ajax({
                     type: "POST",
                     url: "{{ path('livraison_creation_image') }}",
-                    data: {image: image, livrer: commande},
+                    data: {image: image, livrer: commande, recepteur : recepteur},
                     success: function (data) {
                         if (data['id'] == 'ok') {
                             document.location.href = "{{ path('livraison_historique') }}";
@@ -341,7 +344,7 @@
                     }
                 });
             } else {
-                alert("{{ 'Inserer une signature'|trans }}");
+                alert("{{ 'Veuillez recueillir la signature et renseignez le recepteur'|trans }}");
             }
         }
     </script>

@@ -10,7 +10,9 @@ use App\Entity\LivrerReste;
 use App\Entity\Retour;
 use App\Entity\Stock;
 use App\Entity\User;
+use App\Entity\Client;
 use App\Form\LivrerType;
+use App\Form\PharmauserType;
 use App\Repository\CommandeProduitRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\LivrerProduitRepository;
@@ -251,16 +253,22 @@ class LivrerController extends AbstractController
     }
 
     #[Route("/Livraison_show/{id}", name :"livreur_show", methods : ["GET","POST"]) ]
-    public function livreurshow(Livrer $livrer): Response
+    public function livreurshow(Livrer $livrer, Request $request): Response
     {// traitement livraison
 
         if ($this->security->isGranted('ROLE_LIVREUR') && $livrer->getLivreur() == $this->getUser()) {
+             $commande = new Commande();
 
+            $form = $this->createForm(PharmauserType::class, $commande, ['attr' => ['id' => $livrer->getCommande()->getUser()->getPharmacie()->getId()]]);
+            $form->handleRequest($request);
+
+            // if ($form->isSubmitted()) {}
 
             $response = $this->render('livrer/show_livreur.html.twig', [
 //                'commandes' => $commandeproduits,
                 'commandereference' => $livrer->getCommande(),
                 'livrer' => $livrer,
+                'form' => $form->createView(),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -1197,6 +1205,9 @@ class LivrerController extends AbstractController
 
         $chaine = $request->request->get('image');
         $liver = $request->request->get('livrer');
+        $recepteur = $request->request->get('recepteur');
+        // $nom = $request->request->get('nom');
+        // $tel = $request->request->get('tel');
 
 
         $folderPath = __DIR__ . "/../../public";
@@ -1211,6 +1222,8 @@ class LivrerController extends AbstractController
 
         $em = $this->entityManager;
         $livraison = $em->getRepository(Livrer::class)->find($liver);
+        $client = $em->getRepository(Client::class)->find($recepteur);
+        $livraison->setRecepteur($client);
         $livraison->setLivrer(true);
         $livraison->getCommande()->setLivrer(true);
         $livraison->getCommande()->setDateefectlivraison(new \DateTime());
