@@ -18,7 +18,7 @@
                 <a class="nav-link active" href="#">{{ 'Passée'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="3">{{'Réceptionnée'|trans}}</a>
+                <a class="nav-link" href="{{ path('livraison_pharmauser', { 'id' : client.id })}}">{{'Réceptionnée'|trans}}</a>
             </li>
         </ul>
 

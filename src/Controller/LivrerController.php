@@ -1257,4 +1257,44 @@ class LivrerController extends AbstractController
 
         return $this->redirectToRoute('livrer_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
+    #[Route("/Client/Pharmauser/{id}", name :"pharmauser") ]
+    public function pharmauser(LivrerRepository $repository, SessionInterface $session, CommandeRepository $commandeRepository, Client $client)
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+            
+            $livrers = $repository->findBy(['recepteur' =>$client->getId()]);
+            
+            $response = $this->render('Client/reception.html.twig', [
+                'livrers' => $livrers,
+                'client' => $client,
+                'panier' => $panier,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+
+    }
+
 }

@@ -2305,7 +2305,7 @@ class CommandeController extends AbstractController
            
            
             $commandes = $repository->findBy(['pharmaemploye' => $client->getid()]);
-            $response = $this->render('client/pharmauser.html.twig', [
+            $response = $this->render('client/passee.html.twig', [
                 'client' => $client,
                 'commandes' => $commandes,
                 'panier' => $panier,

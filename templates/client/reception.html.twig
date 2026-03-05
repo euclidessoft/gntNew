@@ -1,0 +1,50 @@
+{% extends 'client.html.twig' %}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block commande %}active{% endblock %}
+{% block my_commande %}active{% endblock %}
+
+{% block body %}
+    <div class="container mt-4 fond-7">
+        <h3 class="mt-4 text-bold">
+            <i class="fa fa-user me-2"></i>
+            {{ client.nom ~ " " ~ client.prenom}}
+        </h3>
+        <h4 class="mt-4 mb-5 text-bold">
+            <i class="fa fa-shopping-cart me-2"></i>
+            {{ "Suivi des commandes"|trans }}
+        </h4>
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_pharmauser', { 'id' : client.id}) }}">{{ 'Passée'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">{{'Réceptionnée'|trans}}</a>
+            </li>
+        </ul>
+
+        <table class="table table-success-light table-bordered table-hover table-striped w-100" id="liste">
+            <thead>
+            <tr>
+                <th>{{'N° commande'|trans}} </th>
+                <th>{{ 'Date de livraison'|trans }}</th>
+                <th>{{ 'Détails'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for livrer in livrers %}
+                <tr>
+                    <td>{{ livrer.commande.id }}</td>
+                    <td>{{ livrer.dateefectlivraison|date('d/m/Y') }}</td>
+                    <td>
+                        <a class="btn btn-success" href="{{ path('livraison_historique_show', {'id': livrer.commande.id}) }}">
+                            <i class="fa fa-list"></i>
+                            {{ 'Afficher'|trans }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
