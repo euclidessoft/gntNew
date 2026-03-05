@@ -530,7 +530,34 @@ class LivrerController extends AbstractController
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
 
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            if ($commande->getLivraison() && $commande->getUser() == $this->getUser()) {
+            if ($commande->getLivraison()) {
+                 if($this->getUser()->getTuteur() === null){
+                if($commande->getUser() != $this->getUser()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             } else{
+                if($commande->getUser() != $this->getUser()->getTuteur()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             }
                 $livrer = $livrerRepository->findBy(['commande' => $commande]);
 //            $histo = [];
 //            foreach ($livrer as $item) {

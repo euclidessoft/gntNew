@@ -10,6 +10,7 @@ use App\Entity\Credit;
 use App\Entity\Ecriture;
 use App\Entity\Paiement;
 use App\Entity\User;
+use App\Entity\Client;
 use App\Entity\Versement;
 use App\Form\CommandeType;
 use App\Form\PaiementFormType;
@@ -562,9 +563,12 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
-
+             $this->getUser()->getTuteur() === null ? 
+            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false]) :
+            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => false]);
+           
             $response = $this->render('commande/extranet.html.twig', [
-                'commandes' => $repository->extranet($this->getUser()->getId()),
+                'commandes' => $commandes,
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
@@ -1741,7 +1745,34 @@ class CommandeController extends AbstractController
     #[Route("/Details_commande/{commande}", name :"Detail") ]
     public function details(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, LivrerProduitRepository $livrerRepository)
     {
-        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
+        if ($this->security->isGranted('ROLE_CLIENT')) {
+             if($this->getUser()->getTuteur() === null){
+                if($commande->getUser() != $this->getUser()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             } else{
+                if($commande->getUser() != $this->getUser()->getTuteur()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             }
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('commande/details.html.twig', [
@@ -1799,7 +1830,34 @@ class CommandeController extends AbstractController
      #[Route("/Bon_commande/{commande}", name :"bon") ]
     public function bon(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
-        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
+        if ($this->security->isGranted('ROLE_CLIENT')) {
+             if($this->getUser()->getTuteur() === null){
+                if($commande->getUser() != $this->getUser()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             } else{
+                if($commande->getUser() != $this->getUser()->getTuteur()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             }
             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
 
             $response = $this->render('commande/bon.html.twig', [
@@ -2237,6 +2295,47 @@ class CommandeController extends AbstractController
             ]);
             return $response;
         }
+    }
+
+     #[Route("/Client/Employe/{id}", name :"pharmauser") ]
+    public function pharmauser(SessionInterface $session, CommandeRepository $repository, Client $client)
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);;
+           
+           
+            $commandes = $repository->findBy(['pharmaemploye' => $client->getid()]);
+            $response = $this->render('client/pharmauser.html.twig', [
+                'client' => $client,
+                'commandes' => $commandes,
+                'panier' => $panier,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+
+        /* // On "fabrique" les données
+
+         return $this->render('produit/index.html.twig', compact("dataPanier", "total"));*/
     }
 
 
