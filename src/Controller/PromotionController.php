@@ -44,8 +44,10 @@ class PromotionController extends AbstractController
             ]);
             return $response;
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
-            $dataPanier = [];
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+             $dataPanier = [];
 
             foreach ($panier as $commande) {
                 $dataPanier[] = [
@@ -212,7 +214,9 @@ class PromotionController extends AbstractController
             return $response;
         } else if ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
 
             $response = $this->render('promotion/encours.html.twig', [
                 'promotions' => $promotionRepository->Courante(),
@@ -407,8 +411,10 @@ class PromotionController extends AbstractController
             if ($promotion->getDebut() <= $date) {
                 $promo = 1;
             }
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $dataPanier = [];
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+             $dataPanier = [];
             $total = 0;
 
              foreach($panier as $commande){

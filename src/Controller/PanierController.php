@@ -42,7 +42,9 @@ class PanierController extends AbstractController
         }
         if ($this->security->isGranted('ROLE_CLIENT')) {
 
-           $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);   
             $dataPanier = [];
 
               foreach($panier as $commande){

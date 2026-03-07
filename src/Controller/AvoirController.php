@@ -55,7 +55,7 @@ class AvoirController extends AbstractController
                 'private' => true,
             ]);
             return $response;
-        } elseif ($this->security->isGranted('ROLE_CLIENT')) {
+        } elseif ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
             
             $response = $this->render('avoir/index.html.twig', [
                 'avoirs' => $avoirRepository->findby(['client' => $this->getUser()]),

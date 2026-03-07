@@ -5,6 +5,7 @@ namespace App\Controller\Security;
 use App\Entity\Album;
 use App\Entity\Candidature;
 use App\Entity\Employe;
+use App\Entity\Panier;
 use App\Form\CandidatureType;
 use App\Form\EmployeType;
 use App\Repository\ImageRepository;
@@ -140,7 +141,9 @@ class securityController extends AbstractController
     public function profile(SessionInterface $session)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
             $response = $this->render('security/security/profile.html.twig', [
                 'user' => $this->getUser(),
                 'panier' => $panier,
@@ -229,7 +232,10 @@ class securityController extends AbstractController
     public function edit(SessionInterface $session, Request $request)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $session->get("panier", []);
+            // $panier = $session->get("panier", []);
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
 //            $em = $this->getDoctrine()->getManager();
             $user = $this->entityManager->getRepository(User::class)->find($this->getUser()->getId());
             $form = $this->createForm(UserType::class, $user);
@@ -301,7 +307,10 @@ class securityController extends AbstractController
     public function change(SessionInterface $session, Request $request, UserPasswordHasherInterface $encoder)
     {
         if ($this->getUser() !== null) {
-            $panier = $session->get("panier", []);
+            // $panier = $session->get("panier", []);
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
             $userinit = new User();
             $userinit->setPrenom('blabla');
             $userinit->setNom('blabla');

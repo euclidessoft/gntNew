@@ -43,8 +43,10 @@ class ReclamationController extends AbstractController
             return $response;
 
         }else if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $dataPanier = [];
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+              $dataPanier = [];
              $this->getUser()->getTuteur() === null ? 
              $reclamations = $reclamationRepository->findBy(['user' => $user, 'cloture' => null]) : 
              $reclamations = $reclamationRepository->findBy(['user' => $user->getTuteur()->getId(), 'cloture' => null]);
@@ -95,8 +97,10 @@ class ReclamationController extends AbstractController
             return $response;
 
         }elseif ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $dataPanier = [];
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+             $dataPanier = [];
               $this->getUser()->getTuteur() === null ? 
              $reclamations = $reclamationRepository->findBy(['user' =>$user->getId(), 'status' => true]) : 
              $reclamations = $reclamationRepository->findBy(['user' =>$user->getTuteur()->getId(), 'status' => true]);
@@ -132,8 +136,10 @@ class ReclamationController extends AbstractController
     public function new(SessionInterface $session, Request $request, User $user): Response
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $dataPanier = [];
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+              $dataPanier = [];
 
               foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());
@@ -243,8 +249,10 @@ class ReclamationController extends AbstractController
                 'commandes' => $commandeproduits,
             ]);
         } else if ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $dataPanier = [];
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+              $dataPanier = [];
 
               foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());

@@ -29,7 +29,7 @@ class DetteController extends AbstractController
     #[Route("/Dette/{user}", name :"finance_dette", methods : ["GET","POST"]) ]
     public function index(User $user, Request $request,SessionInterface $session, CommandeRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_CLIENT')) {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN_ADMIN')) {
 
 
 
@@ -55,7 +55,7 @@ class DetteController extends AbstractController
     #[Route("/Dette_show/{commande}", name :"finance_dette_show", methods : ["GET","POST"]) ]
     public function show(Commande $commande, Request $request,SessionInterface $session, CommandeProduitRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_CLIENT')) {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
 
             if($commande->getUser() == $this->getUser()) {
 

@@ -87,12 +87,14 @@ class LivrerController extends AbstractController
                 $retours = $retourProduitRepository->retour_client($this->getUser()->getTuteur()->getId());
                 $commandes = $repository->findBy(['suivi' => true, 'livraison' => false, 'user' => $this->getUser()->getTuteur()->getId()]);
             }
-
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
             $response = $this->render('livrer/index_client.html.twig', [
                 'retours' => $retours ,
                 'livrers' => $livrers,
                 'commandes' => $commandes,
-                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
+                'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -153,8 +155,10 @@ class LivrerController extends AbstractController
             ]);
             return $response;
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-             $this->getUser()->getTuteur() === null ? 
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+            $this->getUser()->getTuteur() === null ? 
             $livrers = $repository->historique_client($this->getUser()->getId()) :
             $livrers = $repository->historique_client($this->getUser()->getTuteur()->getId());
             
@@ -537,8 +541,10 @@ class LivrerController extends AbstractController
             }
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
 
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            if ($commande->getLivraison()) {
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
+             if ($commande->getLivraison()) {
                  if($this->getUser()->getTuteur() === null){
                 if($commande->getUser() != $this->getUser()){
                     $response = $this->redirectToRoute('security_logout');
