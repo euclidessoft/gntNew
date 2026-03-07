@@ -99,6 +99,37 @@ class StockController extends AbstractController
         }
     }
 
+    #[Route("/Ajust", name :"ajust", methods : ["GET"]) ]
+    public function ajust(ProduitRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+
+            $response = $this->render('stock/surveiller.html.twig', [
+                'produits' => $repository->surveil(),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
     #[Route("/Rupture", name :"rupture", methods : ["GET"]) ]
     public function rupture(ProduitRepository $repository): Response
     {
