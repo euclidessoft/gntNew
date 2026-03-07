@@ -69,6 +69,8 @@ class AppCommandPromotionsCronCommand extends Command
            
         }
          $em->flush();
+        $heure = date("d/m/Y H:i:s");
+         file_put_contents(__DIR__ . '/webhook.log', $heure."\n", FILE_APPEND);
         return Command::SUCCESS;
     }
 }
