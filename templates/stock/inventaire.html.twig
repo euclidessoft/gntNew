@@ -1,0 +1,103 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block stock %}active{% endblock %}
+{% block ajust %}active{% endblock %}
+{% block start %} onkeyup="entrerinventaire()" {% endblock %}
+
+{% block body %}
+<div class="container mt-4 fond-7">
+    <h3 class="mt-4 mb-5 text-bold">
+        <i class="fa fa-shopping-cart me-2"></i>
+        {{ "Etat stock produits"|trans }}
+    </h3>
+
+    {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+
+    <ul class="nav nav-tabs mb-4">
+        {# {% if is_granted('ROLE_STOCK') %} #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('stock_ajust') }}">
+                {{ 'Retour Produit'|trans }}
+            </a>
+        </li>
+        {# {% endif %} #}
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                {{'Inventaire'|trans}}
+            </a>
+        </li>
+    </ul>
+     <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+        <thead>
+        <tr>
+            <th>{{ 'CIP'|trans }}</th>
+            <th>{{ 'Désignation'|trans }}</th>
+            <th>{{ 'DCI'|trans }}</th>
+            {# <th>{{ 'Fabricant'|trans }}</th> #}
+{#            <th>N° Lot</th>#}
+{#            <th>Peremptio</th>#}
+            <th>{{ 'Qté supposée'|trans }}</th>
+            <th>{{ 'Qté Réelle'|trans }}</th>
+            {% if is_granted('ROLE_ADMIN') %}
+            <th>{{ 'Actions'|trans }}</th>
+        {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for stock in stock %}
+            <tr>
+                <td>{{ stock.produit.reference }}</td>
+                <td>{{ stock.produit.desigantion }}</td>
+                <td>{{ stock.produit.dci }}</td>
+                {# <td>{{ stock.produit.fabriquant }}</td> #}
+{#                <td>{{ stock.lot }}</td>#}
+{#                <td>{{ stock.peremption|date('d/m/Y') }}</td>#}
+                <td class"center">{{ stock.quantite|number_format(0,',' , ' ') }}</td>
+                <td id="tdq{{ stock.id }}">
+                     <input type="number" id="text{{ stock.id }}" class="form-control"
+                                    onfocus="focu({{ stock.id }}, {{ stock.quantite }}, 0)" onblur="nofocu()"
+                                    style="vertical-align: middle; margin: auto; width: 80px; height: 40px;">
+                                <label for="text{{ stock.id }}"></label>
+                </td>
+                 {% if is_granted('ROLE_STOCK') %}
+                <td id="tda{{ stock.id }}">
+                    <button id="btn{{ stock.id }}" onclick="editinventaire({{ stock.id }},{{stock.quantite}})" class="btn btn-success">
+                        <i class="fa fa-edit"></i>
+                         {{'Modifier'|trans}}
+                    </button>
+                    {{ include('stock/_form_delete.html.twig')}}
+                </td>
+        {% endif %}
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+     <input type="hidden" id="tampon"/>
+        <input type="hidden" id="min"/>
+    {# <div class="centrer gap-3  m-4 fond-7">
+            <button id="exportExcel" class="btn btn-green">
+                <i class="fa fa-file-excel"></i> Exporter Excel
+            </button>
+            <button id="exportPdf" class="btn btn-danger">
+                <i class="fa fa-file-pdf"></i> Exporter PDF
+            </button>
+           
+        </div> #}
+    </div>
+</div>
+{% endblock %}

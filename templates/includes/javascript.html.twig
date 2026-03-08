@@ -205,6 +205,42 @@
 
     }
 
+     function editinventaire(id,quant) {// id stock et la quantite quantite actuelle
+        var reg = new RegExp("^[0-9]+$");
+        var quantite = $('#text' + id).val();
+       
+        if (reg.test(quantite) && quantite != quant && quantite != "0") {
+             if (confirm("êtes-vous sur de vouloir modifier ce produit?")) {
+          //  if (st >= $('#text' + id).val()) {
+                $('#btn' + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('stock_editinventaire') }}",
+                    data: { stock : id, quantite : quantite, quant : quant},
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                            $('#tdq' + id).html($('#text' + id).val());
+                            $('#tda' + id).html("");
+                        } else {
+                            alert("{{ 'Vérifier la quantité saisie'|trans }}")
+                        }
+                    },
+                    error: function () {
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                    }
+                });
+            /* } else {
+                var mess = "{{ 'Maximum disponible'|trans }}" + " " + st;
+                alert(mess);
+            } */
+             }
+        } else {
+            var mess = "{{ 'Verfier la quantite saisie'|trans}}" + " " + quantite;
+            alert(mess);
+        }
+
+    }
+
 //hebergement
     function focu(id,min,stock) {
         $('#tampon').val(id);
@@ -228,6 +264,17 @@
         var quantite = $('#text' + id).val();
         if (reg.test(quantite) && window.event.keyCode == 13) {
             addinPanier(id, min,stock);
+
+        } //else alert("{{ 'invalide'|trans }}");
+
+    }
+     function entrerinventaire() {
+        var reg = new RegExp("^[0-9]+$");
+        var id = $('#tampon').val();
+        var min = $('#min').val();
+        var quantite = $('#text' + id).val();
+        if (reg.test(quantite) && window.event.keyCode == 13) {
+            editinventaire(id, min);
 
         } //else alert("{{ 'invalide'|trans }}");
 

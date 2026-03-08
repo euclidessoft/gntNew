@@ -37,13 +37,75 @@ class StockController extends AbstractController
     {
     }
 
-#[Route("/", name :"index", methods : ["GET"]) ]
+    #[Route("/", name :"index", methods : ["GET"]) ]
     public function stock(StockRepository $repository): Response
     {
         if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
 
             $response = $this->render('stock/stock.html.twig', [
                 'stock' => $repository->stock(),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+     #[Route("/Inventaire", name :"inventaire", methods : ["GET"]) ]
+    public function inventaire(StockRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+
+            $response = $this->render('stock/inventaire.html.twig', [
+                'stock' => $repository->findAll(),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/Ajustement", name :"ajust", methods : ["GET"]) ]
+    public function ajust(RetourRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+
+            $response = $this->render('stock/ajust.html.twig', [
+                'retours' => $repository->FindAll(),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -99,36 +161,6 @@ class StockController extends AbstractController
         }
     }
 
-    #[Route("/Ajust", name :"ajust", methods : ["GET"]) ]
-    public function ajust(ProduitRepository $repository): Response
-    {
-        if ($this->security->isGranted('ROLE_BACK')) {
-
-            $response = $this->render('stock/surveiller.html.twig', [
-                'produits' => $repository->surveil(),
-            ]);
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
-        } else {
-            $response = $this->redirectToRoute('security_logout');
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
-        }
-    }
 
     #[Route("/Rupture", name :"rupture", methods : ["GET"]) ]
     public function rupture(ProduitRepository $repository): Response
@@ -623,6 +655,45 @@ class StockController extends AbstractController
 
     }
 
+    
+    #[Route("/editinventaire/", name :"editinventaire") ]
+    public function editinventaire(Request $request, StockRepository $Repository, ProduitRepository $produitRepository, SessionInterface $session)
+    {
+        // On récupère le panier actuel
+        // $panier = $session->get("panier", []);
+        if( $request->isXmlHttpRequest() )
+        {// traitement de la requete ajax
+            $id = $request->get('stock');// recuperation de id produit
+            $quantite = $request->get('quantite');// recuperation de la quantite commamde
+            $quant = $request->get('quant');// recuperation de la quantite commamde
+            $reduction = 0;
+            // if(empty($panier[$id])){//verification existance produit dans le panier
+            $stock = $Repository->find($id); // recuperation de id produit dans la db
+            $produit = $produitRepository->find($stock->getProduit()->getId()); // recuperation de id produit dans la db
+            $diff = $quantite - $quant;
+            $produit->setStock($produit->getStock() + $diff);
+            
+            $stock->setQuantite($stock->getQuantite() + $diff);
+            $this->entityManager->persist($produit);
+            $this->entityManager->persist($stock);
+            $this->entityManager->flush();
+
+            // log
+             $heure = date("d/m/Y H:i:s");
+            file_put_contents(__DIR__ . '/inventaitre.log', $heure." ".$this->getUser()->getId()." ".$this->getUser()->getNom()." ".$this->getUser()->getPrenom()." ".$produit->getDesigantion()." Qauntite anterieur:".$quant." nouvelle quantite:".$quantite."\n", FILE_APPEND);
+
+            $res['id'] = 'ok';
+            
+
+            $response = new Response();
+            $response->headers->set('content-type','application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        }
+
+    }
+
     #[Route("/edit/", name :"edit") ]
     public function edit(Request $request, SessionInterface $session)
     {
@@ -702,6 +773,27 @@ class StockController extends AbstractController
             'private' => true,
         ]);
         return $response;
+
+    }
+
+     #[Route("/{id}", name :"epuise", methods : ["POST"]) ]
+    public function epuise(Request $request, Stock $stock): Response
+    {
+        try {
+            if ($this->isCsrfTokenValid('delete' . $stock->getId(). 'lot' . $stock->getLot(), $request->request->get('_token'))) {
+                $entityManager = $this->entityManager;
+                $entityManager->remove($stock);
+                $entityManager->flush();
+            }
+            $this->addFlash('notice', 'Produit Supprimé');
+            return $this->redirectToRoute('stock_inventaire', [], Response::HTTP_SEE_OTHER);
+        }
+        catch (\Exception $exception){
+            $this->addFlash('notice', 'Ce produit ne peut être supprimer pour des raisons de traçabilité');
+            return $this->redirectToRoute('produit_index', [], Response::HTTP_SEE_OTHER);
+
+        }
+
 
     }
 

@@ -61,7 +61,7 @@
                     <td>{{ produit.desigantion }}</td>
                     <td>{{ produit.dci }}</td>
                     <td>{{ produit.fabriquant }}</td>
-                    <td>{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{ produit.stock|number_format(0,',' , ' ') }}</td>
                     {% if is_granted('ROLE_STOCK') %} 
                     <td>
                         <a id="{{produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" href="{{ path('stock_produit_show', {'id': produit.id}) }}">

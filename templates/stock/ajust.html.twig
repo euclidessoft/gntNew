@@ -1,0 +1,79 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block stock %}active{% endblock %}
+{% block ajust %}active{% endblock %}
+
+{% block body %}
+<div class="container mt-4 fond-7">
+    <h3 class="mt-4 mb-5 text-bold">
+        <i class="fa fa-shopping-cart me-2"></i>
+        {{ "Etat stock produits"|trans }}
+    </h3>
+    <ul class="nav nav-tabs mb-4">
+        {# {% if is_granted('ROLE_STOCK') %} #}
+        <li class="nav-item">
+            <a class="nav-link active" href="">
+                {{ 'Retour Produit'|trans }}
+            </a>
+        </li>
+        {# {% endif %} #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('stock_inventaire') }}">
+                {{'Inventaire'|trans}}
+            </a>
+        </li>
+    </ul>
+ {# <a href="{{ path('stock_retour') }}" class="btn btn-green my-4">
+            <i class="fa fa-plus"></i>
+            {{ "Nouveau"|trans }}
+        </a> #}
+     <table class="table table-success-light table-bordered table-hover table-striped w-100 mt-4" id="liste">
+            <thead>
+            <tr>
+                <th>{{'N° Retour'|trans}}</th>
+                <th>{{'N° Commande'|trans}}</th>
+                <th>{{'Date de retour'|trans}}</th>
+                <th>{{'Client'|trans }} </th>
+                <th> </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for retour in retours %}
+                <tr>
+                    <td>{{ retour.id }}</td>
+                    <td>{{ retour.commande.id }}</td>
+                    <td>{{ retour.date|date('d/m/Y') }}</td>
+                    <td>{{ retour.commande.user.nom }}</td>
+                    <td>
+                        <a id="{{retour.id }}" onclick="load({{ retour.id }})" href="{{ path('stock_retour_history_show', {'id' : retour.id}) }}" class="btn btn-success">
+                            <i class="fa fa-list"></i>
+                            {{ 'Détails'|trans }}
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+
+            {% endfor %}
+            </tbody>
+        </table>
+    {# <div class="centrer gap-3  m-4 fond-7">
+            <button id="exportExcel" class="btn btn-green">
+                <i class="fa fa-file-excel"></i> Exporter Excel
+            </button>
+            <button id="exportPdf" class="btn btn-danger">
+                <i class="fa fa-file-pdf"></i> Exporter PDF
+            </button>
+           
+        </div> #}
+    </div>
+</div>
+{% endblock %}
