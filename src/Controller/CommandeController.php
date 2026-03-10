@@ -1399,7 +1399,7 @@ class CommandeController extends AbstractController
 
 
     #[Route("/Suivi/{commande}", name :"paiement") ]
-    public function paiement(Request $request, SessionInterface $session, CommandeProduitRepository $repository, Commande $commande)
+    public function paiement(Request $request, SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, LivrerProduitRepository $livrerRepository)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             if ($commande->getSuivi()) {
@@ -1511,6 +1511,7 @@ class CommandeController extends AbstractController
 
             $response = $this->render('commande/admin/paiement.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                 'livrerproduits' => $livrerRepository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'panier' => $panier,
                 'form' => $form->createView(),
@@ -1544,7 +1545,7 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/SuiviCredit/{commande}", name :"paiement_credit") ]
-    public function paiementcredit(Request $request, SessionInterface $session, CommandeProduitRepository $repository, Commande $commande)
+    public function paiementcredit(Request $request, SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, LivrerProduitRepository $livrerRepository)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
@@ -1650,6 +1651,7 @@ class CommandeController extends AbstractController
 
             $response = $this->render('commande/admin/paiementcredit.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                 'livrerproduits' => $livrerRepository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'panier' => $panier,
                 'form' => $form->createView(),

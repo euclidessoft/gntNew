@@ -310,24 +310,220 @@
     </table>
 
     <div class="container mt-4 mb-5 py-3 fond-7">
+     <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="facture" style="display:none;">
+            <thead>
+            <tr>
+                <th>{{ 'Date'|trans }}</th>
+                <th>{{ 'Numero Facture'|trans }}</th>
+                <th>{{ 'Numero Ligne'|trans }}</th>
+                <th>{{ 'Code Interne'|trans }}</th>
+                <th>{{ 'Code Cip'|trans }}</th>
+                <th>{{ 'Code CIP Alternatif'|trans }}</th>
+                <th>{{ 'Description'|trans }}</th>
+                <th>{{ 'Laboratoire'|trans }}</th>
+                <th>{{ 'Quantite Demandee'|trans }}</th>
+                <th>Quantitee livree</th>
+                <th>Unite Gratuite</th>
+                <th>{{ 'Prix de Cession Hors Taxe'|trans }}</th>
+                <th>{{ 'Taux Taxe'|trans }}</th>
+                <th>{{ 'Prix public'|trans }}</th>
+                <th>{{ 'Prix TTC'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commandeproduit in commandeproduits %}
+                {% set ug = 0 %}
+                {% set reductionproduit = 0 %}
+                <tr>
+                    <td> {{ commande.date|date('d/m/Y') }} </td>
+                    <td> {{ commande.id}}-{{ commande.numerofacture }} </td>
+                    <td>  </td>
+                    <td> {{ commandeproduit.produit.id }} </td>
+                    <td> {{ commandeproduit.produit.reference }} </td>
+                    <td> {{ commandeproduit.produit.alternatif }} </td>
+                    <td> {{ commandeproduit.produit.desigantion }} </td>
+                    <td> {{ commandeproduit.produit.Fabriquant }} </td>
+                    <td>
+                        {{ commandeproduit.quantite }}
+                       
+                    </td>
+                    {#                <td>#}
+                    {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }}#}
+                    {#                </td>#}
+                    {#                <td> </td>#}
+                    <td>
+                    {# determination quantite livreee #}
+                    {% set quantite = 0 %}
+                    {% for livrerproduit  in livrerproduits  %}
+                        {% if livrerproduit.commande.id  == commande.id and livrerproduit.produit.id == commandeproduit.produit.id %}
+                            {% set quantite = quantite + livrerproduit.quantitelivrer %}
+                        {% endif %}
+
+                    {% else %}
+                    {% endfor %}
+                      {{ quantite != 0 ? quantite : ''  }}
+
+                    </td> 
+                     <td>
+                     {% set ug= 0 %}
+                       {% if commandeproduit.promotion is not null %}
+                            {% if commandeproduit.promotion.premier is not null %}
+
+                                {% if commandeproduit.quantite / commandeproduit.promotion.cinquieme >= 1 %}
+
+                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.cinquieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commandeproduit.promotion.ugcinquieme %}
+                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.cinquieme %}
+
+                                    {% if suite / commandeproduit.promotion.quatrieme >= 1 %}
+
+                                        {% set unite = (suite / commandeproduit.promotion.quatrieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugquatrieme %}
+                                        {% set suite = suite - unite * commandeproduit.promotion.quatrieme %}
+
+                                        {% if suite / commandeproduit.promotion.troisieme >= 1 %}
+
+                                            {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
+                                            {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
+
+                                            {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
+                                                {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                                {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                                {% endif %}
+
+                                            {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% elseif commandeproduit.quantite / commandeproduit.promotion.quatrieme >= 1 %}
+
+                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.quatrieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commandeproduit.promotion.ugquatrieme %}
+                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.quatrieme %}
+
+                                    {% if suite / commandeproduit.promotion.troisieme >= 1 %}
+
+                                        {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
+                                        {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
+
+                                        {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
+                                            {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                            {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                            {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                            {% endif %}
+
+                                        {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                        {% endif %}
+                                    {% endif %}
+                                {% elseif commandeproduit.quantite / commandeproduit.promotion.troisieme >= 1 %}
+
+                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
+                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.troisieme %}
+
+                                    {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                        {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                        {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                        {% endif %}
+
+                                    {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                    {% endif %}
+
+                                {% elseif commandeproduit.quantite / commandeproduit.promotion.deuxieme >= 1 %}
+
+
+                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.deuxieme %}
+
+                                    {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                    {% endif %}
+
+                                {% elseif commandeproduit.quantite / commandeproduit.promotion.premier >= 1 %}
+
+                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                {% endif %}
+                                    {# {{ ug }} #}
+                            {% endif %}
+                        {% endif %}
+                        {{ ug !=0 ? ug : ''}}
+                    </td> 
+                    <td>
+                        {{ commandeproduit.produit.prix }}
+
+                    </td>
+                    <td>
+                    {% set tva= 0%}
+                    {% if commandeproduit.produit.tva is true %}
+                    19,25 {% set tva= 0.1925 %}%
+                    {% else %}
+                    {{ tva }}%
+                    {% endif %}
+                    </td>
+                    <td>{{ commandeproduit.produit.prixpublic }}</td>
+                    <td>
+                    {% if commandeproduit.produit.tva is true %}
+                         {{ commandeproduit.produit.prixpublic + commandeproduit.produit.prixpublic * tva }}
+                    {% else %}
+                      {{ commandeproduit.produit.prix }}
+                    {% endif %}
+                     
+                    </td>
+                    
+                </tr>
+            {% endfor %}
+            <tbody>
+           
+        </table>
+           <input type="hidden" id="numfact" value="{{ commande.id}}-{{ commande.numerofacture }}"/>
         <div class="centrer">
-            <div class="row">
-            <div class="col-12">
-                <button type="button" class="btn btn-success me-5" data-bs-toggle="modal" data-bs-target="#modal" id="btn">
+                <button type="button" class="btn btn-success me-3" data-bs-toggle="modal" data-bs-target="#modal" id="btn">
                     <i class="fa fa-money-bill"></i>
                     {{ 'Paiement'|trans }}
                 </button>
 
                  <a id="print" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
-                   class="btn btn-success-light float-end">
+                   class="btn btn-success-light me-3">
                     <i class="fa fa-print"></i>
                     {{ "Imprimer"|trans }}
                 </a>
+                <span id="exportexcel" class=""></span>
 
 
-
-            </div>
-            </div>
         </div>
     </div>
 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
