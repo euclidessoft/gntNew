@@ -80,19 +80,20 @@ public function test(ParameterBagInterface $params)
         // // $ws = new SMSService($params);//connect number_format($livrer->getCommande()->getMontant(), 0, ',', ' ')
         // // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
        // return new Response($response);
-        $clients = $this->entityManager->getRepository(Client::class)->findAll();
-        foreach($clients as $client){
-            $pharmacie = new Pharmacie();
-            $pharmacie->setNom($client->getNom()." ".$client->getPrenom());
-            $this->entityManager->persist($pharmacie);
-            $this->entityManager->flush();
-            // $client->setRoles(["ROLE_CLIENT_ADMIN"]);
-            $client->setPharmacie($pharmacie);
-            $this->entityManager->persist($client);
-            $this->entityManager->flush();
+       
+        // $clients = $this->entityManager->getRepository(Client::class)->findAll();
+        // foreach($clients as $client){
+        //     $pharmacie = new Pharmacie();
+        //     $pharmacie->setNom($client->getNom()." ".$client->getPrenom());
+        //     $this->entityManager->persist($pharmacie);
+        //     $this->entityManager->flush();
+        //     $client->setRoles(["ROLE_CLIENT_ADMIN"]);
+        //     $client->setPharmacie($pharmacie);
+        //     $this->entityManager->persist($client);
+        //     $this->entityManager->flush();
 
-        }
-        return new Response("okay");
+        // }
+        // return new Response("okay");
 
         //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
         // foreach($commandes as $commande){

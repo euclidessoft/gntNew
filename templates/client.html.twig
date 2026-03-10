@@ -434,7 +434,7 @@
                     <p class="">
                         <b>{{ 'Importez un fichier'|trans }}</b>
                     </p>
-                    <form method="POST" action="{{ path('importation')}}" enctype="multipart/form-data" id="form">
+                    <form method="POST" action="{{ path('importation')}}" enctype="multipart/form-data" id="formimport">
                         <input type="file" name="import" id="import" class="form-control">
                         <button type="button" class="btn btn-success mt-3" id="send" onclick="importcommande()"><i class="fa fa-upload"></i> Suivant</button>
                     </form>
