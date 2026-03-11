@@ -77,7 +77,7 @@
             <tr>
                 <th>{{'CIP'|trans}}</th>
                 <th>{{ 'Désignation'|trans }}</th>
-                <th>{{ 'DCI'|trans }}</th>
+                {# <th>{{ 'DCI'|trans }}</th> #}
                 <th>{{ 'Quantité Commandée'|trans }}</th>
                 <th>{{ 'Quantité Livrée'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
@@ -94,7 +94,7 @@
                 <tr>
                     <td> {{ commandeproduit.produit.reference }} </td>
                     <td>{{ commandeproduit.produit.desigantion }} </td>
-                    <td>{{ commandeproduit.produit.dci }} </td>
+                    {# <td>{{ commandeproduit.produit.dci }} </td> #}
                     <td> {{ commandeproduit.quantite }} 
                      {% if commandeproduit.promotion is not null %}
                             {% if commandeproduit.promotion.premier is not null %}
@@ -269,7 +269,7 @@
                 </tr>
             {% endfor %}
             <tr>
-                <td colspan="9" class="text-end text-bold">
+                <td colspan="8" class="text-end text-bold">
                     {{ "Total HT"|trans }}
                 </td>
                 <td class=" text-bold">
@@ -278,7 +278,7 @@
             </tr>
             {% if reduction != 0 %}
                 <tr>
-                    <td colspan="9" class="text-end">
+                    <td colspan="8" class="text-end">
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td>
@@ -287,7 +287,7 @@
                 </tr>
             {% endif %}
             <tr>
-                <td colspan="9" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total TVA"|trans }}
                 </td>
                 <td>
@@ -296,7 +296,7 @@
             </tr>
 
             <tr>
-                <td colspan="9" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
@@ -307,7 +307,7 @@
             </tr>
 
             <tr class="text-bold">
-                <td colspan="9" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="montant">
