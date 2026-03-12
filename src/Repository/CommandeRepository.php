@@ -75,6 +75,25 @@ class CommandeRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+     public function retourClient($client)
+    {
+        $date = new \Datetime();
+        date_sub($date,date_interval_create_from_date_string("30 days"));
+        $creation = date_format($date,"Y-m-d");
+
+
+
+        $query = $this->createQueryBuilder('a')
+            ->Where('a.dateefectlivraison > :date')
+            ->setParameter('date', $creation)
+            ->Andwhere('a.livrer = :val')
+            ->setParameter('val', true)
+            ->Andwhere('a.user = :client')
+            ->setParameter('client', $client)
+            ->getQuery();
+        return $query->getResult();
+    }
+
     public function creditAvance(int $year)
     {
         // achat a credit non livrer avec avance recu

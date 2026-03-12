@@ -215,7 +215,7 @@
                     <ul class=" dropdown-menu" aria-labelledby="pelerin">
                         <li class="dropdown-item">
                             <a class="nav-link {% block new_reclamation %}{% endblock %}"
-                               href="{{ path('reclamation_new', { 'user' : app.user.id }) }}">
+                               href="{{ path('reclamation_liste_commande', { 'user' : app.user.pharmacie.id }) }}">
                                 <i class="fas fa-user-clock"></i>
                                 <i class="fas fa-plus"></i>
                                 {{ 'Créer une réclamation'|trans }}
@@ -223,7 +223,7 @@
                         </li>
                         <li class="dropdown-item">
                             <a class="nav-link {% block my_reclamation %}{% endblock %}"
-                               href="{{ path('reclamation_index',{'user':app.user.id}) }}">
+                               href="{{ path('reclamation_index',{'user':app.user.pharmacie.id}) }}">
                                 <i class="fas fa-user-clock"></i>
                                 <i class="fas fa-list"></i>
                                 {{ 'Mes réclamations'|trans }}
@@ -527,7 +527,9 @@
 </div>
 
 {{ include('includes/javascript.html.twig') }}
+{% block scripts %}
 
+{% endblock %}
 </body>
 
 </html>

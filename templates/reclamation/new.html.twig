@@ -1,9 +1,306 @@
-{% extends "client.html.twig" %}
-{% block title %} - Reclamation{% endblock %}
-{% block reclamation %}active{% endblock %}
-{% block my_reclamation %}active{% endblock %}
+{% extends
+   
+    'client.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block stock %}active{% endblock %}
+{% block retour_stock %}active{% endblock %}
+{% block new_retour %}active{% endblock %}
 {% block body %}
+    <div class="container-fluid mt-4 mb-4 pb-4 fond-7">
+        <h3 class="mt-4 mb-5 text-bold">
+            <i class="fa fa-shop me-2"></i>
+            {{ "Nouvelle Réclamation"|trans }}
+        </h3>
+        <div class="col-6 fond-7">
+            <table class="table table-success-light table-bordered table-hover table-striped mt-3 w-100">
+                <thead>
+                <tr>
+                    <th>{{ 'Numéro Commande'|trans }}</th>
+                    <th>{{ 'Date de commande'|trans }}</th>
+                    <th>{{ 'Date de Livraison'|trans }}</th>
+                    {# <th>{{ 'receptionnée par'|trans }}</th> #}
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ commande.id }}</td>
+                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ commande.dateefectlivraison ? commande.datelivrer|date('d/m/Y') : '' }}</td>
+                    {# <td>{{ commande.recepteur ? commande.recepteur.nom ~ "" ~ commande.recepteur.prenom : "" }}</td> #}
 
-    {{ include('reclamation/_form.html.twig') }}
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-lg-7 mt-5">
+                {% for message in app.flashes('notice') %}
+                    <div role="alert" class="alert alert-primaire alert-dismissible fade show radius-10 shadow-black">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        {{ message|trans }}
+                    </div>
+                {% endfor %}
+
+                                {% set inlist = [] %}
+                                {% for produit in reclamation %}
+
+                                    {% set inlist = inlist|merge([produit['id']~produit['lot']]) %}
+                                {% else %}
+
+                                {% endfor %}
+
+                <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+                    <thead>
+                    <tr>
+                        <th>{{ "CIP"|trans }}</th>
+                        <th>{{ "Designation"|trans }}</th>
+                        <th>{{ "N° Lot"|trans }}</th>
+                        <th>{{ "Peremption"|trans }}</th>
+                        <th>{{ "Qté Livrée"|trans }}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for commandeproduit in commandeproduits %}
+                        <tr id="listprod{{ commandeproduit.produit.id }}">
+                            <td>{{ commandeproduit.produit.reference }}</td>
+                            <td>{{ commandeproduit.produit.desigantion }}</td>
+                            <td>{{ commandeproduit.lot }}</td>
+                            <td>{{ commandeproduit.peremption|date('d/m/Y') }}</td>
+                            <td>{{ commandeproduit.quantitelivrer }}</td>
+                            <td>
+{#                               {% set idproduit =  %}#}
+                                <!-- Button trigger modal -->
+                                <button type="button"
+                                        class="btn btn-success {% if  commandeproduit.produit.id ~ commandeproduit.lot  in inlist %} disabled {% endif %}"
+                                        data-bs-toggle="modal" data-bs-target="#modal{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}"
+                                        id="btn{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}">
+                                    <i class="fa fa-plus"></i> {{ "Ajouter"|trans }}
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modal{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}" tabindex="-1"
+                                     tabindex="-1" aria-labelledby="" aria-hidden="true"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered text-center">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title fs-5" id="exampleModalLabel">
+                                                    {{ commandeproduit.produit.reference }} {{ commandeproduit.produit.desigantion }}</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+
+                                                </button>
+                                            </div>
+                                            <div class="modal-body px-5">
+                                                <div class="mt-3">
+                                                    Quantité retournée:
+                                                    <label for="quant{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}"></label>
+                                                    <input type="number" class="form-control"
+                                                           id="quant{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}">
+                                                </div>
+                                                <div class="mt-3">
+                                                    Motif:
+                                                    <label for="numero{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}"></label>
+                                                    <textarea type="number" class="form-control"
+                                                              id="motif{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}">
+
+                                                    </textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer px-5 py-4">
+                                                <b>Lot n°: {{ commandeproduit.lot }}</b>
+                                                <button type="button" class="btn btn-secondary ms-5" data-bs-dismiss="modal"
+                                                        id="annuler{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}">Annuler
+                                                </button>
+
+                                                <button type="button" class="btn btn-success ms-3"
+                                                        id="ajouter{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}"
+                                                        onclick="ajouter({{ commandeproduit.produit.id }}, {{ commandeproduit.quantitelivrer }}, '{{ commandeproduit.lot }}', '{{ commandeproduit.peremption|date('Y-m-d') }}')">
+                                                    <i class="fa fa-plus"></i> Ajouter
+                                                </button>
+                                                <div id="modification{{ commandeproduit.produit.id }}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-5 mt-5">
+
+
+                <table class="table table-success-light table-bordered table-hover table-striped w-100">
+                    <thead class="text-center">
+                    <tr>
+                        <th class="text-start">{{ 'Désignation'|trans }}</th>
+                        <th>{{'N° Lot'|trans}}</th>
+                        <th>{{'Péremption'|trans}}</th>
+                        <th>{{'Qté concernée'|trans}}</th>
+                        <th>{{'Actions'|trans}}</th>
+                    </tr>
+                    </thead>
+                    <tbody id="selectprod" class="text-center">
+{#                    {% for produit in retour %}#}
+{#                        <tr id="tr{{ produit['id'] }}{{ produit['lot'] }}">#}
+{#                            <td class="text-start">{{ produit['designation'] }}</td>#}
+{#                            <td>{{ produit['lot'] }}</td>#}
+
+{#                            <td>#}
+
+{#                                {{ produit['quantite'] }}#}
+
+{#                            </td>#}
+{#                            <td rowspan="2">#}
+
+
+{#                                <button class="btn btn-danger me-2 mb-2"#}
+{#                                        title="Supprimer cet article" onclick="retour_supprim({{ produit['id'] }},{{ produit['lot'] }})">#}
+{#                                    <i class="fa fa-trash"></i>#}
+{#                                </button>#}
+
+{#                                #}{#                                <button type="button" class="btn btn-success mb-2"#}
+{#                                #}{#                                        data-bs-toggle="modal" data-bs-target="#modal{{ produit['id'] }}"#}
+{#                                #}{#                                        id="btn{{ produit['id'] }}">#}
+{#                                #}{#                                    <i class="fa fa-plus"></i> Lot#}
+{#                                #}{#                                </button>#}
+
+{#                            </td>#}
+{#                        </tr>#}
+{#                        <tr id="trs{{ produit['id'] }}{{ produit['lot'] }}">#}
+{#                            <td colspan="3">{{ produit['motif'] }}</td>#}
+{#                        </tr>#}
+
+{#                    {% else %}#}
+
+{#                    {% endfor %}#}
+
+                    </tbody>
+                </table>
+
+                <button onclick="validerReclamation({{ commande.id }})"
+                        class="btn btn-success float-right  {% if reclamation|length == 0 %} disabled {% endif %}"
+                        id="valider2"
+                        title="Valider">
+                    <i class="fa fa-check"></i> {{ 'Créer Réclamation'|trans }}
+                </button>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        function ajouter(produit, quantite,lot,peremption) {
+           
+            var quant = $("#quant" + produit+lot);
+            var motif = $("#motif" + produit+lot);
+            if (quant.val() != "" && motif.val() != "" && quant.val() <= quantite) {
+                if (quant.val() > 0) {
+                    $("#ajouter" + produit+lot).html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('reclamation_add') }}",
+                        data: {prod: produit, quantite: quant.val(), motif: motif.val(), lot: lot, peremption: peremption},
+                        success: function (data) {
+
+                            if (data['idp'] == 'ok') {
+                                $('#selectprod').append(" <tr id='tr" + produit + lot + "'>\n" +
+                                    "                        <td>" + data['designation'] + "</td>\n" +
+                                    "                        <td>" + data['lot'] + "</td>\n" +
+                                    "                        <td>" + peremption + "</td>\n" +
+                                    "                        <td class='text-center'><span id='changequantite" + produit + "'>" + data['quantite'] + "</span></td>" +
+                                    "<td rowspan='2'><button class='btn btn-danger me-2 mb-2'\n" +
+                                    "                                   title='Supprimer cet article' onclick=\"retour_supprim(" + produit + "'"+ lot + "')\">\n" +
+                                    "                                    <i class='fa fa-trash'></i>\n" +
+                                    "                                </button></td></tr>" +
+                                    "<tr id='trs" + produit + lot +"'>\n" +
+                                    "        <td colspan='4'>" + data['motif'] + "</td>" +
+                                    "</tr>");
+
+                                $('#btn' + produit+lot).addClass('disabled');
+                                $('#valider1').removeClass('disabled');
+                                $('#valider2').removeClass('disabled');
+                                $("#annuler" + produit+lot).trigger('click');
+                                quant.val("");
+                                motif.val("");
+                                $("#ajouter" + produit+lot).html("<i class='fa fa-plus'></i> {{ 'Ajouter'|trans }}");
+                            } else {
+                                $("#ajouter" + produit+lot).html("<i class='fa fa-plus'></i> {{ 'Ajouter'|trans }}");
+                            }
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                        }
+                    });
+                } else {
+                    alert("{{'veuillez bien renseigner la quantité'|trans}}");
+                }
+            } else {
+                alert("{{'Veuillez bien revérifier les quantités'|trans}}");
+            }
+        }
+
+        function retour_supprim(produit, lot) {
+
+            if (confirm("{{ 'Etes-vous sur de vouloir supprimer?'|trans }}")) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('stock_retour_delete') }}",
+                    data: {prod: produit, lot: lot},
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                            $("#tr" + produit+lot).remove();
+                            $("#trs" + produit+lot).remove();
+                            $('#btn' + produit+lot).removeClass('disabled');
+                            $("#quant" + produit+lot).val('');// vider le champ quantite dans modal ajouter
+                            $("#ajouter" + produit+lot).show();// afficher le bouton ajouter
+                            $("#ajouter" + produit+lot).html("<i class=\"fa fa-plus\"></i> {{ 'Ajouter'|trans }}");// afficher le bouton ajouter
+
+                            if (data['nb'] == 0) {
+                                $('#valider1').addClass('disabled');
+                                $('#valider2').addClass('disabled');
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                    }
+                });
+            }
+        }
+
+
+        function validerReclamation(commande) {
+            $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+            if (confirm("{{ 'Voulez-vous confirmer la validation?'|trans }}")) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('reclamation_valider') }}",
+                    data: {commande: commande},
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                           document.location.href="{{ path('reclamation_index') }}";
+                        }
+                    },
+                    error: function () {
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                    }
+                });
+            }
+        }
+
+    </script>
+
 
 {% endblock %}

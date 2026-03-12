@@ -15,9 +15,9 @@ class Reclamation
 #[ORM\JoinColumn(nullable:true) ]
     private $usercloture;
 
-    #[ORM\ManyToOne(targetEntity:"App\Entity\Client") ]
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Pharmacie") ]
      #[ORM\JoinColumn(nullable:false) ]
-    private $user;
+    private $pharmacie;
 
     #[ORM\OneToMany(targetEntity:"App\Entity\Reponse", mappedBy:"reclamation") ]
     private $reponses;
@@ -27,9 +27,9 @@ class Reclamation
      #[Assert\NotBlank(  message : "Champ obligatoire") ]
     private $commande;
 
-    #[ORM\ManyToMany(targetEntity:"App\Entity\Produit") ]
-#[ORM\JoinColumn(nullable:true) ]
-    private $produits;
+//     #[ORM\ManyToMany(targetEntity:"App\Entity\Produit") ]
+// #[ORM\JoinColumn(nullable:true) ]
+//     private $produits;
 
     const reclamer = [
         'Produit facturé non Livré' => 'Produit facturé non Livré' ,
@@ -62,13 +62,13 @@ class Reclamation
     #[ORM\Column(type:"datetime", nullable:true) ]
     private $cloture;
 
-    #[ORM\Column(type:"text") ]
-     #[Assert\NotBlank(  message : "Champ obligatoire") ]
-    private $commentaire;
+    // #[ORM\Column(type:"text") ]
+    //  #[Assert\NotBlank(  message : "Champ obligatoire") ]
+    // private $commentaire;
 
-    #[ORM\Column(type:"string", length:255) ]
-     #[Assert\NotBlank(  message : "Champ obligatoire") ]
-    private $motif;
+    // #[ORM\Column(type:"string", length:255) ]
+    //  #[Assert\NotBlank(  message : "Champ obligatoire") ]
+    // private $motif;
 
 //    /**
 //     #[\OneToOne(targetEntity:Avoir::class, cascade:["persist", "remove"])
@@ -78,7 +78,7 @@ class Reclamation
 
     public function __construct()
     {
-        $this->produits = new ArrayCollection();
+        // $this->produits = new ArrayCollection();
         $this->status = false;
         $this->creation = new \Datetime();
         $this->reponses = new ArrayCollection();
@@ -137,52 +137,52 @@ class Reclamation
         return $this;
     }
 
-    /*  #[return Collection|Produit[]
-     */
-    public function getProduits(): Collection
-    {
-        return $this->produits;
-    }
+    // /*  #[return Collection|Produit[]
+    //  */
+    // public function getProduits(): Collection
+    // {
+    //     return $this->produits;
+    // }
 
-    public function addProduit(Produit $produit): self
-    {
-        if (!$this->produits->contains($produit)) {
-            $this->produits[] = $produit;
-        }
+    // public function addProduit(Produit $produit): self
+    // {
+    //     if (!$this->produits->contains($produit)) {
+    //         $this->produits[] = $produit;
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeProduit(Produit $produit): self
-    {
-        $this->produits->removeElement($produit);
+    // public function removeProduit(Produit $produit): self
+    // {
+    //     $this->produits->removeElement($produit);
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getCommentaire(): ?string
-    {
-        return $this->commentaire;
-    }
+    // public function getCommentaire(): ?string
+    // {
+    //     return $this->commentaire;
+    // }
 
-    public function setCommentaire(string $commentaire): self
-    {
-        $this->commentaire = $commentaire;
+    // public function setCommentaire(string $commentaire): self
+    // {
+    //     $this->commentaire = $commentaire;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getMotif(): ?string
-    {
-        return $this->motif;
-    }
+    // public function getMotif(): ?string
+    // {
+    //     return $this->motif;
+    // }
 
-    public function setMotif(string $motif): self
-    {
-        $this->motif = $motif;
+    // public function setMotif(string $motif): self
+    // {
+    //     $this->motif = $motif;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /*  #[return Collection|Reponse[]
      */
@@ -213,18 +213,6 @@ class Reclamation
         return $this;
     }
 
-    public function getUser(): ?Client
-    {
-        return $this->user;
-    }
-
-    public function setUser(?Client $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getUsercloture(): ?Employe
     {
         return $this->usercloture;
@@ -248,4 +236,21 @@ class Reclamation
 //
 //        return $this;
 //    }
+
+public function isStatus(): ?bool
+{
+    return $this->status;
+}
+
+public function getPharmacie(): ?Pharmacie
+{
+    return $this->pharmacie;
+}
+
+public function setPharmacie(?Pharmacie $pharmacie): static
+{
+    $this->pharmacie = $pharmacie;
+
+    return $this;
+}
 }

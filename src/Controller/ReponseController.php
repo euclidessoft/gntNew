@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Reclamation;
 use App\Entity\Reponse;
+use App\Entity\Panier;
 use App\Form\ReponseType;
 use App\Repository\ReponseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,17 +60,7 @@ class ReponseController extends AbstractController
             $this->getUser()->getTuteur() === null ?
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
-             $dataPanier = [];
-
-              foreach($panier as $commande){
-                $commande->getProduit()->setQuantite($commande->getQuantite());
-                $dataPanier[] = [
-                    "produit" => $commande->getProduit(),
-                    "promotion" => $commande->getReduction(),
-                ];
-            }
-
-
+       
             $reponse = new Reponse($this->getUser(), $reclamation);
             $form = $this->createForm(ReponseType::class, $reponse);
             $form->handleRequest($request);
@@ -85,7 +76,7 @@ class ReponseController extends AbstractController
             return $this->render('reponse/new.html.twig', [
                 'reponse' => $reponse,
                 'form' => $form->createView(),
-                'panier' => $dataPanier,
+                'panier' => $panier,
             ]);
         }
         else{

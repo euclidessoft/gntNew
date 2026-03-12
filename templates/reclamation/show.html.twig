@@ -7,43 +7,73 @@
 <div class="container mt-4 py-4 fond-7">
     <h3 class="mt-4 mb-5 text-bold">
         <i class="fa fa-rotate me-2"></i>
-        {{ 'Réclamations'|trans }}
+        {{ 'Réclamation'|trans }}
     </h3>
-    <table class="table table-success-light table-bordered table-hover table-striped mb-4 w-100">
+    <div class="col-md-6 offset-md-3 mt-4 mb-2 pt-3 pb-2 fond-7">
+            <div class="centrer">
+
+              <table class="table table-success-light table-bordered table-hover mn-1">
         <thead>
         <tr>
-            <th>{{ 'Date'|trans }}</th>
-            <th>{{ 'Client'|trans }}</th>
             <th>{{'N° Commande'|trans}}</th>
+            <th>{{ 'Date commande'|trans }}</th>
+            <th>{{ 'Date Livraison'|trans }}</th>
         </tr>
         </thead>
-        <tbody>
+         <thead>
         <tr>
-            <td>{{ reclamation.creation ? reclamation.creation|date('d/m/Y H:i:s') : '' }}</td>
-            <td>{{ reclamation.commande.user.nom }}</td>
-            <td>
-                <a type="button"
+            <td> 
+                <button class="btn btn-success"
                         data-bs-toggle="modal" data-bs-target="#modal">
                     {{ reclamation.commande.id }}
                 </a>
             </td>
+            <td>{{ reclamation.commande.date|date("d/m/Y H:i:s") }}</td>
+            <td>{{ reclamation.commande.dateefectlivraison|date("d/m/Y H:i:s") }}</td>
+        </tr>
+        </thead>
+        </table>
+             </div>
+    </div>
+        
+        {% for reclamation in reclamations %}
+    <table class="table table-success-light table-bordered table-hover table-striped mb-4 w-100">
+         <thead>
+        <tr>
+            <th>{{'CIP'|trans}}</th>
+            <th>{{ 'Désignation'|trans }}</th>
+            <th>{{ 'N Lot'|trans }}</th>
+            <th>{{ 'Peremption'|trans }}</th>
+            <th>{{ 'Quantité Concernée'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ reclamation.produit.reference }}</td>
+            <td>{{ reclamation.produit.desigantion }}</td>
+            <td>{{ reclamation.lot }}</td>
+            <td>{{ reclamation.peremption|date("d/m/Y") }}</td>
+            <td>{{ reclamation.quantite }}</td>
         </tr>
         <tr>
-            <th>{{ 'Message'|trans }}</th>
-            <td colspan="2">{{ reclamation.commentaire }}</td>
+            <th>{{ 'Motif'|trans }}</th>
+            <td colspan="4">{{ reclamation.motif }}</td>
         </tr>
-
+        </tbody>
+        
     </table>
+        {% endfor %}
+
 </div>
 
 <div class="container py-4">
     {% for reponse in reclamation.reponses %}
         <div class="row mt-4">
 
-            {% if 'ROLE_CLIENT' in reponse.user.roles %}
+            {% if 'ROLE_CLIENT' in reponse.user.roles or 'ROLE_CLIENT_ADMIN' in reponse.user.roles %}
 
                 <div class="col-md-7  py-4 fond-7">
-                    {{ reponse.user.nom  }} | {{ reponse.date|date('Y-m-d H:i:s') }}
+                    {{ reponse.user.nom  }} | {{ reponse.date|date('d/m/Y H:i:s') }}
                     <hr class="text-secondaire">
                     {{ reponse.message }}
                 </div>
@@ -52,7 +82,7 @@
             {% else %}
                 <div class="col-md-5"> </div>
                 <div class="col-md-7  py-4 fond-7">
-                    {{ reponse.user.nom  }} | {{ reponse.date|date('Y-m-d H:i:s') }}
+                    {{ reponse.user.nom  }} | {{ reponse.date|date('d/m/Y H:i:s') }}
                     <hr class="text-secondaire">
                     {{ reponse.message }}
                 </div>
@@ -80,7 +110,7 @@
         <div class="col-md-6 offset-md-3 mt-4 mb-5 pt-3 pb-2 fond-7">
             <div class="centrer">
 
-                {{ 'Clôturer le'|trans }} {{ reclamation.cloture|date('Y-m-d H:i:s') }}
+                {{ 'Clôturer le'|trans }} {{ reclamation.cloture|date('d/m/Y H:i:s') }}
 
 
             </div>
@@ -126,18 +156,20 @@
                     <table class="table table-success-light table-bordered table-hover table-striped w-100 text-center">
                         <thead>
                         <tr>
-                            <th>{{ 'Référence'|trans }}</th>
+                            <th>{{'N° Bordereau'|trans}}</th>
+                            <th>{{ 'Date de Livraison'|trans }}</th>
+                            <th>{{ 'CIP'|trans }}</th>
                             <th>{{ 'Désignation'|trans }}</th>
                             <th>{{ 'Quantité Commande'|trans }}</th>
                             <th>{{'Quantité livrée'|trans}}</th>
                             <th>{{'Quantité restante'|trans}}</th>
-                            <th>{{ 'Date de Livraison'|trans }}</th>
-                            <th>{{'N° Bordereau'|trans}}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for commande in commandes %}
                         <tr>
+                            <td>{{ commande.livrer.id }}</td>
+                            <td>{{ commande.date|date('d/m/Y') }}</td>
                             <td>{{ commande.produit.reference }}</td>
                             <td>{{ commande.produit.desigantion }}</td>
                             <td>{{ commande.quantitecommander }}</td>
@@ -147,8 +179,6 @@
                             <td class="text-center">
                                 {{ commande.restealivrer }}
                             </td>
-                            <td>{{ commande.date|date('d/m/Y') }}</td>
-                            <td>{{ commande.livrer.id }}</td>
                             {% else %}
                             {% endfor %}
                     </table>
