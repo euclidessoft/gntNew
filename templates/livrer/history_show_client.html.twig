@@ -55,6 +55,7 @@
                                     <th>{{'N° Bordereau'|trans}}</th>
                                     {# <th>{{'Date d\'émission'|trans}}</th> #}
                                     <th>{{'Date de livraison'|trans}}</th>
+                                    <th>{{ 'Receptionnée par'|trans }}</th>
 
                                 </tr>
                                 </thead>
@@ -63,10 +64,11 @@
                                 <td>{{ commande.livrer.id }}</td>
                                 {# <td>{{ commande.date|date('d/m/Y') }}</td> #}
                                 <td>{{ commande.livrer.dateefectlivraison|date('d/m/Y') }}</td>
+                                <td>{{ commande.livrer.recepteur ? commande.livrer.recepteur.nom ~ "" ~ commande.livrer.recepteur.prenom : "" }}</td>
                                 </tr>
                                 <tr>
                                     {% if commande.retour is not null %}
-                                        <td colspan="3"><b>{{ "Remboursement retour Produit"|trans }}</b></td>
+                                        <td colspan="4"><b>{{ "Remboursement retour Produit"|trans }}</b></td>
                                     {% endif %}
                                 </tr>
 
