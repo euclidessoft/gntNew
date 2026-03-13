@@ -16,6 +16,7 @@ use App\Form\AvoirType;
 use App\Repository\AvoirRepository;
 use App\Repository\AvoirResteRepository;
 use App\Repository\CommandeProduitRepository;
+use App\Repository\CommandeRepository;
 use App\Repository\LivrerProduitRepository;
 use App\Repository\LivrerRepository;
 use App\Repository\LivrerResteRepository;
@@ -152,6 +153,38 @@ class AvoirController extends AbstractController
            
             $response = $this->render('avoir/admin/reclamation.html.twig', [
                 'livrers' => $repository->findBy(['cloture' => null]),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/Retour/", name :"avoir_retour", methods : ["GET"]) ]
+    public function retour(CommandeRepository $repository, SessionInterface $session): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+
+            $response = $this->render('avoir/admin/avoirretour.html.twig', [
+                'commandes' => $repository->retour(),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

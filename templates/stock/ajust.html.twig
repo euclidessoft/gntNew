@@ -10,6 +10,7 @@
 %}
 {% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
 {% block stock %}active{% endblock %}
+{% block produit %}active{% endblock %}
 {% block ajust %}active{% endblock %}
 
 {% block body %}
@@ -32,10 +33,17 @@
             </a>
         </li>
     </ul>
- {# <a href="{{ path('stock_retour') }}" class="btn btn-green my-4">
+     {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+
+ <a href="{{ path('stock_retour') }}" class="btn btn-green my-4">
             <i class="fa fa-plus"></i>
             {{ "Nouveau"|trans }}
-        </a> #}
+        </a>
      <table class="table table-success-light table-bordered table-hover table-striped w-100 mt-4" id="liste">
             <thead>
             <tr>
@@ -43,6 +51,7 @@
                 <th>{{'N° Commande'|trans}}</th>
                 <th>{{'Date de retour'|trans}}</th>
                 <th>{{'Client'|trans }} </th>
+                {# <th>{{'Avoir'|trans }} </th> #}
                 <th> </th>
             </tr>
             </thead>
@@ -53,6 +62,7 @@
                     <td>{{ retour.commande.id }}</td>
                     <td>{{ retour.date|date('d/m/Y') }}</td>
                     <td>{{ retour.commande.user.nom }}</td>
+                    {# <td>{{ retour.avoir ? retour.avoir.id : "" }}</td> #}
                     <td>
                         <a id="{{retour.id }}" onclick="load({{ retour.id }})" href="{{ path('stock_retour_history_show', {'id' : retour.id}) }}" class="btn btn-success">
                             <i class="fa fa-list"></i>

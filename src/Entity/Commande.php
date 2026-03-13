@@ -88,6 +88,9 @@ class Commande
 
      #[ORM\Column(type:"datetime", nullable:true) ]// pour la gestion du bilan financier
     private $traitement;
+    
+    #[ORM\Column(type:"boolean") ]
+    private $retour;
 
     /**
      * Constructor
@@ -106,6 +109,7 @@ class Commande
         $this->payer = false;
         $this->livrer = false;
         $this->Numerofacture = false;
+        $this->retour = false;
     }
 
 
@@ -459,6 +463,18 @@ class Commande
     public function setPharmaemploye(?Client $pharmaemploye): static
     {
         $this->pharmaemploye = $pharmaemploye;
+
+        return $this;
+    }
+
+    public function isRetour(): ?bool
+    {
+        return $this->retour;
+    }
+
+    public function setRetour(bool $retour): static
+    {
+        $this->retour = $retour;
 
         return $this;
     }

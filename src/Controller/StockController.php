@@ -367,10 +367,18 @@ class StockController extends AbstractController
             $com = $request->get('commande');
             $em = $this->entityManager;
             $commande = $em->getRepository(Commande::class)->find($com);
+            $commande->setRetour(true);
+            $em->persist($commande);
             $produits = $session->get('retour', []);
             $retour = new Retour();
             $em->persist($retour);
             $retour->setCommande($commande);
+
+            
+            $approvisionner = new Approvisionner();
+            $approvisionner->setUser($this->getUser());
+            $em->persist($approvisionner);
+
             foreach ($produits as $prod) {
                 $produit = $em->getRepository(Produit::class)->find($prod['id']);
                 $retourproduit = new RetourProduit();
@@ -381,12 +389,130 @@ class StockController extends AbstractController
                 $retourproduit->setLot($prod['lot']);
                 $retourproduit->setPeremption(new \Datetime($prod['peremption']));
                 $retourproduit->setQuantite($prod['quantite']);
-                $em->persist($retourproduit);
+                
+            //      $quantite = $request->get('quantite');
+            // $lot = $request->get('lot');
+            // $peremption = $request->get('peremption');
+            // $id = $request->get('produit');
+            // $retour = $request->get('retour');
+            // $em = $this->entityManager;
+            // $produit = $em->getRepository(Produit::class)->find($id);
+            // $retour = $em->getRepository(RetourProduit::class)->findOneBy(['retour' => $retour, 'produit' => $produit, 'lot' => $lot]);
+            $retourproduit->setReapprovisionner(true);
+            $em->persist($retourproduit);
+            $approvisionnenment = new Approvisionnement($produit, $approvisionner, $prod['quantite'], null);
+            $approvisionnenment->setLot($prod['lot']);
+            $approvisionnenment->setPeremption(new \DateTime($prod['peremption']));
+            $stock = $em->getRepository(Stock::class)->findOneBy(['produit' => $produit, 'lot' => $prod['lot']]);
+            $stock == null ? $stock = new Stock($produit, $prod['lot'], $prod['peremption'], $prod['quantite']) : $stock->setQuantite($stock->getQuantite() + $prod['quantite']);
+            $em->persist($stock);
+            $produit->setStock($produit->getStock() + $prod['quantite']);
+            $em->persist($produit);
+            $em->persist($approvisionnenment);
+
+            // $em->flush();
+
+                // $em->persist($retourproduit);
                 $em->flush();
 
             }
-            $em->flush();
+            // $em->flush();
             $this->addFlash('notice', 'Retour enregisté avec succès');
+            $session->remove('retour');
+
+            $res['id'] = 'ok';
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/Retour_valider_avoir/", name :"retour_valider_avoir", methods : ["POST"]) ]
+    public function retour_valider_avoir(Request $request, SessionInterface $session): Response
+    {
+
+        if ($this->security->isGranted('ROLE_STOCK')) {
+
+            $com = $request->get('commande');
+            $em = $this->entityManager;
+            $commande = $em->getRepository(Commande::class)->find($com);
+            $commande->setRetour(true);
+            $em->persist($commande);
+            $produits = $session->get('retour', []);
+            $retour = new Retour();
+            $em->persist($retour);
+            $retour->setCommande($commande);
+
+            $approvisionner = new Approvisionner();
+            $approvisionner->setUser($this->getUser());
+            $em->persist($approvisionner);
+            $montant = 0;
+            foreach ($produits as $prod) {
+                $produit = $em->getRepository(Produit::class)->find($prod['id']);
+                $montant = $montant + $prod['quantite'] * $produit->getPrix();
+                $retourproduit = new RetourProduit();
+                $retourproduit->setProduit($produit);
+                $retourproduit->setRetour($retour);
+                $retourproduit->setCommande($commande);
+                $retourproduit->setMotif($prod['motif']);
+                $retourproduit->setLot($prod['lot']);
+                $retourproduit->setPeremption(new \Datetime($prod['peremption']));
+                $retourproduit->setQuantite($prod['quantite']);
+                // partie avoir
+                $retourproduit->setValider(true);
+                $retourproduit->setRembourser(true);
+                $retourproduit->setAvoir(true);
+                //fin avoir
+            //      $quantite = $request->get('quantite');
+            // $lot = $request->get('lot');
+            // $peremption = $request->get('peremption');
+            // $id = $request->get('produit');
+            // $retour = $request->get('retour');
+            // $em = $this->entityManager;
+            
+            // $produit = $em->getRepository(Produit::class)->find($id);
+            // $retour = $em->getRepository(RetourProduit::class)->findOneBy(['retour' => $retour, 'produit' => $produit, 'lot' => $lot]);
+            $retourproduit->setReapprovisionner(true);
+            $em->persist($retourproduit);
+            $approvisionnenment = new Approvisionnement($produit, $approvisionner, $prod['quantite'], null);
+            $approvisionnenment->setLot($prod['lot']);
+            $approvisionnenment->setPeremption(new \DateTime($prod['peremption']));
+            $stock = $em->getRepository(Stock::class)->findOneBy(['produit' => $produit, 'lot' => $prod['lot']]);
+            $stock == null ? $stock = new Stock($produit, $prod['lot'], $prod['peremption'], $prod['quantite']) : $stock->setQuantite($stock->getQuantite() + $prod['quantite']);
+            $em->persist($stock);
+            $produit->setStock($produit->getStock() + $prod['quantite']);
+            $em->persist($produit);
+            $em->persist($approvisionnenment);
+
+            // $em->flush();
+
+                // $em->persist($retourproduit);
+                $em->flush();
+
+            }
+            
+           
+            $avoir = new Avoir($commande->getUser(), $this->getUser(), $commande);
+            $avoir->setMontant($montant);
+            $avoir->setRetour($retour);
+            $em->persist($avoir);
+            $em->flush();
+
+            $this->addFlash('notice', 'Retour plus avoir enregistés avec succès');
             $session->remove('retour');
 
             $res['id'] = 'ok';

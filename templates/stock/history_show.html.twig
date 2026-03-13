@@ -9,6 +9,7 @@
     'layout.html.twig' %}
 {% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
 {% block retour_stock %}active{% endblock %}
+{% block produit %}active{% endblock %}
 {% block body %}
     <div class="container mt-4 pb-4 fond-7">
         <h3 class="mt-4 mb-3 text-bold">
@@ -19,7 +20,7 @@
 
         </div>
         <div class="col-6 fond-7">
-            <table class="table table-success-light table-bordered table-hover table-striped mt-3 w-100">
+            <table class="table table-success-light table-bordered table-hover table-striped mt-3">
                 <thead>
                 <tr>
                     <th>{{ 'N° Retour'|trans }}</th>
@@ -48,19 +49,19 @@
                 {#                {% endfor %} #}
 
                 <table class="table table-success-light table-bordered table-hover table-striped text-center w-100"
-                       id="liste">
+                      >
                     <thead>
                     <tr>
                         <th>{{ "CIP"|trans }}</th>
                         <th class="text-start">{{ "Désignation"|trans }}</th>
-                        <th>{{ "DCI"|trans }}</th>
+                        {# <th>{{ "DCI"|trans }}</th> #}
                         <th>{{ "N° lot"|trans }}</th>
                         {#                        <th>{{ "Pereption"|trans }}</th> #}
                         <th>{{ "Motif"|trans }}</th>
                         <th>{{ "Qté retournée"|trans }}</th>
-                        {% if is_granted("ROLE_ADMIN") %}
+                       {# {% if is_granted("ROLE_ADMIN") %}
                             <th>{{ "Action"|trans }}</th>
-                        {% endif %}
+                        {% endif %} #}
                     </tr>
                     </thead>
                     <tbody>
@@ -68,12 +69,12 @@
                         <tr id="listprod{{ retourproduit.produit.id }}">
                             <td>{{ retourproduit.produit.reference }}</td>
                             <td class="text-start">{{ retourproduit.produit.desigantion }}</td>
-                            <td>{{ retourproduit.produit.dci }}</td>
+                            {# <td>{{ retourproduit.produit.dci }}</td> #}
                             <td>{{ retourproduit.lot }}</td>
                             <td>{{ retourproduit.motif }}</td>
                             <td>{{ retourproduit.quantite }}</td>
 
-                            {% if is_granted("ROLE_ADMIN") %}
+                            {# {% if is_granted("ROLE_ADMIN") %}
                             <td>
                                 {% if retourproduit.reapprovisionner == 0 %}
                                     <span id="spn{{ retourproduit.produit.id }}{{ retourproduit.lot }}">
@@ -84,8 +85,8 @@
                                                  class="fas fa-warehouse"></i><i
                                                  class="fa fa-arrow-left"></i>  {{ "Réapprovisionner"|trans }}</button>
                                     </span>
-                                {% endif %}
-                                {% if retourproduit.valider == 0 %}
+                                {% endif %} #}
+                                {# {% if retourproduit.valider == 0 %}
                                     <div id="spnvalid{{ retourproduit.produit.id }}{{ retourproduit.lot }}">
 
 
@@ -144,9 +145,9 @@
 
 
                                     </div>
-                                {% endif %}
+                                {% endif %} 
                             </td>
-                            {% endif %}
+                            {% endif %}#}
                         </tr>
                     {% endfor %}
                     </tbody>

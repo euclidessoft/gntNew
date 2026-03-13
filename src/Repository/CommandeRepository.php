@@ -61,7 +61,7 @@ class CommandeRepository extends ServiceEntityRepository
     public function retour()
     {
         $date = new \Datetime();
-        date_sub($date,date_interval_create_from_date_string("3 days"));
+        date_sub($date,date_interval_create_from_date_string("7 days"));
         $creation = date_format($date,"Y-m-d");
 
 
@@ -71,6 +71,8 @@ class CommandeRepository extends ServiceEntityRepository
             ->setParameter('date', $creation)
             ->Andwhere('a.livrer = :val')
             ->setParameter('val', true)
+            ->Andwhere('a.retour = :retour')
+            ->setParameter('retour', false)
             ->getQuery();
         return $query->getResult();
     }

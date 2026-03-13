@@ -12,6 +12,8 @@
 {% block stock %}active{% endblock %}
 {% block retour_stock %}active{% endblock %}
 {% block new_retour %}active{% endblock %}
+{% block produit %}active{% endblock %}
+{% block client_suivi %}active{% endblock %}
 {% block body %}
     <div class="container-fluid mt-4 pb-4 fond-7">
         <h3 class="mt-4 mb-5 text-bold">
@@ -194,12 +196,46 @@
                     </tbody>
                 </table>
 
-                <button onclick="validerRetour({{ commande.id }})"
+                {# <button onclick="validerRetour({{ commande.id }})"
                         class="btn btn-success float-right  {% if retour|length == 0 %} disabled {% endif %}"
                         id="valider2"
                         title="Valider">
                     <i class="fa fa-check"></i> {{ 'Valider'|trans }}
+                </button> #}
+
+                <button type="button"
+                        class="btn btn-success {% if retour|length == 0 %} disabled {% endif %}"
+                        data-bs-toggle="modal" data-bs-target="#validerretour"
+                         id="valider2">
+                    <i class="fa fa-check"></i> {{ 'Valider'|trans }}
                 </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="validerretour" tabindex="-1"
+                        tabindex="-1" aria-labelledby="" aria-hidden="true"
+                        aria-labelledby="validerretour" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered text-center">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close">
+
+                                </button>
+                            </div>
+                            <div class="modal-body px-5">
+                                <div class="center mt-3">
+                                   <button id="avoirretour" class="btn btn-success-light" onclick="validerRetourAvoir({{ commande.id }})"> Retour avec Avoir</button>
+                                   <button id="simpleretour" class="btn btn-success" onclick="validerRetour({{ commande.id }})"> Retour Simple</button>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer px-5 py-4">
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
 
             </div>
         </div>
@@ -289,15 +325,44 @@
 
 
         function validerRetour(commande) {
-            $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+           
             if (confirm("{{ 'Voulez-vous confirmer la validation?'|trans }}")) {
+                 $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                 $("#valider2").addClass("disabled");
+                 
+                $("#simpleretour").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                 $("#simpleretour").addClass("disabled");
                 $.ajax({
                     type: "POST",
                     url: "{{ path('stock_retour_valider') }}",
                     data: {commande: commande},
                     success: function (data) {
                         if (data['id'] == 'ok') {
-                           document.location.href="{{ path('stock_retour_index') }}";
+                           document.location.href="{{ path('stock_ajust') }}";
+                        }
+                    },
+                    error: function () {
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                    }
+                });
+            }
+        }
+
+         function validerRetourAvoir(commande) {
+           
+            if (confirm("{{ 'Confirmer Retour avec Avoir?'|trans }}")) {
+                 $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                 $("#valider2").addClass("disabled");
+                 
+                $("#avoirretour").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                 $("#avoirretour").addClass("disabled");
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('stock_retour_valider_avoir') }}",
+                    data: {commande: commande},
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                           document.location.href="{{ path('stock_ajust') }}";
                         }
                     },
                     error: function () {

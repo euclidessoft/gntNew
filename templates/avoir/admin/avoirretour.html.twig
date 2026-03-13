@@ -1,0 +1,52 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Livraison"|trans }} - GNT Pharma {% endblock %}
+{% block officine %}active{% endblock %}
+{% block new_avoir %} active {% endblock %}
+{% block client_suivi %}active{% endblock %}
+
+{% block body %}
+    <div class="container mt-4 fond-7">
+        <h3 class="mt-4 mb-5 text-bold">
+            <i class="fa fa-money-bill me-2"></i>
+            {{ "Création Avoir à partie des Retours de produits"|trans }}
+        </h3>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-success-light table-bordered table-hover table-striped w-100" id="liste">
+                    <thead>
+                    <tr>
+                        <th>{{ 'no commande'|trans}}</th>
+                        <th>{{ 'Date'|trans }}</th>
+                        <th>{{ 'Client'|trans }}</th>
+                        <th>{{ 'actions'|trans }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for commande in commandes %}
+                        <tr>
+                            <td>{{ commande.id }}</td>
+                            <td>{{ commande.date|date('d/m/Y') }}</td>
+                            <td>{{ commande.user.nom }}</td>
+                            <td>
+                                <a id="{{ commande.id }}" onclick="load({{ commande.id }})" class="btn btn-success" href="{{ path('stock_retour_show', {'id': commande.id}) }}">
+                                    <i class="fa fa-gears"></i>
+                                    {{'Création'|trans}}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
