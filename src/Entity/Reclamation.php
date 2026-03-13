@@ -19,6 +19,10 @@ class Reclamation
      #[ORM\JoinColumn(nullable:false) ]
     private $pharmacie;
 
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Avoir") ]
+     #[ORM\JoinColumn(nullable:true) ]
+    private $avoir;
+
     #[ORM\OneToMany(targetEntity:"App\Entity\Reponse", mappedBy:"reclamation") ]
     private $reponses;
 
@@ -250,6 +254,18 @@ public function getPharmacie(): ?Pharmacie
 public function setPharmacie(?Pharmacie $pharmacie): static
 {
     $this->pharmacie = $pharmacie;
+
+    return $this;
+}
+
+public function getAvoir(): ?Avoir
+{
+    return $this->avoir;
+}
+
+public function setAvoir(?Avoir $avoir): static
+{
+    $this->avoir = $avoir;
 
     return $this;
 }

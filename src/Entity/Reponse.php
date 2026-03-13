@@ -16,7 +16,7 @@ class Reponse
      #[ORM\JoinColumn(nullable:false) ]
     private $reclamation;
 
-    #[ORM\Column(type:"date") ]
+    #[ORM\Column(type:"datetime") ]
     private $date;
 
     #[ORM\Id]

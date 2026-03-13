@@ -10,6 +10,7 @@
 {% block title %} {{ "Commande-Reclamation"|trans }} - GNT Pharma {% endblock %}
 {% block reclamation %} active{% endblock %}
 {% block my_reclamation %} active{% endblock %}
+{% block client_suivi %} active{% endblock %}
 
 {% block body %}
 <div class="container mt-4 py-4 fond-7">
@@ -112,11 +113,10 @@
                 </a>
                 {{ include('reclamation/admin/_cloturer_form.html.twig')}}
 
-                {# <a href="{{ path('reclamation_cloturer', {'reclamation' : reclamation.id }) }}"
-                   class="btn btn-success ms-3 float-right">
-                    <i class="fa fa-lock"></i>
-                    {{ 'Clôturer'|trans }}
-                </a> #}
+                <button id="avoir" onclick="creeravoir({{ reclamation.id }})" class="btn btn-success">
+                    <i class="fa fa-money-bill"></i>
+                    {{ 'Creer Avoir'|trans }}
+                </button>
 
             </div>
         </div>
@@ -206,5 +206,36 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        function creeravoir(reclamation) {
+           
+            
+            if (confirm("{{'voulez-vous vraiment créerun avoir?'|trans}}")) {
+                    $("#avoir").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                    $("#avoir").addClass('disabled');
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('avoir_new_reclamation') }}",
+                        data: {reclamation: reclamation},
+                        success: function (data) {
+
+                            if (data['id'] == 'ok') {
+                               document.location.href="{{ path('avoir_index') }}";
+                                }
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                        }
+                    });
+                
+            }
+        }
+
+  
+    </script>
+
+
 {% endblock %}
 

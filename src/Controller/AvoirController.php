@@ -11,6 +11,7 @@ use App\Entity\Livrer;
 use App\Entity\LivrerReste;
 use App\Entity\Reclamation;
 use App\Entity\RetourProduit;
+use App\Entity\ReclamationProduit;
 use App\Form\AvoirType;
 use App\Repository\AvoirRepository;
 use App\Repository\AvoirResteRepository;
@@ -217,27 +218,103 @@ class AvoirController extends AbstractController
         }
     }
 
-    #[Route("/new/reclamation/{id}/", name :"avoir_new_reclamation", methods : ["GET","POST"]) ]
-    public function newreclamation(Reclamation $reclamation, Request $request, LivrerResteRepository $livrerResteRepository, ProduitRepository $repository, LivrerProduitRepository $livrerProduitRepository, SessionInterface $session): Response
+//     #[Route("/new/reclamation/{id}/", name :"avoir_new_reclamation", methods : ["GET","POST"]) ]
+//     public function newreclamation(Reclamation $reclamation, Request $request, LivrerResteRepository $livrerResteRepository, ProduitRepository $repository, LivrerProduitRepository $livrerProduitRepository, SessionInterface $session): Response
+//     {// traitement livraison
+//         if ($this->security->isGranted('ROLE_FINANCE')) {
+//             $commande = $reclamation->getCommande();
+//             $em = $this->entityManager;
+//             $avoir = new Avoir($commande->getUser(),$this->getUser(), $commande);
+//             $avoir->setReclamation($reclamation);
+//             $form = $this->createForm(AvoirType::class, $avoir);
+//             $form->handleRequest($request);
+
+//             if ($form->isSubmitted() && $form->isValid()) {
+//                 $reclamation->setCloture(new \Datetime());
+//                 $reclamation->setUsercloture($this->getUser());
+//                 $em->persist($avoir);
+//                 $em->persist($reclamation);
+//                 $em->flush();
+
+
+//                 return $this->redirectToRoute('avoir_index', [], Response::HTTP_SEE_OTHER);
+//             }
+
+// //            return $this->render('avoir/admin/edit.html.twig', [
+// //                'avoir' => $avoir,
+// //                'form' => $form->createView(),
+// //            ]);
+//             $commandeproduits = $livrerResteRepository->findBy(['commande' => $commande]);
+//             $listcommande = [];
+//             foreach ($commandeproduits as $commandeproduit) {
+//                 $stock = $repository->find($commandeproduit->getProduit()->getId())->getStock();
+//                 $commandeproduit->setStock($stock);
+//                 $listcommande[] = $commandeproduit;
+//             }
+//             $session->set("traitement", []);
+//             $response = $this->render('avoir/admin/new_reclamation.html.twig', [
+//                 'commandes' => $listcommande,
+//                 'commandereference' => $commande,
+//                 'reclamation' => $reclamation,
+//                 'form' => $form->createView(),
+//             ]);
+//             $response->setSharedMaxAge(0);
+//             $response->headers->addCacheControlDirective('no-cache', true);
+//             $response->headers->addCacheControlDirective('no-store', true);
+//             $response->headers->addCacheControlDirective('must-revalidate', true);
+//             $response->setCache([
+//                 'max_age' => 0,
+//                 'private' => true,
+//             ]);
+//             return $response;
+//         } else {
+//             $response = $this->redirectToRoute('security_logout');
+//             $response->setSharedMaxAge(0);
+//             $response->headers->addCacheControlDirective('no-cache', true);
+//             $response->headers->addCacheControlDirective('no-store', true);
+//             $response->headers->addCacheControlDirective('must-revalidate', true);
+//             $response->setCache([
+//                 'max_age' => 0,
+//                 'private' => true,
+//             ]);
+//             return $response;
+//         }
+//     }
+
+ #[Route("/new/reclamation/", name :"avoir_new_reclamation", methods : ["GET","POST"]) ]
+    public function newreclamation( Request $request, ProduitRepository $repository): Response
     {// traitement livraison
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            $commande = $reclamation->getCommande();
+            
             $em = $this->entityManager;
+            $reclamation = $em->getRepository(Reclamation::class)->find($request->get('reclamation'));
+            $commande = $reclamation->getCommande();
+            $reclamationproduits = $em->getRepository(ReclamationProduit::class)->findBy(['commande' => $commande]);
+            $montant = 0;
+            foreach($reclamationproduits as $reclamationproduit){
+                    $montant = $montant + $reclamationproduit->getProduit()->getPrix() * $reclamationproduit->getQuantite();
+            }
             $avoir = new Avoir($commande->getUser(),$this->getUser(), $commande);
             $avoir->setReclamation($reclamation);
-            $form = $this->createForm(AvoirType::class, $avoir);
-            $form->handleRequest($request);
+            $avoir->setMontant($montant);
 
-            if ($form->isSubmitted() && $form->isValid()) {
                 $reclamation->setCloture(new \Datetime());
                 $reclamation->setUsercloture($this->getUser());
                 $em->persist($avoir);
                 $em->persist($reclamation);
                 $em->flush();
 
+        $this->addFlash('notice', 'avoir créer avec succès');
 
-                return $this->redirectToRoute('avoir_index', [], Response::HTTP_SEE_OTHER);
-            }
+        $res['id'] = 'ok';
+
+        $response = new Response();
+        $response->headers->set('content-type', 'application/json');
+        $re = json_encode($res);
+        $response->setContent($re);
+        return $response;
+                // return $this->redirectToRoute('avoir_index', [], Response::HTTP_SEE_OTHER);
+            
 
 //            return $this->render('avoir/admin/edit.html.twig', [
 //                'avoir' => $avoir,
@@ -279,6 +356,7 @@ class AvoirController extends AbstractController
             return $response;
         }
     }
+
 
     #[Route("/validerNewreste/", name :"avoir_valider_reste") ]
     public function validernewreste(Request $request, LivrerResteRepository $livrerResteRepository)
