@@ -12,6 +12,10 @@ class Retour
      #[ORM\JoinColumn(nullable:false) ]
     private $commande;
 
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Avoir") ]
+     #[ORM\JoinColumn(nullable:true) ]
+    private $avoir;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -53,6 +57,18 @@ class Retour
     public function setCommande(?Commande $commande): self
     {
         $this->commande = $commande;
+
+        return $this;
+    }
+
+    public function getAvoir(): ?Avoir
+    {
+        return $this->avoir;
+    }
+
+    public function setAvoir(?Avoir $avoir): static
+    {
+        $this->avoir = $avoir;
 
         return $this;
     }

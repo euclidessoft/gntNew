@@ -454,6 +454,8 @@ class StockController extends AbstractController
             $em->persist($commande);
             $produits = $session->get('retour', []);
             $retour = new Retour();
+            $avoir = new Avoir($commande->getUser(), $this->getUser(), $commande);
+            $retour->setAvoir($avoir);
             $em->persist($retour);
             $retour->setCommande($commande);
 
@@ -506,7 +508,7 @@ class StockController extends AbstractController
             }
             
            
-            $avoir = new Avoir($commande->getUser(), $this->getUser(), $commande);
+           
             $avoir->setMontant($montant);
             $avoir->setRetour($retour);
             $em->persist($avoir);

@@ -51,7 +51,7 @@
                 <th>{{'N° Commande'|trans}}</th>
                 <th>{{'Date de retour'|trans}}</th>
                 <th>{{'Client'|trans }} </th>
-                {# <th>{{'Avoir'|trans }} </th> #}
+                <th>{{'Avoir'|trans }} </th>
                 <th> </th>
             </tr>
             </thead>
@@ -62,7 +62,14 @@
                     <td>{{ retour.commande.id }}</td>
                     <td>{{ retour.date|date('d/m/Y') }}</td>
                     <td>{{ retour.commande.user.nom }}</td>
-                    {# <td>{{ retour.avoir ? retour.avoir.id : "" }}</td> #}
+                    <td>
+                        {% if retour.avoir != null %}
+                            <a id=av"{{ retour.avoir.id }}" onclick="load("av{{ retour.avoir.id }}")" class="btn btn-green"
+                                href="{{ path('avoir_show', {'id': retour.avoir.id}) }}">
+                                    <i class="fa fa-money-bill"></i>
+                                </a>
+                        {% endif %}
+                    </td>
                     <td>
                         <a id="{{retour.id }}" onclick="load({{ retour.id }})" href="{{ path('stock_retour_history_show', {'id' : retour.id}) }}" class="btn btn-success">
                             <i class="fa fa-list"></i>
