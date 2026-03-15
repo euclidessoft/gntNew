@@ -105,11 +105,13 @@
                         <th>{{ 'N° Commande'|trans }}</th>
                         <th>{{ 'Date Commande'|trans }}</th>
                         <th>{{ 'Date Traitement'|trans }}</th>
+                        <th>{{ 'Client'|trans }}</th>
                          <th>{{ 'NIU'|trans }}</th>
+                         <th>{{ 'RCCM'|trans }}</th>
                         {% if commande.credit == 1 and commande.payer == 0 %}
                         <th>{{ 'date d\'echeance de paiement'|trans }}</th>
                         {% endif %}
-                        <th>{{ 'Status Commande'|trans }}</th>
+                        {# <th>{{ 'Status Commande'|trans }}</th> #}
                         {#            <th>Date de Livraison</th>#}
                     </tr>
                     </thead>
@@ -117,17 +119,12 @@
                     <td>{{ commande.id }}</td>
                     <td>{{ commande.date|date('d/m/Y H:is') }}</td>
                     <td>{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
+                     <td>{{ commande.user.nom ~ " " ~ commande.user.prenom }}</td>
                      <td>{{ commande.user.niu }}</td>
+                     <td>{{ commande.user.rccm }}</td>
                          {% if commande.credit == 1 and commande.payer == 0 %}
                              <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
                         {% endif %}
-                    <td class="text-bold">
-                        {% if commande.payer == 0 %}
-                            <span class="text-danger">Non payée</span>
-                        {% else %}
-                            <span class="text-success">Payée</span>
-                        {% endif %}
-                    </td>
                     {#        <td> </td>#}
                     </tbody>
                 </table>

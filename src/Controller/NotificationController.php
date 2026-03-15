@@ -15,6 +15,7 @@ use App\Service\LamService;
 use App\Entity\Commande;
 use App\Entity\Versement;
 use App\Entity\Client;
+use App\Entity\RetourProduit;
 use App\Entity\Pharmacie;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,6 +82,17 @@ public function test(ParameterBagInterface $params)
         // // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
        // return new Response($response);
        
+        $retours = $this->entityManager->getRepository(RetourProduit::class)->findAll();
+        foreach($retours as $retour){
+            $retour->setPrix($retour->getProduit()->getPrix());
+            $retour->getProduit()->getTva() == true ? $retour->setTva($retour->getProduit()->getPrix() * 0.1925) : $retour->setTva(0);
+            $retour->setPrixpublic($retour->getProduit()->getPrixpublic());
+            $this->entityManager->persist($retour);
+            $this->entityManager->flush();
+        }
+        return new Response("okay");
+        
+        
         // $clients = $this->entityManager->getRepository(Client::class)->findAll();
         // foreach($clients as $client){
         //     $pharmacie = new Pharmacie();
