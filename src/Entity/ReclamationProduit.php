@@ -34,6 +34,15 @@ class ReclamationProduit
     
     #[ORM\Column(type:"integer") ]
     private $quantite;
+    
+    #[ORM\Column(type:"float") ]
+    private $prix;
+    
+    #[ORM\Column(type:"float") ]
+    private $prixpublic;
+    
+    #[ORM\Column(type:"float") ]
+    private $tva;
 
      #[ORM\Column(type:"string", length:255) ]
     //  #[Assert\NotBlank(  message : "Champ obligatoire") ]
@@ -140,6 +149,42 @@ class ReclamationProduit
     public function setPeremption(\DateTime $peremption): static
     {
         $this->peremption = $peremption;
+
+        return $this;
+    }
+
+    public function getPrix(): ?float
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(float $prix): static
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getPrixpublic(): ?float
+    {
+        return $this->prixpublic;
+    }
+
+    public function setPrixpublic(float $prixpublic): static
+    {
+        $this->prixpublic = $prixpublic;
+
+        return $this;
+    }
+
+    public function getTva(): ?float
+    {
+        return $this->tva;
+    }
+
+    public function setTva(float $tva): static
+    {
+        $this->tva = $tva;
 
         return $this;
     }

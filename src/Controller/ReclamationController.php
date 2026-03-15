@@ -107,9 +107,8 @@ class ReclamationController extends AbstractController
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]); 
             
-              $this->getUser()->getTuteur() === null ? 
-             $reclamations = $reclamationRepository->findBy(['user' =>$user->getId(), 'status' => true]) : 
-             $reclamations = $reclamationRepository->findBy(['user' =>$user->getTuteur()->getId(), 'status' => true]);
+           
+             $reclamations = $reclamationRepository->findBy(['pharmacie' => $user->getPharmacie()->getId(), 'status' => true]);
 
             $response = $this->render('reclamation/cloturer.html.twig', [
                 'reclamations' => $reclamations,
@@ -320,6 +319,9 @@ class ReclamationController extends AbstractController
                 $reclamationproduit->setLot($prod['lot']);
                 $reclamationproduit->setPeremption(new \Datetime($prod['peremption']));
                 $reclamationproduit->setQuantite($prod['quantite']);
+                $reclamationproduit->setPrix($produit->getPrix());
+                $reclamationproduit->setPrixpublic($produit->getPrixpublic());
+                $produit->getTva() == true ? $reclamationproduit->setTva($produit->getPrix() * 0.1925): $reclamationproduit->setTva(0);
                 $em->persist($reclamationproduit);
                 $em->flush();
 

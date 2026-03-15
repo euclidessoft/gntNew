@@ -371,6 +371,7 @@ class StockController extends AbstractController
             $em->persist($commande);
             $produits = $session->get('retour', []);
             $retour = new Retour();
+            $retour->setPharmacie($commande->getUser()->getPharmacie());
             $em->persist($retour);
             $retour->setCommande($commande);
 
@@ -389,6 +390,9 @@ class StockController extends AbstractController
                 $retourproduit->setLot($prod['lot']);
                 $retourproduit->setPeremption(new \Datetime($prod['peremption']));
                 $retourproduit->setQuantite($prod['quantite']);
+                $retourproduit->setPrix($produit->getPrix());
+                $retourproduit->setPrixpublic($produit->getPrixpublic());
+                $produit->getTva() == true ? $retourproduit->setTva($produit->getPrix() * 0.1925): $retourproduit->setTva(0);
                 
             //      $quantite = $request->get('quantite');
             // $lot = $request->get('lot');
@@ -456,7 +460,9 @@ class StockController extends AbstractController
             $retour = new Retour();
             $avoir = new Avoir($commande->getUser(), $this->getUser(), $commande);
             $retour->setAvoir($avoir);
+            $retour->setPharmacie($commande->getUser()->getPharmacie());
             $em->persist($retour);
+            $em->persist($avoir);
             $retour->setCommande($commande);
 
             $approvisionner = new Approvisionner();
@@ -474,6 +480,10 @@ class StockController extends AbstractController
                 $retourproduit->setLot($prod['lot']);
                 $retourproduit->setPeremption(new \Datetime($prod['peremption']));
                 $retourproduit->setQuantite($prod['quantite']);
+                $retourproduit->setPrix($produit->getPrix());
+                $retourproduit->setPrixpublic($produit->getPrixpublic());
+                $produit->getTva() == true ? $retourproduit->setTva($produit->getPrix() * 0.1925): $retourproduit->setTva(0);
+                
                 // partie avoir
                 $retourproduit->setValider(true);
                 $retourproduit->setRembourser(true);

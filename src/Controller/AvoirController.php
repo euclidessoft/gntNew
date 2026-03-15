@@ -14,6 +14,7 @@ use App\Entity\RetourProduit;
 use App\Entity\ReclamationProduit;
 use App\Form\AvoirType;
 use App\Repository\AvoirRepository;
+use App\Repository\ReclamationProduitRepository;
 use App\Repository\AvoirResteRepository;
 use App\Repository\CommandeProduitRepository;
 use App\Repository\CommandeRepository;
@@ -325,7 +326,7 @@ class AvoirController extends AbstractController
             $reclamationproduits = $em->getRepository(ReclamationProduit::class)->findBy(['commande' => $commande]);
             $montant = 0;
             foreach($reclamationproduits as $reclamationproduit){
-                    $montant = $montant + $reclamationproduit->getProduit()->getPrix() * $reclamationproduit->getQuantite();
+                    $montant = $montant + $reclamationproduit->getPrix() * $reclamationproduit->getQuantite();
             }
             $avoir = new Avoir($commande->getUser(),$this->getUser(), $commande);
             $avoir->setReclamation($reclamation);
@@ -379,7 +380,7 @@ class AvoirController extends AbstractController
                 $RetourProduit->setAvoir(true);
                 $em->persist($RetourProduit);
                 $em->flush();
-                $montant = $momtant + $RetourProduit->getQuantite() * $RetourProduit->getProduit()->getPrix();
+                $montant = $momtant + $RetourProduit->getQuantite() * $RetourProduit->getPrix();
             }
             $avoir = new Avoir($retour->getCommande()->getUser(), $this->getUser(), $retour->getCommande());
             $avoir->setMontant($montant);
@@ -536,13 +537,19 @@ class AvoirController extends AbstractController
     }
 
     #[Route("/{id}", name :"avoir_show", methods : ["GET"]) ]
-    public function show(Avoir $avoir, AvoirResteRepository $avoirResteRepository, SessionInterface $session): Response
+    public function show(Avoir $avoir, ReclamationProduitRepository $reclamationRepository, RetourProduitRepository $retourRepository): Response
     {
+        if($avoir->getReclamation() !== null){
+            $commandeproduits = $reclamationRepository->findBy(['reclamation' => $avoir->getReclamation()->getId()]);
+        }else{
+             $commandeproduits = $retourRepository->findBy(['retour' => $avoir->getretour()->getId()]);
+        }
         if ($this->security->isGranted('ROLE_FINANCE')) {
            
             $response = $this->render('avoir/admin/show.html.twig', [
                 'avoir' => $avoir,
-                'details' => $avoirResteRepository->findBy(['avoir' => $avoir])
+                'commandeproduits' => $commandeproduits,
+                // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir])
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -557,7 +564,8 @@ class AvoirController extends AbstractController
             
             $response = $this->render('avoir/show.html.twig', [
                 'avoir' => $avoir,
-                'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
+                'commandeproduits' => $commandeproduits,
+                // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
                 'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);
@@ -584,13 +592,19 @@ class AvoirController extends AbstractController
     }
 
     #[Route("/Print/{id}", name :"avoir_show_print", methods : ["GET"]) ]
-    public function showprint(Avoir $avoir, AvoirResteRepository $avoirResteRepository, SessionInterface $session): Response
+    public function showprint(Avoir $avoir, ReclamationProduitRepository $reclamationRepository, RetourProduitRepository $retourRepository): Response
     {
+        if($avoir->getReclamation() !== null){
+            $commandeproduits = $reclamationRepository->findBy(['reclamation' => $avoir->getReclamation()->getId()]);
+        }else{
+             $commandeproduits = $retourRepository->findBy(['retour' => $avoir->getretour()->getId()]);
+        }
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            
+           
             $response = $this->render('avoir/admin/show_print.html.twig', [
                 'avoir' => $avoir,
-                'details' => $avoirResteRepository->findBy(['avoir' => $avoir])
+                'commandeproduits' => $commandeproduits,
+                // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir])
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -602,10 +616,11 @@ class AvoirController extends AbstractController
             ]);
             return $response;
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
-          
+            
             $response = $this->render('avoir/show_print.html.twig', [
                 'avoir' => $avoir,
-                'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
+                'commandeproduits' => $commandeproduits,
+                // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
                 'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
             ]);
             $response->setSharedMaxAge(0);

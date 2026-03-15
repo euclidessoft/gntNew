@@ -8,6 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass:RetourRepository::class) ]
 class Retour
 {
+    
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Pharmacie") ]
+    #[ORM\JoinColumn(nullable:true) ]
+    private $pharmacie;
+
     #[ORM\ManyToOne(targetEntity:"App\Entity\Commande") ]
      #[ORM\JoinColumn(nullable:false) ]
     private $commande;
@@ -69,6 +74,18 @@ class Retour
     public function setAvoir(?Avoir $avoir): static
     {
         $this->avoir = $avoir;
+
+        return $this;
+    }
+
+    public function getPharmacie(): ?Pharmacie
+    {
+        return $this->pharmacie;
+    }
+
+    public function setPharmacie(?Pharmacie $pharmacie): static
+    {
+        $this->pharmacie = $pharmacie;
 
         return $this;
     }

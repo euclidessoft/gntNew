@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RetourProduitRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:RetourProduitRepository::class) ]
@@ -54,6 +55,15 @@ class RetourProduit
 
     #[ORM\Column(type:"boolean") ]
     private $valider;
+     
+    #[ORM\Column(type:"float") ]
+    private $prix;
+    
+    #[ORM\Column(type:"float") ]
+    private $prixpublic;
+    
+    #[ORM\Column(type:"float") ]
+    private $tva;
 
 
     private $stock;
@@ -227,6 +237,62 @@ class RetourProduit
     public function setStock(?int $stock): self
     {
         $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function isReapprovisionner(): ?bool
+    {
+        return $this->reapprovisionner;
+    }
+
+    public function isRembourser(): ?bool
+    {
+        return $this->rembourser;
+    }
+
+    public function isAvoir(): ?bool
+    {
+        return $this->avoir;
+    }
+
+    public function isValider(): ?bool
+    {
+        return $this->valider;
+    }
+
+    public function getPrix(): ?float
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(float $prix): static
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getPrixpublic(): ?float
+    {
+        return $this->prixpublic;
+    }
+
+    public function setPrixpublic(float $prixpublic): static
+    {
+        $this->prixpublic = $prixpublic;
+
+        return $this;
+    }
+
+    public function getTva(): ?float
+    {
+        return $this->tva;
+    }
+
+    public function setTva(float $tva): static
+    {
+        $this->tva = $tva;
 
         return $this;
     }
