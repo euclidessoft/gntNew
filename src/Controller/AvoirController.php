@@ -152,7 +152,7 @@ class AvoirController extends AbstractController
         if ($this->security->isGranted('ROLE_FINANCE')) {
            
             $response = $this->render('avoir/admin/reclamation.html.twig', [
-                'livrers' => $repository->findBy(['cloture' => null]),
+                'reclamations' => $repository->findBy(['cloture' => null]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -179,12 +179,12 @@ class AvoirController extends AbstractController
 
     
     #[Route("/Retour/", name :"avoir_retour", methods : ["GET"]) ]
-    public function retour(CommandeRepository $repository, SessionInterface $session): Response
+    public function retour(RetourRepository $repository, SessionInterface $session): Response
     {
-        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
 
             $response = $this->render('avoir/admin/avoirretour.html.twig', [
-                'commandes' => $repository->retour(),
+                'retours' => $repository->findBy(['avoir' => null]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -346,27 +346,9 @@ class AvoirController extends AbstractController
         $re = json_encode($res);
         $response->setContent($re);
         return $response;
-                // return $this->redirectToRoute('avoir_index', [], Response::HTTP_SEE_OTHER);
-            
-
-//            return $this->render('avoir/admin/edit.html.twig', [
-//                'avoir' => $avoir,
-//                'form' => $form->createView(),
-//            ]);
-            $commandeproduits = $livrerResteRepository->findBy(['commande' => $commande]);
-            $listcommande = [];
-            foreach ($commandeproduits as $commandeproduit) {
-                $stock = $repository->find($commandeproduit->getProduit()->getId())->getStock();
-                $commandeproduit->setStock($stock);
-                $listcommande[] = $commandeproduit;
-            }
-            $session->set("traitement", []);
-            $response = $this->render('avoir/admin/new_reclamation.html.twig', [
-                'commandes' => $listcommande,
-                'commandereference' => $commande,
-                'reclamation' => $reclamation,
-                'form' => $form->createView(),
-            ]);
+               
+        } else {
+            $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
             $response->headers->addCacheControlDirective('no-store', true);
@@ -376,6 +358,46 @@ class AvoirController extends AbstractController
                 'private' => true,
             ]);
             return $response;
+        }
+    }
+
+      #[Route("/new/retour/", name :"avoir_new_retour", methods : ["POST"]) ]
+    public function retour_avoir(Request $request): Response
+    {
+
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+
+
+            $em = $this->entityManager;
+            $retour = $em->getRepository(Retour::class)->find($request->get('retour'));
+            $RetourProduits = $em->getRepository(RetourProduit::class)->find($retour->getId());
+            $montant = 0;
+            foreach($RetourProduits as $RetourProduit){
+                $RetourProduit->setValider(true);
+                $RetourProduit->setRembourser(true);
+                $RetourProduit->setAvoir(true);
+                $em->persist($RetourProduit);
+                $em->flush();
+                $montant = $momtant + $RetourProduit->getQuantite() * $RetourProduit->getProduit()->getPrix();
+            }
+            $avoir = new Avoir($retour->getCommande()->getUser(), $this->getUser(), $retour->getCommande());
+            $avoir->setMontant($montant);
+            $avoir->setRetour($retour);
+            $em->persist($avoir);
+
+            $retour->setAvoir($avoir);
+            $em->persist($retour);
+            $em->flush();
+
+             $this->addFlash('notice', 'avoir créer avec succès');
+            $res['id'] = 'ok';
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

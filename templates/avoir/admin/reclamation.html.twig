@@ -19,6 +19,13 @@
             <i class="fa fa-money-bill me-2"></i>
             {{ "Création Avoir à partie de réclamation"|trans }}
         </h3>
+         {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+
         <div class="row">
             <div class="col-lg-12">
                 <table class="table table-success-light table-bordered table-hover table-striped w-100" id="liste">
@@ -31,16 +38,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for livrer in livrers %}
+                    {% for reclamation in reclamations %}
                         <tr>
-                            <td>{{ livrer.commande.id }}</td>
-                            <td>{{ livrer.commande.date|date('d/m/Y') }}</td>
-                            <td>{{ livrer.commande.user.nom }}</td>
+                            <td>{{ reclamation.commande.id }}</td>
+                            <td>{{ reclamation.commande.date|date('d/m/Y') }}</td>
+                            <td>{{ reclamation.commande.user.nom }}</td>
                             <td>
-                                <a id="{{ livrer.id }}" onclick="load({{ livrer.id }})" class="btn btn-success" href="{{ path('avoir_new_reclamation', {'id': livrer.id}) }}">
-                                    <i class="fa fa-gears"></i>
-                                    {{'Création'|trans}}
-                                </a>
+                                 <button id="avoir{{ reclamation.id }}" onclick="creeravoir({{ reclamation.id }})" class="btn btn-success">
+                                    <i class="fa fa-money-bill"></i>
+                                    {{ 'Creer Avoir'|trans }}
+                                </button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -49,4 +56,35 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        function creeravoir(reclamation) {
+           
+            
+            if (confirm("{{'voulez-vous vraiment créerun avoir?'|trans}}")) {
+                    $("#avoir"+reclamation).html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                    $("#avoir"+reclamation).addClass('disabled');
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('avoir_new_reclamation') }}",
+                        data: {reclamation: reclamation},
+                        success: function (data) {
+
+                            if (data['id'] == 'ok') {
+                               document.location.href="{{ path('avoir_reclamation') }}";
+                                }
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                        }
+                    });
+                
+            }
+        }
+
+  
+    </script>
+
+
 {% endblock %}

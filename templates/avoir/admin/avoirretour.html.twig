@@ -19,6 +19,12 @@
             <i class="fa fa-money-bill me-2"></i>
             {{ "Création Avoir à partie des Retours de produits"|trans }}
         </h3>
+          {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
         <div class="row">
             <div class="col-lg-12">
                 <table class="table table-success-light table-bordered table-hover table-striped w-100" id="liste">
@@ -31,17 +37,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for commande in commandes %}
+                    {% for retour in retours %}
                         <tr>
-                            <td>{{ commande.id }}</td>
-                            <td>{{ commande.date|date('d/m/Y') }}</td>
-                            <td>{{ commande.user.nom }}</td>
+                            <td>{{ retour.commande.id }}</td>
+                            <td>{{ retour.commande.date|date('d/m/Y') }}</td>
+                            <td>{{ retour.commande.user.nom }}</td>
                             <td>
-                                <a id="{{ commande.id }}" onclick="load({{ commande.id }})" class="btn btn-success" href="{{ path('stock_retour_show', {'id': commande.id}) }}">
-                                    <i class="fa fa-gears"></i>
-                                    {{'Création'|trans}}
-                                </a>
+                                <button id="avoir{{ retour.id }}" onclick="retour_creer_avoir({{ retour.id }})" class="btn btn-success">
+                                 <i class="fa fa-money-bill"></i> {{ 'Creer Avoir'|trans }}
+                                </button>
                             </td>
+                            
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -49,4 +55,28 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+  function retour_creer_avoir(id) {
+
+            if (confirm("voulez-vous vraiment?")) {
+                $("#avoir" + id).html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                $("#avoir"+ id).addClass('disabled');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('avoir_new_retour') }}",
+                    data: {retour: id},
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                               document.location.href="{{ path('avoir_retour') }}";
+                                }
+                    },
+                    error: function () {
+                        alert("{{ 'La requête n’a pas abouti'|trans }}");
+                    }
+                });
+            }
+        }
+</script>
 {% endblock %}
