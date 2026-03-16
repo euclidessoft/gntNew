@@ -60,7 +60,7 @@ class PanierController extends AbstractController
             $nouveaute = $produitRepository->nouveaute();
             $avoir = $avoirRepository->findby(['client' => $this->getUser()]);
             $dette = $commandeRepository->findBy(['payer' => false, 'user' => $this->getUser()]);
-            $reclamation = $reclamationRepository->findBy(['user' => $this->getUser(), 'cloture' => null]);
+            $reclamation = $reclamationRepository->findBy(['pharmacie' => $this->getUser()->getPharmacie(), 'cloture' => null]);
 
 
 
