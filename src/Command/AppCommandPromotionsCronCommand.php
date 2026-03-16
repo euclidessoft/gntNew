@@ -45,11 +45,12 @@ class AppCommandPromotionsCronCommand extends Command
         // }
 
         // $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-         $date = new \DateTime();
+         $datedebut = new \DateTime();
+         $datefin = date_sub($datedebut, date_interval_create_from_date_string("1 day"));
         $em = $this->entityManager;
        // $start = $em->getRepository(Promotion::class)->findAll();
-        $start = $em->getRepository(Promotion::class)->findBy(['debut' => $date]);
-        $end = $em->getRepository(Promotion::class)->findBy(['fin' => $date]);
+        $start = $em->getRepository(Promotion::class)->findBy(['debut' => $datedebut]);
+        $end = $em->getRepository(Promotion::class)->findBy(['fin' => $datefin]);
 
 
         foreach ($start as $promotion) {
