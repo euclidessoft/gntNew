@@ -529,6 +529,14 @@
                 </a>
 
                 <span id="exportexcel" class=""></span>
+                
+                {% if is_granted("ROLE_STOCK") and commande.suivi == false%}
+                    <a id="edit" onclick="load('edit')" href="{{ path('commande_panier_commande_edit',{'commande': commande.id }) }}"
+                    class="btn btn-success ms-3">
+                        <i class="fa fa-edit"></i>
+                        {{ "Modifier"|trans }}
+                    </a>
+                {% endif %}
 
 
                 <div class="modal fade" id="modal" tabindex="-1" tabindex="-1" aria-labelledby="" aria-hidden="true"

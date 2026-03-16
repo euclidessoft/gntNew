@@ -1,0 +1,207 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block stock %}active{% endblock %}
+
+{% block body %}
+    <div class="container mt-4 fond-7">
+        <h3 class="mt-4 mb-5 text-bold">
+            <i class="fa fa-edit me-2"></i>
+            <i class="fa fa-shopping-cart me-2"></i>
+            {{ "Modification Commande"|trans }}
+        </h3>
+    {# {{ dump(donnees)}} #}
+        {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+         {% endfor %}
+          <div class="row">
+            <div class="col-md-12">
+                <table class="table table-success-light table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>{{ 'Date'|trans }}</th>
+                        <th>{{ 'N° Commande'|trans }}</th>
+                        <th>{{ 'Client'|trans }}</th>
+                         <th>{{ 'NIU'|trans }}</th>
+                         <th>{{ 'RCCM'|trans }}</th>
+                        {% if commande.credit == 1 and commande.payer == 0 %}
+                        <th>{{ 'date d\'echeance de paiement'|trans }}</th>
+                        {% endif %}
+                        <th>{{ 'Status Commande'|trans }}</th>
+                        {#            <th>Date de Livraison</th>#}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ commande.id }}</td>
+                     <td>{{ commande.user.nom ~" "~ commande.user.prenom }}</td>
+                     <td>{{ commande.user.niu }}</td>
+                     <td>{{ commande.user.rccm }}</td>
+                         {% if commande.credit == 1 and commande.payer == 0 %}
+                             <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
+                        {% endif %}
+                    <td class="text-bold">
+                        {% if commande.payer == 0 %}
+                            <span class="text-danger">Non payée</span>
+                        {% else %}
+                            <span class="text-success">Payée</span>
+                        {% endif %}
+                    </td>
+                    {#        <td> </td>#}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <table class="table table-success-light table-bordered table-hover table-striped w-100">
+            <thead>
+            <tr>
+                <th>{{ 'Référence'|trans }}</th>
+                <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'Quantité'|trans }}</th>
+                {# <th>{{ 'Stock'|trans }}</th> #}
+                <th>{{ 'Prix Cession'|trans }}</th>
+                <th>{{ 'Réduction'|trans }}</th>
+                <th>{{ 'TVA'|trans }}</th>
+                <th>{{ 'Prix Public'|trans }}</th>
+                <th>{{ 'Total'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set total = 0 %}
+            {% set reduction=0 %}
+            {% set tva=0 %}
+            {% for produit in panier %}
+                {% set reductionproduit = 0 %}
+                {% set quantite = donnees[produit.produit.id] %}
+                <tr>
+                    <td data-label="Référence">{{ produit.produit.reference }}</td>
+                    <td data-label="Désignation">{{ produit.produit.desigantion }}</td>
+                    <td data-label="Quantité" class="text-center" id="tdprod{{ produit.produit.id }}">
+                        {{ donnees[produit.produit.id] }}
+                    </td>
+                    <td data-label="Prix Cession">{{ produit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td data-label="Réduction">
+                        {% if produit.produit.promotion is not null %}
+                            {% if produit.produit.promotion.reduction != 0 %}
+                                {% set reductionproduit =  quantite * produit.produit.prix * produit.produit.promotion.reduction /100 %}
+
+                                {% set reduction =  reduction + reductionproduit %}
+                                <span class="badge bg-danger">
+                                    -{{ produit.produit.prix * produit.produit.promotion.reduction /100 }} F
+                            </span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td data-label="TVA">
+                        {% if produit.produit.tva == 1 %}
+                            {% set tva = tva + (((quantite * produit.produit.prix) - reductionproduit) * 0.1925) %}
+                            {{ (produit.produit.prix - (produit.produit.prix * produit.produit.promotion.reduction /100)) * 0.1925 }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td data-label="Prix Public">{{ produit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+
+                    <td data-label="Total" class="text-center" id="soustotal{{ produit.produit.id }}">
+                        {{ (produit.produit.prix * quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {% set total = total + (produit.produit.prix * quantite) %}
+                       
+
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr class="text-bold">
+                <td colspan="7" class="text-end">
+                    {{ "Total"|trans }}
+                </td>
+                <td class="text-center">
+                    <span id="">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <input type="hidden" value="{{ total }}" id="totaltamp"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7" class="text-end">
+                    {{ "Total Réduction"|trans }}
+                </td>
+                <td class="text-center">
+                    <span id="">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <input type="hidden" value="{{ reduction }}" id="totaltamp"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7" class="text-end">
+                    {{ "Total TVA"|trans }}
+                </td>
+                <td class="text-center">
+                    <span id="">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <input type="hidden" value="{{ tva }}" id="totaltamp"/>
+                </td>
+            </tr>
+            {% set acompte = 0 %}
+            {% if prelevement == true %}
+            <tr>
+                <td colspan="7" class="text-end">
+                    {{ "Prélèvement (2%)"|trans }}
+                </td>
+                <td class="text-center">
+                {% set acompte = total * 0.02 %}
+                    <span id="">{{ acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <input type="hidden" value="{{ tva }}" id="totaltamp"/>
+                </td>
+            </tr>
+            {% endif %}
+            <tr class="text-bold">
+                <td colspan="7" class="text-end text-bold">
+                    {{ "Net à payer"|trans }}
+                </td>
+                <td class="text-center">
+                    <span class="text-bold">{{ (total + acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id="total" class="text-nowrap" style="display:none;">{{ (total + acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
+                    <input type="hidden" value="{{ total }}" id="totaltamp"/>
+                </td>
+            </tr>       
+    {#                    /***Conversion prix en lettre **/
+            <tr>
+                <td colspan="8" class="text-end">
+                    <span id="total" class="text-bold"></span>
+                    {{'Arrêtée la présente à la somme de'|trans}} <b id="conversion"> </b><b id="virgule"></b> <b>francs CFA TTC</b>
+                </td>
+            </tr> 
+            /***** end*****/ #}
+            </tbody>
+        </table>
+
+
+    </div>
+    <div class="container mt-4 mb-5 pt-3 pb-3 fond-7">
+        <div class="centrer">
+            <div class="row">
+                {{ include('commande/admin/_confirmation_modification.html.twig')}}
+                {# <a id="valider" onclick="load('valider')" href="{{ path('commande_panier_confirm_modification', {'commande' : commande.id}) }}"
+                   class="ms-3 btn btn-success float-end">
+                    <i class="fa fa-money-bill">
+
+                    </i> {{ "Valider"|trans }}
+                </a> #}
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
