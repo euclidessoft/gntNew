@@ -31,7 +31,7 @@
     <table class="table table-success-light table-bordered table-hover table-striped w-100">
         <thead>
         <tr>
-            <th>{{ 'Code Produit'|trans }}</th>
+            <th>{{ 'CIP'|trans }}</th>
             <th>{{ 'Désignation'|trans }}</th>
             <th>{{ 'Quantité Commandée'|trans }}</th>
             <th>{{ 'Prix Cession'|trans }}</th>
@@ -42,7 +42,7 @@
         <tbody>
         {% for commandeproduit in commandeproduits %}
             <tr>
-                <td> {{ commandeproduit.produit.id }} </td>
+                <td> {{ commandeproduit.produit.reference }} </td>
                 <td>{{ commandeproduit.produit.desigantion }} </td>
                 <td> {{ commandeproduit.quantite }} </td>
                 <td>
