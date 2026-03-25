@@ -102,10 +102,32 @@
                                                            id="quant{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}">
                                                 </div>
                                                 <div class="mt-3">
-                                                    Motif:
+                                                   Motif:
+                                                   
+                                                           <select name="reclamer" id="motif{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}" class="form-control">
+                                                                <option value="">-- Sélectionner un motif --</option>
+                                                                <option value="Produit facturé non Livré">Produit facturé non Livré</option>
+                                                                <option value="Produit Livré non facturé">Produit Livré non facturé</option>
+                                                                <option value="Produit périmé">Produit périmé</option>
+                                                                <option value="Produit cassé">Produit cassé</option>
+                                                                <option value="Péromption proche">Péromption proche</option>
+                                                                <option value="Produit Avarié">Produit Avarié</option>
+                                                                <option value="Quantité facturée erronée">Quantité facturée erronée</option>
+                                                                <option value="produit trop cher">produit trop cher</option>
+                                                                <option value="Retour bon etat">Retour bon etat</option>
+                                                                <option value="Retour bon etat- doublon commande">Retour bon etat - Doublon commande</option>
+                                                                <option value="Retour bon etat- erreur commande">Retour bon etat - Erruer commande</option>
+                                                                <option value="Retour bon etat- Surstock">Retour bon etat - Sursctock</option>
+                                                                <option value="Produit Facturé différent de produit livré">Produit Facturée différent de produit livré</option>
+                                                                <option value="Produit livré en excédent">Produit livré en excédent</option>
+                                                                <option value="Rappel de lot">Rappel de lot</option>
+                                                            </select>
+                                                </div>
+                                                <div class="mt-3">
+                                                    commenatire:
                                                     <label for="numero{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}"></label>
                                                     <textarea type="number" class="form-control"
-                                                              id="motif{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}">
+                                                              id="comment{{ commandeproduit.produit.id }}{{ commandeproduit.lot }}">
 
                                                     </textarea>
                                                 </div>
@@ -205,13 +227,14 @@
            
             var quant = $("#quant" + produit+lot);
             var motif = $("#motif" + produit+lot);
+            var comment = $("#comment" + produit+lot);
             if (quant.val() != "" && motif.val() != "" && quant.val() <= quantite) {
                 if (quant.val() > 0) {
                     $("#ajouter" + produit+lot).html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
                     $.ajax({
                         type: "POST",
                         url: "{{ path('reclamation_add') }}",
-                        data: {prod: produit, quantite: quant.val(), motif: motif.val(), lot: lot, peremption: peremption},
+                        data: {prod: produit, quantite: quant.val(), motif: motif.val(), comment: comment.val(), lot: lot, peremption: peremption},
                         success: function (data) {
 
                             if (data['idp'] == 'ok') {
@@ -220,12 +243,15 @@
                                     "                        <td>" + data['lot'] + "</td>\n" +
                                     "                        <td>" + peremption + "</td>\n" +
                                     "                        <td class='text-center'><span id='changequantite" + produit + "'>" + data['quantite'] + "</span></td>" +
-                                    "<td rowspan='2'><button class='btn btn-danger me-2 mb-2'\n" +
-                                    "                                   title='Supprimer cet article' onclick=\"retour_supprim(" + produit + "'"+ lot + "')\">\n" +
+                                    "<td rowspan='3'><button class='btn btn-danger me-2 mb-2'\n" +
+                                    "                                   title='Supprimer cet article' id='btnsup" + produit + lot +"' onclick=\"retour_supprim(" + produit + ",'"+ lot + "') \">\n" +
                                     "                                    <i class='fa fa-trash'></i>\n" +
                                     "                                </button></td></tr>" +
                                     "<tr id='trs" + produit + lot +"'>\n" +
                                     "        <td colspan='4'>" + data['motif'] + "</td>" +
+                                    "</tr>" +
+                                    "<tr id='trp" + produit + lot +"'>\n" +
+                                    "        <td colspan='4'>" + data['comment'] + "</td>" +
                                     "</tr>");
 
                                 $('#btn' + produit+lot).addClass('disabled');
@@ -254,14 +280,16 @@
         function retour_supprim(produit, lot) {
 
             if (confirm("{{ 'Etes-vous sur de vouloir supprimer?'|trans }}")) {
+                 $("#btnsup" + produit+lot).html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
                 $.ajax({
                     type: "POST",
-                    url: "{{ path('stock_retour_delete') }}",
+                    url: "{{ path('reclamation_supprime') }}",
                     data: {prod: produit, lot: lot},
                     success: function (data) {
                         if (data['id'] == 'ok') {
                             $("#tr" + produit+lot).remove();
                             $("#trs" + produit+lot).remove();
+                            $("#trp" + produit+lot).remove();
                             $('#btn' + produit+lot).removeClass('disabled');
                             $("#quant" + produit+lot).val('');// vider le champ quantite dans modal ajouter
                             $("#ajouter" + produit+lot).show();// afficher le bouton ajouter
@@ -282,8 +310,9 @@
 
 
         function validerReclamation(commande) {
-            $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+           
             if (confirm("{{ 'Voulez-vous confirmer la validation?'|trans }}")) {
+                 $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
                 $.ajax({
                     type: "POST",
                     url: "{{ path('reclamation_valider') }}",

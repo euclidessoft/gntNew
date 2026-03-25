@@ -255,6 +255,7 @@ class ReclamationController extends AbstractController
         if ($request->isXmlHttpRequest()) {// traitement de la requete ajax
             $id = $request->get('prod');// recuperation de id produit
             $motif = $request->get('motif');// recuperation de id produit
+            $comment = $request->get('comment');// recuperation de id produit
             $quantite = $request->get('quantite');// recuperation de la quantite commamde
             $lot = $request->get('lot');// recuperation de la quantite commamde
             $peremption = $request->get('peremption');// recuperation de la quantite commamde
@@ -274,6 +275,7 @@ class ReclamationController extends AbstractController
             $res['designation'] = $produit->getDesigantion();
             $res['quantite'] = $quantite;//$produit->getQuantite();
             $res['motif'] = $motif;//$produit->getQuantite();
+            $res['comment'] = $comment;//$produit->getQuantite();
             $retour[] = $res;
 
 
@@ -288,6 +290,36 @@ class ReclamationController extends AbstractController
             return $response;
         }
 
+    }
+
+    
+    #[Route("/delete/", name :"reclamation_supprime") ]
+    public function recdelete(Request $request, ProduitRepository $repository, SessionInterface $session)
+    {
+        // On récupère le panier actuel
+        $retour = $session->get("reclamation", []);
+        $id = $request->get('prod');
+        $lot = $request->get('lot');
+        foreach ($retour as $key => $item) {
+            if ($item['id'] == $id && $item['lot'] == $lot) {
+                unset($retour[$key]);
+            }
+        }
+//        $id = $repository->find($request->get('prod'))->getId();
+//        foreach ($approv as $key => $item) {
+//            if ($item['produit']->getId() == $id) {
+//                unset($approv[$id]);
+//            }
+//        }
+        // On sauvegarde dans la session
+        $session->set("reclamation", $retour);
+        $res['id'] = 'ok';
+        $res['nb'] = count($retour);
+        $response = new Response();
+        $response->headers->set('content-type', 'application/json');
+        $re = json_encode($res);
+        $response->setContent($re);
+        return $response;
     }
 
     
@@ -316,6 +348,7 @@ class ReclamationController extends AbstractController
                 $reclamationproduit->setCommande($commande);
                 $reclamationproduit->setReclamation($reclamation);
                 $reclamationproduit->setMotif($prod['motif']);
+                $reclamationproduit->setCommentaire($prod['comment']);
                 $reclamationproduit->setLot($prod['lot']);
                 $reclamationproduit->setPeremption(new \Datetime($prod['peremption']));
                 $reclamationproduit->setQuantite($prod['quantite']);

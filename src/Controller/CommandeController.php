@@ -741,7 +741,7 @@ class CommandeController extends AbstractController
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
             $this->getUser()->getTuteur() === null ? 
             $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => true, 'payer' =>true]) :
-            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => false, 'payer' => true]);
+            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => true, 'payer' => true]);
             
             $response = $this->render('commande/history.html.twig', [
                 'commandes' => $commandes,
