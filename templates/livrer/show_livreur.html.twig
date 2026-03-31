@@ -16,7 +16,7 @@
     <div class="container mt-4 fond-7 mb-5">
         <h3 class="mt-4 mb-5 text-bold">
             <i class="fa fa-shopping-cart me-2"></i>
-            {{ "Commande déjà Livrée"|trans }}
+            {{ "Commande à Livrer"|trans }}
         </h3>
         {% for message in app.flashes('echec') %}
             <div role="alert" class="alert alert-danger alert-dismissible fade show radius-10 shadow-black">
@@ -91,7 +91,73 @@
                         {{ commande.quantitecommander }}
                         {% if commande.promotion is not null %}
                             {% if commande.promotion.premier is not null %}
-                                {% if commande.quantitecommander / commande.promotion.troisieme >= 1 %}
+                              {% if commande.quantitecommander / commande.promotion.cinquieme >= 1 %}
+
+                                    {% set unite = (commande.quantitecommander / commande.promotion.cinquieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commande.promotion.ugcinquieme %}
+                                    {% set suite = commande.quantitecommander - unite * commande.promotion.cinquieme %}
+
+                                    {% if suite / commande.promotion.quatrieme >= 1 %}
+
+                                        {% set unite = (suite / commande.promotion.quatrieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                        {% set suite = suite - unite * commande.promotion.quatrieme %}
+
+                                        {% if suite / commande.promotion.troisieme >= 1 %}
+
+                                            {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                            {% set suite = suite - unite * commande.promotion.troisieme %}
+
+                                            {% if suite / commande.promotion.deuxieme >= 1 %}
+                                                {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                                {% if suite / commande.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                {% endif %}
+
+                                            {% elseif suite / commande.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% elseif commande.quantitecommander / commande.promotion.quatrieme >= 1 %}
+
+                                    {% set unite = (commande.quantitecommander / commande.promotion.quatrieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                    {% set suite = commande.quantitecommander - unite * commande.promotion.quatrieme %}
+
+                                    {% if suite / commande.promotion.troisieme >= 1 %}
+
+                                        {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                        {% set suite = suite - unite * commande.promotion.troisieme %}
+
+                                        {% if suite / commande.promotion.deuxieme >= 1 %}
+                                            {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                            {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                            {% if suite / commande.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %}
+
+                                        {% elseif suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %}
+                                    {% endif %}
+                                {% elseif commande.quantitecommander / commande.promotion.troisieme >= 1 %}
 
                                     {% set unite = (commande.quantitecommander / commande.promotion.troisieme)|round(0, 'floor') %}
                                     {% set ug = ug + unite * commande.promotion.ugtroisieme %}
