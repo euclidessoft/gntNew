@@ -44,6 +44,17 @@ class CommandeController extends AbstractController
             $dataPanier = [];
             $total = 0;
             $notfound = 0;
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
+             foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
+                $dataPanier[] = [
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
+                ];
+            }
+
             $sheet = $session->get('sheet',[]);
             if(count($sheet) > 0){// commande par importation
                 foreach($sheet as $commande){
@@ -65,22 +76,12 @@ class CommandeController extends AbstractController
                 $session->set('sheetchoix',$sheet);//creation d'une session pour le choix paiement
                 $session->remove('sheet');// suppression session chargement
                 $notfound !== 0 ? $this->addFlash('notice', $notfound . " CIP  produit(s) non trouvé(s) ou quantité(s) erronée(s)") : null;
-            }else{// commande normal
-            $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
-             foreach($panier as $commande){
-                $commande->getProduit()->setQuantite($commande->getQuantite());
-                $dataPanier[] = [
-                    "produit" => $commande->getProduit(),
-                    "promotion" => $commande->getReduction(),
-                ];
-            }
             }
 
             $response = $this->render('commande/index.html.twig', [
                 'produits' => $produitRepository->findAll(),
                 'panier' => $dataPanier,
+                'sheet' => $sheet,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -186,6 +187,10 @@ class CommandeController extends AbstractController
         if ($this->security->isGranted('ROLE_CLIENT') && $this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
              $sheet = $session->get('sheetvalider',[]);
              $panier = [];
+              $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
+           
             if(count($sheet) > 0){// commande par importation
                 foreach($sheet as $commandeimp){
                     $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commandeimp[0]]);
@@ -206,11 +211,7 @@ class CommandeController extends AbstractController
                 //$panier = $dataPanier;
                 $session->remove('sheetvalider');
 
-            }else{
-            $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
-           } 
+            }
            //$dataPanier = [];
 //            $em = $this->getDoctrine()->getManager();
             $commande = new Commande();
@@ -604,10 +605,10 @@ class CommandeController extends AbstractController
            $panier =[];
             if($this->getUser()->getTuteur() === null){
                  $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false, 'credit' => true]);
+            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false]);
             }else{
                  $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
-            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => false, 'credit' => true]);
+            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => false]);
              }
             $response = $this->render('commande/suivi.html.twig', [
                 'commandes' => $commandes,
@@ -960,6 +961,16 @@ class CommandeController extends AbstractController
         if ($this->security->isGranted('ROLE_CLIENT')) {
              $dataPanier = [];
             $total = 0;
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
+             foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
+                $dataPanier[] = [
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
+                ];
+            }
             $sheet = $session->get('sheetconfirm',[]);
             if(count($sheet) > 0){// commande par importation
                 foreach($sheet as $commande){
@@ -977,18 +988,6 @@ class CommandeController extends AbstractController
                 $session->set('sheetvalider', $sheet);
                 $session->remove('sheetconfirm');
 
-            }else{
-                 $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
-           
-                foreach($panier as $commande){
-                    $commande->getProduit()->setQuantite($commande->getQuantite());
-                    $dataPanier[] = [
-                        "produit" => $commande->getProduit(),
-                        "promotion" => $commande->getReduction(),
-                    ];
-                }
             }
              if(count($dataPanier) == 0){
                 $response = $this->redirectToRoute("commande_panier_panier");
@@ -1149,6 +1148,17 @@ class CommandeController extends AbstractController
  $dataPanier = [];
             $total = 0;
             $sheet = $session->get('sheetconfirm',[]);
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
+           
+              foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
+                $dataPanier[] = [
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
+                ];
+            }
             if(count($sheet) > 0){// commande par importation
                 foreach($sheet as $commande){
                     $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
@@ -1165,18 +1175,6 @@ class CommandeController extends AbstractController
                 $session->set('sheetvalider', $sheet);
                 $session->remove('sheetconfirm');
 
-            }else{
-            $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
-           
-              foreach($panier as $commande){
-                $commande->getProduit()->setQuantite($commande->getQuantite());
-                $dataPanier[] = [
-                    "produit" => $commande->getProduit(),
-                    "promotion" => $commande->getReduction(),
-                ];
-            }
             }
             if(count($dataPanier) == 0){
                 $response = $this->redirectToRoute("commande_panier_panier");
@@ -1337,6 +1335,16 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
          $dataPanier = [];
+          $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
+             foreach($panier as $commande){
+                $commande->getProduit()->setQuantite($commande->getQuantite());
+                $dataPanier[] = [
+                    "produit" => $commande->getProduit(),
+                    "promotion" => $commande->getReduction(),
+                ];
+            }
              $sheet = $session->get('sheetchoix',[]);
             if(count($sheet) > 0){// commande par importation
                 foreach($sheet as $commandeimp){
@@ -1355,10 +1363,6 @@ class CommandeController extends AbstractController
                 $session->set('sheetconfirm', $sheet);
                 $session->remove('sheetchoix');
 
-            }else{
-                $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
             }
             $session->remove('credit');
              if(count($dataPanier) == 0 && count($panier) == 0){

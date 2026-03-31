@@ -274,7 +274,10 @@ class PanierController extends AbstractController
         // $panier = $session->get("panier", []);
         if( $request->isXmlHttpRequest() )
         {// traitement de la requete ajax
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+        $panier = [];
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
             $id = $request->get('prod');// recuperation de id produit
             $quantite = $request->get('quantite');// recuperation de la quantite commamde
             $reduction = 0;
@@ -288,7 +291,7 @@ class PanierController extends AbstractController
                 if($produit->getMincommande() <= $quantite) {// verification quantite minimum
                    $pan = new Panier();
                    $pan->setProduit($produit);
-                   $pan->setClient($this->getUser());
+                    $this->getUser()->getTuteur() === null ? $pan->setClient($this->getUser()) : $pan->setClient($this->getUser()->getTuteur());
                    $pan->setQuantite($quantite);
                    $reduction != 0 ? $pan->setReduction($reduction) : null;
                    $this->entityManager->persist($pan);

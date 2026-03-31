@@ -32,7 +32,7 @@
                 <th>{{ 'Réduction'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
-                <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th>
+                {# <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th> #}
                 <th>{{ 'Quantité'|trans }}</th>
                 <th>{{ 'Total'|trans }}</th>
                 <th>{{ 'Actions'|trans }}</th>
@@ -73,7 +73,7 @@
                         {% endif %}
                     </td>
                     <td data-label="Prix Public">{{ produit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    <td data-label="Commande">{{ produit['produit'].mincommande }}</td>
+                    {# <td data-label="Commande">{{ produit['produit'].mincommande }}</td> #}
 
                     <td data-label="Quantité" class="text-center" id="tdprod{{ produit.produit.id }}">
                         {{ produit['produit'].quantite }}
@@ -95,51 +95,54 @@
 
                     </td>
                     <td>
+                     {% if sheet|length == 0 %}
                        
-                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal{{ produit['produit'].id }}" title="{{ 'Modifier quantité'|trans }}">
-                     <i class="fa fa-edit"></i>
-                </button>
-                <div class="modal fade" id="modal{{ produit['produit'].id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered text-center">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                  {{ produit['produit'].desigantion }}
-                                 </h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal{{ produit['produit'].id }}" title="{{ 'Modifier quantité'|trans }}">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <div class="modal fade" id="modal{{ produit['produit'].id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered text-center">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                            {{ produit['produit'].desigantion }}
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 
-                                </button>
-                            </div>
-                            <div class="modal-body px-5">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body px-5">
 
-                               <input type="number" id="quant{{ produit['produit'].id }}" value="{{ produit['produit'].quantite }}" class="form-control"/>
+                                        <input type="number" id="quant{{ produit['produit'].id }}" value="{{ produit['produit'].quantite }}" class="form-control"/>
 
-                                {# fin paiement#}
+                                            {# fin paiement#}
+                                        </div>
+                                        <div class="modal-footer px-5 py-4">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                    id="annuler"><i class="fa fa-undo"></i>
+                                                {{ 'Annuler'|trans }}
+                                            </button>
+                                            <button type="button" class="btn btn-success ms-3"
+                                                    id="btn{{produit['produit'].id }}" 
+                                                    onclick="modifier({{ produit['produit'].id }}, {{ produit['produit'].mincommande }},{{ produit['produit'].quantite }})"><i
+                                                        class="fa fa-money-bill"></i>
+                                                {{ 'Modifier'|trans}}
+                                            </button>
+                                        </div>
+                                        {# {{ form_end(form) }} #}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-footer px-5 py-4">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        id="annuler"><i class="fa fa-undo"></i>
-                                    {{ 'Annuler'|trans }}
-                                </button>
-                                <button type="button" class="btn btn-success ms-3"
-                                         id="btn{{produit['produit'].id }}" 
-                                        onclick="modifier({{ produit['produit'].id }}, {{ produit['produit'].mincommande }},{{ produit['produit'].quantite }})"><i
-                                            class="fa fa-money-bill"></i>
-                                    {{ 'Modifier'|trans}}
-                                </button>
-                            </div>
-                            {# {{ form_end(form) }} #}
-                        </div>
-                    </div>
-                </div>
-                        {{ include('commande/_delete_form.html.twig')}}
+                            {{ include('commande/_delete_form.html.twig')}}
+
+                        {% endif %}
 
                     </td>
                 </tr>
             {% endfor %}
             {% if panier|length > 0 %}
                 <tr class="text-bold">
-                    <td data-label="Total" colspan="8" class="text-end">
+                    <td data-label="Total" colspan="7" class="text-end">
                         {{ "Total"|trans }}
                     </td>
                     <td class="text-center">
@@ -148,13 +151,14 @@
                     </td>
                     <td data-label="Vider le panier" rowspan="4">
 
-                       
-                         {{ include('commande/_delete.html.twig')}}
+                         {% if sheet|length == 0 %}
+                             {{ include('commande/_delete.html.twig')}}
+                        {% endif %}
 
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="8" class="text-end">
+                    <td colspan="7" class="text-end">
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td class="text-center">
@@ -163,7 +167,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="8" class="text-end">
+                    <td colspan="7" class="text-end">
                         {{ "Total TVA"|trans }}
                     </td>
                     <td class="text-center">
@@ -172,7 +176,7 @@
                     </td>
                 </tr>
                 <tr class="text-bold">
-                    <td colspan="8" class="text-end">
+                    <td colspan="7" class="text-end">
                         {{ "Net à payer"|trans }}
                     </td>
                     <td class="text-center">
