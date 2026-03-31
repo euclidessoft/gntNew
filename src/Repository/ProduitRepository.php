@@ -83,6 +83,15 @@ public function promo(): array
         ->getResult();
 }
 
+public function sortie()// historique livraison produit
+{
+    return $this->createQueryBuilder('p')
+        ->innerJoin('App\Entity\LivrerProduit', 'lp', 'WITH', 'lp.produit = p')
+        ->groupBy('p.id')
+        ->getQuery()
+        ->getResult();
+}
+
 
 
 

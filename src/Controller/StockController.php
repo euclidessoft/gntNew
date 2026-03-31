@@ -548,6 +548,38 @@ class StockController extends AbstractController
         }
     }
 
+    
+    #[Route("/Sortie_Produit/", name :"sortie_produit", methods : ["GET"]) ]
+    public function sortie(ProduitRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK')) {
+
+            $response = $this->render('stock/sortie.html.twig', [
+                'produits' => $repository->sortie(),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
     #[Route("/Reapprovisionner/", name :"retour_reapprovisionner", methods : ["POST"]) ]
     public function retour_reapprovisionner(Request $request): Response
     {
@@ -650,6 +682,40 @@ class StockController extends AbstractController
 
             $response = $this->render('stock/produit_show.html.twig', [
                 'stock' => $repository->findBy(['produit' => $produit]),
+                'produit' => $produit,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("/History_Produit/{id}", name :"history_produit_show", methods : ["GET"]) ]
+    public function produithistory(Produit $produit, LivrerProduitRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+
+            $response = $this->render('stock/sortie_show.html.twig', [
+                'stock' => $repository->findBy(['produit' => $produit],['id' => "DESC"]),
                 'produit' => $produit,
             ]);
             $response->setSharedMaxAge(0);

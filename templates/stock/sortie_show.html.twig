@@ -21,7 +21,7 @@
     <ul class="nav nav-tabs mb-4">
         {# {% if is_granted('ROLE_STOCK') %} #}
         <li class="nav-item">
-            <a class="nav-link active" href="">
+            <a class="nav-link" href="{{ path('stock_index') }}">
                 {{ 'Disponible'|trans }}
             </a>
         </li>
@@ -43,61 +43,67 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('stock_sortie_produit') }}">
+                <a class="nav-link active" href="">
                     {{ 'Historique de sortie Produit'|trans }}
                 </a>
             </li>
         {# {% endif %} #}
     </ul>
 
-    <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+    <table class="table table-success-light table-bordered table-hover table-striped my-3">
         <thead>
         <tr>
-            <th>{{ 'CIP'|trans }}</th>
-            <th>{{ 'Désignation'|trans }}</th>
-            <th>{{ 'DCI'|trans }}</th>
-            <th>{{ 'Fabricant'|trans }}</th>
-{#            <th>N° Lot</th>#}
-{#            <th>Peremptio</th>#}
-            <th>{{ 'Quantité'|trans }}</th>
-            {% if is_granted('ROLE_STOCK') %}
-            <th>{{ 'Actions'|trans }}</th>
-        {% endif %}
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'commande'|trans }}</th>
+            <th>{{ 'Quatité commandée'|trans }}</th>
+            <th>{{ 'Quatité livrée'|trans }}</th>
+            <th>{{ 'Stock'|trans }}</th>
         </tr>
         </thead>
         <tbody>
         {% for produit in stock %}
             <tr>
-                <td>{{ produit.produit.reference }}</td>
-                <td>{{ produit.produit.desigantion }}</td>
-                <td>{{ produit.produit.dci }}</td>
-                <td>{{ produit.produit.fabriquant }}</td>
-{#                <td>{{ produit.lot }}</td>#}
-{#                <td>{{ produit.peremption|date('d/m/Y') }}</td>#}
-                <td>{{ produit.produit.stock|number_format(0,',' , ' ') }}</td>
-                 {% if is_granted('ROLE_STOCK') %}
+                <td>{{ produit.livrer.date|date("d/m/Y") }}</td>
                 <td>
-                    <a id="{{ produit.produit.id }}" onclick="load({{ produit.produit.id }})" class="btn btn-success" href="{{ path('stock_produit_show', {'id': produit.produit.id}) }}">
-                        <i class="fa fa-list"></i>
-                         {{'Détails'|trans}}
-                    </a>
+                 <a id="b{{ produit.commande.id }}" onclick="load('b{{ produit.commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : produit.commande.id}) }}" class="btn btn-success">
+                 {{ produit.commande.id }}
+                </a>
                 </td>
-        {% endif %}
+                <td>{{ produit.quantitecommander }}</td>
+                <td>{{ produit.quantitelivrer }}</td>
+                <td>{{ produit.archive }}</td>
 
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <div class="centrer gap-3  m-4 fond-7">
-            <button id="exportExcel" class="btn btn-green">
-                <i class="fa fa-file-excel"></i> Exporter Excel
-            </button>
-            <button id="exportPdf" class="btn btn-danger">
-                <i class="fa fa-file-pdf"></i> Exporter PDF
-            </button>
-            {# <a href="#" class="btn btn-success-light me-2">
-                <i class="fa fa-print"></i> Imprimer
-            </a> #}
+             <table class="table table-success-light table-bordered table-hover table-striped my-3" id="facture" style="display:none;">
+        <thead>
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'commande'|trans }}</th>
+            <th>{{ 'Quatité commandée'|trans }}</th>
+            <th>{{ 'Quatité livrée'|trans }}</th>
+            <th>{{ 'Stock'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for produit in stock %}
+            <tr>
+                <td>{{ produit.livrer.date|date("d/m/Y") }}</td>
+                <td>  <a id="b{{ produit.commande.id }}" onclick="load('b{{ produit.commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : produit.commande.id}) }}" class="btn btn-success">
+                 {{ produit.commande.id }}
+                </td>
+                <td>{{ produit.quantitecommander }}</td>
+                <td>{{ produit.quantitelivrer }}</td>
+                <td>{{ produit.archive }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+      <span id="exportexcel" class=""></span>
         </div>
     </div>
 </div>
