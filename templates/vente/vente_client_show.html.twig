@@ -1,0 +1,113 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block stock %}active{% endblock %}
+{% block etat_stock %}active{% endblock %}
+
+{% block body %}
+<div class="container mt-4 fond-7">
+   <h3 class="mt-4 text-bold">
+        <i class="fas fa-chart-line me-2"></i>
+        {{ "Analyse Client"|trans }} | {{ user.nom ~ " " ~ user.prenom}} 
+    </h3>
+    <h5 class="mt-4 mb-5 text-bold">
+        <i class="fa fa-shopping-cart me-2"></i>
+        {{ "Palmares des ventes Articles"|trans }}
+    </h5>
+     <ul class="nav nav-tabs mb-4">
+        {# {% if is_granted('ROLE_STOCK') %} #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('vente_chiffre_client', {'client': user.id})}}">
+                {{ "Chiffre d'Affaire"|trans }}
+            </a>
+        </li>   
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                {{'Articles'|trans}}
+            </a>
+        </li>
+    </ul>
+     <table class="table table-success-light table-bordered table-hover table-striped mb-3">
+        <thead>
+        
+       <tr>
+            <th>{{ produit.reference }}</th>
+            <th>{{ produit.desigantion }}</th>
+            <th>{{ produit.dci }}</th>
+            <th>{{ produit.fabriquant }}</th>
+        </tr
+        <tr>
+        <td colspan="4"></td>
+        </tr>
+         <tr>
+            <th colspan="2"  class="text-center"><b>{{ "Quantité Totale Vendue"|trans}}: {{ quantite|number_format(0, '', ' ') }}</b></th>
+            <th colspan="2"  class="text-center"><b>{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</b></th>
+        </tr>
+        </thead>
+        
+    </table>
+   
+
+    <table class="table table-success-light table-bordered table-hover table-striped my-3">
+        <thead>
+        
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'commande'|trans }}</th>
+            <th>{{ 'Quantité vendue'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for produit in ventes %}
+            <tr>
+                <td>{{ produit.commande.date|date("d/m/Y") }}</td>
+                <td>
+                 <a id="b{{ produit.commande.id }}" onclick="load('b{{ produit.commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : produit.commande.id}) }}" class="btn btn-success">
+                 {{ produit.commande.id }}
+                </a>
+                </td>
+                <td>{{ produit.quantite|number_format(0,',' , ' ') }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tr>
+            <th colspan="2"  class="text-center">{{ "Quantité Totale Vendue"|trans}}: {{ quantite|number_format(0, '', ' ') }}</th>
+            <th  class="text-center">{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(0, '', ' ') }}</th>
+        </tr>
+    </table>
+    <div class="centrer gap-3  m-4 fond-7">
+             <table class="table table-success-light table-bordered table-hover table-striped my-3" id="facture" style="display:none;">
+        <thead>
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'commande'|trans }}</th>
+            <th>{{ 'Quantité Vendue'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for produit in ventes %}
+            <tr>
+                <td>{{ produit.commande.date|date("d/m/Y") }}</td>
+                <td>  <a id="b{{ produit.commande.id }}" onclick="load('b{{ produit.commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : produit.commande.id}) }}" class="btn btn-success">
+                 {{ produit.commande.id }}
+                </td>
+                <td>{{ produit.quantite }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+      <span id="exportexcel" class=""></span>
+        </div>
+    </div>
+</div>
+{% endblock %}

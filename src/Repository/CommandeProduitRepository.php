@@ -112,6 +112,21 @@ class CommandeProduitRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    
+    public function article_client_show($client,$produit)
+    {//palmares article par client
+        return $this->createQueryBuilder('p')
+            ->innerJoin('App\Entity\Commande', 'c')
+            ->andWhere('c.user = :client')
+            ->andWhere('p.produit = :produit')
+            ->setParameter('client', $client)
+            ->setParameter('produit', $produit)
+            ->orderBy("c.date", "DESC")
+            ->getQuery()
+            ->getResult();
+    }
+
+
     // /**
     //  * @return CommandeProduit[] Returns an array of CommandeProduit objects
     //  */

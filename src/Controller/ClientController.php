@@ -27,7 +27,7 @@ class ClientController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            $client = $entityManager->getRepository(Client::class)->findAll();
+            $client = $entityManager->getRepository(Client::class)->findBy(['client' =>true]);
             return $this->render('client/index.html.twig', [
                 'client' => $client,
             ]);
@@ -247,4 +247,35 @@ class ClientController extends AbstractController
             return $response;
         }
     }
+    
+    #[Route("/Show/{id}", name :"client_show", methods : ["GET"]) ]
+    public function show(Client $client): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+                $response = $this->render('client/show.html.twig', [
+                    'user' => $client,
+                ]);
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+        } else {
+                $response = $this->redirectToRoute('security_logout');
+                $response->setSharedMaxAge(0);
+                $response->headers->addCacheControlDirective('no-cache', true);
+                $response->headers->addCacheControlDirective('no-store', true);
+                $response->headers->addCacheControlDirective('must-revalidate', true);
+                $response->setCache([
+                    'max_age' => 0,
+                    'private' => true,
+                ]);
+                return $response;
+        }
+    }
+    
 }

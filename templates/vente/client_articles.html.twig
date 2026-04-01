@@ -1,0 +1,79 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block suivi_client %}active{% endblock %}
+{% block palamares %}active{% endblock %}
+
+{% block body %}
+<div class="container mt-4 fond-7"> 
+<h3 class="mt-4 text-bold">
+        <i class="fas fa-chart-line me-2"></i>
+        {{ "Analyse Client"|trans }} | {{ user.nom ~ " " ~ user.prenom}} 
+    </h3>
+    <h5 class="mt-4 mb-5 text-bold">
+        <i class="fa fa-shopping-cart me-2"></i>
+        {{ "Palmares des ventes Articles"|trans }}
+    </h5>
+     <ul class="nav nav-tabs mb-4">
+        {# {% if is_granted('ROLE_STOCK') %} #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('vente_chiffre_client', {'client': user.id})}}">
+                {{ "Chiffre d'Affaire"|trans }}
+            </a>
+        </li>   
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                {{'Articles'|trans}}
+            </a>
+        </li>
+    </ul>
+
+    <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+        <thead>
+        <tr>
+            <th>{{ 'CIP'|trans }}</th>
+            <th>{{ 'Désignation'|trans }}</th>
+            <th>{{ 'DCI'|trans }}</th>
+            <th>{{ 'Fabricant'|trans }}</th>
+            <th>{{ 'Actions'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for produit in produits %}
+            <tr>
+                <td>{{ produit.reference }}</td>
+                <td>{{ produit.desigantion }}</td>
+                <td>{{ produit.dci }}</td>
+                <td>{{ produit.fabriquant }}</td>
+                <td>
+                    <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" href="{{ path('vente_client_show', {'client': user.id, 'id': produit.id}) }}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="centrer gap-3  m-4 fond-7">
+            <button id="exportExcel" class="btn btn-green">
+                <i class="fa fa-file-excel"></i> Exporter Excel
+            </button>
+            <button id="exportPdf" class="btn btn-danger">
+                <i class="fa fa-file-pdf"></i> Exporter PDF
+            </button>
+            {# <a href="#" class="btn btn-success-light me-2">
+                <i class="fa fa-print"></i> Imprimer
+            </a> #}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block client_suivi %} active{% endblock %}
+{% block palamares %}active{% endblock %}
+
+{% block body %}
+<div class="container mt-4 fond-7">
+    <h3 class="mt-4 mb-5 text-bold">
+        <i class="fas fa-chart-line me-2"></i>
+        {{ "Analyse Client"|trans }} | {{ user.nom ~ " " ~ user.prenom}} 
+    </h3>
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                {{ "Chiffre d'Affaire"|trans }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('vente_client_article',{'client' :user.id}) }}">
+                {{'Articles'|trans}}
+            </a>
+        </li>
+    </ul>
+    
+ <table class="table table-success-light table-bordered table-hover table-striped mb-3">
+        <thead>
+        
+      
+         <tr>
+            <th  class="text-center"><b>{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</b></th>
+        </tr>
+        </thead>
+        
+    </table>
+    <table class="table table-success-light table-bordered table-hover table-striped my-3 text-center" id="liste">
+        <thead>
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'Commande'|trans }}</th>
+            <th>{{ 'Montant'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for commande in commandes %}
+            <tr>
+                <td>{{ commande.date|date("d/m/Y H:i:s") }}</td>
+                <td>
+                 <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
+                 {{ commande.id }}
+                </a>
+                </td>
+                <td class="text-center">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</td>
+               
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="centrer gap-3  m-4 fond-7">
+            <button id="exportExcel" class="btn btn-green">
+                <i class="fa fa-file-excel"></i> Exporter Excel
+            </button>
+            <button id="exportPdf" class="btn btn-danger">
+                <i class="fa fa-file-pdf"></i> Exporter PDF
+            </button>
+            {# <a href="#" class="btn btn-success-light me-2">
+                <i class="fa fa-print"></i> Imprimer
+            </a> #}
+        </div>
+    </div>
+</div>
+{% endblock %}

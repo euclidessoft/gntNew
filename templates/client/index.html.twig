@@ -9,6 +9,7 @@
     'layout.html.twig' %}
 {% block title %} {{ "Tous les clients"|trans }} - GNT Pharma {% endblock %}
 {% block client %}active{% endblock %}
+{% block client_suivi %} active{% endblock %}
 {% block all_client %}active{% endblock %}
 {% block body %}
     <div class="container-fluid mt-4 fond-7">
@@ -44,11 +45,11 @@
                 <th>{{ 'Prénom'|trans }}</th>
                 <th>{{ 'Téléphone'|trans }}</th>
                 <th>{{ 'Email'|trans }}</th>
-                <th>{{ 'Adresse'|trans }}</th>
+                {# <th>{{ 'Adresse'|trans }}</th>
                 <th>{{ 'Prelevement'|trans }}</th>
                 <th class="text-center">
                     {{ 'Statut'|trans }}
-                </th>
+                </th> #}
                 <th class="text-center">{{ 'Actions'|trans }}</th>
             </tr>
             </thead>
@@ -60,7 +61,7 @@
                 <td data-label="Prénom">{{ client.prenom }}</td>
                 <td data-label="Téléphone">{{ client.phone }}</td>
                 <td data-label="Email">{{ client.email }}</td>
-                <td data-label="Adresse">{{ client.adresse }}</td>
+                {# <td data-label="Adresse">{{ client.adresse }}</td>
                 <td data-label="Prelevement"  class="text-center">{{ client.prelevement ? 'OUI' : 'NON' }}</td>
                 <td data-label="Statut" class="text-center" id="statut{{ client.id }}">
                     {% if client.enabled == 1 %}
@@ -68,13 +69,13 @@
                     {% else %}
                         {{ "Inactif"|trans }}
                     {% endif %}
-                </td>
+                </td> #}
                 <td data-label="Actions" class="text-center">
-                    <a href="{{ path('client_edit', {'id': client.id}) }}" class="btn btn-success-light me-2"
-                       title="{{ "Modifier"|trans }}">
-                        <i class="fa fa-edit"></i>
+                    <a href="{{ path('client_show', {'id': client.id}) }}" class="btn btn-success-light me-2"
+                       title="{{ "Afficher"|trans }}">
+                        <i class="fa fa-eye"></i>
                     </a>
-                    {% if client.enabled == 1 %}
+                    {# {% if client.enabled == 1 %}
                         <button class="btn btn-danger" id="btn{{ client.id }}" onclick="userdisable({{ client.id }})" title="{{ "Désactiver ce client"|trans }}">
                             <i class="fa fa-user-lock"></i>
                         </button>
@@ -82,7 +83,7 @@
                         <button class="btn btn-green" id="btn{{ client.id }}" onclick="userenable({{ client.id }})" title="{{ "Activer ce client"|trans }}">
                             <i class="fa fa-user-check"></i>
                         </button>
-                    {% endif %}
+                    {% endif %} #}
                 </td>
                 {% endfor %}
             </tbody>

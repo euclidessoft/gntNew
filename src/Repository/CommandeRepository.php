@@ -169,6 +169,18 @@ class CommandeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+     public function vente_client($client)
+    {
+        // achat a credit non livrer avec avance recu
+        $query = $this ->createQueryBuilder('a')
+            ->Where('a.user = :client')
+            ->setParameter('client', $client)
+            ->orderBy("a.date","DESC")
+        ;
+        return $query->getQuery()
+            ->getResult();
+    }
+
 
     // /**
     //  * @return Commande[] Returns an array of Commande objects

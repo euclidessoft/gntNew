@@ -226,7 +226,7 @@
                                         {{ quantite != 0 ? quantite : ''  }}
                                     </td>
                     <td>
-                        {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
                     </td>
                     <td>
@@ -261,10 +261,10 @@
                             -
                         {% endif %}
                     </td>
-                    <td>{{ commandeproduit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{ commandeproduit.publique|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>
-                        {{ (commandeproduit.quantite * commandeproduit.produit.prix)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                        {% set total = total + (commandeproduit.quantite * commandeproduit.produit.prix) %}
+                        {{ (commandeproduit.quantite * commandeproduit.session)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {% set total = total + (commandeproduit.quantite * commandeproduit.session) %}
                     </td>
                 </tr>
             {% endfor %}
@@ -545,7 +545,7 @@
                         {{ ug !=0 ? ug : ''}}
                     </td> 
                     <td>
-                        {{ commandeproduit.produit.prix }}
+                        {{ commandeproduit.session }}
 
                     </td>
                     <td>
@@ -556,12 +556,12 @@
                     {{ tva }}%
                     {% endif %}
                     </td>
-                    <td>{{ commandeproduit.produit.prixpublic }}</td>
+                    <td>{{ commandeproduit.publique }}</td>
                     <td>
-                    {% if commandeproduit.produit.tva is true %}
-                         {{ commandeproduit.produit.prixpublic + commandeproduit.produit.prixpublic * tva }}
+                    {% if commandeproduit.tva != 0 %}
+                         {{ commandeproduit.publique + commandeproduit.publique * tva }}
                     {% else %}
-                      {{ commandeproduit.produit.prix }}
+                      {{ commandeproduit.session }}
                     {% endif %}
                      
                     </td>

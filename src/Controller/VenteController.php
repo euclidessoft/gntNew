@@ -109,7 +109,148 @@ class VenteController extends AbstractController
             return $response;
         }
     }
+    
+    #[Route("/Article/{client}/{id}", name :"client_show", methods : ["GET"]) ]
+    public function produitclienthistory(Client $client, Produit $produit, CommandeProduitRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+            $ventes = $repository->article_client_show($client->getid(),$produit->getId());
+            $quantite = 0;
+            $montant = 0;
+            foreach($ventes as $vente){
+                $quantite += $vente->getQuantite();
+                $montant += $vente->getSession() * $vente->getQuantite();
+            }
+            $response = $this->render('vente/vente_client_show.html.twig', [
+                'ventes' => $ventes,
+                'produit' => $produit,
+                'quantite' => $quantite,
+                'montant' => $montant,
+                'user' => $client,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
 
+    #[Route("Client/", name :"client") ]
+    public function client(ProduitRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+
+            $response = $this->render('vente/articles.html.twig', [
+                'produits' => $repository->vente_article(),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    #[Route("Chiffre_client/{client}", name :"chiffre_client") ]
+    public function chiffreclient(Client $client,CommandeRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+             $commandes = $repository->vente_client($client->getId());
+            $montant = 0;
+            foreach($commandes as $commande){
+                $montant += $commande->getMontant();
+            }
+            $response = $this->render('vente/client.html.twig', [
+                'commandes' => $commandes,
+                'user' => $client,
+                'montant' => $montant,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+     #[Route("Client_Articles/{client}", name :"client_article") ]
+    public function clientsortie(Client $client, ProduitRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+
+            $response = $this->render('vente/client_articles.html.twig', [
+                'produits' => $repository->article_client($client->getId()),
+                'user' => $client,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+ 
 
 
 
