@@ -11,6 +11,7 @@ src/Controller/NotificationController.php
 /public/uploads/
 /public/Documents/
 /var/
+/node_modules/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
