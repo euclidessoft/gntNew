@@ -92,7 +92,14 @@ public function sortie()// historique livraison produit
         ->getResult();
 }
 
-
+public function vente_article()// vente par produit
+{
+    return $this->createQueryBuilder('p')
+        ->innerJoin('App\Entity\CommandeProduit', 'lp', 'WITH', 'lp.produit = p')
+        ->groupBy('p.id')
+        ->getQuery()
+        ->getResult();
+}
 
 
 }

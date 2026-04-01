@@ -388,6 +388,13 @@
                             </a>
                         </li>
                         <li class="dropdown-item">
+                            <a class="nav-link {% block palmares %}{% endblock %}"
+                               href="{{ path('vente_article') }}">
+                                <i class="fas fa-exchange"></i>
+                                {{ 'Palmares des ventes'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
                             <a class="nav-link {% block importation %}{% endblock %}" 
                                 data-bs-toggle="modal"  data-bs-target="#choiximport"
                                href="{{ path('commande_panier_suivi_extranet') }}">
