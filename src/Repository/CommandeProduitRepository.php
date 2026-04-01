@@ -116,8 +116,8 @@ class CommandeProduitRepository extends ServiceEntityRepository
     public function article_client_show($client,$produit)
     {//palmares article par client
         return $this->createQueryBuilder('p')
-            ->innerJoin('App\Entity\Commande', 'c')
-            ->andWhere('c.user = :client')
+            ->Join('p.commande', 'c')
+            ->Where('c.user = :client')
             ->andWhere('p.produit = :produit')
             ->setParameter('client', $client)
             ->setParameter('produit', $produit)

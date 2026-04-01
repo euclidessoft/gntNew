@@ -64,15 +64,34 @@
         </tbody>
     </table>
     <div class="centrer gap-3  m-4 fond-7">
-            <button id="exportExcel" class="btn btn-green">
-                <i class="fa fa-file-excel"></i> Exporter Excel
-            </button>
-            <button id="exportPdf" class="btn btn-danger">
-                <i class="fa fa-file-pdf"></i> Exporter PDF
-            </button>
-            {# <a href="#" class="btn btn-success-light me-2">
-                <i class="fa fa-print"></i> Imprimer
-            </a> #}
+             <table class="table table-success-light table-bordered table-hover table-striped my-3" id="facture" style="display:none;">
+        <thead>
+        <tr>
+            <th>{{ 'CIP'|trans }}</th>
+            <th>{{ 'Désignation'|trans }}</th>
+            <th>{{ 'DCI'|trans }}</th>
+            <th>{{ 'Fabricant'|trans }}</th>
+            <th>{{ 'Actions'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for produit in produits %}
+            <tr>
+                <td>{{ produit.reference }}</td>
+                <td>{{ produit.desigantion }}</td>
+                <td>{{ produit.dci }}</td>
+                <td>{{ produit.fabriquant }}</td>
+                <td>
+                    <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" href="{{ path('vente_client_show', {'client': user.id, 'id': produit.id}) }}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+     <span id="exportexcel" class=""></span>
         </div>
     </div>
 </div>
