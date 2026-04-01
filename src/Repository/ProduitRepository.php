@@ -101,16 +101,6 @@ public function vente_article()// vente par produit
         ->getResult();
 }
 
-public function vente_client($client)// vente par produit
-{
-    return $this->createQueryBuilder('p')
-        ->innerJoin('App\Entity\CommandeProduit', 'lp', 'WITH', 'lp.produit = p')
-        ->where('lp.')
-        ->setParameter('produits', $produits)
-        ->groupBy('p.id')
-        ->getQuery()
-        ->getResult();
-}
 
 public function article_client($clientId)
 {
@@ -119,6 +109,8 @@ public function article_client($clientId)
         ->innerJoin('cp.commande', 'c')
         ->andWhere('c.user = :client')
         ->setParameter('client', $clientId)
+        ->andWhere('c.suivi = :suivi')
+        ->setParameter('suivi', true)
         ->groupBy('p.id')
         ->getQuery()
         ->getResult();

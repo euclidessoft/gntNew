@@ -120,6 +120,8 @@ class CommandeProduitRepository extends ServiceEntityRepository
             ->Where('c.user = :client')
             ->andWhere('p.produit = :produit')
             ->setParameter('client', $client)
+            ->andWhere('c.suivi = :suivi')
+            ->setParameter('suivi', true)
             ->setParameter('produit', $produit)
             ->orderBy("c.date", "DESC")
             ->getQuery()

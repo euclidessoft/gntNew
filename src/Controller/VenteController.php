@@ -150,37 +150,7 @@ class VenteController extends AbstractController
             return $response;
         }
     }
-
-    #[Route("Client/", name :"client") ]
-    public function client(ProduitRepository $repository): Response
-    {
-        if ($this->security->isGranted('ROLE_BACK')) {
-
-            $response = $this->render('vente/articles.html.twig', [
-                'produits' => $repository->vente_article(),
-            ]);
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
-        } else {
-            $response = $this->redirectToRoute('security_logout');
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
-        }
-    }
+    
     #[Route("Chiffre_client/{client}", name :"chiffre_client") ]
     public function chiffreclient(Client $client,CommandeRepository $repository): Response
     {

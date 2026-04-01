@@ -174,6 +174,8 @@ class CommandeRepository extends ServiceEntityRepository
         // achat a credit non livrer avec avance recu
         $query = $this ->createQueryBuilder('a')
             ->Where('a.user = :client')
+            ->andWhere('a.suivi = :suivi')
+            ->setParameter('suivi', true)
             ->setParameter('client', $client)
             ->orderBy("a.date","DESC")
         ;
