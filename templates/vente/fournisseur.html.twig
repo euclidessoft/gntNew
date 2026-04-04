@@ -1,0 +1,91 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Fournisseurs"|trans }} - GNT Pharma {% endblock %}
+{% block fournisseur %}active{% endblock %}
+{% block all_fournisseurs %}active{% endblock %}
+
+{% block body %}
+<div class="container mt-4 fond-7">
+    <h3 class="mt-4 mb-5 text-bold">
+        <i class="fas fa-chart-line me-2"></i>
+        {{ "Analyse Fournisseur"|trans }} | {{ fournisseur.designation}} 
+    </h3>
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                {{ "Chiffre d'Affaire"|trans }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('vente_client_article',{'client' :fournisseur.id}) }}">
+                {{'Articles'|trans}}
+            </a>
+        </li>
+    </ul>
+    
+ <table class="table table-success-light table-bordered table-hover table-striped mb-3">
+        <thead>
+        
+      
+         <tr>
+            <th  class="text-center"><b>{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</b></th>
+        </tr>
+        </thead>
+        
+    </table>
+    <table class="table table-success-light table-bordered table-hover table-striped my-3 text-center">
+        <thead>
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'Montant'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for facture in factures %}
+            <tr>
+                <td>{{ facture.approvisionner.date|date("d/m/Y") }}</td>
+                <td class="text-center">{{ facture.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</td>
+               
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="centrer gap-3  m-4 fond-7">
+            <table class="table table-success-light table-bordered table-hover table-striped my-3 text-center" id="facture" style="display:none;">
+        <thead>
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'facture'|trans }}</th>
+            <th>{{ 'Montant'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for facture in factures %}
+            <tr>
+                <td>{{ facture.approvisionner.date|date("d/m/Y H:i:s") }}</td>
+                <td>
+                 <a id="b{{ facture.id }}" onclick="load('b{{ facture.id }}')"{# href="{{ path('facture_panier_Detail', {'facture' : facture.id}) }}"#} class="btn btn-success">
+                 {{ facture.id }}
+                </a>
+                </td>
+                <td class="text-center">{{ facture.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</td>
+               
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+     <span id="exportexcel" class=""></span>
+        </div>
+    </div>
+</div>
+{% endblock %}

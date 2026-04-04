@@ -824,8 +824,79 @@ class LivrerController extends AbstractController
                     $ug = 0;
                     // traitement promotion floor()
                     if (!empty($commandeproduit->getPromotion())) {
+                       
                         if (!empty($commandeproduit->getPromotion()->getPremier())) {
-                            if ($commandeproduit->getQuantite() / $commandeproduit->getPromotion()->getTroisieme() >= 1) {
+                             $quantite = $commandeproduit->getQuantite();
+                            $promo = $commandeproduit->getPromotion();
+
+                            if ($quantite / $promo->getCinquieme() >= 1) {
+
+                                $unite = floor($quantite / $promo->getCinquieme());
+                                $ug += $unite * $promo->getUgcinquieme();
+                                $suite = $quantite - $unite * $promo->getCinquieme();
+
+                                if ($suite / $promo->getQuatrieme() >= 1) {
+
+                                    $unite = floor($suite / $promo->getQuatrieme());
+                                    $ug += $unite * $promo->getUgquatrieme();
+                                    $suite = $suite - $unite * $promo->getQuatrieme();
+
+                                    if ($suite / $promo->getTroisieme() >= 1) {
+
+                                        $unite = floor($suite / $promo->getTroisieme());
+                                        $ug += $unite * $promo->getUgtroisieme();
+                                        $suite = $suite - $unite * $promo->getTroisieme();
+
+                                        if ($suite / $promo->getDeuxieme() >= 1) {
+
+                                            $unite = floor($suite / $promo->getDeuxieme());
+                                            $ug += $unite * $promo->getUgdeuxieme();
+                                            $suite = $suite - $unite * $promo->getDeuxieme();
+
+                                            if ($suite / $promo->getPremier() >= 1) {
+                                                $unite = floor($suite / $promo->getPremier());
+                                                $ug += $unite * $promo->getUgpremier();
+                                            }
+
+                                        } elseif ($suite / $promo->getPremier() >= 1) {
+
+                                            $unite = floor($suite / $promo->getPremier());
+                                            $ug += $unite * $promo->getUgpremier();
+                                        }
+                                    }
+                                }
+
+                            } elseif ($quantite / $promo->getQuatrieme() >= 1) {
+
+                                $unite = floor($quantite / $promo->getQuatrieme());
+                                $ug += $unite * $promo->getUgquatrieme();
+                                $suite = $quantite - $unite * $promo->getQuatrieme();
+
+                                if ($suite / $promo->getTroisieme() >= 1) {
+
+                                    $unite = floor($suite / $promo->getTroisieme());
+                                    $ug += $unite * $promo->getUgtroisieme();
+                                    $suite = $suite - $unite * $promo->getTroisieme();
+
+                                    if ($suite / $promo->getDeuxieme() >= 1) {
+
+                                        $unite = floor($suite / $promo->getDeuxieme());
+                                        $ug += $unite * $promo->getUgdeuxieme();
+                                        $suite = $suite - $unite * $promo->getDeuxieme();
+
+                                        if ($suite / $promo->getPremier() >= 1) {
+                                            $unite = floor($suite / $promo->getPremier());
+                                            $ug += $unite * $promo->getUgpremier();
+                                        }
+
+                                    } elseif ($suite / $promo->getPremier() >= 1) {
+
+                                        $unite = floor($suite / $promo->getPremier());
+                                        $ug += $unite * $promo->getUgpremier();
+                                    }
+                                }
+                            }
+                            elseif ($commandeproduit->getQuantite() / $commandeproduit->getPromotion()->getTroisieme() >= 1) {
 
                                 $unite = floor($commandeproduit->getQuantite() / $commandeproduit->getPromotion()->getTroisieme());
                                 $ug = $ug + $unite * $commandeproduit->getPromotion()->getUgtroisieme();

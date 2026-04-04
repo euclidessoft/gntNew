@@ -31,8 +31,8 @@
         <td colspan="4"></td>
         </tr>
          <tr>
-            <th colspan="2"  class="text-center"><b>{{ "Quantité Totale Vendue"|trans}}: {{ quantite|number_format(0, '', ' ') }}</b></th>
-            <th colspan="2"  class="text-center"><b>{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(0, '', ' ') }}</b></th>
+            <th colspan="2"  class="text-center"><b>{{ "Quantité Totale Vendue"|trans}}: {{ quantite|number_format(0, '', ' ') }} ---> </b>  <b>{{ "U.G"|trans}}: {{ totalug|number_format(0, '', ' ') }}</b></th>
+            <th colspan="2"  class="text-center"><b>{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</b></th>
         </tr>
         </thead>
         
@@ -46,9 +46,11 @@
             <th>{{ 'Date'|trans }}</th>
             <th>{{ 'commande'|trans }}</th>
             <th>{{ 'Quantité vendue'|trans }}</th>
+            <th>{{ 'U.G'|trans }}</th>
         </tr>
         </thead>
         <tbody>
+        {% set tug = 0 %}
         {% for produit in ventes %}
             <tr>
                 <td>{{ produit.commande.date|date("d/m/Y") }}</td>
@@ -58,13 +60,132 @@
                 </a>
                 </td>
                 <td>{{ produit.quantite|number_format(0,',' , ' ') }}</td>
+                 <td>
+                {% set ug = 0 %}
+                {% set commande = produit %}
+                  {% if commande.promotion is not null %}
+                                {% if commande.promotion.premier is not null %}
+                                    {% if commande.quantite / commande.promotion.cinquieme >= 1 %}
 
+                                        {% set unite = (commande.quantite/ commande.promotion.cinquieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugcinquieme %}
+                                        {% set suite = commande.quantite- unite * commande.promotion.cinquieme %}
+
+                                        {% if suite / commande.promotion.quatrieme >= 1 %}
+
+                                            {% set unite = (suite / commande.promotion.quatrieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                            {% set suite = suite - unite * commande.promotion.quatrieme %}
+
+                                            {% if suite / commande.promotion.troisieme >= 1 %}
+
+                                                {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                                {% set suite = suite - unite * commande.promotion.troisieme %}
+
+                                                {% if suite / commande.promotion.deuxieme >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                    {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                                    {% if suite / commande.promotion.premier >= 1 %}
+                                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                    {% endif %}
+
+                                                {% elseif suite / commande.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% elseif commande.quantite/ commande.promotion.quatrieme >= 1 %}
+
+                                        {% set unite = (commande.quantite/ commande.promotion.quatrieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                        {% set suite = commande.quantite- unite * commande.promotion.quatrieme %}
+
+                                        {% if suite / commande.promotion.troisieme >= 1 %}
+
+                                            {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                            {% set suite = suite - unite * commande.promotion.troisieme %}
+
+                                            {% if suite / commande.promotion.deuxieme >= 1 %}
+                                                {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                                {% if suite / commande.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                {% endif %}
+
+                                            {% elseif suite / commande.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %}
+                                        {% endif %}
+                                    {% elseif commande.quantite / commande.promotion.troisieme >= 1 %}
+
+                                        {% set unite = (commande.quantite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                        {% set suite = commande.quantite - unite * commande.promotion.troisieme %}
+
+                                        {% if suite / commande.promotion.deuxieme >= 1 %}
+                                            {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                            {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                            {% if suite / commande.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %}
+
+                                        {% elseif suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %}
+
+                                    {% elseif commande.quantite / commande.promotion.deuxieme >= 1 %}
+
+
+                                        {% set unite = (commande.quantite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                        {% set suite = commande.quantite - unite * commande.promotion.deuxieme %}
+
+                                        {% if suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %}
+
+                                    {% elseif commande.quantite / commande.promotion.premier >= 1 %}
+
+                                        {% set unite = (commande.quantite / commande.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                    {% endif %}
+                            {% endif %}
+                    {% endif %}
+
+                                    {{ ug != 0 ? ug : "" }}
+                                    {% set tug = tug + ug %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
         <tr>
             <th colspan="2"  class="text-center">{{ "Quantité Totale Vendue"|trans}}: {{ quantite|number_format(0, '', ' ') }}</th>
-            <th  class="text-center">{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(0, '', ' ') }}</th>
+            <th  class="text-center">{{ "Chiffre d'affaire"|trans}}: {{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+            <th  class="text-center">{{ "U.G"|trans}}: {{ tug|number_format(0, '', ' ') }}</th>
         </tr>
     </table>
     <div class="centrer gap-3  m-4 fond-7">
@@ -74,6 +195,7 @@
             <th>{{ 'Date'|trans }}</th>
             <th>{{ 'commande'|trans }}</th>
             <th>{{ 'Quantité Vendue'|trans }}</th>
+            <th>{{ 'U.G'|trans }}</th>
         </tr>
         </thead>
         <tbody>
@@ -84,6 +206,124 @@
                  {{ produit.commande.id }}
                 </td>
                 <td>{{ produit.quantite }}</td>
+                <td>
+                {% set ug = 0 %}
+                {% set commande = produit %}
+                  {% if commande.promotion is not null %}
+                                {% if commande.promotion.premier is not null %}
+                                    {% if commande.quantite/ commande.promotion.cinquieme >= 1 %}
+
+                                        {% set unite = (commande.quantite/ commande.promotion.cinquieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugcinquieme %}
+                                        {% set suite = commande.quantite- unite * commande.promotion.cinquieme %}
+
+                                        {% if suite / commande.promotion.quatrieme >= 1 %}
+
+                                            {% set unite = (suite / commande.promotion.quatrieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                            {% set suite = suite - unite * commande.promotion.quatrieme %}
+
+                                            {% if suite / commande.promotion.troisieme >= 1 %}
+
+                                                {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                                {% set suite = suite - unite * commande.promotion.troisieme %}
+
+                                                {% if suite / commande.promotion.deuxieme >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                    {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                                    {% if suite / commande.promotion.premier >= 1 %}
+                                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                    {% endif %}
+
+                                                {% elseif suite / commande.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% elseif commande.quantite/ commande.promotion.quatrieme >= 1 %}
+
+                                        {% set unite = (commande.quantite/ commande.promotion.quatrieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                        {% set suite = commande.quantite- unite * commande.promotion.quatrieme %}
+
+                                        {% if suite / commande.promotion.troisieme >= 1 %}
+
+                                            {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                            {% set suite = suite - unite * commande.promotion.troisieme %}
+
+                                            {% if suite / commande.promotion.deuxieme >= 1 %}
+                                                {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                                {% if suite / commande.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                {% endif %}
+
+                                            {% elseif suite / commande.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %}
+                                        {% endif %}
+                                    {% elseif commande.quantite / commande.promotion.troisieme >= 1 %}
+
+                                        {% set unite = (commande.quantite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                        {% set suite = commande.quantite - unite * commande.promotion.troisieme %}
+
+                                        {% if suite / commande.promotion.deuxieme >= 1 %}
+                                            {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                            {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                            {% if suite / commande.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %}
+
+                                        {% elseif suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %}
+
+                                    {% elseif commande.quantite / commande.promotion.deuxieme >= 1 %}
+
+
+                                        {% set unite = (commande.quantite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                        {% set suite = commande.quantite - unite * commande.promotion.deuxieme %}
+
+                                        {% if suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %}
+
+                                    {% elseif commande.quantite / commande.promotion.premier >= 1 %}
+
+                                        {% set unite = (commande.quantite / commande.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                    {% endif %}
+                            {% endif %}
+                    {% endif %}
+
+                                    {{ ug != 0 ? ug : "" }}
+                </td>
 
             </tr>
         {% endfor %}
