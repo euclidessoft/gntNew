@@ -19,6 +19,7 @@ use App\Form\VersementType;
 use App\Repository\CommandeProduitRepository;
 use App\Repository\LivrerProduitRepository;
 use App\Repository\CommandeRepository;
+use App\Repository\ApprovisionnementRepository;
 use App\Repository\FactureRepository;
 use App\Repository\PaiementRepository;
 use App\Repository\ProduitRepository;
@@ -269,6 +270,47 @@ class VenteController extends AbstractController
         }
     }
     
+    #[Route("/Fournisseur_Article/{fournisseur}/{produit}", name :"fournisseur_show", methods : ["GET"]) ]
+    public function produitfournisseurhistory(Fournisseur $fournisseur, Produit $produit, ApprovisionnementRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+            $ventes = $repository->findBy(['fournisseur' => $fournisseur, 'produit' => $produit]);
+            $quantite = 0;
+            $montant = 0;
+            foreach($ventes as $vente){
+                $quantite += $vente->getQuantite();
+                $montant += $vente->getPght() * $vente->getQuantite();
+            }
+            $response = $this->render('vente/achat_fournisseur_show.html.twig', [
+                'ventes' => $ventes,
+                'produit' => $produit,
+                'quantite' => $quantite,
+                'montant' => $montant,
+                'user' => $fournisseur,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    
     #[Route("Chiffre_client/{client}", name :"chiffre_client") ]
     public function chiffreclient(Client $client,CommandeRepository $repository): Response
     {
@@ -314,6 +356,40 @@ class VenteController extends AbstractController
             $response = $this->render('vente/client_articles.html.twig', [
                 'produits' => $repository->article_client($client->getId()),
                 'user' => $client,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+     #[Route("Fournisseur_Articles/{fournisseur}", name :"fournisseur_article") ]
+    public function fournisseurachat(Fournisseur $fournisseur): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+
+            $response = $this->render('vente/fournisseur_articles.html.twig', [
+                'produits' => $fournisseur->getProduits(),
+                'user' => $fournisseur,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
