@@ -102,7 +102,7 @@ class ClientController extends AbstractController
                 $hashpass = $encoder->hashPassword($client, $client->getPassword());
                 
 
-                $client->setPharmacie($pahrmacie);
+                $client->setPharmacie($pharmacie);
                 $client->setPassword($hashpass);
                 $client->setUsername($client->getNom());
                 $client->setRoles(["ROLE_CLIENT_ADMIN"]);
