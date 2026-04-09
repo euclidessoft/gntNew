@@ -2494,7 +2494,7 @@ button.bg-default:focus {
 }
 
 .form-check-input {
-    border: 1px solid var(--gris-hover);,
+    border: 1px solid var(--gris-hover);
 }
 
 .form-floating textarea {
