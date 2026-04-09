@@ -33,6 +33,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('commande_panier_history') }}">{{'Commandes déjà payées'|trans}}</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('client_index') }}">
+                    {{'Relevé Factures'|trans}}
+                </a>
+            </li>
         </ul>
         {% for message in app.flashes('notice') %}
             <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">

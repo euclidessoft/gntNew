@@ -82,15 +82,15 @@ public function test(ParameterBagInterface $params)
         // // $ws->sendMessage("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500));
        // return new Response($response);
        
-        $retours = $this->entityManager->getRepository(RetourProduit::class)->findAll();
-        foreach($retours as $retour){
-            $retour->setPrix($retour->getProduit()->getPrix());
-            $retour->getProduit()->getTva() == true ? $retour->setTva($retour->getProduit()->getPrix() * 0.1925) : $retour->setTva(0);
-            $retour->setPrixpublic($retour->getProduit()->getPrixpublic());
-            $this->entityManager->persist($retour);
-            $this->entityManager->flush();
-        }
-        return new Response("okay");
+        // $retours = $this->entityManager->getRepository(RetourProduit::class)->findAll();
+        // foreach($retours as $retour){
+        //     $retour->setPrix($retour->getProduit()->getPrix());
+        //     $retour->getProduit()->getTva() == true ? $retour->setTva($retour->getProduit()->getPrix() * 0.1925) : $retour->setTva(0);
+        //     $retour->setPrixpublic($retour->getProduit()->getPrixpublic());
+        //     $this->entityManager->persist($retour);
+        //     $this->entityManager->flush();
+        // }
+        // return new Response("okay");
         
         
         // $clients = $this->entityManager->getRepository(Client::class)->findAll();
@@ -107,27 +107,27 @@ public function test(ParameterBagInterface $params)
         // }
         // return new Response("okay");
 
-        //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
-        // foreach($commandes as $commande){
-        //     if($commande->getTraitement() == null){
-        //     if($commande->getPaiement() !== null){
-        //    $commande->setTraitement($commande->getDatelivrer());
-        //     $this->entityManager->persist($commande);
-        //     //$this->entityManager->flush();
-        //     }else if($commande->getversement() != 0){
-        //         $versement =  $this->entityManager->getRepository(Versement::Class)->findOneby(['commande' => $commande],['id'=> 'ASC']);
-        //        $commande->setTraitement($commande->getDatelivrer());
-        //         $this->entityManager->persist($commande);
-        //         //$this->entityManager->flush();
-        //     }else if($commande->getPaiement() === null && $commande->getversement() == 0 && $commande->getLivrer() == true){
-        //         $commande->setTraitement($commande->getDatelivrer());
-        //         $this->entityManager->persist($commande);
-        //         //$this->entityManager->flush();
-        //     }
-        // }
-        // }
-        // $this->entityManager->flush();
-        // return new Response("okay");
+         $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
+        foreach($commandes as $commande){
+            if($commande->getTraitement() == null){
+            if($commande->getPaiement() !== null){
+           $commande->setTraitement($commande->getDatelivrer());
+            $this->entityManager->persist($commande);
+            //$this->entityManager->flush();
+            }else if($commande->getversement() != 0){
+                $versement =  $this->entityManager->getRepository(Versement::Class)->findOneby(['commande' => $commande],['id'=> 'ASC']);
+               $commande->setTraitement($commande->getDatelivrer());
+                $this->entityManager->persist($commande);
+                //$this->entityManager->flush();
+            }else if($commande->getPaiement() === null && $commande->getversement() == 0 && $commande->getLivrer() == true){
+                $commande->setTraitement($commande->getDatelivrer());
+                $this->entityManager->persist($commande);
+                //$this->entityManager->flush();
+            }
+        }
+        }
+        $this->entityManager->flush();
+        return new Response("okay");
     }
 
 

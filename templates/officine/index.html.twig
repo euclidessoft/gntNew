@@ -22,36 +22,19 @@
                 <a class="nav-link" href="{{ path('commande_panier_credit') }}">{{'Dette'|trans}}</a>
             </li>
         </ul>
-
          <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="liste">
-            <thead>
-            <tr>
-                <th>{{'Numero Commande'|trans}}</th>
-                <th>{{ 'Date'|trans }}</th>
-{#                <!-- <th>{{ 'Client'|trans }} </th> -->#}
-             {% if is_granted("ROLE_CLIENT_ADMIN")%}   <th>{{ 'Montant'|trans }}</th> {% endif %}
-                <th>Actions</th>
-            </tr>
+           <thead>
+                <th>Mois</th>
+                <th>premier quinzaine</th>
+                <th>Deuxieme quinzaine</th>
             </thead>
-            <tbody>
-            {% for commande in commandes %}
-                <tr>
-                    <td>{{ commande.id }}</td>
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
-{#                    <!-- <td> {{ commande.user.nom }}</td> -->#}
-                  {% if is_granted("ROLE_CLIENT_ADMIN")%}  <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td> {% endif %}
-                    <td>
-                   
-                        <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
-                        <i class="fa fa-money-bill"></i>
-                            {{ 'Facture'|trans }}
-                        </a>
+            {% set numero = commandes|length *2 %}
 
-                         <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
-                        <i class="fa fa-list"></i>
-                            {{ 'Bon de commande'|trans }}
-                        </a>
-                    </td>
+            {% for mois, data in commandes %}
+                <tr>
+                    <td>{{ mois }}</td>
+                    <td><a href="{{ path('commande_panier_officine_premier', { 'mois' : mois})}}">RELEVE DES FACTURES N#{{numero-1}}</a></td>
+                    <td><a href="{{ path('commande_panier_officine_deuxieme', { 'mois' : mois})}}">RELEVE DES FACTURES N#{{numero}}</a> {% set numero = numero -2 %}</td>
                 </tr>
             {% else %}
             {% endfor %}

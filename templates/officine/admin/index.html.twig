@@ -1,0 +1,60 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Officine"|trans }} - GNT Pharma {% endblock %}
+{% block commande %}active{% endblock %}
+{% block suivi %}active{% endblock %}
+
+{% block body %}
+    <div class="container mt-4 fond-7">
+         <h3 class="mt-4 mb-1 text-bold">
+            <i class="fa fa-user fa-lg"></i>
+            {{ user.nom ~ " " ~ user.prenom}}  
+        </h3>
+        <h4 class="mt-2 mb-5 text-bold">
+            <i class="fa fa-list fa-lg"></i>
+            {{ "Relevés Factures"|trans }} 
+        </h4>
+        {# <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">{{ 'Facture'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('avoir_officine') }}">{{'Avoir'|trans}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">{{'Restourne'|trans}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_credit') }}">{{'Dette'|trans}}</a>
+            </li>
+        </ul> #}
+         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
+           <thead>
+                <th>Mois</th>
+                <th>premier quinzaine</th>
+                <th>Deuxieme quinzaine</th>
+            </thead>
+            {% set numero = commandes|length *2 %}
+
+            {% for mois, data in commandes %}
+                <tr>
+                    <td>{{ mois }}</td>
+                    <td><a href="{{ path('commande_panier_releve_premier', { 'mois' : mois, 'client' :user.id})}}">RELEVE DES FACTURES {{numero-1}}</a></td>
+                    <td><a href="{{ path('commande_panier_officine_deuxieme', { 'mois' : mois})}}">RELEVE DES FACTURES {{numero}}</a> {% set numero = numero -2 %}</td>
+                </tr>
+            {% else %}
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}
