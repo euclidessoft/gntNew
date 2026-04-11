@@ -10,10 +10,10 @@
                 data: "usr=" + id,
                 success: function (data) {
                     if (data['ok'] !== '') {
-                        bouton.attr('class', 'btn btn-green');
+                        bouton.attr('class', 'btn btn-green me-2 mb-2');
                         bouton.attr('onclick', 'userenable(' + id + ')');
                         bouton.attr('title', ' {{ "Activer ce client"|trans }}');
-                        bouton.html("<i class='fa fa-user-check'></i>");
+                        bouton.html('<i class="fa fa-user-check"></i>{{ "Activer"|trans }}');
                         etat.html("{{ 'Inactif'|trans }}");
                     }
                 },
@@ -35,10 +35,10 @@
                 data: "usr=" + id,
                 success: function (data) {
                     if (data['ok'] !== '') {
-                        bouton.attr('class', 'btn btn-danger');
+                        bouton.attr('class', 'btn btn-danger me-2 mb-2');
                         bouton.attr('onclick', 'userdisable(' + id + ')');
                         bouton.attr('title', ' {{ "Désactiver ce client"|trans }}');
-                        bouton.html("<i class='fa fa-user-lock'></i>");
+                        bouton.html('<i class="fa fa-user-lock"></i>{{ "Désactiver"|trans }}');
                         etat.html("{{ 'Actif'|trans }}");
                     }
                 },
