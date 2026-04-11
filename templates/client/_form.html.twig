@@ -10,12 +10,12 @@
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_row(form.prenom, {'label': 'Prenom', 'attr' : { 'placeholder' : 'Prénom *'}}) }}
+                {{ form_row(form.prenom, {'label': 'Prénom *', 'attr' : { 'placeholder' : 'Prénom *'}}) }}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_widget(form.nom, {'attr' : { 'placeholder' : 'Nom *'}}) }}
+                {{ form_row(form.nom, {'label': 'Nom *', 'attr' : { 'placeholder' : 'Nom *'}}) }}
             </div>
         </div>
         <div class="col-md-6">
@@ -26,12 +26,12 @@
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_widget(form.email, {'attr' : { 'placeholder' : 'Email *'}}) }}
+                {{ form_row(form.email, {'label': 'Email *', 'attr' : { 'placeholder' : 'Email *'}}) }}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_widget(form.phone, {'attr' : { 'placeholder' : 'Telephone *'}}) }}
+                {{ form_row(form.phone, {'label': 'Telephone *', 'attr' : { 'placeholder' : 'Telephone *'}}) }}
             </div>
         </div>
         <div class="col-md-6">
@@ -42,12 +42,12 @@
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_widget(form.niu, {'attr' : { 'placeholder' : 'NIU *'}}) }}
+                {{ form_row(form.niu, {'label': 'NIU', 'attr' : { 'placeholder' : 'NIU *'}}) }}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_widget(form.boitepostale, {'attr' : { 'placeholder' : 'Boite Postale *'}}) }}
+                {{ form_row(form.boitepostale, {'label': 'Boite Postale', 'attr' : { 'placeholder' : 'Boite Postale *'}}) }}
             </div>
         </div>
         <div class="col-md-6">
@@ -58,12 +58,12 @@
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_widget(form.rccm, {'attr' : { 'placeholder' : 'RCCM *'}}) }}
+                {{ form_row(form.rccm, {'label': 'RCCM', 'attr' : { 'placeholder' : 'RCCM *'}}) }}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-4">
-                {{ form_widget(form.siteweb, {'attr' : { 'placeholder' : 'Site web *'}}) }}
+                {{ form_row(form.siteweb, {'label': 'Site web', 'attr' : { 'placeholder' : 'Site web *'}}) }}
             </div>
         </div>
         <div class="col-md-12">
@@ -71,15 +71,15 @@
         </div>
         <div class="col-md-12">
             <div class="form-group mb-4">
-                {{ form_widget(form.adresse, {'attr' : { 'placeholder' : 'Adresse '}}) }}
+                {{ form_row(form.adresse, {'label': 'Adresse *', 'attr' : { 'placeholder' : 'Adresse '}}) }}
             </div>
         </div>
     </div>
     {{ form_rest(form) }}
 
 
-    <div class="col-md-7 mt-4 pt-3 fond-7">
-        <div class="centrer mb-3">
+    <div class="col-md-8 col-sm-12 mt-4 p-3 fond-7">
+        <div class="centrer mx-3">
             <button type="submit" class="btn btn-shadow btn-normal btn-success me-3">
                 <i class="fa fa-save"></i>
                 {{ 'Enregistrer'|trans }}

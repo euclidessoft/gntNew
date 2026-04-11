@@ -8,7 +8,7 @@
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
     'layout.html.twig'
 %}
-{% block title %} {{ "Nouvelle banque"|trans }} - GNT Pharma {% endblock %}
+{% block title %} {{ "Modifier client"|trans }} - GNT Pharma {% endblock %}
 {% block employe %}active{% endblock %}
 {% block employe_new %}active{% endblock %}
 
@@ -31,5 +31,5 @@
     {{ include('client/_form.html.twig') }}
 
 </div>
-{{ form_rest(form) }}
+{#{{ form_rest(form) }}#}
 {% endblock %}

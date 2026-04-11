@@ -2592,3 +2592,13 @@ textarea.rows-10 {
     justify-content: center;
     height: 90vh;
 }
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+td label {
+    display: none;
+}
