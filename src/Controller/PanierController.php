@@ -40,7 +40,24 @@ class PanierController extends AbstractController
             }
             $approvisionnements = $approvisionnementRepository->arrivage($appro);// recuperation des approvisionnement des id dans le tableau
         }
-        if ($this->security->isGranted('ROLE_CLIENT')) {
+        if ($this->security->isGranted('ROLE_LABORATOIRE')) {
+
+            $response = $this->render('commande/admin/dashbord_laboratoire.html.twig', [
+                'deja' => $this->getUser()->getProduits(),
+                'attente' => $livrerRepository->findBy(['livreur' => $this->getUser()->getId(), 'livrer' => false]),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+
+        }
+        else if ($this->security->isGranted('ROLE_CLIENT')) {
 
             $this->getUser()->getTuteur() === null ?
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :

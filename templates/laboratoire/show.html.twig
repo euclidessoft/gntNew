@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laboratoire{% endblock %}
+
+{% block body %}
+    <h1>Laboratoire</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ laboratoire.id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ laboratoire.username }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ laboratoire.password }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ laboratoire.email }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ laboratoire.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ laboratoire.nom }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ laboratoire.phone }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ laboratoire.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Fonction</th>
+                <td>{{ laboratoire.fonction }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ laboratoire.roles ? laboratoire.roles|join(', ') : '' }}</td>
+            </tr>
+            <tr>
+                <th>ResetToken</th>
+                <td>{{ laboratoire.resetToken }}</td>
+            </tr>
+            <tr>
+                <th>Enabled</th>
+                <td>{{ laboratoire.enabled ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Client</th>
+                <td>{{ laboratoire.client ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Livreur</th>
+                <td>{{ laboratoire.livreur ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Boitepostale</th>
+                <td>{{ laboratoire.boitepostale }}</td>
+            </tr>
+            <tr>
+                <th>Siteweb</th>
+                <td>{{ laboratoire.siteweb }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_laboratoire_index') }}">back to list</a>
+
+    <a href="{{ path('app_laboratoire_edit', {'id': laboratoire.id}) }}">edit</a>
+
+    {{ include('laboratoire/_delete_form.html.twig') }}
+{% endblock %}

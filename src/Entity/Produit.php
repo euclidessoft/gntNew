@@ -12,8 +12,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass:ProduitRepository::class) ]
 class Produit
 {
+    
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Laboratoire", inversedBy:"produits") ]
+    #[ORM\JoinColumn(nullable:true) ]
+    private $laboratoire;
+
     #[ORM\ManyToOne(targetEntity:"App\Entity\Promotion") ]
-#[ORM\JoinColumn(nullable:true) ]
+    #[ORM\JoinColumn(nullable:true) ]
     private $promotion;
 
     #[ORM\Id]
