@@ -2532,7 +2532,7 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             
-            $commandes = $repository->findBy(['user' => $client->getId()],['traitement' =>"DESC"]);
+            $commandes = $repository->findBy(['suivi' => true, 'user' => $client->getId()],['traitement' =>"DESC"]);
             
             $response = $this->render('officine/admin/index.html.twig', [
                 'commandes' => $this->Quinzaine($commandes),
@@ -2560,6 +2560,7 @@ class CommandeController extends AbstractController
             return $response;
         }
     }
+
      #[Route("/Releve/Premier/{mois}/{client}", name :"releve_premier") ]
     public function relevepremier($mois,$client, CommandeRepository $repository)
     {
@@ -2572,6 +2573,46 @@ class CommandeController extends AbstractController
             $response = $this->render('officine/admin/quinze.html.twig', [
                 'commandes' => $commandes,
                 'quinzaine' => "Premier",
+                'mois' => $mois,
+                'user' => $client,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    
+     #[Route("/Releve/Deuxieme/{mois}/{client}", name :"releve_deuxieme") ]
+    public function relevedeuxieme($mois,$client, CommandeRepository $repository)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+        $client = $this->entityManager->getRepository(Client::class)->find($client);
+            
+            $commandes = $repository->deuxiemetranche($client->getId(), $mois);
+             
+            $response = $this->render('officine/admin/quinze.html.twig', [
+                'commandes' => $commandes,
+                'quinzaine' => "Deuxieme",
                 'mois' => $mois,
                 'user' => $client,
             ]);

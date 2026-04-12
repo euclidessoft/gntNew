@@ -200,11 +200,15 @@ class CommandeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-     public function deuxiemetranche($user)
+      public function deuxiemetranche($user, $mois)
     {
-         $endDate = new \DateTime('last day of this month 23:59:59');
-         $date = date("Y")."-".date("m")."-01  00:00:00";
-        $startDate = new \DateTime($date);
+         $date = $mois."-15  00:00:00";
+         $startDate = new \DateTime($date);
+         $date = $mois."-15";
+        $endDate = new \DateTime($date);
+        $dernierjour = $endDate->format('t');
+        $date = $mois."-".$dernierjour."  23:59:59";
+        $endDate = new \DateTime($date);
         return $this->createQueryBuilder('p')
             ->where('p.user = :id')
             ->andWhere('p.traitement BETWEEN :start AND :end')
@@ -215,6 +219,22 @@ class CommandeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    //  public function deuxiemetranche($user)
+    // {
+    //      $endDate = new \DateTime('last day of this month 23:59:59');
+    //      $date = date("Y")."-".date("m")."-01  00:00:00";
+    //     $startDate = new \DateTime($date);
+    //     return $this->createQueryBuilder('p')
+    //         ->where('p.user = :id')
+    //         ->andWhere('p.traitement BETWEEN :start AND :end')
+    //         ->setParameter('id' , $user)
+    //         ->setParameter('start' , $startDate)
+    //         ->setParameter('end' , $endDate)
+    //         ->orderBy('p.date', "DESC")
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
 
     // /**
