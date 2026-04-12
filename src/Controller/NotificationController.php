@@ -107,27 +107,27 @@ public function test(ParameterBagInterface $params)
         // }
         // return new Response("okay");
 
-         $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
-        foreach($commandes as $commande){
-            if($commande->getTraitement() == null){
-            if($commande->getPaiement() !== null){
-           $commande->setTraitement($commande->getDatelivrer());
-            $this->entityManager->persist($commande);
-            //$this->entityManager->flush();
-            }else if($commande->getversement() != 0){
-                $versement =  $this->entityManager->getRepository(Versement::Class)->findOneby(['commande' => $commande],['id'=> 'ASC']);
-               $commande->setTraitement($commande->getDatelivrer());
-                $this->entityManager->persist($commande);
-                //$this->entityManager->flush();
-            }else if($commande->getPaiement() === null && $commande->getversement() == 0 && $commande->getLivrer() == true){
-                $commande->setTraitement($commande->getDatelivrer());
-                $this->entityManager->persist($commande);
-                //$this->entityManager->flush();
-            }
-        }
-        }
-        $this->entityManager->flush();
-        return new Response("okay");
+        //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
+        // foreach($commandes as $commande){
+        //     if($commande->getTraitement() == null){
+        //     if($commande->getPaiement() !== null){
+        //    $commande->setTraitement($commande->getDatelivrer());
+        //     $this->entityManager->persist($commande);
+        //     //$this->entityManager->flush();
+        //     }else if($commande->getversement() != 0){
+        //         $versement =  $this->entityManager->getRepository(Versement::Class)->findOneby(['commande' => $commande],['id'=> 'ASC']);
+        //        $commande->setTraitement($commande->getDatelivrer());
+        //         $this->entityManager->persist($commande);
+        //         //$this->entityManager->flush();
+        //     }else if($commande->getPaiement() === null && $commande->getversement() == 0 && $commande->getLivrer() == true){
+        //         $commande->setTraitement($commande->getDatelivrer());
+        //         $this->entityManager->persist($commande);
+        //         //$this->entityManager->flush();
+        //     }
+        // }
+        // }
+        // $this->entityManager->flush();
+        // return new Response("okay");
     }
 
 
