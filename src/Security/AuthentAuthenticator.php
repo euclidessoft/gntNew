@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class AuthentAuthenticator extends AbstractLoginFormAuthenticator
+class AuthentAuthenticator extends AbstractLoginFormAuthenticator //implements AuthenticationSuccessHandlerInterface
 {
     use TargetPathTrait;
 
@@ -44,7 +44,7 @@ class AuthentAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+        if ($targetPath = $this->getTargetPath($request->getSession(), 'main')) {
             return new RedirectResponse($targetPath);
         }
 
