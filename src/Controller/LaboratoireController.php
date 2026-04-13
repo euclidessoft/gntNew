@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Laboratoire;
+use App\Entity\Produit;
+use App\Repository\LivrerProduitRepository;
 use App\Form\LaboratoireForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,6 +68,20 @@ final class LaboratoireController extends AbstractController
     {
         return $this->render('laboratoire/show.html.twig', [
             'laboratoire' => $laboratoire,
+        ]);
+    }
+
+    #[Route('/laboratoireProduit/{id}', name: 'laboratoire_produit_show', methods: ['GET'])]
+    public function produitshow(Produit $produit, livrerProduitRepository $repository): Response
+    {
+        $vendu =0;
+        $ventes = $repository->findBy(['produit' => $produit]);
+        foreach($ventes as $vente){
+            $vendu += $vente->getQuantitelivrer();
+        }
+        return $this->render('laboratoire/produit_show.html.twig', [
+            'produit' => $produit,
+            'vendu' => $vendu,
         ]);
     }
 

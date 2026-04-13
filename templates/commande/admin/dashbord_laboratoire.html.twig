@@ -8,86 +8,50 @@
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
     'layout.html.twig'
 %}
-{% block home %}active{% endblock %}
+{% block title %} {{ "Tous les produits"|trans }} - GNT Pharma {% endblock %}
+{% block produit %}active{% endblock %}
+{% block all_produits %}active{% endblock %}
+
 {% block body %}
-
-    {% for message in app.session.flashbag.get('notice') %}
-        <div class="container mt-5 mb-5">
-            <div role="alert" class="alert alert-danger alert-dismissible">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ message|trans }}
-            </div>
-        </div>
-    {% endfor %}
-    <div class="col-md-8 offset-md-2 my-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-3 h-100 col-md-4 col-sm-6 mt-3 mb-3">
-                <div class="card border-green">
-                    <div class="card-header bg-success-light text-green">
-                        <div class="row">
-                            <div class="col-12">
-                                <i class="fa-solid fa-truck-fast fa-5x"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 text-end">
-                                <div class="text-bold">{{ deja|length }}</div>
-                                <div>
-                                    {{'Déjà livré'|trans}}
-                                </div>
-                                <br>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-light bt-green">
-                    <span class="float-left">
-                        <a href="{{ path('livraison_historique') }}" class="text-green">
-                            {{ 'Voir les détails'|trans }}
-                        </a>
-                    </span>
-                        <span class="float-right">
-                        <a href="{{ path('livraison_historique') }}" class="text-green">
-                            <i class="fa fa-arrow-circle-right fa-lg"></i>
-                        </a>
-                    </span>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 h-100 col-md-4 col-sm-6 my-3">
-                <div class="card border-green">
-                    <div class="card-header bg-green text-white">
-                        <div class="row">
-                            <div class="col-12">
-                                <i class="fa-solid fa-truck fa-5x"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 text-end">
-                                <div class="text-bold">{{ attente|length }}</div>
-                                <div>
-                                    {{ 'En attente de livraison'|trans }}
-                                </div>
-                                <br>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-light bt-green">
-                    <span class="float-left">
-                        <a href="{{ path('livraison_index') }}" class="text-green">
-                            {{ 'Voir les détails'|trans }}
-                        </a>
-                    </span>
-                        <span class="float-right">
-                        <a href="{{ path('livraison_index') }}" class="text-green">
-                            <i class="fa fa-arrow-circle-right fa-lg"></i>
-                        </a>
-                    </span>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container-fluid mt-4 mb-5 p-3 fond-7">
+    <h3 class="mt-4 mb-5 text-bold">
+        <i class="fa-brands fa-product-hunt me-2"></i>
+        {{ "Liste des Produits"|trans }}
+    </h3>
+    {% for message in app.flashes('notice') %}
+    <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {{ message|trans }}
     </div>
-
+    {% endfor %}
+    <a href="{{ path('produit_new') }}" class="btn btn-green my-4">
+        <i class="fa fa-plus"></i>
+        {{ "Nouveau"|trans }}
+    </a>
+    <table class="table table-success-light table-bordered table-hover table-striped w-100 text-center my-3" id="liste">
+        <thead>
+            <tr>
+                <th>{{ 'CIP'|trans }}</th>
+                <th class="text-start">{{ 'Désignation'|trans }}</th>
+                <th>{{ 'DCI'|trans }}</th>
+                <th>{{ 'Actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set produits = laboratoire.produits %}
+            {% for produit in produits %}
+            <tr>
+                <td>{{ produit.reference }}</td>
+                <td class="text-start">{{ produit.desigantion }}</td>
+                <td>{{ produit.dci }}</td>
+                <td class="text-nowrap">
+                    <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" title="{{ 'Voir'|trans }}" href="{{ path('laboratoire_produit_show', {'id': produit.id}) }}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

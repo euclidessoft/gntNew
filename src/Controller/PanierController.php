@@ -43,9 +43,8 @@ class PanierController extends AbstractController
         if ($this->security->isGranted('ROLE_LABORATOIRE')) {
 
             $response = $this->render('commande/admin/dashbord_laboratoire.html.twig', [
-                'deja' => $this->getUser()->getProduits(),
-                'attente' => $livrerRepository->findBy(['livreur' => $this->getUser()->getId(), 'livrer' => false]),
-            ]);
+                'laboratoire' => $this->getUser(),
+               ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
             $response->headers->addCacheControlDirective('no-store', true);
