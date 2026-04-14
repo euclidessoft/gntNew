@@ -24,7 +24,7 @@ class ProduitRepository extends ServiceEntityRepository
     public function nouveaute()
     {
         $date = new \Datetime();
-        date_sub($date,date_interval_create_from_date_string("30 days"));
+        date_sub($date,date_interval_create_from_date_string("180 days"));
        $creation = date_format($date,"Y-m-d");
 
 

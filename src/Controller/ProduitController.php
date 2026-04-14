@@ -362,8 +362,8 @@ class ProduitController extends AbstractController
                 ];
             }
             // dd($dataPanier);
-            $ventemensuel = $repository->ventemensuel();
-            $venteannuel = $repository->venteannuel();//
+            $ventemensuel = $repository->achatmensuel($this->getUser()->getId());
+            $venteannuel = $repository->achatannuel($this->getUser()->getId());//
 
 
             $response = $this->render('produit/vente.html.twig', [

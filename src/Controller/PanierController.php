@@ -71,7 +71,7 @@ class PanierController extends AbstractController
                 ];
             }
             $top = $repository->topmensuel($this->getUser());//recperation mon top
-            $vente = $repository->ventemensuel();
+            $vente = $repository->achatmensuel($this->getUser()->getId());
             $promotion = $promotionRepository->Courante();
             $nouveaute = $produitRepository->nouveaute();
             $avoir = $avoirRepository->findby(['client' => $this->getUser()]);
