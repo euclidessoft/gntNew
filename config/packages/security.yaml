@@ -5,6 +5,7 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     role_hierarchy:
         ROLE_CLIENT:     [ROLE_USER]
+        ROLE_LABORATOIRE:     [ROLE_USER]
         ROLE_CLIENT_ADMIN:     [ROLE_CLIENT]
         ROLE_RH:     [ROLE_EMPLOYER,ROLE_BACK]
         ROLE_LIVREUR:       [ROLE_BACK, ROLE_EMPLOYER]
@@ -39,6 +40,7 @@ security:
                 # by default, the feature is enabled by checking a checkbox in the
                 # login form, uncomment the following line to always enable it.
                 #always_remember_me: true
+            user_checker: App\Security\UserChecker
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

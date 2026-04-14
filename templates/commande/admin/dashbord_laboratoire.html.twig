@@ -1,0 +1,57 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Tous les produits"|trans }} - GNT Pharma {% endblock %}
+{% block produit %}active{% endblock %}
+{% block all_produits %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4 mb-5 p-3 fond-7">
+    <h3 class="mt-4 mb-5 text-bold">
+        <i class="fa-brands fa-product-hunt me-2"></i>
+        {{ "Liste des Produits"|trans }}
+    </h3>
+    {% for message in app.flashes('notice') %}
+    <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {{ message|trans }}
+    </div>
+    {% endfor %}
+    <a href="{{ path('produit_new') }}" class="btn btn-green my-4">
+        <i class="fa fa-plus"></i>
+        {{ "Nouveau"|trans }}
+    </a>
+    <table class="table table-success-light table-bordered table-hover table-striped w-100 text-center my-3" id="liste">
+        <thead>
+            <tr>
+                <th>{{ 'CIP'|trans }}</th>
+                <th class="text-start">{{ 'Désignation'|trans }}</th>
+                <th>{{ 'DCI'|trans }}</th>
+                <th>{{ 'Actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set produits = laboratoire.produits %}
+            {% for produit in produits %}
+            <tr>
+                <td>{{ produit.reference }}</td>
+                <td class="text-start">{{ produit.desigantion }}</td>
+                <td>{{ produit.dci }}</td>
+                <td class="text-nowrap">
+                    <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" title="{{ 'Voir'|trans }}" href="{{ path('laboratoire_produit_show', {'id': produit.id}) }}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -16,10 +16,18 @@
         {% endfor %}
 
         {% if error %}
+            
+            {% if  error.message == "Votre compte est désactivé." %}
+            <div role="alert" class="alert alert-danger alert-dismissible fade show mt-4 shadow-5" role="alert">
+                {{ 'Votre compte est désactivé.'|trans }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% else %}
             <div role="alert" class="alert alert-danger alert-dismissible fade show mt-4 shadow-5" role="alert">
                 {{ 'Adresse email ou mot de passe incorrecte'|trans }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            {% endif %}
         {% endif %}
     </div>
     <form action="{{ path('security_login') }}" method="POST" class="mt-4" id="form">

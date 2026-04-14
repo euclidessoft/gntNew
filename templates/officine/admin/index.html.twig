@@ -48,7 +48,7 @@
                 <tr>
                     <td>{{ mois }}</td>
                     <td><a href="{{ path('commande_panier_releve_premier', { 'mois' : mois, 'client' :user.id})}}">RELEVE DES FACTURES {{numero-1}}</a></td>
-                    <td><a href="{{ path('commande_panier_officine_deuxieme', { 'mois' : mois})}}">RELEVE DES FACTURES {{numero}}</a> {% set numero = numero -2 %}</td>
+                    <td><a href="{{ path('commande_panier_releve_deuxieme', { 'mois' : mois, 'client' :user.id})}}">RELEVE DES FACTURES {{numero}}</a> {% set numero = numero -2 %}</td>
                 </tr>
             {% else %}
             {% endfor %}
