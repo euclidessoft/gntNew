@@ -77,110 +77,184 @@
                     {{ commande.quantite }}
                     {% if commande.promotion is not null %}
                         {% if commande.promotion.premier is not null %}
-                             {% if commande.quantite / commande.promotion.cinquieme >= 1 %}
+                             {% set suite = 0 %}
+                                {% if commande.quantite / commande.promotion.cinquieme >= 1 %}
 
-                                {% set unite = (commande.quantite / commande.promotion.cinquieme)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugcinquieme %}
-                                {% set suite = commande.quantite - unite * commande.promotion.cinquieme %}
+                                    {% set unite = (commande.quantite / commande.promotion.cinquieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commande.promotion.ugcinquieme %}
+                                    {% set suite = commande.quantite - unite * commande.promotion.cinquieme %}
+                                   
+                                    {% if suite / commande.promotion.quatrieme >= 1 %}
+                                        {% set unite = (suite / commande.promotion.quatrieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                        {% set suite = suite - unite * commande.promotion.quatrieme %}
 
-                                 {% if suite / commande.promotion.quatrieme >= 1 %}
+                                        {% if suite / commande.promotion.troisieme >= 1 %}
+                                            {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                            {% set suite = suite - unite * commande.promotion.troisieme %}
+                                        
+                                            {% if suite / commande.promotion.deuxieme >= 1 %}
 
-                                {% set unite = (commande.quantite / commande.promotion.quatrieme)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugquatrieme %}
-                                {% set suite = commande.quantite - unite * commande.promotion.quatrieme %}
 
-                                 {% elseif suite / commande.promotion.troisieme >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                    {% set suite = suite - unite * commande.promotion.deuxieme %}
 
-                                {% set unite = (commande.quantite / commande.promotion.troisieme)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugtroisieme %}
-                                {% set suite = commande.quantite - unite * commande.promotion.troisieme %}
+                                                    {% if suite / commande.promotion.premier >= 1 %}
+                                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
 
-                                {% elseif suite / commande.promotion.deuxieme >= 1 %}
-                                    {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                    {% endif %}                                                                 
+
+                                            {% elseif suite / commande.promotion.premier >= 1 %}
+
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %}
+                                        {% elseif suite / commande.promotion.deuxieme >= 1 %}
+                                            {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                            {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                            {% if suite / commande.promotion.premier >= 1 %}
+                                                {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                            {% endif %} 
+                                    
+                                        {% elseif suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+                    
+                                        {% endif %}
+                                    {% elseif suite / commande.promotion.troisieme >= 1 %}
+                                        {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                        {% set suite = suite - unite * commande.promotion.troisieme %}
+                                    
+                                        {% if suite / commande.promotion.deuxieme >= 1 %}
+
+
+                                                {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                                {% if suite / commande.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                {% endif %}                                                                 
+
+                                        {% elseif suite / commande.promotion.premier >= 1 %}
+
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %}
+                                    {% elseif suite / commande.promotion.deuxieme >= 1 %}
+                                        {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                        {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                        {% if suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %} 
+                                   
+                                    {% elseif suite / commande.promotion.premier >= 1 %}
+                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
+                
+                                    {% endif %}
+                                {% elseif commande.quantite / commande.promotion.quatrieme >= 1 %}
+
+                                    {% set unite = (commande.quantite / commande.promotion.quatrieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commande.promotion.ugquatrieme %}
+                                    {% set suite = commande.quantite - unite * commande.promotion.quatrieme %}
+
+                                     {% if suite / commande.promotion.troisieme >= 1 %}
+                                        {% set unite = (suite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                        {% set suite = suite - unite * commande.promotion.troisieme %}
+                                    
+                                        {% if suite / commande.promotion.deuxieme >= 1 %}
+
+
+                                                {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                                {% if suite / commande.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                                {% endif %}                                                                 
+
+                                        {% elseif suite / commande.promotion.premier >= 1 %}
+
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %}
+                                    {% elseif suite / commande.promotion.deuxieme >= 1 %}
+                                        {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                        {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                        {% if suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %} 
+                                   
+                                    {% elseif suite / commande.promotion.premier >= 1 %}
+                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
+                
+                                    {% endif %}
+                                 {% elseif commande.quantite / commande.promotion.troisieme >= 1 %}
+
+                                    {% set unite = (commande.quantite / commande.promotion.troisieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commande.promotion.ugtroisieme %}
+                                    {% set suite = commande.quantite - unite * commande.promotion.troisieme %}
+
+                                    {% if suite / commande.promotion.deuxieme >= 1 %}
+                                        {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
+                                        {% set suite = suite - unite * commande.promotion.deuxieme %}
+
+                                        {% if suite / commande.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commande.promotion.ugpremier %}
+
+                                        {% endif %} 
+                                   
+                                    {% elseif suite / commande.promotion.premier >= 1 %}
+                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
+                
+                                    {% endif %}
+                                 {% elseif commande.quantite / commande.promotion.deuxieme >= 1 %}
+
+                                    {% set unite = (commande.quantite / commande.promotion.deuxieme)|round(0, 'floor') %}
                                     {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
-                                    {% set suite = suite - unite * commande.promotion.deuxieme %}
+                                    {% set suite = commande.quantite - unite * commande.promotion.deuxieme %}
 
                                     {% if suite / commande.promotion.premier >= 1 %}
                                         {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
                                         {% set ug = ug + unite * commande.promotion.ugpremier %}
-
+                
                                     {% endif %}
+                                 {% elseif commande.quantite / commande.promotion.premier >= 1 %}
 
-                                {% elseif suite / commande.promotion.premier >= 1 %}
-                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
+                                    {% set unite = (commande.quantite / commande.promotion.premier)|round(0, 'floor') %}
                                     {% set ug = ug + unite * commande.promotion.ugpremier %}
+                                    
 
                                 {% endif %}
-                             {% elseif commande.quantite / commande.promotion.quatrieme >= 1 %}
-
-                                {% set unite = (commande.quantite / commande.promotion.quatrieme)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugquatrieme %}
-                                {% set suite = commande.quantite - unite * commande.promotion.quatrieme %}
-
-                                 {% if suite / commande.promotion.troisieme >= 1 %}
-
-                                {% set unite = (commande.quantite / commande.promotion.troisieme)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugtroisieme %}
-                                {% set suite = commande.quantite - unite * commande.promotion.troisieme %}
-
-                                {% elseif suite / commande.promotion.deuxieme >= 1 %}
-                                    {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
-                                    {% set suite = suite - unite * commande.promotion.deuxieme %}
-
-                                    {% if suite / commande.promotion.premier >= 1 %}
-                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
-
-                                    {% endif %}
-
-                                {% elseif suite / commande.promotion.premier >= 1 %}
-                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
-
-                                {% endif %}
-                            {% elseif commande.quantite / commande.promotion.troisieme >= 1 %}
-
-                                {% set unite = (commande.quantite / commande.promotion.troisieme)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugtroisieme %}
-                                {% set suite = commande.quantite - unite * commande.promotion.troisieme %}
-
-                                {% if suite / commande.promotion.deuxieme >= 1 %}
-                                    {% set unite = (suite / commande.promotion.deuxieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
-                                    {% set suite = suite - unite * commande.promotion.deuxieme %}
-
-                                    {% if suite / commande.promotion.premier >= 1 %}
-                                        {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commande.promotion.ugpremier %}
-
-                                    {% endif %}
-
-                                {% elseif suite / commande.promotion.premier >= 1 %}
-                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
-
-                                {% endif %}
-
-                            {% elseif commande.quantite / commande.promotion.deuxieme >= 1 %}
-
-
-                                {% set unite = (commande.quantite / commande.promotion.deuxieme)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugdeuxieme %}
-                                {% set suite = commande.quantite - unite * commande.promotion.deuxieme %}
-
-                                {% if suite / commande.promotion.premier >= 1 %}
-                                    {% set unite = (suite / commande.promotion.premier)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commande.promotion.ugpremier %}
-
-                                {% endif %}
-
-                            {% elseif commande.quantite / commande.promotion.premier >= 1 %}
-
-                                {% set unite = (commande.quantite / commande.promotion.premier)|round(0, 'floor') %}
-                                {% set ug = ug + unite * commande.promotion.ugpremier %}
-
-                            {% endif %}
                             <span class="badge bg-danger">
                                     +{{ ug }} U.G.
                             </span>
