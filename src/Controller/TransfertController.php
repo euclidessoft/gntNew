@@ -26,14 +26,28 @@ class TransfertController extends AbstractController
 #[Route("/", name :"transfert_index", methods : ["GET"]) ]
     public function index(TransfertRepository $transfertRepository): Response
     {
-        return $this->render('transfert/index.html.twig', [
-            'transferts' => $transfertRepository->findAll(),
-        ]);
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+            return $this->render('transfert/index.html.twig', [
+                'transferts' => $transfertRepository->findAll(),
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
     }
 
     #[Route("/caisse", name :"transfert_caisse", methods : ["GET","POST"]) ]
     public function caisse(Request $request, Solde $solde): Response
     {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
         $transfert = new Transfert();
         $form = $this->createForm(TransfertType::class, $transfert);
         $form->handleRequest($request);
@@ -98,11 +112,24 @@ class TransfertController extends AbstractController
             'transfert' => $transfert,
             'form' => $form->createView(),
         ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
     }
 
     #[Route("/banque", name :"transfert_banque", methods : ["GET","POST"]) ]
     public function banque(Request $request, Solde $solde): Response
     {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
         $transfert = new Transfert();
         $form = $this->createForm(TransfertType::class, $transfert);
         $form->handleRequest($request);
@@ -166,19 +193,45 @@ class TransfertController extends AbstractController
             'transfert' => $transfert,
             'form' => $form->createView(),
         ]);
-    }
+    } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+        }
 
     #[Route("/{id}", name :"transfert_show", methods : ["GET"]) ]
     public function show(Transfert $transfert): Response
     {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
         return $this->render('transfert/show.html.twig', [
             'transfert' => $transfert,
         ]);
-    }
+    } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+        }
 
     #[Route("/{id}/edit", name :"transfert_edit", methods : ["GET","POST"]) ]
     public function edit(Request $request, Transfert $transfert): Response
     {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
         $form = $this->createForm(TransfertType::class, $transfert);
         $form->handleRequest($request);
 
@@ -192,11 +245,24 @@ class TransfertController extends AbstractController
             'transfert' => $transfert,
             'form' => $form->createView(),
         ]);
-    }
+    } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+        }
 
     #[Route("/{id}", name :"transfert_delete", methods : ["POST"]) ]
     public function delete(Request $request, Transfert $transfert): Response
     {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
         if ($this->isCsrfTokenValid('delete'.$transfert->getId(), $request->request->get('_token'))) {
             $entityManager = $this->entityManager;
             $entityManager->remove($transfert);
@@ -204,6 +270,18 @@ class TransfertController extends AbstractController
         }
 
         return $this->redirectToRoute('transfert_index', [], Response::HTTP_SEE_OTHER);
-    }
+    } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+        }
 
 }

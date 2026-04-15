@@ -3,10 +3,12 @@
     is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
     is_granted('ROLE_RH') ? 'rh.html.twig' :
     is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
     is_granted('ROLE_STOCK') ? 'stock.html.twig' :
     is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
-    'layout.html.twig' %}
+    'layout.html.twig'
+%}
 {% block title %} {{ "Tous les clients"|trans }} - GNT Pharma {% endblock %}
 {% block client %}active{% endblock %}
 {% block client_suivi %} active{% endblock %}

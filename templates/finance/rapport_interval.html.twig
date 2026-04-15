@@ -59,11 +59,19 @@
                             </div>
                         </div>
                     </div>
-                    <button data-bs-toggle="modal" data-bs-target="#jours"
-                            class="btn btn-shadow btn-green mt-2 mb-n1 float-right disabled" id="daysbtn">
-                        <i class="fa fa-check-circle"></i>
-                        {{ 'Valider'|trans }}
-                    </button>
+                    {% if is_granted("ROLE_FINANCE") %}
+                        <button data-bs-toggle="modal" data-bs-target="#jours"
+                                class="btn btn-shadow btn-green mt-2 mb-n1 float-right disabled" id="daysbtn">
+                            <i class="fa fa-check-circle"></i>
+                            {{ 'Valider'|trans }}
+                        </button>
+                    {% else %}
+                    <button  onclick="dayscaisse()"
+                                class="btn btn-shadow btn-green mt-2 mb-n1 float-right disabled" id="daysbtn">
+                            <i class="fa fa-check-circle"></i>
+                            {{ 'Valider'|trans }}
+                        </button>
+                    {% endif %}
                     <div class="modal fade mt-5" id="jours" tabindex="-1" aria-labelledby="" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                             <div class="modal-content radius-10">

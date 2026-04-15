@@ -16,34 +16,17 @@
     <div class="container mt-4 fond-7">
         <h3 class="mt-4 mb-5 text-bold">
             <i class="fa fa-shopping-cart me-2"></i>
-            {{ "Suivi des commandes"|trans }}
+            {{ "Suivi des commandes"|trans }}  {{ client.nom ~ " " ~ client.prenom}}
         </h3>
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
-                <a class="nav-link active" href="#">
-                    {{ 'Validation paiement'|trans }}
-                </a>
-            </li>
-            {% if is_granted("ROLE_FINANCE")%}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('commande_panier_validation_credit') }}">
-                    {{'Validation crédit'|trans}}
+                <a class="nav-link active" href="{{ path('commande_panier_commande_client', {'client': app.user.id}) }}">
+                    {{ 'Commande(s) journaliere(s)'|trans }}
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('commande_panier_credit') }}">
-                    {{'Commandes à crédit'|trans}}
-                </a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('commande_panier_history') }}">
-                    {{'Commandes déjà payées'|trans}}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('client_index') }}">
-                    {{'Relevé Factures'|trans}}
+                <a class="nav-link" href="#">
+                    {{'Recherche'|trans}}
                 </a>
             </li>
         </ul>
@@ -78,7 +61,7 @@
                             <i class="fa-solid fa-file-invoice-dollar"></i>
                             {{ 'Traitement'|trans }}
                         </a>
-                        {% if is_granted("ROLE_ADMIN") %}
+                        {% if is_granted("ROLE_ADMIN") and commande.suivi == false %}
                        {{ include('commande/admin/commande_delete.html.twig')}}
                         {% endif %}
                         

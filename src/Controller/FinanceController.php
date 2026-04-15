@@ -348,7 +348,7 @@ class FinanceController extends AbstractController
     #[Route("/BrouillardCaisse", name :"brouyard_caisse") ]
     public function brouyardCaisse(EcritureRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $ecritures = $repository->brouyardcaisse();
             $ouverture = $repository->ouverturecaisse();
             $caisse = 0;
@@ -615,7 +615,7 @@ class FinanceController extends AbstractController
     #[Route("/DayRepport/", name :"rapport_date") ]
     public function rapportdate()
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 
             return $this->render('finance/rapport_date.html.twig');
         } else {
@@ -709,7 +709,7 @@ class FinanceController extends AbstractController
     #[Route("/DayBrouyard_print/{jour}", name :"day_brouyard_print") ]
     public function daybrouyard_print(Request $request, $jour)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $repository = $this->entityManager->getRepository(Ecriture::class);
             $ecritures = $repository->daybrouyard($jour);
             $ouverture = $repository->ouvertureplace($jour);
@@ -783,7 +783,7 @@ class FinanceController extends AbstractController
     #[Route("/LienDayBrouyardCaisse", name :"day_brouyard_lien_caisse") ]
     public function liendaybrouyardaisse(Request $request)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $date1 = $request->get('date1');
             $lien = $this->generateUrl('finance_day_brouyard_caisse', ['jour' => $date1]);
             $res['ok'] = $lien;
@@ -810,7 +810,7 @@ class FinanceController extends AbstractController
     #[Route("/DayBrouyardCaisse/{jour}", name :"day_brouyard_caisse") ]
     public function daybrouyardcaisse(Request $request, $jour)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $repository = $this->entityManager->getRepository(Ecriture::class);
             $ecritures = $repository->daybrouyardcaisse($jour);
             $ouverture = $repository->ouvertureplacecaisse($jour);
@@ -1033,7 +1033,7 @@ class FinanceController extends AbstractController
     #[Route("/DayBrouyardBanque_print/{jour}", name :"day_brouyard_banque_print") ]
     public function daybrouyardbanque_print(Request $request, $jour)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $repository = $this->entityManager->getRepository(Ecriture::class);
             $ecritures = $repository->daybrouyardbanque($jour);
             $ouverture = $repository->ouvertureplacebanque($jour);
@@ -1099,7 +1099,7 @@ class FinanceController extends AbstractController
     #[Route("/IntervalRepport/", name :"rapport_interval") ]
     public function rapportinterval()
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 
             return $this->render('finance/rapport_interval.html.twig');
         } else {
@@ -1300,7 +1300,7 @@ class FinanceController extends AbstractController
     #[Route("/LienDaysBrouyardCaisse", name :"days_brouyard_lien_caisse") ]
     public function liendaysbrouyardcaisse(Request $request)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $date1 = $request->get('date1');
             $date2 = $request->get('date2');
             $lien = $this->generateUrl('finance_days_brouyard_caisse', ['date1' => $date1, 'date2' => $date2]);
@@ -1329,7 +1329,7 @@ class FinanceController extends AbstractController
     #[Route("/DaysBrouyardCaisse/{date1}/{date2}", name :"days_brouyard_caisse") ]
     public function daysbrouyardcaisse(Request $request, $date1, $date2)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 
             $repository = $this->entityManager->getRepository(Ecriture::class);
             $ecritures = $repository->plagecaisse($date1, $date2);
@@ -1392,7 +1392,7 @@ class FinanceController extends AbstractController
     #[Route("/DaysBrouyardCaisse_print/{date1}/{date2}", name :"days_brouyard_caisse_print") ]
     public function daysbrouyardcaisse_print(Request $request, $date1, $date2)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 
             $repository = $this->entityManager->getRepository(Ecriture::class);
             $ecritures = $repository->plagecaisse($date1, $date2);

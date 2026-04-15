@@ -623,12 +623,85 @@ class CommandeController extends AbstractController
                 'private' => true,
             ]);
             return $response;
-        } else if ($this->security->isGranted('ROLE_FINANCE')) {
+        } else if ($this->security->isGranted('ROLE_CAISSIER')) {
 //            $panier = $session->get("panier", []);
 
             $response = $this->render('commande/admin/suivi.html.twig', [
                 'commandes' => $repository->findBy(['suivi' => false]),
 //                'panier' => $panier,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+
+        /* // On "fabrique" les données
+
+         return $this->render('produit/index.html.twig', compact("dataPanier", "total"));*/
+    }
+
+    
+
+    #[Route("/Commandes_lient/{client}", name :"commande_client") ]
+    public function commandeclient(Client $client, CommandeRepository $repository)
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+            $response = $this->render('commande/admin/commandesclient.html.twig', [
+                'commandes' => $repository->journalier($client->getId()),
+                'client' => $client,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("/Commandes_Recherche/{client}", name :"commande_recherche") ]
+    public function recherche(Client $client, CommandeRepository $repository)
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+            $response = $this->render('commande/admin/recherche.html.twig', [
+                'commandes' => $repository->journalier($client->getId()),
+                'client' => $client,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -720,7 +793,7 @@ class CommandeController extends AbstractController
     #[Route("/Historique/", name :"history") ]
     public function history(SessionInterface $session, CommandeRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 //            $panier = $session->get("panier", []);
 
             $response = $this->render('commande/admin/history.html.twig', [
@@ -2412,7 +2485,7 @@ class CommandeController extends AbstractController
      #[Route("/HistoriqueAdminCommande/", name :"all_commande") ]
     public function allcommande(SessionInterface $session, CommandeRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             //$panier = $session->get("panier", []);
             $commande = $repository->findAll();
             $response = $this->render('commande/admin/allcommande.html.twig', [
@@ -2530,7 +2603,7 @@ class CommandeController extends AbstractController
     #[Route("/Releve/{client}", name :"releve") ]
     public function releve(Client $client, CommandeRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             
             $commandes = $repository->findBy(['suivi' => true, 'user' => $client->getId()],['traitement' =>"DESC"]);
             
@@ -2564,7 +2637,7 @@ class CommandeController extends AbstractController
      #[Route("/Releve/Premier/{mois}/{client}", name :"releve_premier") ]
     public function relevepremier($mois,$client, CommandeRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 
         $client = $this->entityManager->getRepository(Client::class)->find($client);
             
@@ -2604,7 +2677,7 @@ class CommandeController extends AbstractController
      #[Route("/Releve/Deuxieme/{mois}/{client}", name :"releve_deuxieme") ]
     public function relevedeuxieme($mois,$client, CommandeRepository $repository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 
         $client = $this->entityManager->getRepository(Client::class)->find($client);
             

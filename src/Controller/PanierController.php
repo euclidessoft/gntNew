@@ -148,6 +148,29 @@ class PanierController extends AbstractController
             return $response;
 
         }
+        else if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+            $response = $this->render('commande/admin/dashbord_caisse.html.twig', [
+                'vente' => $repository->ventemensuel(),
+                'promotion' => $promotionRepository->Courante(),
+                'commande' => $commandeRepository->findBy(['credit' => false, 'suivi' => false]),
+                'avoir' => $avoirRepository->findAll(),
+                'reclamation' => $reclamationRepository->findBy(['cloture' => null]),
+                'credit' => $commandeRepository->findBy(['credit' => true, 'suivi' => false,]),
+                'commande_credit' => $commandeRepository->findBy(['credit' => true, 'suivi' => true, 'payer' => false]),
+                'produit' => $produitRepository->findBY(['stock' => 0]),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+
+        }
         else if ($this->security->isGranted('ROLE_STOCK')) {
 
             $response = $this->render('commande/admin/dashbord_stock.html.twig', [
@@ -224,7 +247,7 @@ class PanierController extends AbstractController
 
         }
         else {
-            $response = $this->redirectToRoute('security_login');
+            $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
             $response->headers->addCacheControlDirective('no-store', true);

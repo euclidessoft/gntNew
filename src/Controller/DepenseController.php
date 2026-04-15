@@ -26,7 +26,7 @@ class DepenseController extends AbstractController
     #[Route("/", name :"depense_index", methods : ["GET"]) ]
     public function index(DepenseRepository $depenseRepository): Response
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             return $this->render('depense/index.html.twig', [
                 'depenses' => $depenseRepository->findAll(),
             ]);
@@ -47,7 +47,7 @@ class DepenseController extends AbstractController
     #[Route("/new", name :"depense_new", methods : ["GET","POST"]) ]
     public function new(Request $request, Solde $solde): Response
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $depense = new Depense();
             $debit = new Debit();
             $ecriture = new Ecriture();

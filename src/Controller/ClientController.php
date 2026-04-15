@@ -26,7 +26,7 @@ class ClientController extends AbstractController
     #[Route("/", name :"client_index") ]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $client = $entityManager->getRepository(Client::class)->findBy(['client' =>true]);
             return $this->render('client/index.html.twig', [
                 'client' => $client,
@@ -220,7 +220,7 @@ class ClientController extends AbstractController
     #[Route("/{id}/edit", name :"client_edit", methods : ["GET","POST"]) ]
     public function edit(Request $request, Client $client): Response
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
 
             $form = $this->createForm(ClientType::class, $client);
             
