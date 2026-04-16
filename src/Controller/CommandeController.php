@@ -2734,7 +2734,7 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
             
-            $commandes = $repository->findBy(['suivi' => true, 'user' => $client->getId()],['traitement' =>"DESC"]);
+            $commandes = $repository->findBy(['suivi' => true, 'credit' => true, 'user' => $client->getId()],['traitement' =>"DESC"]);
             
             $response = $this->render('officine/admin/index.html.twig', [
                 'commandes' => $this->Quinzaine($commandes),
