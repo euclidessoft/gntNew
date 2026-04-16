@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+
+<head>
+    <title> {% block title %} GNT Pharma {% endblock %} </title>
+    {{ include('includes/head.html.twig') }}
+</head>
+
+<body {% block corps %}{% endblock %}  {% block start %} {% endblock %}>
+
+{% block nav %}
+    <nav id="navmenu" class="navmenu">
+        <div class="session">
+            <a id="session" class="navbar-brand text-white m-2" href="{{ path('Accueil') }}">
+                Gnt Pharma
+            </a>
+        </div>
+        <div class="closebtn" id="closebtn" onclick="closeNav()">
+        </div>
+
+        <div id="sidenav" class="sidenav" onclick="openNav()">
+            <ul class="navbar-nav">
+                <li class="nav-item" title="{{ 'Accueil'|trans }}">
+                    <a class="nav-link {% block home %}{% endblock %}" href="{{ path('commande_index') }}">
+                        <div class="icone">
+                            <i class="fas fa-dashboard fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Tableau de bord'|trans }}
+                        </div>
+                    </a>
+                </li>
+{#
+                {% if is_granted("ROLE_CLIENT_ADMIN")%}
+                    <li class="nav-item dropend" title="{{ 'Utilisateur'|trans }}">
+                        <a class="nav-link dropdown-toggle {% block user %}{% endblock %}" href="#" id="user"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                            <div class="icone">
+                                <i class="fa fa-users fa-lg"></i>
+                            </div>
+                            <div class="title">
+                                {{ 'Utilisateurs'|trans }}
+                            </div>
+                        </a>
+                        <ul class=" dropdown-menu" aria-labelledby="officine">
+                            <li class="dropdown-item">
+                                <a class="nav-link {% block user_user %}{% endblock %}" href="{{ path('client_register') }}">
+                                    <i class="fa fa-user"></i>
+                                    {{ 'Nouveau'|trans }}
+                                </a>
+                            </li>
+                            <li class="dropdown-item">
+                                <a class="nav-link {% block user_users %}{% endblock %}"
+                                href="{{ path('client_users') }}">
+                                    <i class="fa fa-users"></i>
+                                    {{ 'tous les utilisateurs'|trans }}
+                                </a>
+                            </li>
+                        
+                        </ul>
+                    </li>
+                {% endif %}
+                <li class="nav-item dropend" title="{{ 'Produits'|trans }}">
+                    <a class="nav-link dropdown-toggle {% block produit %}{% endblock %}" href="#" id="produits"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <div class="icone">
+                            <i class="fa-brands fa-product-hunt fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Produits'|trans }}
+                        </div>
+                    </a>
+                    <ul class=" dropdown-menu" aria-labelledby="produits">
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block all_produits %}{% endblock %}"
+                               href="{{ path('produit_index') }}">
+                                <i class="fas fa-list"></i>
+                                {{ 'Tous les produits'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block new_produit %}{% endblock %}"
+                               href="{{ path('produit_nouveaute') }}">
+                                <i class="fas fa-plus"></i>
+                                {{ 'Nouveautés'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block promo %}{% endblock %}"
+                               href="{{ path('produit_promo') }}">
+                                <i class="fas fa-list"></i>
+                                {{ 'Promotions'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block arrivage %}{% endblock %}"
+                               href="{{ path('produit_arrivage') }}">
+                                <i class="fa-solid fa-plane-arrival"></i>
+                                {{ 'Arrivage'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-user-clock"></i>
+                                {{ 'Pré-arrivages'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block ventes %}{% endblock %}" href="{{ path('produit_vente') }}">
+                                <i class="fas fa-money-bill-trend-up"></i>
+                                {{ 'Meilleures ventes'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block top %}{% endblock %}" href="{{ path('produit_top') }}">
+                                <i class="fas fa-arrow-up-wide-short"></i>
+                                {{ 'Mon Top'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item" title="{{ 'Promotions'|trans }}">
+                    <a class="nav-link {% block promotion %}{% endblock %}" href="{{ path('promotion_courante') }}">
+                        <div class="icone">
+                            <i class="fas fa-tags fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Promotions'|trans }}
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item dropend" title="{{ 'Commande'|trans }}">
+                    <a class="nav-link dropdown-toggle {% block commande %}{% endblock %}" href="#" id="commande"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <div class="icone">
+                            <i class="fa fa-shopping-cart fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Commande'|trans }}
+                        </div>
+                    </a>
+                    <ul class=" dropdown-menu" aria-labelledby="pelerin">
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block my_commande %}{% endblock %}"
+                               href="{{ path('commande_panier_suivi') }}">
+                                <i class="fas fa-shopping-cart"></i>
+                                <i class="fas fa-plus"></i>
+                                {{ 'Mes Commandes'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block commande_extranet %}{% endblock %}"
+                               href="{{ path('commande_panier_suivi_extranet') }}">
+                                <i class="fa-solid fa-cart-arrow-down"></i>
+                                {{ 'Commandes Extranet'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block importation %}{% endblock %}" 
+                                data-bs-toggle="modal"  data-bs-target="#importer"
+                               href="{{ path('commande_panier_suivi_extranet') }}">
+                                <i class="fa fa-upload"></i>
+                                {{ 'importer'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-list"></i>
+                                {{ 'en preparation'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropend" title="{{ 'Livraison'|trans }}">
+                    <a class="nav-link dropdown-toggle {% block livraison %}{% endblock %}" href="#"
+                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="icone">
+                            <i class="fa fas fa-truck-fast fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Livraison'|trans }}
+                        </div>
+                    </a>
+                    <ul class=" dropdown-menu" aria-labelledby="pelerin">
+                        <li class="dropdown-item">
+                            <a class="nav-link  {% block all_livraison %}{% endblock %}"
+                               href="{{ path('livraison_historique') }}">
+                                <i class="fas fa-truck-fast"></i>
+                                {{ 'Déjà livrée'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link  {% block new_livraison %}{% endblock %}"
+                               href="{{ path('livraison_index') }}">
+                                <i class="fas fa-truck-fast"></i>
+                                {{ 'En attente de livraison'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropend"
+                    title="{{ 'Réclamations'|trans }}">
+                    <a class="nav-link dropdown-toggle {% block reclamation %}{% endblock %}" href="#" id="Produits"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <div class="icone">
+                            <i class="fa-solid fa-user-clock fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Réclamation'|trans }}
+                        </div>
+                    </a>
+                    <ul class=" dropdown-menu" aria-labelledby="pelerin">
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block new_reclamation %}{% endblock %}"
+                               href="{{ path('reclamation_liste_commande', { 'user' : app.user.pharmacie.id }) }}">
+                                <i class="fas fa-user-clock"></i>
+                                <i class="fas fa-plus"></i>
+                                {{ 'Créer une réclamation'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block my_reclamation %}{% endblock %}"
+                               href="{{ path('reclamation_index',{'user':app.user.pharmacie.id}) }}">
+                                <i class="fas fa-user-clock"></i>
+                                <i class="fas fa-list"></i>
+                                {{ 'Mes réclamations'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% if is_granted("ROLE_CLIENT_ADMIN") %}
+                 <li class="nav-item" title="{{ 'Officine'|trans }}">
+                    <a class="nav-link {% block officine %}{% endblock %}" href="{{ path('commande_panier_officine') }}">
+                        <div class="icone">
+                            <i class="fas fa-staff-snake fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Officine'|trans }}
+                        </div>
+                    </a>
+                </li>
+                {% endif %}
+              #}
+
+
+                <li class="nav-item dropend" title="{{ 'Aide'|trans }}">
+                    <a class="nav-link dropdown-toggle {% block aide %}{% endblock %}" href="#" id="Aide"
+                       data-bs-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">
+                        <div class="icone">
+                            <i class="fas fa-question-circle fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Aide'|trans }}
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="Aide">
+
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block manuel %}{% endblock %}" href="#">
+                                <i class="fas fa-book"></i>
+                                {{ 'Condition de vente'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-book"></i>
+                                {{ 'Manuel'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block suggestion %}{% endblock %}"
+                               href="{{ path('suggestion_new') }}">
+                                <i class="fas fa-comments"></i>
+                                {{ 'Suggestions'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="nav-link {% block bug %}{% endblock %}" href="#">
+                                <i class="fas fa-bug"></i>
+                                {{ 'Signaler un bug'|trans }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            {#                            <a href="{{ path('About') }}" class="nav-link">#}
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#about">
+                                <i class="fas fa-check-circle"></i>
+                                {{ 'A propos de'|trans }} GNT Pharma
+                            </a>
+
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="copyright">
+            <span>
+                <a href="#" class="text-green" data-bs-toggle="modal" data-bs-target="#about">
+                    <img class="me-1" src="{{ asset('images/gnt.png') }}" alt="by Euclides" width="45">
+                </a>
+            </span>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block topbar %}
+
+    <div class="container-fluid topbar">
+        <div class="row">
+            <div class="topbar-menu">
+                <div id="navbtn" class="navbtn" onclick="openNav()">
+                    <i class="fas fa-align-justify fa-2x"></i>
+                </div>
+            </div>
+            <div class="topbar-item">
+                <div class="row">
+                    <div class="col-lg-5 col-md-2 col-6 text-nowrap">
+                    <span class="history-box">
+                        <i class="fa fa-arrow-circle-left history-btn" title="Page précédente"
+                           onclick="window.history.back()"></i>
+                        <i class="fa fa-arrow-circle-right history-btn ms-3" title="Page suivante"
+                           onclick="window.history.forward()"></i>
+                        <i class="fa fa-redo history-btn ms-3" title="Actualiser la page"
+                           onclick="window.location.reload()"></i>
+                    </span>
+                    <b>{#{{ app.user.pharmacie.nom }}#}</b>
+
+                        <button type="button" id="install_button" onclick="installApp()" hidden></button>
+                    </div>
+
+                    <div class="col-lg-2 col-md-1 col-6 text-nowrap">
+                        <!-- Empty column for spacing or other content -->
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-6 text-nowrap">
+                        <div class="row">
+                            <div class="col-3">
+                                {#<a class="panier" href="{{ path('commande_panier_panier') }}">
+                                <span class="position-relative">
+                                    <i class="fa fa-cart-shopping fa-lg"></i>
+                                    <span id="gest_panier" class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-danger text-center">
+                                        {{ panier|length }}
+                                    </span>
+                                </span>
+                                </a>#}
+                            </div>
+                            <div class="col-9">
+                                <div class="text-end">
+                                    <label for="langue">
+                                        <i class="fa fa-globe"></i>
+                                    </label>
+                                    <select name="langue" id="langue" onchange="choixlangue()">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-6 text-nowrap">
+                        <div class="text-end">
+                            <div class="dropdown">
+                                <a href="#" class="" data-bs-toggle="dropdown">
+{#                                    {{ app.user.username }}#}
+                                    <img src="{{ asset('images/avatar-homme.avif') }}" class="user-thumb"
+                                         alt="User Image">
+                                </a>
+                                <div class="dropdown-menu">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <img src="{{ asset('images/avatar-homme.avif') }}" alt=""
+                                                 class="w-100 mx-2">
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="mt-0">
+                                                <h6 class="text-bold text-wrap">
+{#                                                    {{ app.user.nom }}#}
+{#                                                    {{ app.user.prenom }}#}
+                                                </h6>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a href="{{ path('security_profile') }}">
+                                                    <i class="fa fa-user"></i>
+                                                    {{ 'Profil'|trans }}
+                                                </a>
+                                            </div>
+                                            {% if is_granted('ROLE_RH') %}
+                                                <div class="mt-2">
+                                                    <a href="{{ path('employe_manage') }}">
+                                                        <i class="fa-solid fa-users-gear"></i>
+                                                        {{ 'Gestion utilisateurs'|trans }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            {% if is_granted('ROLE_FINANCE') %}
+                                                <div class="mt-2">
+                                                    <a href="{{ path('security_clients') }}">
+                                                        <i class="fa-solid fa-user-tag"></i>
+                                                        {{ 'Gestion clients'|trans }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            <div class="mt-2">
+                                                <a href="{{ path('security_logout') }}" data-bs-toggle="modal"
+                                                   data-bs-target="#logout">
+                                                    <i class="fa fa-power-off"></i>
+                                                    {{ 'Déconnexion'|trans }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="importer" tabindex="-1" aria-labelledby="importer" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered text-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title fs-5" id="importer">
+                        <i class="fa-solid fa-upload"></i>
+                        {{ 'Importation commande'|trans }}
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-5 pb-5">
+                    <p class="">
+                        <b>{{ 'Importez un fichier'|trans }}</b>
+                    </p>
+                    <form method="POST" action="{{ path('importation')}}" enctype="multipart/form-data" id="formimport">
+                        <input type="file" name="import" id="import" class="form-control">
+                        <button type="button" class="btn btn-success mt-3" id="send" onclick="importcommande()"><i class="fa fa-upload"></i> Suivant</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="logout" tabindex="-1" aria-labelledby="deconnexion" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered text-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title fs-5" id="deconnexion">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        {{ 'Déconnexion'|trans }}
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-5 pb-5">
+                    <p class="">
+                        <b>{{ 'Voulez-vous vraiment vous déconnecter ?'|trans }}</b>
+                    </p>
+                    <button type="button" id="oui" onclick="deconnexion()" class="btn btn-danger me-2">
+                        Oui
+                    </button>
+                    <button type="button" class="btn btn-success-light" data-bs-dismiss="modal" aria-label="Close">
+                        Non
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade about" id="about" tabindex="-1" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content radius-10">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <img src="{{ asset('images/gntpharma.jpeg') }}" alt="Logo"
+                                 class="img-fluid mt-n4 mb-4 align-center">
+                        </div>
+                        <div class="col-lg-6">
+                            <h3 class="text-center text-bold">GNT PHARMA
+                                v{{ include('includes/version.html.twig') }}</h3>
+                            <p class="text-center mt-3">
+                                Copyright &copy; 2023-{{ 'now'|date('Y') }}
+                                <b>
+                                    <a class="text-green" href="https://euclideservices.com" target="_blank">EUCLIDES</a>
+                                </b>
+                                <br>
+                                {{ 'Tous droits réservés'|trans }}
+                            </p>
+                            <p class="text-center mt-n2">
+                                {{ 'Protégée par'|trans }} :
+                                <br>- {{ 'La loi sur les droits d\'auteurs'|trans }}
+                                <br>- {{ 'La loi sur la propriété intellectuelle'|trans }}
+                            </p>
+                            <span class="row mt-n2">
+                            <span class="col-5 text-end">Contact :</span>
+                            <span class="col-7 ms-n4">
+                                <a class="text-green" href="tel:+221754443384">(+221) 75 444 33 84</a></span>
+                            <span class="col-5 text-end"></span>
+                            <span class="col-7 ms-n4">
+                                <a class="text-green" href="tel:+221775423500">(+221) 77 542 35 00</a></span>
+                            <span class="col-5 text-end"></span>
+                            <span class="col-7 ms-n4">
+                                <a class="text-green" href="tel:+221787333434">(+221) 78 733 34 34</a></span>
+                            <span class="col-12 text-center">Email :
+                                <a class="text-green" href="mailto:hajjalbayt@euclideservices.com">infos@euclideservices.com</a>
+                            </span>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+<div id="main" class="container-fluid main pt-5">
+    {% block body %}
+
+    {% endblock %}
+</div>
+
+{{ include('includes/javascript.html.twig') }}
+{% block scripts %}
+
+{% endblock %}
+</body>
+
+</html>

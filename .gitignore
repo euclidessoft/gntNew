@@ -1,4 +1,4 @@
-/.idea/
+.idea/*
 .idea/upgradegnt.iml
 ###> symfony/framework-bundle ###
 .env

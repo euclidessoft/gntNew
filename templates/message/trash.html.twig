@@ -3,9 +3,11 @@
     is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
     is_granted('ROLE_RH') ? 'rh.html.twig' :
     is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSE') ? 'caisse.html.twig' :
     is_granted('ROLE_STOCK') ? 'stock.html.twig' :
     is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
     'layout.html.twig'
 %}
 {% block communication %} active {% endblock %}
