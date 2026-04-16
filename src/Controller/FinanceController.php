@@ -93,6 +93,54 @@ class FinanceController extends AbstractController
             return $response;
         }
     }
+    
+    #[Route("/SoldeCaisse", name :"solde") ]
+    public function solde(EcritureRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+            $ecritures = $repository->findAll();
+            $journal = $repository->journalAnnuelle(date('Y'));
+            $caisse = 0;
+            $banque = 0;
+            $debitbanque = 0;
+            $debitcaisse = 0;
+            foreach ($ecritures as $ecriture) {
+                if($ecriture->getType() != null){
+                    $credit = null;
+                    $debit = null;
+                    if ($ecriture->getCredit() != null) {
+                        $credit = $ecriture->getCredit();
+                        $credit->getType() == 'Espece' ?
+                            $caisse = $caisse + $credit->getMontant() :
+                            $banque = $banque + $credit->getMontant();
+                    } else {
+
+                        $debit = $ecriture->getDebit();
+                        $debit->getType() == 'Espece' ?
+                            $debitcaisse = $debitcaisse + $debit->getMontant() :
+                            $debitbanque = $debitbanque + $debit->getMontant();
+
+                    }
+                }
+
+            }
+
+            return $this->render('finance/solde.html.twig', [
+                'caisse' => $caisse - $debitcaisse,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
 
     #[Route("/JournalBanque/{banque}", name :"journal_banque") ]
     public function journalbanque(EcritureRepository $repository, Banque $banque, Solde $solde): Response

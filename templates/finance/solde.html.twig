@@ -1,0 +1,40 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSE') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+
+{% block title %}{{ 'Balance à une date'|trans }} - GNT Pharma{% endblock %}
+
+{% block finance %}active{% endblock %}
+
+{% block solde %}active{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-6 mt-5 mb-5 pb-lg-5 fond-7">
+        <h3 class="mt-4">
+                <i class="fa fa-money-bill-wave"></i>
+                {{ 'Soldes'|trans }}
+            </h3>
+
+        <div class="col-lg-10 offset-lg-1 mb-5 mt-4">
+                
+            <div role="alert" class="alert alert-success shadow-black radius-10 mt-4 p-4 text-green">
+                <span class="text-bold">{{ 'Solde caisse'|trans }}</span> :
+                <h3 class="text-nowrap text-bold text-center mt-3">
+                    {{ caisse|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA
+                </h3>
+            </div>
+        </div>
+    </div>
+    
+
+{% endblock %}
