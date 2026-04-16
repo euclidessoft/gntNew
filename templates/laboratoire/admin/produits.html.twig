@@ -14,7 +14,7 @@
     <div class="container-fluid mt-4 fond-7">
         <h3 class="mt-4 mb-5 text-bold">
              <i class="fa-solid fa-hospital-user"></i>
-            {{ "Fournisseur"|trans }} | {{ 'Affectation produits'|trans}}
+            {{ "laboratoire"|trans }} | {{ 'Affectation produits'|trans}}
         </h3>
         {% for message in app.flashes('notice') %}
             <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
@@ -22,7 +22,7 @@
                 {{ message|trans }}
             </div>
         {% endfor %}
-        <button class="btn btn-success" onclick="affecter({{fournisseur.id}})">
+        <button class="btn btn-success" onclick="affecter({{laboratoire.id}})">
                 <i class="fa fa-undo"></i>
                 {{ 'Affecter Produits'|trans }}
             </button>
@@ -68,7 +68,7 @@
                     if (confirm("{{'Voulez-vous vraiment affecter ces produits ?'|trans}}")) {
                         $.ajax({
                             type: "POST",
-                            url: "{{ path('fournisseur_affecter')}}",
+                            url: "{{ path('laboratoire_affecter')}}",
                             data: { produit : produit , id : id },
                             success: function(data) {
                                 if (data['id'] != '') {

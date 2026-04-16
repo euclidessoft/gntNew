@@ -36,6 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'ADMINISTRATEUR' => 'ADMINISTRATEUR',
         'SUPERVISEUR' => 'SUPERVISEUR',
         'FINANCE' => 'FINANCE' ,
+        'CAISSIERE' => 'CAISSIERE' ,
         'RH' => 'RH' ,
         'STOCK' => 'STOCK' ,
         'LIVREUR' => 'LIVREUR' ,

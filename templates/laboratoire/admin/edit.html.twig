@@ -5,9 +5,9 @@
 {% block body %}
     <h1>Edit Laboratoire</h1>
 
-    {{ include('laboratoire/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('laboratoire/admin/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('app_laboratoire_index') }}">back to list</a>
 
-    {{ include('laboratoire/_delete_form.html.twig') }}
+    {{ include('laboratoire/admin/_delete_form.html.twig') }}
 {% endblock %}

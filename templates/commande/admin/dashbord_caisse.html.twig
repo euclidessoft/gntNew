@@ -1,4 +1,14 @@
-{% extends "client.html.twig" %}
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
 {% block home %}active{% endblock %}
 {% block body %}
 
@@ -12,31 +22,31 @@
     {% endfor %}
     <div class="col-md-8 offset-md-2 my-5">
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6 my-3">
+            <div class="col-lg-3 col-md-4 h-100 col-sm-6 my-3">
                 <div class="card border-green">
                     <div class="card-header bg-green text-white">
                         <div class="row">
                             <div class="col-12">
-                                <i class="fa-solid fa-arrow-up-wide-short fa-5x"></i>
+                                <i class="fa-solid fa fa-cart-shopping fa-5x"></i>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12 text-end">
-                                <div class="text-bold">{{ top|length }}</div>
+                                <div class="text-bold">{{ commande|length }}</div>
                                 <div>
-                                    {{ 'Mon Top'|trans }}
+                                    {{ 'Nouvelle commande'|trans }}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-light bt-green">
                     <span class="float-left">
-                        <a href="{{ path('produit_top') }}" class="text-green">
+                        <a href="{{ path ('commande_panier_suivi')}}" class="text-green">
                             {{ 'Voir les détails'|trans }}
                         </a>
                     </span>
                         <span class="float-right">
-                        <a href="{{ path('produit_top') }}" class="text-green">
+                        <a href="{{ path ('commande_panier_suivi')}}" class="text-green">
                             <i class="fa fa-arrow-circle-right fa-lg"></i>
                         </a>
                     </span>
@@ -44,30 +54,31 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mt-3 mb-3">
+            <div class="col-lg-3 h-100 col-md-4 col-sm-6 my-3">
                 <div class="card border-green">
                     <div class="card-header bg-success-light text-green">
                         <div class="row">
                             <div class="col-12">
-                                <i class="fa-solid fa-plane-arrival fa-5x"></i>
+                                <i class="fa-regular fa-calendar-check fa-5x"></i>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12 text-end">
-                                <div class="text-bold">{{ arrivage|length }}</div>
+                                <div class="text-bold">{{ credit|length }}</div>
                                 <div>
-                                    {{ 'Arrivage'|trans }}
+                                    {{'Crédit en attente de validation'|trans}}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-light bt-green">
                     <span class="float-left">
-                        <a href="{{ path('produit_arrivage') }}" class="text-green">{{ 'Voir les détails'|trans }}
+                        <a href="{{path('commande_panier_validation_credit')}}" class="text-green">
+                            {{ 'Voir les détails'|trans }}
                         </a>
                     </span>
                         <span class="float-right">
-                        <a href="{{ path('produit_arrivage') }}" class="text-green">
+                        <a href="{{path('commande_panier_validation_credit')}}" class="text-green">
                             <i class="fa fa-arrow-circle-right fa-lg"></i>
                         </a>
                     </span>
@@ -75,32 +86,31 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 my-3">
+            <div class="col-lg-3 h-100 col-md-4 col-sm-6 my-3">
                 <div class="card border-green">
                     <div class="card-header bg-green text-white">
                         <div class="row">
                             <div class="col-12">
-                                <i class="fa-solid fa-money-bill-trend-up fa-5x"></i>
+                                <i class="fa-solid fa-sack-xmark fa-5x"></i>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12 text-end">
-                                <div class="text-bold">{{ vente|length }}</div>
+                                <div class="text-bold">{{ commande_credit|length }}</div>
                                 <div>
-                                    {{ 'Meilleur achat'|trans }}
+                                    {{' Commande à crédit'|trans}}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-light bt-green">
                     <span class="float-left">
-                        <a href="{{ path('produit_vente') }}" class="text-green">
+                        <a href="{{path('commande_panier_credit')}}" class="text-green">
                             {{ 'Voir les détails'|trans }}
                         </a>
                     </span>
                         <span class="float-right">
-                        <a href="{{ path('produit_vente') }}" class="text-green">
+                        <a href="{{path('commande_panier_credit')}}" class="text-green">
                             <i class="fa fa-arrow-circle-right fa-lg"></i>
                         </a>
                     </span>
@@ -108,116 +118,21 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mt-3 mb-3">
+            <div class="col-lg-3 h-100 col-md-4 col-sm-6 mt-3 mb-3">
                 <div class="card border-green">
                     <div class="card-header bg-success-light text-green">
                         <div class="row">
                             <div class="col-12">
-                                <i class="fa-solid fa-tags fa-5x"></i>
+                                <i class="fa-solid fa-money-bill fa-5x"></i>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12 text-end">
-                                <div class="text-bold">{{ promotion|length }}</div>
-                                <div>
-                                    {{ 'Promotion'|trans }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-light bt-green">
-                    <span class="float-left">
-                        <a href="{{ path('promotion_courante') }}" class="text-green">{{ 'Voir les détails'|trans }}
-                        </a>
-                    </span>
-                        <span class="float-right">
-                        <a href="{{ path('promotion_courante') }}" class="text-green">
-                            <i class="fa fa-arrow-circle-right fa-lg"></i>
-                        </a>
-                    </span>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mt-3 mb-3">
-                <div class="card border-green">
-                    <div class="card-header bg-success-light text-green">
-                        <div class="row">
-                            <div class="col-12">
-                                <i class="fa-solid fa-calendar-plus fa-5x"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 text-end">
-                                <div class="text-bold">{{ nouveaute|length }}</div>
-                                <div>
-                                    {{ 'Nouveauté'|trans }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-light bt-green">
-                    <span class="float-left">
-                        <a href="{{ path('produit_nouveaute') }}" class="text-green">{{ 'Voir les détails'|trans }}
-                        </a>
-                    </span>
-                        <span class="float-right">
-                        <a href="{{ path('produit_nouveaute') }}" class="text-green">
-                            <i class="fa fa-arrow-circle-right fa-lg"></i>
-                        </a>
-                    </span>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 my-3">
-                <div class="card border-green">
-                    <div class="card-header bg-green text-white">
-                        <div class="row">
-                            <div class="col-12">
-                                <i class="fa-solid fa-user-clock fa-5x"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 text-end">
-                                <div class="text-bold">{{reclamation|length }}</div>
-                                <div>
-                                    {{ 'Réclamation'|trans }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-light bt-green">
-                    <span class="float-left">
-                        <a href="{{ path('reclamation_index', {'user' : app.user.id}) }}" class="text-green">
-                            {{ 'Voir les détails'|trans }}
-                        </a>
-                    </span>
-                        <span class="float-right">
-                        <a href="{{ path('reclamation_index', {'user' : app.user.id}) }}" class="text-green">
-                            <i class="fa fa-arrow-circle-right fa-lg"></i>
-                        </a>
-                    </span>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6 mt-3 mb-3">
-                <div class="card border-green">
-                    <div class="card-header bg-success-light text-green">
-                        <div class="row">
-                            <div class="col-12">
-                                <i class="fa-solid fa-sack-dollar fa-5x"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 text-end">
-                                <div class="text-bold">{{avoir|length }}</div>
+                                <div class="text-bold">{{ avoir|length }}</div>
                                 <div>
                                     {{ 'Avoir'|trans }}
                                 </div>
+                                <br>
                             </div>
                         </div>
                     </div>
@@ -235,31 +150,129 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 my-3">
+            <div class="col-lg-3 h-100 col-md-4 col-sm-6 my-3">
                 <div class="card border-green">
-                    <div class="card-header bg-green text-white">
+                    <div class="card-header bg-success-light text-green">
                         <div class="row">
                             <div class="col-12">
-                                <i class="fa-solid fa-sack-xmark fa-5x"></i>
+                                <i class="fa-solid fa-money-bill-trend-up fa-5x"></i>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12 text-end">
-                                <div class="text-bold">{{ dette|length}}</div>
+                                <div class="text-bold">{{ vente|length }}</div>
                                 <div>
-                                    {{ 'Dettes'|trans }}
+                                    {{' Meilleur vente' |trans}}
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light bt-green">
+                    <span class="float-left">
+                        <a href="{{path('produit_vente_admin',{'user': app.user.id})}}" class="text-green">
+                            {{ 'Voir les détails'|trans }}
+                        </a>
+                    </span>
+                        <span class="float-right">
+                        <a href="{{path('produit_vente_admin',{'user': app.user.id})}}" class="text-green">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </span>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 h-100 col-sm-6 mt-3 mb-3">
+                <div class="card border-green">
+                    <div class="card-header bg-green text-white">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="fa-solid fa-tags fa-5x"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-end">
+                                <div class="text-bold">{{ promotion|length }}</div>
+                                <div>
+                                    {{ 'Promotion en cours'|trans }}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-light bt-green">
                     <span class="float-left">
-                        <a href="{{ path('finance_dette', {'user' : app.user.id}) }}" class="text-green">
+                        <a href="{{ path('promotion_courante')}}" class="text-green">{{ 'Voir les détails'|trans }}
+                        </a>
+                    </span>
+                        <span class="float-right">
+                        <a href="{{ path('promotion_courante')}}" class="text-green">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </span>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 h-100 col-md-4 col-sm-6 mt-3 mb-3">
+                <div class="card border-green">
+                    <div class="card-header bg-success-light text-green">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="fa-brands fa-product-hunt fa-5x"></i>
+                                <i class="fa-solid fa-circle-xmark fa-3x ms-n4 text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-end">
+                                <div class="text-bold">{{ produit |length }}</div>
+                                <div>
+                                    {{ 'Produit en rupture'|trans }}
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light bt-green">
+                    <span class="float-left">
+                        <a href="{{ path('stock_rupture') }}" class="text-green">{{ 'Voir les détails'|trans }}
+                        </a>
+                    </span>
+                        <span class="float-right">
+                        <a href="{{ path('stock_rupture') }}" class="text-green">
+                            <i class="fa fa-arrow-circle-right fa-lg"></i>
+                        </a>
+                    </span>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 h-100 col-md-4 col-sm-6 my-3">
+                <div class="card border-green">
+                    <div class="card-header bg-green text-white">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="fa-solid fa-rotate fa-5x"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-end">
+                                <div class="text-bold">{{ reclamation|length }}</div>
+                                <div>
+                                    {{'Réclamation'|trans}}
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light bt-green">
+                    <span class="float-left">
+                        <a href="{{path('reclamation_index',{'user': app.user.id})}}" class="text-green">
                             {{ 'Voir les détails'|trans }}
                         </a>
                     </span>
                         <span class="float-right">
-                        <a href="{{ path('finance_dette', {'user' : app.user.id}) }}" class="text-green">
+                        <a href="{{path('reclamation_index',{'user': app.user.id})}}" class="text-green">
                             <i class="fa fa-arrow-circle-right fa-lg"></i>
                         </a>
                     </span>
@@ -270,4 +283,4 @@
         </div>
     </div>
 
-{% endblock%}
+{% endblock %}

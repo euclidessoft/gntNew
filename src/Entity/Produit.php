@@ -487,4 +487,16 @@ class Produit
 
     //     return $this;
     // }
+
+    public function getLaboratoire(): ?Laboratoire
+    {
+        return $this->laboratoire;
+    }
+
+    public function setLaboratoire(?Laboratoire $laboratoire): static
+    {
+        $this->laboratoire = $laboratoire;
+
+        return $this;
+    }
 }

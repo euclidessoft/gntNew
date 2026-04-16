@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Produit;
 use App\Entity\Fournisseur;
+use App\Entity\Laboratoire;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,7 +24,7 @@ class ProduitRepository extends ServiceEntityRepository
     public function nouveaute()
     {
         $date = new \Datetime();
-        date_sub($date,date_interval_create_from_date_string("30 days"));
+        date_sub($date,date_interval_create_from_date_string("180 days"));
        $creation = date_format($date,"Y-m-d");
 
 
@@ -63,6 +64,15 @@ class ProduitRepository extends ServiceEntityRepository
     return $qb
         ->where(':fournisseur NOT MEMBER OF p.fournisseurs')
         ->setParameter('fournisseur', $fournisseur)
+        ->getQuery()
+        ->getResult();
+}
+    public function laboratoirenonAssocier(): array
+{
+    $qb = $this->createQueryBuilder('p');
+
+    return $qb
+        ->where('p.laboratoire is NULL')
         ->getQuery()
         ->getResult();
 }

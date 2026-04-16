@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Laboratoire;
 use App\Entity\Produit;
 use App\Repository\LivrerProduitRepository;
+use App\Repository\ProduitRepository;
 use App\Form\LaboratoireForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/{_locale}/Laboratoire')]
 final class LaboratoireController extends AbstractController
@@ -57,11 +59,83 @@ final class LaboratoireController extends AbstractController
             return $this->redirectToRoute('app_laboratoire_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('laboratoire/new.html.twig', [
+        return $this->render('laboratoire/admin/new.html.twig', [
             'laboratoire' => $laboratoire,
             'form' => $form,
         ]);
     }
+    
+    #[Route("/Produits/{id}", name :"laboratoire_produit", methods : ["GET"]) ]
+    public function produit(laboratoire $laboratoire, ProduitRepository $repository): Response
+    {/*  selection produits a affecter a un laboratoire*/
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+         
+            $response = $this->render('laboratoire/produits.html.twig', [
+                'laboratoire' => $laboratoire,
+                'produits' => $repository->laboratoirenonAssocier($laboratoire),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/Affecter", name :"laboratoire_affecter", methods : [ "POST"]) ]
+    public function affecter(Request $request, EntityManagerInterface $entityManager)
+    {/** affectation de produits */
+		if ($this->security->isGranted('ROLE_FINANCE')) 
+		{
+				if($request->get('produit'))
+				{
+					$produit = explode(";",$request->get('produit'));
+					$produits = $entityManager->getrepository(Produit::class)->fournisseur( $produit);// tableau de produits used in fournisseur
+					$laboratoire = $entityManager->getrepository(laboratoire::class)->find($request->get('id'));
+                    foreach($produits as  $prod){
+                        $prod->setLaboratoire($laboratoire);
+                        $entityManager->persist($prod);
+                    }
+                    $entityManager->flush();
+					$this->addFlash('notice', 'Produits effectués');
+                    $url = $this->generateUrl('app_laboratoire_show', ['id' => $request->get('id')], UrlGeneratorInterface::ABSOLUTE_URL);
+					$res['id']= $url;
+					
+					$response = new Response();
+					$response->headers->set('content-type','application/json');
+					$re = json_encode($res);
+					$response->setContent($re);
+					return $response;
+				}
+			
+            } else {
+                $response = $this->redirectToRoute('security_logout');
+                $response->setSharedMaxAge(0);
+                $response->headers->addCacheControlDirective('no-cache', true);
+                $response->headers->addCacheControlDirective('no-store', true);
+                $response->headers->addCacheControlDirective('must-revalidate', true);
+                $response->setCache([
+                    'max_age' => 0,
+                    'private' => true,
+                ]);
+                return $response;
+            }
+	}
 
     #[Route('/{id}', name: 'app_laboratoire_show', methods: ['GET'])]
     public function show(Laboratoire $laboratoire): Response
@@ -97,7 +171,7 @@ final class LaboratoireController extends AbstractController
             return $this->redirectToRoute('app_laboratoire_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('laboratoire/edit.html.twig', [
+        return $this->render('laboratoire/admin/edit.html.twig', [
             'laboratoire' => $laboratoire,
             'form' => $form,
         ]);

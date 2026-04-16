@@ -24,6 +24,7 @@
                 {{'Validation paiement'|trans }}
             </a>
         </li>
+         {% if is_granted("ROLE_FINANCE")%}
         <li class="nav-item">
             <a class="nav-link" href="{{ path('commande_panier_validation_credit') }}">
                 {{'Validation crédit'|trans}}
@@ -34,6 +35,7 @@
                 {{'Commandes à crédit'|trans}}
             </a>
         </li>
+        {% endif %}
         <li class="nav-item">
             <a class="nav-link active" href="#">
                 {{'Commandes déjà payées'|trans}}

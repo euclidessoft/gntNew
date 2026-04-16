@@ -220,6 +220,17 @@ class CommandeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+     public function journalier($user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.user >= :user')
+            ->setParameter('start', new \DateTime())
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     //  public function deuxiemetranche($user)
     // {
     //      $endDate = new \DateTime('last day of this month 23:59:59');

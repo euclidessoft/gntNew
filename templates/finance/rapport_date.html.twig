@@ -35,12 +35,19 @@
                     <div class="form-group mt-1">
                         <input type="date" id="day" name="day" class="form-control" onchange="dayenable()">
                     </div>
-
+                    {% if is_granted("ROLE_FINANCE")%}
                     <button data-bs-toggle="modal" data-bs-target="#jour"
                             class="btn btn-shadow btn-td btn-green mt-2 mb-n1 float-right disabled" id="daybtn">
                         <i class="fa fa-check-circle"></i>
                         {{ 'Valider'|trans }}
                     </button>
+                    {% else %}
+                     <button onclick="daycaisse()"
+                            class="btn btn-shadow btn-td btn-green mt-2 mb-n1 float-right disabled" id="daybtn">
+                        <i class="fa fa-check-circle"></i>
+                        {{ 'Valider'|trans }}
+                    </button>
+                    {% endif %}
                     <div class="modal fade mt-5" id="jour" tabindex="-1" aria-labelledby="" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                             <div class="modal-content radius-10">

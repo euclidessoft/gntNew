@@ -27,30 +27,36 @@
                 {{ message|trans }}
             </div>
         {% endfor %}
-        {% if user.enabled == 1 %}
-            <button class="btn btn-danger me-2 mb-2" id="btn{{ user.id }}" onclick="userdisable({{ user.id }})"
-                    title="{{ "Désactiver ce client"|trans }}">
-                <i class="fa fa-user-lock"></i>
-                {{ "Désactiver"|trans }}
-            </button>
-        {% else %}
-            <button class="btn btn-green me-2 mb-2" id="btn{{ user.id }}" onclick="userenable({{ user.id }})"
-                    title="{{ "Activer ce client"|trans }}">
-                <i class="fa fa-user-check"></i>
-                {{ "Activer"|trans }}
-            </button>
+        {% if is_granted("ROLE_FINANCE")%}
+            {% if user.enabled == 1 %}
+                <button class="btn btn-danger me-2 mb-2" id="btn{{ user.id }}" onclick="userdisable({{ user.id }})"
+                        title="{{ "Désactiver ce client"|trans }}">
+                    <i class="fa fa-user-lock"></i>
+                    {{ "Désactiver"|trans }}
+                </button>
+            {% else %}
+                <button class="btn btn-green me-2 mb-2" id="btn{{ user.id }}" onclick="userenable({{ user.id }})"
+                        title="{{ "Activer ce client"|trans }}">
+                    <i class="fa fa-user-check"></i>
+                    {{ "Activer"|trans }}
+                </button>
+            {% endif %}
+            <a class="btn btn-success-light me-2 mb-2" href="{{ path('client_edit', {'id': user.id}) }}">
+                <i class="fas fa-user-edit"></i>
+                {{ "Modifier"|trans }}
+            </a>
         {% endif %}
         <a class="btn btn-success me-2 mb-2" href="{{ path('vente_chiffre_client', {'client': user.id}) }}">
             <i class="fas fa-chart-line"></i>
             {{ "Chiffres"|trans }}
         </a>
-        <a class="btn btn-success-light me-2 mb-2" href="{{ path('client_edit', {'id': user.id}) }}">
-            <i class="fas fa-user-edit"></i>
-            {{ "Modifier"|trans }}
-        </a>
         <a class="btn btn-outline-success me-2 mb-2" href="{{ path('commande_panier_releve', {'client': user.id}) }}">
             <i class="fa fa-list"></i>
             {{ "Relevé factures"|trans }}
+        </a>
+        <a class="btn btn-success-light me-2 mb-2" href="{{ path('commande_panier_commande_client', {'client': user.id}) }}">
+            <i class="fa fa-shopping-cart"></i>
+            {{ "Commandes"|trans }}
         </a>
         <div class="row">
             <div class="col-lg-3 mt-5 text-center">

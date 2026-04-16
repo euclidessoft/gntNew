@@ -55,6 +55,7 @@
         {{ form_row(form.dci, {'attr':{'placeholder':'DCI *'}, 'label':'DCI'}) }}
         {#        </div>#}
     </div>
+    {% if is_granted("ROLE_ADMIN") %}
     <div class="col-md-5">
         {#<div class="input-group">
             {% if form_errors(form.prix) is not empty %}
@@ -94,6 +95,7 @@
         {{ form_row(form.pght, {'attr':{'placeholder':'Prix grossiste hors taxe *'}, 'label':'Prix grossiste hors taxe *'}) }}
         {#        </div>#}
     </div>
+    {% endif %}
     <div class="col-md-5">
         {#<div class="input-group">
             {% if form_errors(form.mincommande) is not empty %}
