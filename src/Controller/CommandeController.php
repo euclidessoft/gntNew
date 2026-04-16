@@ -306,6 +306,67 @@ class CommandeController extends AbstractController
             return $response;
         }
     }
+    
+    
+    #[Route("/LienDayCommandeCaisse", name :"day_commande_lien_caisse") ]
+    public function liendaybrouyardaisse(Request $request)
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+            $date1 = $request->get('date1');
+            $client = $request->get('client');
+            $lien = $this->generateUrl('commande_panier_day_commande_caisse', ['client' => $client,'jour' => $date1]);
+            $res['ok'] = $lien;
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+    }
+
+    #[Route("/DayCommandeCaisse/{client}/{jour}", name :"day_commande_caisse") ]
+    public function daycommandecaisse($client, $jour, CommandeRepository $repository)
+    {
+         if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+            $response = $this->render('commande/admin/resultatrecherche.html.twig', [
+                'commandes' => $repository->clientjournalier($client, $jour),
+                'client' => $client,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
 
     
     #[Route("/Modificationvalider/{commande}", name :"modification_valider") ]
@@ -1583,7 +1644,7 @@ class CommandeController extends AbstractController
     #[Route("/Suivi/{commande}", name :"paiement") ]
     public function paiement(Request $request, SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, LivrerProduitRepository $livrerRepository)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             if ($commande->getSuivi()) {
                 $this->addFlash('notice', 'Paiement déjà effectué');
 
@@ -2835,6 +2896,7 @@ class CommandeController extends AbstractController
 
          return $this->render('produit/index.html.twig', compact("dataPanier", "total"));*/
     }
+
 
     public function Quinzaine($commandes)
     {
