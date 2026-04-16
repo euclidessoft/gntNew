@@ -2207,7 +2207,7 @@ class CommandeController extends AbstractController
                 'private' => true,
             ]);
             return $response;
-        } elseif ($this->security->isGranted('ROLE_FINANCE')) {
+        } elseif ($this->security->isGranted('ROLE_CAISSIER')) {
 
 
             $response = $this->render('commande/admin/details.html.twig', [
