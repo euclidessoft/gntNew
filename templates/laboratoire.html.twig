@@ -30,6 +30,7 @@
                         </div>
                     </a>
                 </li>
+{#
                 {% if is_granted("ROLE_CLIENT_ADMIN")%}
                     <li class="nav-item dropend" title="{{ 'Utilisateur'|trans }}">
                         <a class="nav-link dropdown-toggle {% block user %}{% endblock %}" href="#" id="user"
@@ -100,12 +101,12 @@
                                 {{ 'Arrivage'|trans }}
                             </a>
                         </li>
-                        {#<li class="dropdown-item">
+                        <li class="dropdown-item">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-user-clock"></i>
                                 {{ 'Pré-arrivages'|trans }}
                             </a>
-                        </li>#}
+                        </li>
                         <li class="dropdown-item">
                             <a class="nav-link {% block ventes %}{% endblock %}" href="{{ path('produit_vente') }}">
                                 <i class="fas fa-money-bill-trend-up"></i>
@@ -165,12 +166,12 @@
                                 {{ 'importer'|trans }}
                             </a>
                         </li>
-                        {#<li class="dropdown-item">
+                        <li class="dropdown-item">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-list"></i>
                                 {{ 'en preparation'|trans }}
                             </a>
-                        </li>#}
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item dropend" title="{{ 'Livraison'|trans }}">
@@ -215,7 +216,7 @@
                     <ul class=" dropdown-menu" aria-labelledby="pelerin">
                         <li class="dropdown-item">
                             <a class="nav-link {% block new_reclamation %}{% endblock %}"
-                               href="{#{{ path('reclamation_liste_commande', { 'user' : app.user.pharmacie.id }) }}#}">
+                               href="{{ path('reclamation_liste_commande', { 'user' : app.user.pharmacie.id }) }}">
                                 <i class="fas fa-user-clock"></i>
                                 <i class="fas fa-plus"></i>
                                 {{ 'Créer une réclamation'|trans }}
@@ -223,7 +224,7 @@
                         </li>
                         <li class="dropdown-item">
                             <a class="nav-link {% block my_reclamation %}{% endblock %}"
-                               href="{#{{ path('reclamation_index',{'user':app.user.pharmacie.id}) }}#}">
+                               href="{{ path('reclamation_index',{'user':app.user.pharmacie.id}) }}">
                                 <i class="fas fa-user-clock"></i>
                                 <i class="fas fa-list"></i>
                                 {{ 'Mes réclamations'|trans }}
@@ -243,7 +244,7 @@
                     </a>
                 </li>
                 {% endif %}
-              
+              #}
 
 
                 <li class="nav-item dropend" title="{{ 'Aide'|trans }}">
@@ -485,7 +486,7 @@
                             <p class="text-center mt-3">
                                 Copyright &copy; 2023-{{ 'now'|date('Y') }}
                                 <b>
-                                    <a class="text-green" href="http://euclideservices.com" target="_blank">EUCLIDES</a>
+                                    <a class="text-green" href="https://euclideservices.com" target="_blank">EUCLIDES</a>
                                 </b>
                                 <br>
                                 {{ 'Tous droits réservés'|trans }}
