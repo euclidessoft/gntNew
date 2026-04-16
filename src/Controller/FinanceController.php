@@ -355,31 +355,35 @@ class FinanceController extends AbstractController
             $caisseouv = 0;
             $debitcaisse = 0;
             $debitcaisseouv = 0;
-            foreach ($ecritures as $ecriture) {
-                $credit = null;
-                $debit = null;
+             $credits = [];
+                $debits = [];
+           
+
+            foreach ($ouverture as $ecriture) {
+                $credittest = null;
+                $debittest = null;
                 if ($ecriture->getCredit() != null) {
-                    $credit = $ecriture->getCredit();
-                    $caisse = $caisse + $credit->getMontant();
+                    $credittest = $ecriture->getCredit();
+                    $caisseouv = $caisseouv + $credittest->getMontant();
                 } else {
 
-                    $debit = $ecriture->getDebit();
-                    $debitcaisse = $debitcaisse + $debit->getMontant();
+                    $debittest = $ecriture->getDebit();
+                    $debitcaisseouv = $debitcaisseouv + $debittest->getMontant();
 
                 }
 
             }
+             foreach ($ecritures as $ecriture) {
 
-            foreach ($ouverture as $ecriture) {
-                $credit = null;
-                $debit = null;
                 if ($ecriture->getCredit() != null) {
                     $credit = $ecriture->getCredit();
-                    $caisseouv = $caisseouv + $credit->getMontant();
+                    $credits[] = $ecriture;
+                    $caisse = $caisse + $credit->getMontant();
                 } else {
 
                     $debit = $ecriture->getDebit();
-                    $debitcaisseouv = $debitcaisseouv + $debit->getMontant();
+                    $debits[] = $ecriture;
+                    $debitcaisse = $debitcaisse + $debit->getMontant();
 
                 }
 
@@ -387,7 +391,9 @@ class FinanceController extends AbstractController
 
             return $this->render('finance/brouyard_caisse.html.twig', [
                 'caisse' => $caisse - $debitcaisse + $caisseouv - $debitcaisseouv,
-                'ecritures' => $ecritures,
+                 // 'ecritures' => $ecritures,
+                'credits' => $credits,
+                'debits' => $debits,
                 'ouverture' => $caisseouv - $debitcaisseouv,
             ]);
         } else {
@@ -407,38 +413,42 @@ class FinanceController extends AbstractController
     #[Route("/BrouillardCaisse_print", name :"brouyard_caisse_print") ]
     public function brouyardCaisse_print(EcritureRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
             $ecritures = $repository->brouyardcaisse();
             $ouverture = $repository->ouverturecaisse();
             $caisse = 0;
             $caisseouv = 0;
             $debitcaisse = 0;
             $debitcaisseouv = 0;
-            foreach ($ecritures as $ecriture) {
-                $credit = null;
-                $debit = null;
+            $credits = [];
+                $debits = [];
+           
+
+            foreach ($ouverture as $ecriture) {
+                $credittest = null;
+                $debittest = null;
                 if ($ecriture->getCredit() != null) {
-                    $credit = $ecriture->getCredit();
-                    $caisse = $caisse + $credit->getMontant();
+                    $credittest = $ecriture->getCredit();
+                    $caisseouv = $caisseouv + $credittest->getMontant();
                 } else {
 
-                    $debit = $ecriture->getDebit();
-                    $debitcaisse = $debitcaisse + $debit->getMontant();
+                    $debittest = $ecriture->getDebit();
+                    $debitcaisseouv = $debitcaisseouv + $debittest->getMontant();
 
                 }
 
             }
+             foreach ($ecritures as $ecriture) {
 
-            foreach ($ouverture as $ecriture) {
-                $credit = null;
-                $debit = null;
                 if ($ecriture->getCredit() != null) {
                     $credit = $ecriture->getCredit();
-                    $caisseouv = $caisseouv + $credit->getMontant();
+                    $credits[] = $ecriture;
+                    $caisse = $caisse + $credit->getMontant();
                 } else {
 
                     $debit = $ecriture->getDebit();
-                    $debitcaisseouv = $debitcaisseouv + $debit->getMontant();
+                    $debits[] = $ecriture;
+                    $debitcaisse = $debitcaisse + $debit->getMontant();
 
                 }
 
@@ -446,7 +456,9 @@ class FinanceController extends AbstractController
 
             return $this->render('finance/brouyard_caisse_print.html.twig', [
                 'caisse' => $caisse - $debitcaisse + $caisseouv - $debitcaisseouv,
-                'ecritures' => $ecritures,
+                // 'ecritures' => $ecritures,
+                'credits' => $credits,
+                'debits' => $debits,
                 'ouverture' => $caisseouv - $debitcaisseouv,
             ]);
         } else {
@@ -822,31 +834,35 @@ class FinanceController extends AbstractController
             $debitbanqueouv = 0;
             $debitcaisse = 0;
             $debitcaisseouv = 0;
-            foreach ($ecritures as $ecriture) {
-                $credit = null;
-                $debit = null;
+                $credits = [];
+                $debits = [];
+           
+
+            foreach ($ouverture as $ecriture) {
+                $credittest = null;
+                $debittest = null;
                 if ($ecriture->getCredit() != null) {
-                    $credit = $ecriture->getCredit();
-                    $caisse = $caisse + $credit->getMontant();
+                    $credittest = $ecriture->getCredit();
+                    $caisseouv = $caisseouv + $credittest->getMontant();
                 } else {
 
-                    $debit = $ecriture->getDebit();
-                    $debitcaisse = $debitcaisse + $debit->getMontant();
+                    $debittest = $ecriture->getDebit();
+                    $debitcaisseouv = $debitcaisseouv + $debittest->getMontant();
 
                 }
 
             }
+             foreach ($ecritures as $ecriture) {
 
-            foreach ($ouverture as $ecriture) {
-                $credit = null;
-                $debit = null;
                 if ($ecriture->getCredit() != null) {
                     $credit = $ecriture->getCredit();
-                    $caisseouv = $caisseouv + $credit->getMontant();
+                    $credits[] = $ecriture;
+                    $caisse = $caisse + $credit->getMontant();
                 } else {
 
                     $debit = $ecriture->getDebit();
-                    $debitcaisseouv = $debitcaisseouv + $debit->getMontant();
+                    $debits[] = $ecriture;
+                    $debitcaisse = $debitcaisse + $debit->getMontant();
 
                 }
 
@@ -854,7 +870,9 @@ class FinanceController extends AbstractController
 
             return $this->render('finance/brouyard_date_caisse.html.twig', [
                 'caisse' => $caisse - $debitcaisse + $caisseouv - $debitcaisseouv,
-                'ecritures' => $ecritures,
+                // 'ecritures' => $ecritures,
+                'credits' => $credits,
+                'debits' => $debits,
                 'ouverture' => $caisseouv - $debitcaisseouv,
                 'day' => $jour,
             ]);
@@ -875,8 +893,8 @@ class FinanceController extends AbstractController
     #[Route("/DayBrouyardCaisse_print/{jour}", name :"day_brouyard_caisse_print") ]
     public function daybrouyardcaisse_print(Request $request, $jour)
     {
-        if ($this->security->isGranted('ROLE_FINANCE')) {
-            $repository = $this->entityManager->getRepository(Ecriture::class);
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+             $repository = $this->entityManager->getRepository(Ecriture::class);
             $ecritures = $repository->daybrouyardcaisse($jour);
             $ouverture = $repository->ouvertureplacecaisse($jour);
             $caisse = 0;
@@ -887,31 +905,35 @@ class FinanceController extends AbstractController
             $debitbanqueouv = 0;
             $debitcaisse = 0;
             $debitcaisseouv = 0;
-            foreach ($ecritures as $ecriture) {
-                $credit = null;
-                $debit = null;
+                $credits = [];
+                $debits = [];
+           
+
+            foreach ($ouverture as $ecriture) {
+                $credittest = null;
+                $debittest = null;
                 if ($ecriture->getCredit() != null) {
-                    $credit = $ecriture->getCredit();
-                    $caisse = $caisse + $credit->getMontant();
+                    $credittest = $ecriture->getCredit();
+                    $caisseouv = $caisseouv + $credittest->getMontant();
                 } else {
 
-                    $debit = $ecriture->getDebit();
-                    $debitcaisse = $debitcaisse + $debit->getMontant();
+                    $debittest = $ecriture->getDebit();
+                    $debitcaisseouv = $debitcaisseouv + $debittest->getMontant();
 
                 }
 
             }
+             foreach ($ecritures as $ecriture) {
 
-            foreach ($ouverture as $ecriture) {
-                $credit = null;
-                $debit = null;
                 if ($ecriture->getCredit() != null) {
                     $credit = $ecriture->getCredit();
-                    $caisseouv = $caisseouv + $credit->getMontant();
+                    $credits[] = $ecriture;
+                    $caisse = $caisse + $credit->getMontant();
                 } else {
 
                     $debit = $ecriture->getDebit();
-                    $debitcaisseouv = $debitcaisseouv + $debit->getMontant();
+                    $debits[] = $ecriture;
+                    $debitcaisse = $debitcaisse + $debit->getMontant();
 
                 }
 
@@ -919,7 +941,9 @@ class FinanceController extends AbstractController
 
             return $this->render('finance/brouyard_date_caisse_print.html.twig', [
                 'caisse' => $caisse - $debitcaisse + $caisseouv - $debitcaisseouv,
-                'ecritures' => $ecritures,
+                // 'ecritures' => $ecritures,
+                'credits' => $credits,
+                'debits' => $debits,
                 'ouverture' => $caisseouv - $debitcaisseouv,
                 'day' => $jour,
             ]);
@@ -1033,7 +1057,7 @@ class FinanceController extends AbstractController
     #[Route("/DayBrouyardBanque_print/{jour}", name :"day_brouyard_banque_print") ]
     public function daybrouyardbanque_print(Request $request, $jour)
     {
-        if ($this->security->isGranted('ROLE_CAISSIER')) {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
             $repository = $this->entityManager->getRepository(Ecriture::class);
             $ecritures = $repository->daybrouyardbanque($jour);
             $ouverture = $repository->ouvertureplacebanque($jour);
@@ -1338,31 +1362,35 @@ class FinanceController extends AbstractController
             $caisseouv = 0;
             $debitcaisse = 0;
             $debitcaisseouv = 0;
-            foreach ($ecritures as $ecriture) {
-                $credit = null;
-                $debit = null;
+            $credits = [];
+                $debits = [];
+           
+
+            foreach ($ouverture as $ecriture) {
+                $credittest = null;
+                $debittest = null;
                 if ($ecriture->getCredit() != null) {
-                    $credit = $ecriture->getCredit();
-                    $caisse = $caisse + $credit->getMontant();
+                    $credittest = $ecriture->getCredit();
+                    $caisseouv = $caisseouv + $credittest->getMontant();
                 } else {
 
-                    $debit = $ecriture->getDebit();
-                    $debitcaisse = $debitcaisse + $debit->getMontant();
+                    $debittest = $ecriture->getDebit();
+                    $debitcaisseouv = $debitcaisseouv + $debittest->getMontant();
 
                 }
 
             }
+             foreach ($ecritures as $ecriture) {
 
-            foreach ($ouverture as $ecriture) {
-                $credit = null;
-                $debit = null;
                 if ($ecriture->getCredit() != null) {
                     $credit = $ecriture->getCredit();
-                    $caisseouv = $caisseouv + $credit->getMontant();
+                    $credits[] = $ecriture;
+                    $caisse = $caisse + $credit->getMontant();
                 } else {
 
                     $debit = $ecriture->getDebit();
-                    $debitcaisseouv = $debitcaisseouv + $debit->getMontant();
+                    $debits[] = $ecriture;
+                    $debitcaisse = $debitcaisse + $debit->getMontant();
 
                 }
 
@@ -1370,7 +1398,9 @@ class FinanceController extends AbstractController
 
             return $this->render('finance/brouyard_interval_caisse.html.twig', [
                 'caisse' => $caisse - $debitcaisse + $caisseouv - $debitcaisseouv,
-                'ecritures' => $ecritures,
+                // 'ecritures' => $ecritures,
+                'credits' => $credits,
+                'debits' => $debits,
                 'ouverture' => $caisseouv - $debitcaisseouv,
                 'day1' => $date1,
                 'day2' => $date2,
@@ -1401,31 +1431,35 @@ class FinanceController extends AbstractController
             $caisseouv = 0;
             $debitcaisse = 0;
             $debitcaisseouv = 0;
-            foreach ($ecritures as $ecriture) {
-                $credit = null;
-                $debit = null;
+             $credits = [];
+                $debits = [];
+           
+
+            foreach ($ouverture as $ecriture) {
+                $credittest = null;
+                $debittest = null;
                 if ($ecriture->getCredit() != null) {
-                    $credit = $ecriture->getCredit();
-                    $caisse = $caisse + $credit->getMontant();
+                    $credittest = $ecriture->getCredit();
+                    $caisseouv = $caisseouv + $credittest->getMontant();
                 } else {
 
-                    $debit = $ecriture->getDebit();
-                    $debitcaisse = $debitcaisse + $debit->getMontant();
+                    $debittest = $ecriture->getDebit();
+                    $debitcaisseouv = $debitcaisseouv + $debittest->getMontant();
 
                 }
 
             }
+             foreach ($ecritures as $ecriture) {
 
-            foreach ($ouverture as $ecriture) {
-                $credit = null;
-                $debit = null;
                 if ($ecriture->getCredit() != null) {
                     $credit = $ecriture->getCredit();
-                    $caisseouv = $caisseouv + $credit->getMontant();
+                    $credits[] = $ecriture;
+                    $caisse = $caisse + $credit->getMontant();
                 } else {
 
                     $debit = $ecriture->getDebit();
-                    $debitcaisseouv = $debitcaisseouv + $debit->getMontant();
+                    $debits[] = $ecriture;
+                    $debitcaisse = $debitcaisse + $debit->getMontant();
 
                 }
 
@@ -1433,7 +1467,9 @@ class FinanceController extends AbstractController
 
             return $this->render('finance/brouyard_interval_caisse_print.html.twig', [
                 'caisse' => $caisse - $debitcaisse + $caisseouv - $debitcaisseouv,
-                'ecritures' => $ecritures,
+                // 'ecritures' => $ecritures,
+                'credits' => $credits,
+                'debits' => $debits,
                 'ouverture' => $caisseouv - $debitcaisseouv,
                 'day1' => $date1,
                 'day2' => $date2,

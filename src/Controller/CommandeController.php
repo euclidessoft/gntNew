@@ -340,10 +340,78 @@ class CommandeController extends AbstractController
     public function daycommandecaisse($client, $jour, CommandeRepository $repository)
     {
          if ($this->security->isGranted('ROLE_CAISSIER')) {
+            $clt = $this->entityManager->getRepository(Client::class)->find($client);
 
             $response = $this->render('commande/admin/resultatrecherche.html.twig', [
                 'commandes' => $repository->clientjournalier($client, $jour),
-                'client' => $client,
+                'client' => $clt,
+                'jour' => $jour,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/LienDaysCommandeCaisse", name :"days_commande_lien_caisse") ]
+    public function liendaysbrouyardcaisse(Request $request)
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            $client = $request->get('client');
+            $lien = $this->generateUrl('commande_panier_days_commande_caisse', ['client' => $client, 'date1' => $date1, 'date2' => $date2]);
+            $res['ok'] = $lien;
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+    }
+
+
+    #[Route("/DaysCommandeCaisse/{client}/{date1}/{date2}", name :"days_commande_caisse") ]
+    public function daysbrouyardcaisse(Request $request, $client, $date1, $date2, CommandeRepository $repository)
+    {
+         if ($this->security->isGranted('ROLE_CAISSIER')) {
+            $clt = $this->entityManager->getRepository(Client::class)->find($client);
+
+            $response = $this->render('commande/admin/resultatrechercheplage.html.twig', [
+                'commandes' => $repository->plage($client, $date1, $date2),
+                'client' => $clt,
+                'date1' => $date1,
+                'date2' => $date2,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

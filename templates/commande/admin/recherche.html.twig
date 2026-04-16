@@ -62,11 +62,80 @@
         </div>
         </div>
         <div class="col-8">
+         <div class="card border-green shadow-black mt-4 mb-5">
+                <div class="card-header bg-success-light text-green bb-green">
+                    <h6 class="mb-n1">
+{#                        <i class="fa-solid fa-magnifying-glass-chart"></i>#}
+                        {{ 'Entrer les dates'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-n3">
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Du'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date1" name="date1" class="form-control"
+                                           onchange="daysenable()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Au'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date2" name="date2" class="form-control"
+                                           onchange="daysenable()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button  onclick="dayscommande({{client.id}})"
+                            class="btn btn-shadow btn-green mt-2 mb-n1 float-right disabled" id="daysbtn">
+                        <i class="fa fa-check-circle"></i>
+                        {{ 'Valider'|trans }}
+                    </button>
+                    
+                </div>
+            </div>
         </div>
         </div>
     </div>
     {% block script %}
         <script>
+              //situation intervalle caisse
+            function dayscommande(client) {
+                var date1 = new Date($('#date1').val());
+                var date2 = new Date($('#date2').val());
+                if (date1 < date2 && date2 < new Date()) {
+                    $('#daysbtn').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('commande_panier_days_commande_lien_caisse') }}",
+                        data: {date1 : $('#date1').val() , date2 : $('#date2').val(), client :client},
+                        success: function (data) {
+                            window.open(data['ok'], '_self');
+                            // window.location.reload();
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n a pas abouti'|trans }}");
+                        }
+                    });
+
+                } else {
+                    alert("{{ 'Vérifiez les dates saisies'|trans }}");
+                }
+
+            }
 
             function daycommande(client) {
                 var date1 = new Date($('#day').val());
@@ -97,6 +166,15 @@
                     $('#daybtn').removeClass("disabled");
                 } else {
                     $('#daybtn').addClass("disabled");
+                }
+            }
+
+             //activation boutons dates
+            function daysenable() {
+                if ($('#date1').val() != '' && $('#date2').val() != '') {
+                    $('#daysbtn').removeClass("disabled");
+                } else {
+                    $('#daysbtn').addClass("disabled");
                 }
             }
 

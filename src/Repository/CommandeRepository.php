@@ -222,10 +222,15 @@ class CommandeRepository extends ServiceEntityRepository
 
      public function journalier($user): array
     {
+        $date = new \Datetime();
+        $debut = (clone $date)->setTime(0, 0, 0);
+        $fin = (clone $date)->setTime(23, 59, 59);
+
         return $this->createQueryBuilder('c')
-            ->andWhere('c.date >= :start')
-            ->andWhere('c.user >= :user')
-            ->setParameter('start', new \DateTime())
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.user = :user')
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
@@ -233,15 +238,37 @@ class CommandeRepository extends ServiceEntityRepository
 
      public function clientjournalier($user, $jour): array
     {
+         $date = new \Datetime($jour);
+        $debut = (clone $date)->setTime(0, 0, 0);
+        $fin = (clone $date)->setTime(23, 59, 59);
+
         return $this->createQueryBuilder('c')
-            ->andWhere('c.date = :start')
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
             ->andWhere('c.user = :user')
-            ->setParameter('start', $jour)
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }
 
+     public function plage($client, $date1, $date2): array
+    {
+        $date = new \Datetime($date1);
+        $debut = (clone $date)->setTime(0, 0, 0);
+
+        $date = new \Datetime($date2);
+        $fin = (clone $date)->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $client)
+            ->getQuery()
+            ->getResult();
+    }
     //  public function deuxiemetranche($user)
     // {
     //      $endDate = new \DateTime('last day of this month 23:59:59');

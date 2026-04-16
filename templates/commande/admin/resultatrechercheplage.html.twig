@@ -20,7 +20,7 @@
         </h3>
         <h5 class="mb-5 text-bold">
             <i class="fa fa-search me-2"></i>
-            {{ "Resultat recherche du "|trans }}{{ jour|date("d/m/Y")}}
+            {{ "Resultat recherche du "|trans }}{{ date1|date("d/m/Y")}} {{'au '|trans}}{{ date2|date("d/m/Y")}}
         </h5>
           {% for message in app.flashes('notice') %}
         <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
