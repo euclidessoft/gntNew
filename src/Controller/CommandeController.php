@@ -28,6 +28,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 #[Route("/{_locale}/Commande_Panier", name :"commande_panier_") ]
@@ -2353,21 +2355,44 @@ class CommandeController extends AbstractController
             return $response;
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
+            $options = new Options();
+    $options->set('defaultFont', 'Arial');
 
-            $response = $this->render('commande/admin/details_print.html.twig', [
+    $dompdf = new Dompdf($options);
+
+    $html =  $response = $this->renderView('commande/all_print.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
             ]);
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
+
+    $dompdf->loadHtml($html);
+
+    $dompdf->setPaper('A4', 'portrait');
+
+    $dompdf->render();
+
+    return new Response(
+        $dompdf->stream('document.pdf', ["Attachment" => false]),
+        200,
+        [
+            'Content-Type' => 'application/pdf'
+        ]
+    );
+            // $response = $this->render('commande/admin/details_print.html.twig', [
+            //     'commandeproduits' => $repository->findBy(['commande' => $commande]),
+            //     'commande' => $commande,
+            //     'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
+            // ]);
+            // $response->setSharedMaxAge(0);
+            // $response->headers->addCacheControlDirective('no-cache', true);
+            // $response->headers->addCacheControlDirective('no-store', true);
+            // $response->headers->addCacheControlDirective('must-revalidate', true);
+            // $response->setCache([
+            //     'max_age' => 0,
+            //     'private' => true,
+            // ]);
+            // return $response;
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
