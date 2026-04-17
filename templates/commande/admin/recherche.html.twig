@@ -18,16 +18,16 @@
     <div class="container mt-4 fond-7">
         <h3 class="mt-4 mb-5 text-bold">
             <i class="fa fa-shopping-cart me-2"></i>
-            {{ "Suivi des commandes"|trans }}  {{ client.nom ~ " " ~ client.prenom}}
+            {{ "Suivi des commandes"|trans }}  | {{ client.nom ~ " " ~ client.prenom}}
         </h3>
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
-                <a class="nav-link active" href="{{ path('commande_panier_commande_client', {'client': app.user.id}) }}">
+                <a class="nav-link" href="{{ path('commande_panier_commande_client', {'client': client.id}) }}">
                     {{ 'Commande(s) journaliere(s)'|trans }}
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link active" href="#">
                     {{'Recherche'|trans}}
                 </a>
             </li>
@@ -38,44 +38,146 @@
             {{ message|trans }}
         </div>
     {% endfor %}
-
-        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4 text-center" id="liste">
-            <thead>
-            <tr>
-                <th class="text-center">{{'Numero'|trans}}<br>{{'Commande'|trans}}</th>
-                <th class="text-center">{{ 'Date'|trans }}</th>
-                <th class="text-start">{{ 'Client'|trans }} </th>
-                <th class="text-center">{{ 'Telephone'|trans }} </th>
-                <th class="text-end">{{ 'Montant'|trans }}</th>
-                <th class="text-center">{{ 'Actions'|trans }} </th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for commande in commandes %}
-                <tr>
-                    <td data-label="{{'Numero'|trans}}">{{ commande.id }}</td>
-                    <td data-label="{{ 'Date'|trans }}">{{ commande.date|date('d/m/Y') }}</td>
-                    <td data-label="{{ 'Client'|trans }} " class="text-start">{{ commande.user.nom }} {{ commande.user.prenom }}</td>
-                    <td data-label="{{ 'Telephone'|trans }} ">{{ commande.user.phone }}</td>
-                    <td data-label="{{ 'Montant'|trans }}" class="text-end">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    <td data-label="{{ 'Validation'|trans }} ">
-                        <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_paiement', {'commande' : commande.id}) }}" class="btn btn-success">
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
-                            {{ 'Traitement'|trans }}
-                        </a>
-                        {% if is_granted("ROLE_ADMIN") and commande.suivi == false %}
-                       {{ include('commande/admin/commande_delete.html.twig')}}
-                        {% endif %}
-                        
-                         <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
-                        <i class="fa fa-list"></i>
-                            {{ 'Bon'|trans }}
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="row">
+    <div class="col-4">
+    <div class="card border-green shadow-black mt-4">
+                <div class="card-header bg-success-light text-green bb-green">
+                    <h6 class="mb-n1">
+{#                        <i class="fa-solid fa-magnifying-glass-chart"></i>#}
+                        {{ 'Entrer une date'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group mt-1">
+                        <input type="date" id="day" name="day" class="form-control" onchange="dayenable()">
+                    </div>
+                   
+                     <button onclick="daycommande({{client.id}})"
+                            class="btn btn-shadow btn-td btn-green mt-2 mb-n1 float-right disabled" id="daybtn">
+                        <i class="fa fa-check-circle"></i>
+                        {{ 'Valider'|trans }}
+                    </button>
+                    
+                </div>
+        </div>
+        </div>
+        <div class="col-8">
+         <div class="card border-green shadow-black mt-4 mb-5">
+                <div class="card-header bg-success-light text-green bb-green">
+                    <h6 class="mb-n1">
+{#                        <i class="fa-solid fa-magnifying-glass-chart"></i>#}
+                        {{ 'Entrer les dates'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-n3">
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Du'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date1" name="date1" class="form-control"
+                                           onchange="daysenable()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Au'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date2" name="date2" class="form-control"
+                                           onchange="daysenable()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button  onclick="dayscommande({{client.id}})"
+                            class="btn btn-shadow btn-green mt-2 mb-n1 float-right disabled" id="daysbtn">
+                        <i class="fa fa-check-circle"></i>
+                        {{ 'Valider'|trans }}
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+        </div>
     </div>
+    {% block script %}
+        <script>
+              //situation intervalle caisse
+            function dayscommande(client) {
+                var date1 = new Date($('#date1').val());
+                var date2 = new Date($('#date2').val());
+                if (date1 < date2 && date2 < new Date()) {
+                    $('#daysbtn').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('commande_panier_days_commande_lien_caisse') }}",
+                        data: {date1 : $('#date1').val() , date2 : $('#date2').val(), client :client},
+                        success: function (data) {
+                            window.open(data['ok'], '_self');
+                            // window.location.reload();
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n a pas abouti'|trans }}");
+                        }
+                    });
 
+                } else {
+                    alert("{{ 'Vérifiez les dates saisies'|trans }}");
+                }
+
+            }
+
+            function daycommande(client) {
+                var date1 = new Date($('#day').val());
+                if (date1 < new Date()) {
+                    $('#daybtn').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('commande_panier_day_commande_lien_caisse') }}",
+                        data: { date1: $('#day').val(), client : client },
+                        success: function (data) {
+                            window.open(data['ok'], '_self');
+                            // window.location.reload();
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n a pas abouti'|trans }}");
+                        }
+                    });
+                } else {
+                    $('#day').val('');
+                    alert("{{ 'Choisis une date anterieure à la date du jour'|trans }}");
+                }
+
+            }
+
+             //activation bouton date
+            function dayenable() {
+                if ($('#day').val() != '') {
+                    $('#daybtn').removeClass("disabled");
+                } else {
+                    $('#daybtn').addClass("disabled");
+                }
+            }
+
+             //activation boutons dates
+            function daysenable() {
+                if ($('#date1').val() != '' && $('#date2').val() != '') {
+                    $('#daysbtn').removeClass("disabled");
+                } else {
+                    $('#daysbtn').addClass("disabled");
+                }
+            }
+
+        </script>
+    {% endblock %}
 {% endblock %}

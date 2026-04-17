@@ -192,7 +192,11 @@ class CommandeRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.user = :id')
             ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.credit = :credit')
+            ->andWhere('p.payer = :payer')
             ->setParameter('id' , $user)
+            ->setParameter('credit' , true)
+            ->setParameter('payer' , false)
             ->setParameter('start' , $startDate)
             ->setParameter('end' , $endDate)
             ->orderBy('p.date', "DESC")
@@ -212,7 +216,11 @@ class CommandeRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.user = :id')
             ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.credit = :credit')
+            ->andWhere('p.payer = :payer')
             ->setParameter('id' , $user)
+            ->setParameter('credit' , true)
+            ->setParameter('payer' , false)
             ->setParameter('start' , $startDate)
             ->setParameter('end' , $endDate)
             ->orderBy('p.date', "DESC")
@@ -222,15 +230,53 @@ class CommandeRepository extends ServiceEntityRepository
 
      public function journalier($user): array
     {
+        $date = new \Datetime();
+        $debut = (clone $date)->setTime(0, 0, 0);
+        $fin = (clone $date)->setTime(23, 59, 59);
+
         return $this->createQueryBuilder('c')
-            ->andWhere('c.date >= :start')
-            ->andWhere('c.user >= :user')
-            ->setParameter('start', new \DateTime())
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.user = :user')
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }
 
+     public function clientjournalier($user, $jour): array
+    {
+         $date = new \Datetime($jour);
+        $debut = (clone $date)->setTime(0, 0, 0);
+        $fin = (clone $date)->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+     public function plage($client, $date1, $date2): array
+    {
+        $date = new \Datetime($date1);
+        $debut = (clone $date)->setTime(0, 0, 0);
+
+        $date = new \Datetime($date2);
+        $fin = (clone $date)->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $client)
+            ->getQuery()
+            ->getResult();
+    }
     //  public function deuxiemetranche($user)
     // {
     //      $endDate = new \DateTime('last day of this month 23:59:59');

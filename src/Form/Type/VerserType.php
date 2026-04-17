@@ -14,16 +14,16 @@ class VerserType extends AbstractType
     {
         $this->security = $security;
     }
-	
+
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		  $choices = [
-				'Espèce' => 'Espece',
+				'Espece' => 'Espece',
 			];
 
-			// 🔥 Vérification du rôle
-			if ($this->security->isGranted('ROLE_ADMIN')) {
-				$choices['Chèque'] = 'Cheque';
+			//  Vérification du rôle
+			if ($this->security->isGranted('ROLE_FINANCE')) {
+				$choices['Cheque'] = 'Cheque';
 				$choices['Virement'] = 'Virement';
 			}
 		$resolver->setDefaults(array(

@@ -22,7 +22,7 @@
                 <a class="nav-link" href="{{ path('commande_panier_credit') }}">{{'Dette'|trans}}</a>
             </li>
         </ul>
-         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
+        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
             <thead>
             <tr>
                 <th>{{ 'Date'|trans }}</th>
@@ -33,31 +33,30 @@
             </tr>
             </thead>
             <tbody>
+            {% set tva = 0 %}
+            {% set prelevement = 0 %}
+            {% set montant = 0 %}
+            {% set total = 0 %}
+            {% set avance = 0 %}
             {% for commande in commandes %}
                 <tr>
                     <td>{{ commande.traitement|date('d/m/Y') }}</td>
                     <td> {{ commande.id}}-{{ commande.numerofacture }}</td>
                     <td>{{ commande.credit == true ? 'CREDIT' : "" }}</td>
-                  <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                  <td>{{ (commande.montant - commande.tva -commande.acompte )|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                  {% set montant = montant + (commande.montant - commande.tva - commande.acompte ) %}
+                  {% set avance = avance + commande.versement %}
+                  {% set total = total + commande.montant %}
+                  {% set tva = tva + commande.tva %}
+                  {% set prelevement = prelevement + commande.acompte %}
+                  </td>
                   <td></td>
-                    {# <td>
-                   
-                        <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
-                        <i class="fa fa-money-bill"></i>
-                            {{ 'Facture'|trans }}
-                        </a>
-{# 
-                         <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : commande.id}) }}" class="btn btn-success">
-                        <i class="fa fa-list"></i>
-                            {{ 'Bon de commande'|trans }}
-                        </a> 
-                    </td> #}
                 </tr>
             {% else %}
             {% endfor %}
             </tbody>
         </table>
-{# 
+
          <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4 mt-4">
             <thead>
             <tr>
@@ -71,8 +70,8 @@
                 <tr>
                     <td>0,000%</td>
                     <td>2%</td>
-                    <td>0</td>
-                   <td></td>
+                    <td>{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                   <td>{{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 </tr>
             </tbody>
         </table>
@@ -80,17 +79,25 @@
         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4 mt-4">
             <thead>
             <tr>
-                <th>{{'PRELEVEMENT'|trans}}</th>
-                <th>{{'TOTAL T.V.A'|trans}}</th>
-                <th>{{ 'TOTAL T.T.C'|trans }}</th>
+                <th>{{'PRELEVEMENT'|trans}} {{ prelevement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                <th>{{'TOTAL T.V.A'|trans}} {{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                <th>{{ 'TOTAL T.T.C'|trans }} {{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
             </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="3"></td>
+                    <td colspan="3"> AVANCE {{ avance|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                </tr>
+                 <tr>
+                    <td colspan="3"> RESTE {{ (total - avance)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                   <span id="total" class="text-nowrap" style="display:none;">{{ (total - avance)|number_format(2, '.' , '') }}</span>
+                    </td>
+                </tr>
+                 <tr>
+                    <td colspan="3">SOIT À VOTRE DEBIT <b id="conversion"></b><b id="virgule"></b> <b>franc CFA TTC</b></td>
                 </tr>
             </tbody>
-        </table> #}
+        </table>
 
     </div>
 
