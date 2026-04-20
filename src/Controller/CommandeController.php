@@ -2356,29 +2356,29 @@ class CommandeController extends AbstractController
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
             $options = new Options();
-    $options->set('defaultFont', 'Arial');
+            $options->set('defaultFont', 'Arial');
 
-    $dompdf = new Dompdf($options);
+            $dompdf = new Dompdf($options);
 
-    $html =  $response = $this->renderView('commande/all_print.html.twig', [
-                'commandeproduits' => $repository->findBy(['commande' => $commande]),
-                'commande' => $commande,
-                'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
-            ]);
+            $html =  $response = $this->renderView('commande/all_print.html.twig', [
+                        'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                        'commande' => $commande,
+                        'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
+                    ]);
 
-    $dompdf->loadHtml($html);
+            $dompdf->loadHtml($html);
 
-    $dompdf->setPaper('A4', 'portrait');
+            $dompdf->setPaper('A4', 'portrait');
 
-    $dompdf->render();
+            $dompdf->render();
 
-    return new Response(
-        $dompdf->stream('document.pdf', ["Attachment" => false]),
-        200,
-        [
-            'Content-Type' => 'application/pdf'
-        ]
-    );
+            return new Response(
+                $dompdf->stream('document.pdf', ["Attachment" => false]),
+                200,
+                [
+                    'Content-Type' => 'application/pdf'
+                ]
+            );
             // $response = $this->render('commande/admin/details_print.html.twig', [
             //     'commandeproduits' => $repository->findBy(['commande' => $commande]),
             //     'commande' => $commande,

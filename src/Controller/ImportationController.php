@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Panier;
+use App\Entity\Produit;
 use App\Form\CommandeType;
 use App\Repository\ProduitRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,25 +39,53 @@ class ImportationController extends AbstractController
         try {
             $spreadsheet = IOFactory::load($file->getPathname());
             $sheet = $spreadsheet->getActiveSheet()->toArray();
-            $session->set('sheet', $sheet);
+            $notfound = 0;     
+            $panier = [];
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
+           
+            if(count($sheet) > 0){// commande par importation
+                foreach($sheet as $commande){
+                    if (!preg_match('/^[0-9]+$/', $commande[0]) || !preg_match('/^[0-9]+$/', $commande[1])) {
+                            $notfound +=1;
+                            continue;
+                        }
+                    $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
+                    foreach($panier as $prod){
+                        if($prod->getProduit()->getReference() == $commande[0]  ){
+                            $this->addFlash('notice', $commande[0]. "ce produit existe deja dans le paneir");
+                            goto panier;
+                        }
+                    }
+               
+            $quantite = $commande[1];// recuperation de la quantite commamde
+            $reduction = 0;
+            // if(empty($panier[$id])){//verification existance produit dans le panier
+                //$produit = $produitRepository->find($id); // recuperation de id produit dans la db
+                if(!empty($produit->getPromotion())) {// verification promo reduction
+                if(!empty($produit->getPromotion()->getReduction())) {
+                    $reduction = $produit->getPromotion()->getReduction();
+                }
+                }
+                if($produit->getMincommande() <= $quantite) {// verification quantite minimum
+                   $pan = new Panier();
+                   $pan->setProduit($produit);
+                    $this->getUser()->getTuteur() === null ? $pan->setClient($this->getUser()) : $pan->setClient($this->getUser()->getTuteur());
+                   $pan->setQuantite($quantite);
+                   $reduction != 0 ? $pan->setReduction($reduction) : null;
+                   $this->entityManager->persist($pan);
 
-            // $rows = [];
 
-            // foreach ($sheet->getRowIterator() as $row) {
-
-            //     $cellIterator = $row->getCellIterator();
-            //     $cellIterator->setIterateOnlyExistingCells(false);
-
-            //     $line = [];
-
-            //     foreach ($cellIterator as $cell) {
-            //         $line[] = $cell->getValue();
-            //     }
-
-            //     $rows[] = $line;
-            // }
-
-           // return $this->json($rows);
+                    // $res['id'] = 'ok';
+                    // $res['panier'] = count($panier)+1;
+                }
+                panier:
+                }
+            }
+            
+            $this->entityManager->flush();
+             $notfound !== 0 ? $this->addFlash('notice', $notfound . " CIP  produit(s) non trouvé(s) ou quantité(s) erronée(s)") : null;
             $response = $this->redirectToRoute("commande_panier_panier");
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
