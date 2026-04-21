@@ -83,7 +83,7 @@ class CommandeController extends AbstractController
             $response = $this->render('commande/index.html.twig', [
                 'produits' => $produitRepository->findAll(),
                 'panier' => $dataPanier,
-                'sheet' => $sheet,
+                // 'sheet' => $sheet,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
