@@ -2,29 +2,31 @@
 
 
     {% for message in app.flashes('notice') %}
-        <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+        <div role="alert" class="alert alert-danger alert-dismissible fade show radius-10 shadow-black">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             {{ message|trans }}
         </div>
     {% endfor %}
 
-<div class="row">
-    <div class="col-12 mb-4">
-        {{ form_row(form.employe, {'attr': {'placeholder': 'Sélectionnez l\'employé *'}, 'label': false}) }}
+<div class="row gap-4">
+    <div class="col-12">
+        {{ form_row(form.employe, {'attr': {'placeholder': 'Sélectionnez l\'employé *'}, 'label': 'Sélectionnez l\'employé *'}) }}
     </div>
 
-    <div class="col-12 mb-4">
-        {{ form_row(form.typeContrat, {'attr': {'placeholder': 'Sélectionnez le type de contrat *'}, 'label': false}) }}
+    <div class="col-12">
+        {{ form_row(form.typeContrat, {'attr': {'placeholder': 'Sélectionnez le type de contrat *'}, 'label': 'Sélectionnez le type de contrat *'}) }}
     </div>
-    <div class="col-12 mb-4">
-        {{ form_row(form.dateDebut, {'attr': {'tittle': 'Date debut contrat ... *'}, 'label': false}) }}
+    <div class="col-12">
+        {{ form_row(form.dateDebut, {'attr': {'tittle': 'Date debut contrat ... *'}, 'label': 'Date debut contrat *'}) }}
     </div>
-    <div class="col-12 mb-4">
-        {{ form_row(form.dateFin, {'attr': {'tittle': 'Date fin contrat ... '}, 'label': false}) }}
+    <div class="col-12">
+        {{ form_row(form.dateFin, {'attr': {'tittle': 'Date fin contrat ... '}, 'label': 'Date fin contrat'}) }}
     </div>
 </div>
 
 {{ form_rest(form) }}
+{#
 </div>
 
 {{ form_end(form) }}
+#}

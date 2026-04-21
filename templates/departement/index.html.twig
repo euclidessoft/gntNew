@@ -59,7 +59,8 @@
                     <td data-label="Nom">{{ departement.nom }}</td>
                     <td data-label="Actions">
 {#                        <a href="{{ path('departement_show', {'id': departement.id}) }}" class="btn btn-success"><i class="fas fa-eye"></i></a>#}
-                        <a href="{{ path('departement_edit', {'id': departement.id}) }}" class="btn btn-success-light"><i class="fas fa-edit"></i></a>
+                        <a href="{{ path('departement_edit', {'id': departement.id}) }}" class="btn btn-success-light">
+                            <i class="fas fa-edit"></i></a>
                         {{ include('departement/_delete_form.html.twig') }}
                     </td>
                 </tr>

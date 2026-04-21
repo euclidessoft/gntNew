@@ -8,8 +8,7 @@
     is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
     is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
-%}
+    'layout.html.twig' %}
 {% block communication %} active {% endblock %}
 {% block messagerie %} active {% endblock %}
 {% block title %}{{ "Message de"|trans }} {{ message.sender.nom }} {{ message.sender.prenom }} - GNT Pharma {% endblock %}
@@ -22,11 +21,11 @@
             {{ "Messagerie"|trans }}
         </h3>
         {% for message in app.flashes('message') %}
-                    <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black mb-5">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        {{ message|trans }}
-                    </div>
-                {% endfor %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black mb-5">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
         <div class="row">
             {% set recus = 'active' %}
             {% set envoyes = '' %}

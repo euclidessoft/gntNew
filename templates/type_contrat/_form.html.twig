@@ -10,15 +10,15 @@
 
 <div class="row">
     <div class="col-12 mb-4">
-        {{ form_row(form.type, {'attr': {'placeholder': 'Entrez le type de contrat *'}, 'label': false}) }}
+        {{ form_row(form.type, {'attr': {'placeholder': 'Entrez le type de contrat *'}, 'label': 'Entrez le type de contrat *'}) }}
     </div>
 
     <div class="col-12 mb-4">
-        {{ form_row(form.contenu, {'attr': {'placeholder': 'Contenu du contrat ... *','rows': 10}, 'label': false}) }}
+        {{ form_row(form.contenu, {'attr': {'placeholder': 'Contenu du contrat ... *','rows': 10}, 'label': 'Contenu du contrat'}) }}
     </div>
 </div>
 
 {{ form_rest(form) }}
 
 
-{{ form_end(form) }}
+{#{{ form_end(form) }}#}
