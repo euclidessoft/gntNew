@@ -232,7 +232,8 @@ class StockController extends AbstractController
             $session->remove('retour');
 
             $response = $this->render('stock/retour.html.twig', [
-                'commandes' => $repository->retour(),
+                // 'commandes' => $repository->retour(),
+                'commandes' => $repository->findBy(['livrer' => true]),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

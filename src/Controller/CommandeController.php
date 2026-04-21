@@ -57,33 +57,33 @@ class CommandeController extends AbstractController
                 ];
             }
 
-            $sheet = $session->get('sheet',[]);
-            if(count($sheet) > 0){// commande par importation
-                foreach($sheet as $commande){
-                    if (!preg_match('/^[0-9]+$/', $commande[0]) || !preg_match('/^[0-9]+$/', $commande[1])) {
-                            $notfound +=1;
-                            continue;
-                        }
-                    $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
-                   if( $produit != null){ 
-                    $produit->setQuantite($commande[1]);
-                    $dataPanier[] = [
-                        "produit" => $produit,
-                        "promotion" => 0,
-                    ];
-                   }else{
-                    $notfound += 1;
-                   }
-                }
-                $session->set('sheetchoix',$sheet);//creation d'une session pour le choix paiement
-                $session->remove('sheet');// suppression session chargement
-                $notfound !== 0 ? $this->addFlash('notice', $notfound . " CIP  produit(s) non trouvé(s) ou quantité(s) erronée(s)") : null;
-            }
+            // $sheet = $session->get('sheet',[]);
+            // if(count($sheet) > 0){// commande par importation
+            //     foreach($sheet as $commande){
+            //         if (!preg_match('/^[0-9]+$/', $commande[0]) || !preg_match('/^[0-9]+$/', $commande[1])) {
+            //                 $notfound +=1;
+            //                 continue;
+            //             }
+            //         $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
+            //        if( $produit != null){ 
+            //         $produit->setQuantite($commande[1]);
+            //         $dataPanier[] = [
+            //             "produit" => $produit,
+            //             "promotion" => 0,
+            //         ];
+            //        }else{
+            //         $notfound += 1;
+            //        }
+            //     }
+            //     $session->set('sheetchoix',$sheet);//creation d'une session pour le choix paiement
+            //     $session->remove('sheet');// suppression session chargement
+            //     $notfound !== 0 ? $this->addFlash('notice', $notfound . " CIP  produit(s) non trouvé(s) ou quantité(s) erronée(s)") : null;
+            // }
 
             $response = $this->render('commande/index.html.twig', [
                 'produits' => $produitRepository->findAll(),
                 'panier' => $dataPanier,
-                'sheet' => $sheet,
+                // 'sheet' => $sheet,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -2355,44 +2355,44 @@ class CommandeController extends AbstractController
             return $response;
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
-            $options = new Options();
-    $options->set('defaultFont', 'Arial');
+            // $options = new Options();
+            // $options->set('defaultFont', 'Arial');
 
-    $dompdf = new Dompdf($options);
+            // $dompdf = new Dompdf($options);
 
-    $html =  $response = $this->renderView('commande/all_print.html.twig', [
+            // $html =  $response = $this->renderView('commande/all_print.html.twig', [
+            //             'commandeproduits' => $repository->findBy(['commande' => $commande]),
+            //             'commande' => $commande,
+            //             'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
+            //         ]);
+
+            // $dompdf->loadHtml($html);
+
+            // $dompdf->setPaper('A4', 'portrait');
+
+            // $dompdf->render();
+
+            // return new Response(
+            //     $dompdf->stream('document.pdf', ["Attachment" => false]),
+            //     200,
+            //     [
+            //         'Content-Type' => 'application/pdf'
+            //     ]
+            // );
+            $response = $this->render('commande/admin/details_print.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
             ]);
-
-    $dompdf->loadHtml($html);
-
-    $dompdf->setPaper('A4', 'portrait');
-
-    $dompdf->render();
-
-    return new Response(
-        $dompdf->stream('document.pdf', ["Attachment" => false]),
-        200,
-        [
-            'Content-Type' => 'application/pdf'
-        ]
-    );
-            // $response = $this->render('commande/admin/details_print.html.twig', [
-            //     'commandeproduits' => $repository->findBy(['commande' => $commande]),
-            //     'commande' => $commande,
-            //     'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
-            // ]);
-            // $response->setSharedMaxAge(0);
-            // $response->headers->addCacheControlDirective('no-cache', true);
-            // $response->headers->addCacheControlDirective('no-store', true);
-            // $response->headers->addCacheControlDirective('must-revalidate', true);
-            // $response->setCache([
-            //     'max_age' => 0,
-            //     'private' => true,
-            // ]);
-            // return $response;
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
