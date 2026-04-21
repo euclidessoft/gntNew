@@ -1,0 +1,190 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+
+{% block title %}{{ 'Compte Resultat'|trans }} - GNT Pharma{% endblock %}
+
+{% block finance %}active{% endblock %}
+
+{% block affectation %}active{% endblock %}
+
+{% block body %}
+
+  <div class="col-lg-5 offset-lg-2 mt-4 fond-7 pb-5 pt-3 px-5">
+    <h4 class="mb-5">
+        <i class="fa fa-share"></i>
+        {{ 'Définition avantages commerciaux'|trans }}
+    </h4>
+    <form id="form" method="post">
+    <div class="card border-green shadow-black mt-4 mb-5">
+                <div class="card-header bg-success-light text-green bb-green">
+                    <h6 class="mb-n1">
+{#                        <i class="fa-solid fa-magnifying-glass-chart"></i>#}
+                        {{ 'Période'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-n3">
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Du'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date1" name="date1" class="form-control"
+                                           onchange="daysenable()"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Au'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date2" name="date2" class="form-control"
+                                           onchange="daysenable()"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+    {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+        <div class="row">
+
+       
+       <table class="table table-success-light table-bordered table-hover table-striped">
+       <thead>
+            <tr>
+                <th colspan="2">COMMISSION</th>
+            </tr>
+            <tr>
+                <th>Tranche C.A.</th>
+                <th>Taux</th>
+            </tr>
+       </thead>
+        <tbody>
+            <tr>
+                <td>0 à  25 000 000</td><td><input type="number" id="com1" name="com1" value="0.20" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>25 000 000 à  50 000 000</td><td><input type="number" id="com2" name="com2" value="0.30" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>50 000 000 à  75 000 000</td><td><input type="number" id="com3" name="com3" value="0.45" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>plus de 75 000 000</td><td><input type="number" id="com4" name="com4" value="0.60" class="form-control" /></td>
+            </tr>
+        </tbody>
+       </table>
+
+       
+       <table class="table table-success-light table-bordered table-hover table-striped mt-3">
+       <thead>
+            <tr>
+                <th colspan="2">RISTOURNE</th>
+            </tr>
+            <tr>
+                <th>Tranche C.A.</th>
+                <th>Taux</th>
+            </tr>
+       </thead>
+        <tbody>
+            <tr>
+                <td>0 à  10 000 000</td><td><input type="number" id="rest1" name="rest1" value="2.0" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>10 000 000 à  50 000 000</td><td><input type="number" id="rest2" name="rest2" value="2.50" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>plus de 50 000 000</td><td><input type="number" id="rest3" name="rest3" value="3.00" class="form-control" /></td>
+            </tr>
+        </tbody>
+       </table>
+           
+       <table class="table table-success-light table-bordered table-hover table-striped mt-3">
+       <thead>
+            <tr>
+                <th colspan="2">ESCOMPTE DE REGLEMENT</th>
+            </tr>
+            <tr>
+                <th>ACHAT AU COMPTANT</th>
+                <th>Taux</th>
+            </tr>
+       </thead>
+        <tbody>
+            <tr>
+                <td>0 à  10 000 000</td><td><input type="number" id="esc1" name="esc1" value="0.20" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>10 000 000 à  30 000 000</td><td><input type="number" id="esc2" name="esc2" value="0.30" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>30 000 000 à  70 000 000</td><td><input type="number" id="esc3" name="esc3" value="0.45" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>plus de 70 000 000</td><td><input type="number" id="esc4" name="esc4" value="0.60" class="form-control" /></td>
+            </tr>
+        </tbody>
+       </table>  
+            
+             
+              <div class="col-md-8 offset-md-2 mt-4 pt-3 fond-7">
+                    <div class="centrer">
+               
+                        <button  type="button"  class="btn btn-shadow btn-green btn-normal mb-3 me-3" onclick="form.submit()">
+                            <i class="fa fa-share"></i>
+                            {{ 'Définir'|trans }}
+                        </button>
+                    </div>
+                </div>
+    </form>
+
+   
+</div>
+  {% block script %}
+        <script>
+
+            function daysbanque() {
+                var date1 = new Date($('#date1').val());
+                var date2 = new Date($('#date2').val());
+                if (date1 < date2 && date2 < new Date()) {
+                   $('#form').submit();
+                } else {
+                    alert("{{ 'Vérifiez les dates saisies'|trans }}");
+                }
+            }
+
+
+            //activation boutons dates
+            function daysenable() {
+                if ($('#date1').val() != '' && $('#date2').val() != '') {
+                    $('#daysbtn').removeClass("disabled");
+                } else {
+                    $('#daysbtn').addClass("disabled");
+                }
+            }
+        </script>
+    {% endblock %}
+{% endblock %}
+
