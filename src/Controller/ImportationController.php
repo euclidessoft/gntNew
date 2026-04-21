@@ -48,15 +48,20 @@ class ImportationController extends AbstractController
             if(count($sheet) > 0){// commande par importation
                 foreach($sheet as $commande){
                     if (!preg_match('/^[0-9]+$/', $commande[0]) || !preg_match('/^[0-9]+$/', $commande[1])) {
-                            $notfound +=1;
+                            $this->addFlash('notice', $Commande[0] . " produit non trouvé ou quantité erronée");
                             continue;
                         }
                     $produit = $this->entityManager->getRepository(Produit::class)->findOneby(['reference' => $commande[0]]);
-                    foreach($panier as $prod){
-                        if($prod->getProduit()->getReference() == $commande[0]  ){
-                            $this->addFlash('notice', $commande[0]. "ce produit existe deja dans le paneir");
-                            goto panier;
+                    if($produit !== null){
+                        foreach($panier as $prod){
+                            if($prod->getProduit()->getReference() == $commande[0]  ){
+                                $this->addFlash('notice', $commande[0]. "ce produit existe deja dans le paneir");
+                                goto panier;
+                            }
                         }
+                    }else{
+                        $this->addFlash('notice', $Commande[0] . " produit non trouvé");
+                        continue;
                     }
                
             $quantite = $commande[1];// recuperation de la quantite commamde
