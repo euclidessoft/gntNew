@@ -43,8 +43,12 @@
                 <td>{{ contrat.salaire|number_format(0,'',' ') }} FCFA</td>
                 <td>{{ contrat.createdAt ? contrat.createdAt|date('d/m/Y') : '' }}</td>
                 <td>
-                    <a href="{{ path('contrat_show', {'id': contrat.id}) }}" class="btn btn-success"><i class="fas fa-eye"></i></a>
-                    <a href="{{ path('contrat_edit', {'id': contrat.id}) }}" class="btn btn-success-light"><i class="fas fa-edit"></i></a>
+                    <a href="{{ path('contrat_show', {'id': contrat.id}) }}" class="btn btn-success">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{{ path('contrat_edit', {'id': contrat.id}) }}" class="btn btn-success-light">
+                        <i class="fas fa-edit"></i>
+                    </a>
                 </td>
             </tr>
             {% endfor %}

@@ -88,19 +88,18 @@ tr {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
     display: block;
-    margin: 0 auto;
     /*backdrop-filter: blur(5px);*/
     padding: 1rem;
 }
 
 .fond-5 {
     background-color: rgba(255, 255, 255, 0.5) !important;
-
-
+    margin: 2rem auto 0 !important;
 }
 
 .fond-7 {
     background-color: rgba(255, 255, 255, 0.7) !important;
+    margin: 3rem auto !important;
 }
 
 .navmenu {

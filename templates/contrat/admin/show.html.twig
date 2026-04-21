@@ -146,10 +146,15 @@
         </div>
     </div>
 
-    <div class="text-center my-3">
+    <div class="center gap-3 mt-4">
         <button onclick="window.print()" class="btn btn-success">
-            <i class="fas fa-print me-2"></i>Imprimer le contrat
+            <i class="fas fa-print me-2"></i>
+            {{ 'Imprimer le contrat'|trans }}
         </button>
+        <a href="{{ path('contrat_index') }}" class="btn btn-success-light">
+            <i class="fa  fa-undo"></i>
+            {{ 'Retour'|trans }}
+        </a>
     </div>
 
     {% endblock %}

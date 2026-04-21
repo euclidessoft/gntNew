@@ -49,13 +49,16 @@
     <h5>{{ "Liste des postes"|trans }}</h5>
     <div class="tab-content">
         <!-- Section Département -->
-        <a href="{{ path('poste_new') }}" class="btn btn-success mb-4"><i class="fas fa-plus"></i>Nouvel poste</a>
+        <a href="{{ path('poste_new') }}" class="btn btn-success mb-4">
+            <i class="fas fa-plus"></i>
+            Nouveau poste
+        </a>
         <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
             <thead>
                 <tr>
                     <th>{{('Nom'|trans)}}</th>
                     <th>{{('Description'|trans)}}</th>
-                    <th>{{('actions'|trans)}}</th>
+                    <th>{{('Actions'|trans)}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,9 +66,13 @@
                 <tr>
                     <td data-label="Nom">{{ poste.nom }}</td>
                     <td data-label="Description">{{ poste.description }}</td>
-                    <td data-label="Actions">
-                        <a href="{{ path('poste_show', {'id': poste.id}) }}" class="btn btn-success"><i class="fas fa-eye"></i></a>
-                        <a href="{{ path('poste_edit', {'id': poste.id}) }}" class="btn btn-success-light"><i class="fas fa-edit"></i></a>
+                    <td data-label="Actions" class="center gap-3">
+                        <a href="{{ path('poste_show', {'id': poste.id}) }}" class="btn btn-success">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ path('poste_edit', {'id': poste.id}) }}" class="btn btn-success-light">
+                            <i class="fas fa-edit"></i>
+                        </a>
                         {{ include('poste/_delete_form.html.twig') }}
                     </td>
                 </tr>
