@@ -448,7 +448,8 @@ class PanierController extends AbstractController
         {// traitement de la requete ajax
             $id = $request->get('prod');// recuperation de id produit
             $quantite = $request->get('quantite');// recuperation de la quantite commamde
-            $panier = $this->entityManager->getRepository(Panier::class)->findOneBy(['client' => $this->getUser()->getId(), 'produit' => $id]);
+            $this->getUser()->getTuteur() === null ? $client = $this->getUser()->getId() : $client = $this->getUser()->getTuteur()->getId();
+            $panier = $this->entityManager->getRepository(Panier::class)->findOneBy(['client' => $client, 'produit' => $id]);
             $panier->setQuantite($quantite);
           
             $this->entityManager->persist($panier);
@@ -487,7 +488,9 @@ class PanierController extends AbstractController
     public function deletein(Produit $Produit, SessionInterface $session)
     {
         // On récupère le panier actuel
-        $panier = $this->entityManager->getRepository(Panier::class)->findOneBy(['client' => $this->getUser()->getId(), 'produit' => $Produit->getId()]);
+       
+        $this->getUser()->getTuteur() === null ? $client = $this->getUser()->getId() : $client = $this->getUser()->getTuteur()->getId();
+        $panier = $this->entityManager->getRepository(Panier::class)->findOneBy(['client' => $client, 'produit' => $Produit->getId()]);
         $this->entityManager->remove($panier);
         $this->entityManager->flush();
 
@@ -571,7 +574,8 @@ class PanierController extends AbstractController
     #[Route("/deleteIN", name :"delete_allin") ]
     public function deleteAllin(SessionInterface $session)
     {
-        $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+        $this->getUser()->getTuteur() === null ? $client = $this->getUser()->getId() : $client = $this->getUser()->getTuteur()->getId();
+        $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $client]);
         foreach($panier as $pan){
             $this->entityManager->remove($pan);
         }

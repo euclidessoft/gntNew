@@ -95,7 +95,6 @@
 
                     </td>
                     <td>
-                     {% if sheet|length == 0 %}
                        
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal{{ produit['produit'].id }}" title="{{ 'Modifier quantité'|trans }}">
                                 <i class="fa fa-edit"></i>
@@ -135,7 +134,7 @@
                             </div>
                             {{ include('commande/_delete_form.html.twig')}}
 
-                        {% endif %}
+                   
 
                     </td>
                 </tr>
@@ -151,9 +150,9 @@
                     </td>
                     <td data-label="Vider le panier" rowspan="4">
 
-                         {% if sheet|length == 0 %}
+                       
                              {{ include('commande/_delete.html.twig')}}
-                        {% endif %}
+                   
 
                     </td>
                 </tr>
@@ -284,6 +283,20 @@
                     "                            <i class=\"fa fa-edit\"></i>\n" +
                     "                        </button>");
                 $('#tampon').val('ok');
+            }
+
+             function delprod(id) {
+               if(confirm('Etes-vous sur?')){
+                 $('#del' + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                 $('#form' + id).submit();
+               }
+            }
+
+             function suptous() {
+               if(confirm('Etes-vous sur de vouloir tous supprimer?')){
+                 $('#suptou').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                 $('#formdeleteall').submit();
+               }
             }
             {#function focu(id, quantite, min) {#}
             {#    $('#tamp').val(id);#}

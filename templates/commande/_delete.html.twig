@@ -1,6 +1,6 @@
-<form method="post" action="{{ path('commande_delete_allin') }}" onsubmit="return confirm('Etes-vous sur de vouloir tous supprimer?'); "style="display: inline;">
+<form method="post" action="{{ path('commande_delete_allin') }}" id="formdeleteall" style="display: inline;">
     <input type="hidden" name="_token" value="{{ csrf_token('delete') }}">
-    <button class="btn btn-danger">
+    <button type="button" class="btn btn-danger" id="suptou" onclick="suptous()">
      {{ 'Vider le panier'|trans }}
                             <i class="fa fa-trash-alt"></i></button>
 </form>
