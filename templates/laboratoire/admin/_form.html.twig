@@ -1,4 +1,35 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+    {% for message in app.flashes('notice') %}
+        <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{ message|trans }}
+        </div>
+    {% endfor %}
+
+<div class="row gap-4">
+    <div class="col-12">
+        {{ form_row(form.prenom, {'attr': {'placeholder': 'Prénom'}, 'label': 'Prénom'}) }}
+    </div>
+    <div class="col-12">
+        {{ form_row(form.nom, {'attr': {'placeholder': 'Nom'}, 'label': 'Nom'}) }}
+    </div>
+    <div class="col-12">
+        {{ form_row(form.email, {'attr': {'placeholder': 'Email'}, 'label': 'Email'}) }}
+    </div>
+    <div class="col-12">
+        {{ form_row(form.phone, {'attr': {'placeholder': 'Téléphone'}, 'label': 'Téléphone'}) }}
+    </div>
+    <div class="col-12">
+        {{ form_row(form.adresse, {'attr': {'placeholder': 'Adresse'}, 'label': 'Adresse'}) }}
+    </div>
+    <div class="col-12">
+        {{ form_row(form.boitepostale, {'attr': {'placeholder': 'Boite postale'}, 'label': 'Boite postale'}) }}
+    </div>
+    <div class="col-12">
+        {{ form_row(form.siteweb, {'attr': {'placeholder': 'Site web'}, 'label': 'Site web'}) }}
+    </div>
+    <div class="col-12">
+        {{ form_row(form.password, {'attr': {'placeholder': 'Mot de passe'}, 'label': 'Mot de passe'}) }}
+    </div>
+</div>
+{{ form_rest(form) }}

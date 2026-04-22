@@ -8,29 +8,31 @@
         </div>
     {% endfor %}
 
-    <div class="row">
+    <div class="row gap-4">
  
-        <div class="col-12 mb-4">
+        <div class="col-12">
             {{ form_row(form.nom, {'attr': {'placeholder': 'Nom du poste *'}, 'label': 'Nom du poste *'}) }}
         </div> 
-        <div class="col-12 mb-4">
+        <div class="col-12">
             {{ form_row(form.salaire, {'attr': {'placeholder': 'Salaire du poste *'}, 'label': 'Salaire du poste *'}) }}
         </div> 
-        <div class="col-12 mb-4">
+        <div class="col-12">
             {{ form_row(form.heureSup, {'attr': {'placeholder': 'Prix heure supplementaire'}, 'label': 'Prix heure supplementaire'}) }}
         </div> 
-        <div class="col-12 mb-4">
+        <div class="col-12">
             {{ form_row(form.departement, {'attr': {'placeholder': 'Departement'}, 'label': 'Departement'}) }}
         </div>
-        <div class="col-12 mb-4">
+        <div class="col-12">
             {{ form_row(form.type, {'attr': {'placeholder': 'Type du poste *'}, 'label': 'Type du poste *'}) }}
         </div>
-        <div class="col-12 mb-4">
+        <div class="col-12">
             {{ form_row(form.description, {'attr': {'placeholder': 'Description *'}, 'label': 'Description *'}) }}
         </div>
     </div>
 
     {{ form_rest(form) }}
+{#
 </div>
 
 {{ form_end(form) }}
+#}

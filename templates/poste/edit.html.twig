@@ -8,45 +8,45 @@
     is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
     is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
-%}
+    'layout.html.twig' %}
 {% block administration %}active{% endblock %}
 {% block config %}active{% endblock %}
 
 {% block body %}
 
 
-<div class="col-lg-5 offset-lg-2 mt-4 fond-7 pb-5 pt-3 px-5">
-    <h4 class="mb-5">
-        <i class="fa fa-plus me-2"></i>
-        {{ 'Modifier le poste'|trans }}
-    </h4>
-     {% for message in app.flashes('notice') %}
-        <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            {{ message|trans }}
+    <div class="col-lg-5 offset-lg-2 mt-4 fond-7 pb-5 pt-3 px-5">
+        <h4 class="mb-5">
+            <i class="fa fa-edit me-2"></i>
+            {{ 'Modifier le poste'|trans }}
+        </h4>
+        {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+
+        {{ include('poste/_form.html.twig', {'button_label': 'Update'}) }}
+
+        <div class="col-md-3 offset-md-3 mt-4 pt-3 fond-5">
+            <div class="centrer">
+                {#                <div class="row"> #}
+                <button type="button" class="btn btn-shadow btn-green btn-normal mb-3 me-3" id="send"
+                        onclick="envoie()">
+                    <i class="fa fa-save"></i>
+                    {{ 'Enregistrer'|trans }}
+                </button>
+
+                <a id="{{ poste.id }}" onclick="load({{ poste.id }})" href="{{ path('poste_index') }}"
+                   class="btn btn-success-light btn-normal mb-3">
+                    <i class="fa fa-undo"></i>
+                    {{ 'Retour'|trans }}
+                </a>
+                {{ form_rest(form) }}
+                {#                </div> #}
+            </div>
+            {{ form_end(form) }}
         </div>
-    {% endfor %}
-
-    {{ include('poste/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <div class="col-md-3 offset-md-3 mt-4 pt-3 fond-7">
-        <div class="centrer">
-            {#                <div class="row">#}
-            <button type="button" class="btn btn-shadow btn-green btn-normal mb-3 me-3" id="send"
-                    onclick="envoie()">
-                <i class="fa fa-save"></i>
-                {{ 'Enregistrer'|trans }}
-            </button>
-
-            <a id="{{ poste.id }}" onclick="load({{ poste.id }})" href="{{ path('poste_index') }}" class="btn btn-success-light btn-normal mb-3">
-                <i class="fa fa-undo"></i>
-                {{ 'Retour'|trans }}
-            </a>
-            {{ form_rest(form) }}
-            {#                </div>#}
-        </div>
-        {{ form_end(form) }}
     </div>
-</div>
 {% endblock %}

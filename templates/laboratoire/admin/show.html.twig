@@ -8,21 +8,109 @@
     is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
     is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
-%}
+    'layout.html.twig' %}
 
 {% block title %}Laboratoire{% endblock %}
-
 {% block body %}
-    <h1>Laboratoire</h1>
-     {% for message in app.flashes('notice') %}
+    <div class="col-lg-8 mt-4 fond-7">
+        <h4 class="text-bold mb-5">
+            <i class="fa fa-flask-vial me-2"></i>
+            {{ 'Laboratoire'|trans }}
+        </h4>
+
+        {% for message in app.flashes('notice') %}
             <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 {{ message|trans }}
             </div>
         {% endfor %}
-    <table class="table">
-        <tbody>
+        <table class="table table-success-light table-bordered table-striped mb-5">
+            <tbody>
+            <tr>
+                <th>Laboratoire</th>
+                <td>{{ laboratoire.prenom }} {{ laboratoire.nom }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ laboratoire.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ laboratoire.phone }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ laboratoire.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Boitepostale</th>
+                <td>{{ laboratoire.boitepostale }}</td>
+            </tr>
+            <tr>
+                <th>Siteweb</th>
+                <td>{{ laboratoire.siteweb }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    {# {{ include('laboratoire/_delete_form.html.twig') }} #}
+
+    <div class="col-lg-8 my-5 pb-4 fond-7">
+        <h3 class="mt-4 mb-5 text-bold">
+            <i class="fa-brands fa-product-hunt me-2"></i>
+            {{ "Liste des produits du fournisseur"|trans }}
+        </h3>
+        <a id="aff{{ laboratoire.id }}" onclick="load('aff'~{{ laboratoire.id }})" class="btn btn-success mb-4"
+           href="{{ path('laboratoire_produit',{'id' : laboratoire.id}) }}">
+            <i class="fa-solid fa-file-import"></i>
+            {{ 'Affecter Produits'|trans }}
+        </a>
+        <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+            <thead>
+            <tr>
+                <th>{{ 'Code'|trans }}</th>
+                <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'Prix Cession'|trans }}</th>
+                <th>{{ 'Prix Public'|trans }}</th>
+                <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th>
+                <th>{{ 'Fabricant'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for produit in laboratoire.Produits %}
+                <tr>
+                    <td>{{ produit.reference }}</td>
+                    <td>{{ produit.desigantion }}</td>
+                    <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{ produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{ produit.mincommande }}</td>
+                    <td>{{ produit.fabriquant }}</td>
+                </tr>
+            {% else %}
+
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}
+{#{% block body %}
+    <div class="col-lg-5 mt-4 fond-7">
+        <h4 class="text-bold mb-5">
+            <i class="fa fa-plus me-2"></i>
+            {{ 'Laboratoire'|trans }}
+        </h4>
+
+        {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+        <table class="table">
+            <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ laboratoire.id }}</td>
@@ -87,18 +175,20 @@
                 <th>Siteweb</th>
                 <td>{{ laboratoire.siteweb }}</td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
-    <a id="aff{{ laboratoire.id }}" onclick="load('aff'~{{ laboratoire.id }})" class="btn btn-success"
-                   href="{{ path('laboratoire_produit',{'id' : laboratoire.id}) }}">
-                    <i class="fa-solid fa-file-import"></i>
-                    {{ 'Affecter Produits'|trans }}
-                </a>
+        <a id="aff{{ laboratoire.id }}" onclick="load('aff'~{{ laboratoire.id }})" class="btn btn-success"
+           href="{{ path('laboratoire_produit',{'id' : laboratoire.id}) }}">
+            <i class="fa-solid fa-file-import"></i>
+            {{ 'Affecter Produits'|trans }}
+        </a>
+    #}
+{# {{ include('laboratoire/_delete_form.html.twig') }} #}
+{#
 
-    {# {{ include('laboratoire/_delete_form.html.twig') }} #}
-
-     <div class="col-lg-8 my-5 pb-4 fond-7">
+    <div class="col-lg-8 my-5 pb-4 fond-7">
         <h3 class="mt-4 mb-5 text-bold">
             <i class="fa-brands fa-product-hunt me-2"></i>
             {{ "Liste des produits du fournisseur"|trans }}
@@ -132,4 +222,4 @@
         </table>
 
     </div>
-{% endblock %}
+{% endblock %}#}
