@@ -287,17 +287,17 @@ class CommandeRepository extends ServiceEntityRepository
         $fin = (clone $date)->setTime(23, 59, 59);
         $qb = $this->createQueryBuilder('c')
         ->Addselect("u.id, SUM(c.Montant) as ca") 
-        // ->addSelect("
-        //     SUM(CASE 
-        //         WHEN c.credit = :espece THEN c.Montant 
-        //         ELSE 0 
-        //     END) AS achat
-        // ")
+        ->addSelect("
+            SUM(CASE 
+                WHEN c.credit = :espece THEN c.Montant 
+                ELSE 0 
+            END) AS achat
+        ")
         ->join("c.user","u")
         ->andWhere('c.date BETWEEN :debut AND :fin')
             ->setParameter('debut', $debut)
             ->setParameter('fin', $fin)
-            // ->setParameter('espece', false)
+            ->setParameter('espece', false)
         // ->join('c.achats', 'a')
         ->groupBy('u.id');
         // ->orderBy('mois', 'DESC');

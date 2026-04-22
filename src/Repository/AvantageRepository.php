@@ -16,6 +16,38 @@ class AvantageRepository extends ServiceEntityRepository
         parent::__construct($registry, Avantage::class);
     }
 
+    public function periode()
+    {
+        // $debut = (new \DateTime($p1))->setTime(0, 0, 0);
+        // $fin   = (new \DateTime($p2))->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            // ->select("DATE_FORMAT(c.date, '%Y-%m') as mois, SUM(c.Montant) as totalAchats")
+            // ->where('c.date BETWEEN :debut AND :fin')
+            // ->setParameter('debut', $debut)
+            // ->setParameter('fin', $fin)
+            ->groupBy('c.debut','c.fin')
+            // ->orderBy('mois', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    public function show($date)
+    {
+        $date = (new \DateTime($date));
+        // $fin   = (new \DateTime($p2))->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            // ->select("DATE_FORMAT(c.date, '%Y-%m') as mois, SUM(c.Montant) as totalAchats")
+            ->where('c.date = :date')
+            ->setParameter('date', $date)
+            // ->setParameter('fin', $fin)
+            // ->groupBy('c.debut','c.fin')
+            // ->orderBy('mois', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Avantage[] Returns an array of Avantage objects
     //     */

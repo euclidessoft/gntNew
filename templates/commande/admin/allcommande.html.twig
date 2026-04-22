@@ -27,6 +27,7 @@
                 <th>{{ 'Client '|trans }}</th>
                 <th>{{ 'Montant'|trans }}</th>
                 <th>{{ 'Paiement'|trans }}</th>
+                <th>{{ 'credit'|trans }}</th>
                 <th>{{ 'Livraison'|trans }}</th>
                 <th>{{ 'Date de Livraison'|trans }}</th>
                 <th>{{ 'Passée par'|trans }}</th>
@@ -46,6 +47,8 @@
                     {% else %}
                         <span class="text-success">Payée</span>
                     {% endif %}
+                </td><td data-label="{{'Paiement'|trans}}">
+                    {{ commandes.credit ? "credit" : "comptant"}}
                 </td>
                 <td data-label="{{'Livraison'|trans}}">
                     {% if commandes.livraison == 0 %}

@@ -1,0 +1,56 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+
+{% block title %}{{ 'Compte Resultat'|trans }} - GNT Pharma{% endblock %}
+
+{% block finance %}active{% endblock %}
+
+{% block affectation %}active{% endblock %}
+
+{% block body %}
+
+  <div class="col-lg-5 offset-lg-2 mt-4 fond-7 pb-5 pt-3 px-5">
+    <h4 class="mb-2">
+        <i class="fa fa-share"></i>
+        {{ 'Avantages commerciaux'|trans }}
+    </h4>
+    <a href="{{ path('finance_avantage')}}" class="btn btn-success"><i class="fa fa-plus"></i> Définir</a>
+    
+    {% for message in app.flashes('notice') %}
+            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+        <table class="table table-success-light table-bordered table-hover table-striped mt-3">
+       <thead>
+            <tr>
+                <th>Periode</th>
+            </tr>
+       </thead>
+        <tbody>
+            {% for periode in periodes %} 
+        
+                <tr>
+                    <td><a href="{{ path('finance_avantage_show', {'id' : periode.id})}}">{{periode.debut|date('d/m/Y') }} au {{periode.fin|date('d/m/Y') }}</a></td>
+                </tr>
+            {% else %}
+            {% endfor %}
+        </tbody>
+       </table> 
+
+   
+</div>
+ 
+{% endblock %}
+

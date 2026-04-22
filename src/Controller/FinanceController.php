@@ -10,6 +10,7 @@ use App\Entity\Reserve;
 use App\Entity\Repport;
 use App\Entity\Commande;
 use App\Entity\Avantage;
+use App\Entity\AveCom;
 use App\Entity\CommandeProduit;
 use App\Entity\Approvisionnement;
 use App\Entity\Facture;
@@ -28,6 +29,8 @@ use App\Entity\PaieSalaire;
 use App\Entity\LivrerReste;
 use App\Repository\EcritureRepository;
 use App\Repository\PaieRepository;
+use App\Repository\AvantageRepository;
+use App\Repository\AveComRepository;
 use App\Repository\AccompteRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\CommandeProduitRepository;
@@ -149,26 +152,70 @@ class FinanceController extends AbstractController
         if ($this->security->isGranted('ROLE_FINANCE')) {
            
             if ($request->isMethod('POST')) {
+                // $date = new \DateTime($request->request->get('date1'));
+                // $datenow = new \Datetime();
+                // date_add($date,date_interval_create_from_date_string("120 days"));
+                // // dd($date);
+                // if($date > $datenow){
                 $commandes = $this->entityManager->getRepository(Commande::class)->avantage( $request->request->get('date1'), $request->request->get('date2'));
-               dd($commandes);
+            //    dd($commandes);
+                $avecom = new AveCom($this->getUser(),new \Datetime($request->request->get('date1')), new \Datetime($request->request->get('date2')));
+               $this->entityManager->persist($avecom);
+
                 foreach($commandes as $commande){
                     $avantage = new Avantage();
                     $avantage->setEmploye($this->getUser());
                     $avantage->setCLient($commande[0]->getUser());
+                    $avantage->setAveCom($avecom);
                     $avantage->setCa($commande['ca']);
-                    $avantage->setAchat($commande['ca']);
+                    $avantage->setAchat($commande['achat']);
                     $avantage->setCommission($gain->commission($commande['ca'], $request->request->get('com1'),$request->request->get('com2'),$request->request->get('com3'),$request->request->get('com4') ));
-                    $avantage->setEscompte($gain->ristourne($commande['ca'], $request->request->get('esc1'),$request->request->get('esc2'),$request->request->get('esc3'),$request->request->get('esc4')));
+                    $avantage->setEscompte($gain->escompte($commande['achat'], $request->request->get('esc1'),$request->request->get('esc2'),$request->request->get('esc3'),$request->request->get('esc4')));
                     $avantage->setRistourne($gain->ristourne($commande['ca'], $request->request->get('rest1'),$request->request->get('rest2'),$request->request->get('rest3')));
-                    $avantage->setDebut(new \Datetime($request->request->get('date1')));
-                    $avantage->setFin(new \Datetime($request->request->get('date2')));
+                    
                     $this->entityManager->persist($avantage);
                 
                 }
                 $this->entityManager->flush();
+                return $this->redirectToRoute("finance_avantage_show",['id' => $avecom->getId()]);
+                // }else{
+                //     $this->addFlash('notice', "les dates sont trop anciennes");
+                // }
             }
  
             $response = $this->render('finance/avantage.html.twig', []);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+
+    #[Route("/Periode/Avantage", name :"avantage_index") ]
+    public function avantageindex(Request $request, AveComRepository $repo): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+           
+                       $response = $this->render('finance/avantage_index.html.twig', [
+                        'periodes' => $repo->findAll(),
+                       ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
             $response->headers->addCacheControlDirective('no-store', true);
@@ -230,6 +277,40 @@ class FinanceController extends AbstractController
                 'ecritures' => $ecrit,
                 'solde' => $solde->montantbanque($this->entityManager, $banque->getCompte()),
             ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    
+
+
+    #[Route("/PeriodeShow/{id}", name :"avantage_show") ]
+    public function avantageshow(Request $request,AveCom $id, AvantageRepository $repo): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+           
+                       $response = $this->render('finance/avantage_show.html.twig', [
+                        'periodes' => $repo->findBy(['AveCom' => $id]),
+                        'avecom' => $id,
+                       ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

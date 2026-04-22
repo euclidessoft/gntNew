@@ -152,7 +152,7 @@
               <div class="col-md-8 offset-md-2 mt-4 pt-3 fond-7">
                     <div class="centrer">
                
-                        <button  type="button"  class="btn btn-shadow btn-green btn-normal mb-3 me-3" onclick="form.submit()">
+                        <button  type="button" id="daysbtn" class="btn btn-shadow btn-green btn-normal mb-3 me-3 disabled" onclick="avanatage()">
                             <i class="fa fa-share"></i>
                             {{ 'Définir'|trans }}
                         </button>
@@ -165,13 +165,39 @@
   {% block script %}
         <script>
 
-            function daysbanque() {
+            function avanatage() {
                 var date1 = new Date($('#date1').val());
                 var date2 = new Date($('#date2').val());
-                if (date1 < date2 && date2 < new Date()) {
+                var com1 = $('#com1').val();
+                var com2 = $('#com2').val();
+                var com3 = $('#com3').val();
+                var com4 = $('#com4').val();
+                var esc1 = $('#esc1').val();
+                var esc2 = $('#esc2').val();
+                var com3 = $('#esc3').val();
+                var esc4 = $('#esc4').val();
+                var rest1 = $('#rest1').val();
+                var rest2 = $('#rest2').val();
+                var rest3 = $('#rest3').val();
+                if (date1 < date2 
+                && date2 < new Date()
+                && com1 != ""
+                && com2 != ""
+                && com3 != ""
+                && com4 != ""
+                && esc1 != ""
+                && esc2 != ""
+                && esc3 != ""
+                && esc4 != ""
+                && rest1 != ""
+                && rest2 != ""
+                && rest3 != ""
+                 ) {
+                     $('#daysbtn').addClass("disabled");
+                    $('#daysbtn').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
                    $('#form').submit();
                 } else {
-                    alert("{{ 'Vérifiez les dates saisies'|trans }}");
+                    alert("{{ 'Vérifiez la saisie'|trans }}");
                 }
             }
 

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AvantageRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AvantageRepository::class)]
@@ -13,14 +14,9 @@ class Avantage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTime $date = null;
+    #[ORM\ManyToOne]
+    private ?aveCom $AveCom = null;
 
-    #[ORM\Column]
-    private ?\DateTime $debut = null;
-
-    #[ORM\Column]
-    private ?\DateTime $fin = null;
 
     #[ORM\Column]
     private ?float $ca = null;
@@ -45,53 +41,17 @@ class Avantage
     private ?Employe $employe = null;
 
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->date = new \Datetime();
-    }
+    // /**
+    //  * Constructor
+    //  */
+    // public function __construct()
+    // {
+    //     $this->date = new \Datetime();
+    // }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDate(): ?\DateTime
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTime $date): static
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    public function getDebut(): ?\DateTime
-    {
-        return $this->debut;
-    }
-
-    public function setDebut(\DateTime $debut): static
-    {
-        $this->debut = $debut;
-
-        return $this;
-    }
-
-    public function getFin(): ?\DateTime
-    {
-        return $this->fin;
-    }
-
-    public function setFin(\DateTime $fin): static
-    {
-        $this->fin = $fin;
-
-        return $this;
     }
 
     public function getRistourne(): ?float
@@ -174,6 +134,18 @@ class Avantage
     public function setAchat(float $achat): static
     {
         $this->achat = $achat;
+
+        return $this;
+    }
+
+    public function getAveCom(): ?avecom
+    {
+        return $this->AveCom;
+    }
+
+    public function setAveCom(?avecom $AveCom): static
+    {
+        $this->AveCom = $AveCom;
 
         return $this;
     }
