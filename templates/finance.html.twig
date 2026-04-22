@@ -41,6 +41,13 @@
                         </div>
                     </a>
                     <ul class=" dropdown-menu" aria-labelledby="finance">
+                     <li class="dropdown-item">
+                                    <a class="nav-link {% block avantage %}{% endblock %}"
+                                       href="{{ path('finance_avantage') }}">
+                                        <i class="fa-solid fa-chart-simple"></i>
+                                        {{ 'Avantages Commerciaux'|trans }}
+                                    </a>
+                                </li>
                         <li class="dropdown-item submenu">
                             <a class="nav-link dropdown-toggle {% block balance %}{% endblock %}" href="#"
                                id="balance" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Complement\Amortissement;
 use App\Complement\Solde;
+use App\Complement\Avantage as Gain;
 use App\Entity\Banque;
 use App\Entity\Reserve;
 use App\Entity\Repport;
 use App\Entity\Commande;
+use App\Entity\Avantage;
 use App\Entity\CommandeProduit;
 use App\Entity\Approvisionnement;
 use App\Entity\Facture;
@@ -128,6 +130,54 @@ class FinanceController extends AbstractController
             return $this->render('finance/solde.html.twig', [
                 'caisse' => $caisse - $debitcaisse,
             ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    #[Route("/Avantage", name :"avantage") ]
+    public function avantage(Request $request, Gain $gain): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+           
+            if ($request->isMethod('POST')) {
+                $commandes = $this->entityManager->getRepository(Commande::class)->avantage( $request->request->get('date1'), $request->request->get('date2'));
+               dd($commandes);
+                foreach($commandes as $commande){
+                    $avantage = new Avantage();
+                    $avantage->setEmploye($this->getUser());
+                    $avantage->setCLient($commande[0]->getUser());
+                    $avantage->setCa($commande['ca']);
+                    $avantage->setAchat($commande['ca']);
+                    $avantage->setCommission($gain->commission($commande['ca'], $request->request->get('com1'),$request->request->get('com2'),$request->request->get('com3'),$request->request->get('com4') ));
+                    $avantage->setEscompte($gain->ristourne($commande['ca'], $request->request->get('esc1'),$request->request->get('esc2'),$request->request->get('esc3'),$request->request->get('esc4')));
+                    $avantage->setRistourne($gain->ristourne($commande['ca'], $request->request->get('rest1'),$request->request->get('rest2'),$request->request->get('rest3')));
+                    $avantage->setDebut(new \Datetime($request->request->get('date1')));
+                    $avantage->setFin(new \Datetime($request->request->get('date2')));
+                    $this->entityManager->persist($avantage);
+                
+                }
+                $this->entityManager->flush();
+            }
+ 
+            $response = $this->render('finance/avantage.html.twig', []);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
@@ -4690,6 +4740,5 @@ class FinanceController extends AbstractController
         }
     }
 
- 
 
 }

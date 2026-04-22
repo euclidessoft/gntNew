@@ -278,6 +278,32 @@ class CommandeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function avantage($p1, $p2){
+        $date = new \Datetime($p1);
+        $debut = (clone $date)->setTime(0, 0, 0);
+
+        $date = new \Datetime($p2);
+        $fin = (clone $date)->setTime(23, 59, 59);
+        $qb = $this->createQueryBuilder('c')
+        ->Addselect("u.id, SUM(c.Montant) as ca") 
+        // ->addSelect("
+        //     SUM(CASE 
+        //         WHEN c.credit = :espece THEN c.Montant 
+        //         ELSE 0 
+        //     END) AS achat
+        // ")
+        ->join("c.user","u")
+        ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            // ->setParameter('espece', false)
+        // ->join('c.achats', 'a')
+        ->groupBy('u.id');
+        // ->orderBy('mois', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
     //  public function deuxiemetranche($user)
     // {
     //      $endDate = new \DateTime('last day of this month 23:59:59');
