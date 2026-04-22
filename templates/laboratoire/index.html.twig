@@ -8,67 +8,54 @@
     is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
     is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
-%}
+    'layout.html.twig' %}
 
-{% block title %}Laboratoire index{% endblock %}
+{% block title %} {{ 'Laboratoire'|trans }} - GNT Pharma {% endblock %}
+{% block laboratoire %}active{% endblock %}
 
 {% block body %}
-    <h1>Laboratoire index</h1>
+    <div class="container fond-7">
+        <h4 class="text-bold mb-5">
+            <i class="fa-solid fa-flask-vial me-2"></i>
+            {{ 'Laboratoire'|trans }}
+        </h4>
+        <a class="btn btn-green mb-4" href="{{ path('app_laboratoire_new') }}">
+            <i class="fa fa-plus"></i>
+            {{ 'Nouveau laboratoire'|trans }}
+        </a>
+        <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+            <thead>
+            <tr>
+                <th>{{ 'Laboratoire'|trans }}</th>
+                <th>{{ 'Email'|trans }}</th>
+                <th>{{ 'Téléphone'|trans }}</th>
+                <th>{{ 'Adresse'|trans }}</th>
+                <th>{{ 'Boite postale'|trans }}</th>
+                <th>{{ 'Site web'|trans }}</th>
+                <th class="text-center">{{ 'Actions'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for laboratoire in laboratoires %}
+                <tr>
+                    <td data-label="{{ 'Laboratoire'|trans }}">{{ laboratoire.prenom }} {{ laboratoire.nom }}</td>
+                    <td data-label="{{ 'Email'|trans }}">{{ laboratoire.email }}</td>
+                    <td data-label="{{ 'Téléphone'|trans }}">{{ laboratoire.phone }}</td>
+                    <td data-label="{{ 'Adresse'|trans }}">{{ laboratoire.adresse }}</td>
+                    <td data-label="{{ 'Boite postale'|trans }}">{{ laboratoire.boitepostale }}</td>
+                    <td data-label="{{ 'Site web'|trans }}">{{ laboratoire.siteweb }}</td>
+                    <td data-label="{{ 'Actions'|trans }}" class="center gap-3">
+                        <a class="btn btn-success" href="{{ path('app_laboratoire_show', {'id': laboratoire.id}) }}">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a class="btn btn-success-light" href="{{ path('app_laboratoire_edit', {'id': laboratoire.id}) }}">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Email</th>
-                <th>Prenom</th>
-                <th>Nom</th>
-                <th>Phone</th>
-                <th>Adresse</th>
-                <th>Fonction</th>
-                <th>Roles</th>
-                <th>ResetToken</th>
-                <th>Enabled</th>
-                <th>Client</th>
-                <th>Livreur</th>
-                <th>Boitepostale</th>
-                <th>Siteweb</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for laboratoire in laboratoires %}
-            <tr>
-                <td>{{ laboratoire.id }}</td>
-                <td>{{ laboratoire.username }}</td>
-                <td>{{ laboratoire.password }}</td>
-                <td>{{ laboratoire.email }}</td>
-                <td>{{ laboratoire.prenom }}</td>
-                <td>{{ laboratoire.nom }}</td>
-                <td>{{ laboratoire.phone }}</td>
-                <td>{{ laboratoire.adresse }}</td>
-                <td>{{ laboratoire.fonction }}</td>
-                <td>{{ laboratoire.roles ? laboratoire.roles|join(', ') : '' }}</td>
-                <td>{{ laboratoire.resetToken }}</td>
-                <td>{{ laboratoire.enabled ? 'Yes' : 'No' }}</td>
-                <td>{{ laboratoire.client ? 'Yes' : 'No' }}</td>
-                <td>{{ laboratoire.livreur ? 'Yes' : 'No' }}</td>
-                <td>{{ laboratoire.boitepostale }}</td>
-                <td>{{ laboratoire.siteweb }}</td>
-                <td>
-                    <a href="{{ path('app_laboratoire_show', {'id': laboratoire.id}) }}">show</a>
-                    <a href="{{ path('app_laboratoire_edit', {'id': laboratoire.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="17">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_laboratoire_new') }}">Create new</a>
 {% endblock %}

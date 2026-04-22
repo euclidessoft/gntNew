@@ -8,15 +8,33 @@
     is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
     is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
     is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
-%}
+    'layout.html.twig' %}
 
 {% block title %}New Laboratoire{% endblock %}
 
 {% block body %}
-    <h1>Create new Laboratoire</h1>
+    <div class="col-lg-5 mt-4 fond-7">
+        <h4 class="text-bold mb-5">
+            <i class="fa fa-plus me-2"></i>
+            {{ 'Nouveau laboratoire'|trans }}
+        </h4>
 
-    {{ include('laboratoire/admin/_form.html.twig') }}
+        {{ include('laboratoire/admin/_form.html.twig') }}
+        <div class="col-md-7 fond-5">
+            <div class="centrer gap-3">
+                <button type="button" class="btn btn-shadow btn-green btn-normal" id="send" onclick="envoie()">
+                    <i class="fa fa-save"></i>
+                    {{ 'Enregistrer'|trans }}
+                </button>
 
-    <a href="{{ path('app_laboratoire_index') }}">back to list</a>
+                <button type="reset" class="btn btn-shadow btn-danger btn-normal">
+                    <i class="fa fa-delete-left"></i>
+                    {{ 'Effacer'|trans }}
+                </button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+{#    <a href="{{ path('app_laboratoire_index') }}">back to list</a>#}
 {% endblock %}
