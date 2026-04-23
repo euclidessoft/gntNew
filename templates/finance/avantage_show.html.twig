@@ -36,10 +36,11 @@
             <tr>
                 <th>{{"Client"|trans}}</th>
                 <th>{{"C.A."|trans}}</th>
+                <th>{{"Achat Comptant"|trans}}</th>
                 <th>{{"Commissiom"|trans}}</th>
                 <th>{{"Ristourne"|trans}}</th>
-                <th>{{"Achat Comptant"|trans}}</th>
-                <th>{{"escompte"|trans}}</th>
+                <th>{{"Escompte"|trans}}</th>
+                <th>{{"Total"|trans}}</th>
             </tr>
        </thead>
         <tbody>
@@ -48,10 +49,11 @@
                 <tr>
                     <td>{{periode.client.nom }}</td>
                     <td>{{periode.ca|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{periode.achat|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{periode.commission|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{periode.ristourne|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    <td>{{periode.achat|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{periode.escompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                     <td>{{(periode.commission + periode.ristourne + periode.escompte)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 </tr>
             {% else %}
             {% endfor %}
