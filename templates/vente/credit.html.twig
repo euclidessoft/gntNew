@@ -42,6 +42,16 @@
             </a>
         </li>
     </ul>
+    <table class="table table-success-light table-bordered table-hover table-striped mb-3">
+        <thead>
+        
+      
+         <tr>
+            <th  class="text-center"><b>{{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</b></th>
+        </tr>
+        </thead>
+        
+    </table>
 
         <table class="table table-success-light table-bordered table-hover table-striped w-100 mt-4" id="liste">
             <thead>
@@ -75,6 +85,16 @@
             {% endfor %}
             </tbody>
         </table>
+        <table class="table table-success-light table-bordered table-hover table-striped mb-3">
+        <thead>
+        
+      
+         <tr>
+            <th  class="text-center"><b>{{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</b></th>
+        </tr>
+        </thead>
+        
+    </table>
     </div>
 
 {% endblock %}

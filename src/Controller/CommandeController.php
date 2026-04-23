@@ -1125,10 +1125,15 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             
-
+            $commandes = $repository->findBy(['user' => $client->getId(), 'paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]);
+            $montant = 0;
+            foreach($commandes as $commande){
+                $montant += $commande->getMontant();
+            }
             $response = $this->render('vente/credit.html.twig', [
-                'commandes' => $repository->findBy(['user' => $client->getId(), 'paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]),
+                'commandes' => $commandes,
                 'user' => $client,
+                'montant' => $montant,
              
             ]);
             $response->setSharedMaxAge(0);
@@ -1160,10 +1165,15 @@ class CommandeController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             
-
+             $commandes = $repository->findBy(['user' => $client->getId(), 'suivi' => true, 'payer' => true]);
+            $montant = 0;
+            foreach($commandes as $commande){
+                $montant += $commande->getMontant();
+            }
             $response = $this->render('vente/payer.html.twig', [
-                'commandes' => $repository->findBy(['user' => $client->getId(), 'suivi' => true, 'payer' => true]),
+                'commandes' => $commandes,
                 'user' => $client,
+                'montant' => $montant,
              
             ]);
             $response->setSharedMaxAge(0);
