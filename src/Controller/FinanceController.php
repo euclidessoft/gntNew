@@ -19,6 +19,7 @@ use App\Entity\EtatStock;
 use App\Entity\Accompte;
 use App\Entity\Avoir;
 use App\Entity\Categorie;
+use App\Entity\Client;
 use App\Entity\Debit;
 use App\Entity\Depense;
 use App\Entity\Ecriture;
@@ -399,6 +400,63 @@ class FinanceController extends AbstractController
                 'banque' => $bank - $debitbanque,
                 'ecritures' => $ecrit,
                 'compte' => $compte,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/Palmares_compte/{client}", name :"journal_client") ]
+    public function journalCompteclient(Client $client, EcritureRepository $repository): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $ecritures = $repository->findAll();
+            $compte = $client->getCompte();
+
+            $caisse = 0;
+            $bank = 0;
+            $debitbanque = 0;
+            $debitcaisse = 0;
+            $ecrit = [];
+            foreach ($ecritures as $ecriture) {
+                if ($compte == $ecriture->getComptecredit() || $compte == $ecriture->getComptedebit()) {
+                    $credit = null;
+                    $debit = null;
+                    if ($ecriture->getType() == null) {
+                        
+                        $debitbanque += $ecriture->getMontant();
+                        $bank = $bank + $ecriture->getMontant();
+                    } else if ($ecriture->getCredit() != null) {
+                        $credit = $ecriture->getCredit();
+
+                        $bank = $bank + $credit->getMontant();
+                    } else {
+
+                        $debit = $ecriture->getDebit();
+
+                        $debitbanque = $debitbanque + $debit->getMontant();
+
+                    }
+                    $ecrit[] = $ecriture;
+                }
+
+            }
+
+            return $this->render('vente/compte.html.twig', [
+                'caisse' => $caisse - $debitcaisse,
+                'banque' => $bank - $debitbanque,
+                'ecritures' => $ecrit,
+                'compte' => $compte,
+                'user' => $client,
             ]);
         } else {
             $response = $this->redirectToRoute('security_logout');

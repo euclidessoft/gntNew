@@ -62,7 +62,7 @@
 {#            <th>N° Lot</th>#}
 {#            <th>Peremptio</th>#}
             <th>{{ 'Quantité'|trans }}</th>
-            {% if is_granted('ROLE_STOCK') %}
+            {% if is_granted('ROLE_STOCK') or is_granted('ROLE_FINANCE') %}
             <th>{{ 'Actions'|trans }}</th>
         {% endif %}
         </tr>
@@ -77,13 +77,13 @@
 {#                <td>{{ produit.lot }}</td>#}
 {#                <td>{{ produit.peremption|date('d/m/Y') }}</td>#}
                 <td>{{ produit.stock|number_format(0,',' , ' ') }}</td>
-                 {% if is_granted('ROLE_STOCK') %}
-                <td>
-                    <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" href="{{ path('stock_history_produit_show', {'id': produit.id}) }}">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                </td>
-        {% endif %}
+                 {% if is_granted('ROLE_STOCK') or is_granted('ROLE_FINANCE') %}
+                    <td>
+                        <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" href="{{ path('stock_history_produit_show', {'id': produit.id}) }}">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </td>
+                 {% endif %}
 
             </tr>
         {% endfor %}

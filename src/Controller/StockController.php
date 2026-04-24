@@ -553,7 +553,7 @@ class StockController extends AbstractController
     #[Route("/Sortie_Produit/", name :"sortie_produit", methods : ["GET"]) ]
     public function sortie(ProduitRepository $repository): Response
     {
-        if ($this->security->isGranted('ROLE_STOCK')) {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
 
             $response = $this->render('stock/sortie.html.twig', [
                 'produits' => $repository->sortie(),

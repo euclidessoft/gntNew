@@ -46,6 +46,11 @@
                 {{'Factures Payees'|trans}}
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('finance_journal_client',{'client' :user.id}) }}">
+                {{'Compte'|trans}}
+            </a>
+        </li>
     </ul>
 
     <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
