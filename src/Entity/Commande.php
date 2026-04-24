@@ -88,6 +88,9 @@ class Commande
 
      #[ORM\Column(type:"datetime", nullable:true) ]// pour la gestion du bilan financier
     private $traitement;
+
+     #[ORM\Column(type:"datetime", nullable:true) ]// pour le rattrapage des exercices
+    private $enregistrement;
     
     #[ORM\Column(type:"boolean") ]
     private $retour;
@@ -475,6 +478,18 @@ class Commande
     public function setRetour(bool $retour): static
     {
         $this->retour = $retour;
+
+        return $this;
+    }
+
+    public function getEnregistrement(): ?\DateTime
+    {
+        return $this->enregistrement;
+    }
+
+    public function setEnregistrement(?\DateTime $enregistrement): static
+    {
+        $this->enregistrement = $enregistrement;
 
         return $this;
     }

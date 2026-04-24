@@ -40,6 +40,9 @@ class Client extends User implements UserInterface
 
     #[ORM\Column]
     private ?bool $prelevement = null;
+    
+    #[ORM\Column(type:"float") ]
+    private $solde;
 
     public function __construct()
     {
@@ -193,6 +196,18 @@ class Client extends User implements UserInterface
                 $employecommande->setPharmaemploye(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSolde(): ?float
+    {
+        return $this->solde;
+    }
+
+    public function setSolde(float $solde): static
+    {
+        $this->solde = $solde;
 
         return $this;
     }

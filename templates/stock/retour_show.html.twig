@@ -45,7 +45,7 @@
             </table>
         </div>
         <div class="row">
-            <div class="col-lg-6 mt-5">
+            <div class="col-lg-7 mt-5">
                 {% for message in app.flashes('notice') %}
                     <div role="alert" class="alert alert-primaire alert-dismissible fade show radius-10 shadow-black">
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -67,7 +67,7 @@
                         <th>{{ "CIP"|trans }}</th>
                         <th>{{ "Designation"|trans }}</th>
                         <th>{{ "N° Lot"|trans }}</th>
-                        <th>{{ "Peremption"|trans }}</th>
+                        <th>{{ "Per."|trans }}</th>
                         <th>{{ "Qté Livrée"|trans }}</th>
                         <th></th>
                     </tr>
@@ -147,7 +147,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-6 mt-5">
+            <div class="col-lg-5 mt-5">
 
 
                 <table class="table table-success-light table-bordered table-hover table-striped w-100">

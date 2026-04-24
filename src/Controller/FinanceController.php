@@ -24,6 +24,7 @@ use App\Entity\Depense;
 use App\Entity\Ecriture;
 use App\Entity\Financement;
 use App\Entity\Paie;
+use App\Entity\Panier;
 use App\Entity\EcritureRepartition;
 use App\Entity\PaieSalaire;
 use App\Entity\LivrerReste;
@@ -184,6 +185,39 @@ class FinanceController extends AbstractController
             }
  
             $response = $this->render('finance/avantage.html.twig', []);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    #[Route("/AvantageClient", name :"avantage_client") ]
+    public function avantageclient(Request $request, AvantageRepository $repo): Response
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+           $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
+           
+ 
+            $response = $this->render('officine/avantage.html.twig', [
+                "avantages" => $repo->findBy(['client' => $this->getUser()] ),
+                "panier" => $panier,
+            ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
             $response->headers->addCacheControlDirective('no-store', true);

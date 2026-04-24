@@ -1018,15 +1018,13 @@ class LivrerController extends AbstractController
             // envoie sms notification
              $text = "GNTPharma - sortie de stock\n Commande: ". $livrer->getCommande()->getId()."\n Client: ". $livrer->getCommande()->getUser()->getNom()."\n Montant: ".number_format($livrer->getCommande()->getMontant(), 2, ',', ' ');
             
-            try{
+            // try{
         
-                $lam = new lamService($text, $client, $params);
-        
-                // $response = $lam->send();
-                $lam->send();
+            //     $lam = new lamService($text, $client, $params);
+            //     $lam->send();
                 
-            }
-            catch(throwable $e){
+            // }
+            // catch(throwable $e){
                 try{
                
                     $ws = new SMSService($params);//connect
@@ -1035,7 +1033,7 @@ class LivrerController extends AbstractController
                 catch(throwable $e){
                     Goto suit;
                 }
-            }
+            // }
             // fin sms
             // $response = $this->redirectToRoute('livraison_index');
             suit:
