@@ -1,0 +1,73 @@
+<script>
+    function userdisable(id) {
+        let bouton = $('#btn' + id);
+        let etat = $('#statut' + id);
+        if (confirm("{{ 'Voulez-vous vraiment désactiver ce laboratoire ?'|trans }}")) {
+            bouton.html("<i class='fa fa-spinner'></i>");
+            $.ajax({
+                type: "POST",
+                url: "{{ path('security_user_disable') }}",
+                data: "usr=" + id,
+                success: function (data) {
+                    if (data['ok'] !== '') {
+                        bouton.attr('class', 'btn btn-green');
+                        bouton.attr('onclick', 'userenable(' + id + ')');
+                        bouton.attr('title', ' {{ "Activer ce laboratoire"|trans }}');
+                        bouton.html('<i class="fa fa-user-check"></i>');
+                        etat.html("{{ 'Inactif'|trans }}");
+                    }
+                },
+                error: function () {
+                    alert('{{ "La requête n'a pas abouti"|trans }}');
+                }
+            });
+        }
+    }
+
+    function userenable(id) {
+        let bouton = $('#btn' + id);
+        let etat = $('#statut' + id);
+        if (confirm("{{ 'Voulez-vous vraiment activer ce laboratoire ?'|trans }}")) {
+            bouton.html("<i class='fa fa-spinner'></i>");
+            $.ajax({
+                type: "POST",
+                url: "{{ path('security_user_enable') }}",
+                data: "usr=" + id,
+                success: function (data) {
+                    if (data['ok'] !== '') {
+                        bouton.attr('class', 'btn btn-danger');
+                        bouton.attr('onclick', 'userdisable(' + id + ')');
+                        bouton.attr('title', ' {{ "Désactiver ce laboratoire"|trans }}');
+                        bouton.html('<i class="fa fa-user-lock"></i>');
+                        etat.html("{{ 'Actif'|trans }}");
+                    }
+                },
+                error: function () {
+                    alert('{{ "La requête n'a pas abouti"|trans }}');
+                }
+            });
+        }
+
+    }
+
+    function del(id) {
+        if (confirm("{{ 'Voulez-vous vraiment supprimer ce laboratoire ?'|trans }}")) {
+            $('#btn' + id).html("<i class='fa fa-spinner'></i>");
+            $.ajax({
+                type: "POST",
+                url: "{{ path('security_user_delete') }}",
+                data: "usr=" + id,
+                success: function (data) {
+                    if (data['ok'] !== '') {
+                        document.location.href = data['ok'];
+                    }
+                },
+                error: function () {
+                    alert('{{ "La requête n'a pas abouti"|trans }}');
+                }
+            });
+        }
+
+    }
+
+</script>
