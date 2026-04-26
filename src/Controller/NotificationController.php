@@ -109,18 +109,18 @@ public function test(ParameterBagInterface $params)
         // return new Response("okay");
 
         //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
-        //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findAll();
-        // foreach($commandes as $commande){
+         $commandes =  $this->entityManager->getRepository(Commande::Class)->findAll();
+        foreach($commandes as $commande){
 
-        // //     if($commande->getTraitement() == null){
-        // //     if($commande->getSuivi() == true){
-        // //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
-        //     $commande->setMontantht($commande->getMontant());
-        //     $this->entityManager->persist($commande);
-        //     //$this->entityManager->flush();
-        //     // }
-        // // }
+        //     if($commande->getTraitement() == null){
+        //     if($commande->getSuivi() == true){
+        //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
+            $commande->setMontantht($commande->getMontant());
+            $this->entityManager->persist($commande);
+            //$this->entityManager->flush();
+            // }
         // }
+        }
 
         $paiements =  $this->entityManager->getRepository(Paiement::Class)->findAll();
         foreach($paiements as $paiement){
