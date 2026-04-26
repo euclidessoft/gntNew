@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\VersementRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:VersementRepository::class) ]
@@ -13,11 +14,16 @@ class Versement
     private $commande;
 
     #[ORM\Column(type:"date") ]
-
     private $date;
+
     #[ORM\ManyToOne(targetEntity:"App\Entity\User") ]
 #[ORM\JoinColumn(nullable:true) ]
     private $user;
+    
+
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Client") ]
+    #[ORM\JoinColumn(nullable:true) ]
+    private $Client;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -134,6 +140,13 @@ class Versement
     public function setBanque(?Banque $banque): self
     {
         $this->banque = $banque;
+
+        return $this;
+    }
+
+    public function setClient(?Client $Client): static
+    {
+        $this->Client = $Client;
 
         return $this;
     }

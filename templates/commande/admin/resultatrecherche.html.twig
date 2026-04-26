@@ -22,6 +22,18 @@
             <i class="fa fa-search me-2"></i>
             {{ "Resultat recherche du "|trans }}{{ jour|date("d/m/Y")}}
         </h5>
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_commande_client', {'client': client.id}) }}">
+                    {{ 'Commande(s) journaliere(s)'|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">
+                    {{'Recherche'|trans}}
+                </a>
+            </li>
+        </ul>
           {% for message in app.flashes('notice') %}
         <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -39,11 +51,14 @@
             </tr>
             </thead>
             <tbody>
+              {% set montant = 0 %}
             {% for commande in commandes %}
                 <tr>
                     <td data-label="{{'Numero'|trans}}">{{ commande.id }}</td>
                     <td data-label="{{ 'Date'|trans }}">{{ commande.date|date('d/m/Y') }}</td>
-                    <td data-label="{{ 'Montant'|trans }}" class="text-end">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td data-label="{{ 'Montant'|trans }}" class="text-end">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                      {% set montant = montant + commande.montant %}
+                    </td>
                     <td data-label="{{ 'Validation'|trans }} ">
                         <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_paiement', {'commande' : commande.id}) }}" class="btn btn-success">
                             <i class="fa-solid fa-file-invoice-dollar"></i>
@@ -61,6 +76,11 @@
                 </tr>
             {% endfor %}
             </tbody>
+            <tfooter>
+                <tr>
+                    <th colspan="2"> Total<th>{{ montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}</th><th></th>
+                </tr>
+            </tfooter>
         </table>
     </div>
 

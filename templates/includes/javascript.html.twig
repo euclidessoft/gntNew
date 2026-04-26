@@ -603,6 +603,52 @@
 
      let table = new DataTable('#liste', {
     // let table = $('#liste').DataTable({
+        order: [[0, 'desc']],
+        responsive: true,
+        pageLength: 100,
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: ':not(.noExport)' // exclut toutes les colonnes avec .noExport
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                exportOptions: {
+                    columns: ':not(.noExport)'
+                }
+            }
+        ],
+        language: {
+            processing: "{{ 'Traitement en cours...'|trans }}",
+            search: "{{ 'Rechercher'|trans }} :",
+            lengthMenu: "{{ 'Afficher'|trans }} _MENU_ {{'élèments'|trans}}",
+            info: "{{'Affichage de l\'élement'|trans}} _START_ {{'à'|trans}} _END_ {{ 'sur'|trans }} _TOTAL_ {{'élèments'|trans}}",
+            infoEmpty: "{{'Affichage de l\'élèment 0 à 0 sur 0 élèments'|trans}}",
+            infoFiltered: "({{'filtré de'|trans}} _MAX_ {{'élèment au total'|trans}})",
+            infoPostFix: "",
+            loadingRecords: "{{ 'Chargement en cours...'|trans }}",
+            zeroRecords: "{{'Aucun élèment à afficher'|trans}}",
+            emptyTable: "{{'Aucun élèment enregistré'|trans}}",
+            paginate: {
+                first: "{{ 'Premier'|trans }}",
+                previous: "{{'Précédent'|trans}}",
+                next: "{{ 'Suivant'|trans }}",
+                last: "{{ 'Dernier'|trans }}"
+            },
+            aria: {
+                sortAscending: ": {{ 'Trier par ordre croissant'|trans }}",
+                sortDescending: ": {{'Trier par ordre décroissant'|trans}}"
+            }
+        }
+
+    });
+     let tab = new DataTable('#affichage', {
+    // let table = $('#liste').DataTable({
+        {# order: [[0, 'desc']], #}
         responsive: true,
         pageLength: 100,
         buttons: [

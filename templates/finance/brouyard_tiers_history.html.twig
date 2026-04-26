@@ -1,0 +1,105 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+
+{% block title %}{{ 'historique compte client'|trans }} - GNT Pharma{% endblock %}
+
+{% block finance %}active{% endblock %}
+
+{% block balance %}active{% endblock %}
+{% block tiers %}active{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-11 mt-5 mb-5 fond-7">
+        <h3 class="mt-4 text-bold">
+            <i class="fas fa-money-bill fa-lg"></i><i class="fas fa-hourglass-half"></i>
+            {{ 'Historique compte client'|trans }}| {{ user.nom ~ " " ~ user.prenom }}
+        </h3>
+         <h5 class="text-success text-bold">
+            {{ 'du '|trans }} {{ day1|date('d/m/Y') }}
+            {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
+        </h5>
+        {% for message in app.session.flashbag.get('notice') %}
+            <div role="alert" class="alert alert-danger alert-dismissible fade show radius-10 shadow-black mt-5 mb-5">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+        
+
+        <div class="card border-green shadow-black mt-5 mb-3 fond-5">
+            <div class="card-header bg-success-light bb-success">
+                <h5 class="text-success text-bold">
+                    <i class="fa fa-money-bill-transfer"></i>
+                    {{ 'historique'|trans }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-success-light table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th class="text-center"> {{ 'Date'|trans }}</th>
+                        <th>{{ 'Libellé'|trans }}</th>
+                        <th class="text-center">{{ 'Débit'|trans }}</th>
+                        <th class="text-center">{{ 'Crédit'|trans }}</th>
+                        {#                        <th class="text-center">{{ 'Solde'|trans }}</th> #}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set debit = 0 %}
+                    {% set credit = 0 %}
+                    {% for commande in commandes %}
+                        <tr>
+                            <td> {{ commande.date|date("d/m/Y") }}</td>
+                            {% if commande.credit is defined %}
+                                <td> {{"vente de medicament"|trans}}  Facture: {{ commande.id }}-{{ commande.numerofacture }}</td>
+                                <td> {{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                                <td> </td>
+                                 {% set debit = debit + commande.montant %}
+                            {% else %}
+                                 <td> {{"reglement"|trans}} Facture: {{commande.commande.id }}-{{commande.commande.numerofacture}}</td>
+                                <td> </td>
+                                <td> {{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                                 {% set credit = credit + commande.montant %}
+                            {% endif %}
+                        <tr>
+                       
+                    {% endfor %}
+                    {% set solde = credit - debit %}
+                    </tbody>
+                    </tfooter>
+                        <tr>
+                            <th colspan="2" class="text-right">Solde</th>
+                            {% if solde > 0 %}
+                                <th> {{ solde|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                                <th> </th>
+                            {% elseif solde <0  %}
+                              <th></th>
+                                <th> {{ (-1 * solde)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
+                            {% endif %}
+                        </tr>
+                    </tfooter>
+                </table>
+            </div>
+            {#<div class="card-footer bg-success-light bt-success">
+                <h4 class="text-success text-bold">
+                    {{ 'Total transfert'|trans }} :
+                    <span class="text-nowrap">
+                    {{ montant2|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA
+                </span>
+                </h4>
+            </div>#}
+        </div>
+    </div>
+
+{% endblock %}

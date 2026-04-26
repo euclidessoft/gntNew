@@ -45,6 +45,10 @@ class Commande
     #[ORM\Column(type:"float") ]
     private $Montant;
 
+    
+    #[ORM\Column(type:"float") ]
+    private $Montantht;
+
     #[ORM\Column(type:"float") ]
     private $versement;
 
@@ -160,11 +164,13 @@ class Commande
 
     public function getMontant(): ?float
     {
+        
         return $this->Montant;
     }
 
     public function setMontant(float $Montant): self
     {
+        $this->setMontantht($Montant);
         $this->Montant = $Montant;
 
         return $this;
@@ -490,6 +496,18 @@ class Commande
     public function setEnregistrement(?\DateTime $enregistrement): static
     {
         $this->enregistrement = $enregistrement;
+
+        return $this;
+    }
+
+    public function getMontantht(): ?float
+    {
+        return $this->Montantht;
+    }
+
+    public function setMontantht(float $Montantht): static
+    {
+        $this->Montantht = $Montantht - $this->tva - $this->acompte - $this->reduction;
 
         return $this;
     }

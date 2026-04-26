@@ -31,6 +31,8 @@ use App\Entity\PaieSalaire;
 use App\Entity\LivrerReste;
 use App\Repository\EcritureRepository;
 use App\Repository\PaieRepository;
+use App\Repository\PaiementRepository;
+use App\Repository\VersementRepository;
 use App\Repository\AvantageRepository;
 use App\Repository\AveComRepository;
 use App\Repository\AccompteRepository;
@@ -1411,6 +1413,26 @@ class FinanceController extends AbstractController
         }
     }
 
+    #[Route("/TiersRepport/", name :"rapport_tiers") ]
+    public function rapporttiers()
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+            return $this->render('finance/rapport_tiers.html.twig');
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
     #[Route("/LienDaysBrouyard", name :"days_brouyard_lien") ]
     public function liendaysbrouyard(Request $request)
     {
@@ -1499,6 +1521,183 @@ class FinanceController extends AbstractController
                 'banque' => $banque - $debitbanque + $banqueouv - $debitbanqueouv,
                 'ecritures' => $ecritures,
                 'ouverture' => ($caisseouv - $debitcaisseouv) + ($banqueouv - $debitbanqueouv),
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("/LienDaysTiers", name :"days_tiers_lien") ]
+    public function liendaystiers(Request $request)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            $lien = $this->generateUrl('finance_days_tiers', ['date1' => $date1, 'date2' => $date2]);
+            $res['ok'] = $lien;
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+    }
+
+
+    #[Route("/DaysBrouyardTiers/{date1}/{date2}", name :"days_tiers") ]
+    public function daystiers(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+              $commandes = $this->entityManager->getRepository(Commande::class)->avantage( $date1, $date2);
+            //   dd($commandes);
+              $comm = [];
+              foreach($commandes as $commande){
+                $montant = 0;
+                // dd($commande[0]->getUser()->getVersements());
+                $paiements = $paierepo->balance($commande['id'], $date1, $date2);
+                $versements = $versementrepo->balance($commande['id'], $date1, $date2);
+
+                foreach($versements as $versement){
+                    $montant += $versement->getMontant();
+                }
+
+                foreach($paiements as $paiement){
+                    $montant += $paiement->getMontant();
+                }
+                $com['id'] = $commande['id'];
+                $com['compte'] = $commande[0]->getUser()->getCompte();
+                $com['nom'] = $commande[0]->getUser()->getNom();
+                $com['ca'] = $commande['ca'];
+                $com['achat'] = $montant;
+                $comm[] = $com;
+           }
+                    
+            return $this->render('finance/brouyard_tiers.html.twig', [
+                'commandes' => $comm,
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("/HistoriqueTiers/{client}/{date1}/{date2}", name :"days_tiers_history") ]
+    public function historiqueclient(Request $request, $client, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+              $cli = $this->entityManager->getRepository(Client::class)->find($client);
+              $commandes = $this->entityManager->getRepository(Commande::class)->historiqueclient($cli->getId(), $date1, $date2);
+             $paiements = $paierepo->balance($cli->getId(), $date1, $date2);
+                $versements = $versementrepo->balance($cli->getId(), $date1, $date2);
+               
+                $result = [];
+                foreach ([$commandes, $paiements, $versements] as $tableau) {
+                    foreach ($tableau as $row) {
+                        $date = $row->getDate()->format('Y-m-d');
+                        // dd($date);
+                        // On regroupe les lignes par date
+                        $result[$date][] = $row;
+                    }
+                }
+                ksort($result);
+                // dd($result);
+                $flat = [];
+
+                foreach ($result as $date => $rows) {
+                    foreach ($rows as $row) {
+                        $flat[] = $row;
+                    }
+                }  
+            return $this->render('finance/brouyard_tiers_history.html.twig', [
+                'commandes' => $flat,
+                'user' => $cli,
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+
+
+    #[Route("/DaysBrouyardTiers_print/{date1}/{date2}", name :"days_tiers_print") ]
+    public function daystiersprint(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+              $commandes = $this->entityManager->getRepository(Commande::class)->avantage( $date1, $date2);
+            //   dd($commandes);
+              $comm = [];
+              foreach($commandes as $commande){
+                $montant = 0;
+                // dd($commande[0]->getUser()->getVersements());
+                $paiements = $paierepo->balance($commande['id'], $date1, $date2);
+                $versements = $versementrepo->balance($commande['id'], $date1, $date2);
+
+                foreach($versements as $versement){
+                    $montant += $versement->getMontant();
+                }
+
+                foreach($paiements as $paiement){
+                    $montant += $paiement->getMontant();
+                }
+                $com['compte'] = $commande[0]->getUser()->getCompte();
+                $com['nom'] = $commande[0]->getUser()->getNom();
+                $com['ca'] = $commande['ca'];
+                $com['achat'] = $montant;
+                $comm[] = $com;
+           }
+                    
+            return $this->render('finance/brouyard_tiers_print.html.twig', [
+                'commandes' => $comm,
                 'day1' => $date1,
                 'day2' => $date2,
             ]);

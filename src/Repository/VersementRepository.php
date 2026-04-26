@@ -19,6 +19,27 @@ class VersementRepository extends ServiceEntityRepository
         parent::__construct($registry, Versement::class);
     }
 
+     public function balance($client, $p1, $p2){
+        $debut = new \Datetime($p1);
+        // $debut = (clone $date)->setTim;
+
+        $fin = new \Datetime($p2);
+        // $fin = (clone $date)->setTime(23, 59, 59);
+        $qb = $this->createQueryBuilder('c')
+        // ->Addselect("u.id, SUM(c.montant) as paie") 
+        ->andWhere('c.date BETWEEN :debut AND :fin')
+        ->andWhere('c.Client = :user')
+            ->setParameter('user', $client)
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin);
+            // ->setParameter('espece', false);
+        // ->join('c.achats', 'a')
+        // ->groupBy('u.id');
+        // ->orderBy('mois', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Versement[] Returns an array of Versement objects
     //  */

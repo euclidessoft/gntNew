@@ -1,0 +1,70 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ 'Balance des tiers du : '|trans }} {{ day1|date('d/m/Y') }} {{ 'au : '|trans }} {{ day2|date('d/m/Y') }} - GNT Pharma {% endblock %}
+{% block finance %}active{% endblock %}
+{% block balance %}active{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="container mt-4 mb-5 fond-7 pt-3 pb-3">
+            <div class="centrer">
+                <a href="{{ path('finance_days_tiers_print', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-success-light">
+                    <i class="fa fa-print"></i>
+                    {{ 'imprimer'|trans }}
+                </a>
+                <span id="exporter"></span>
+            </div>
+        </div>
+        <div class="card border-green shadow-black mt-5 mb-3 fond-5">
+            <div class="card-header bg-success-light bb-success">
+                <h5 class="text-success text-bold">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    {{ 'Balance des tiers du '|trans }} {{ day1|date('d/m/Y') }}
+                    {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
+                </h5>
+            </div>
+            <div class="card-body">
+               <table class="table table-success-light table-bordered table-hover table-striped mt-3" id="affichage">
+       <thead>
+            <tr>
+                <th rowspan="2">{{"Compte"|trans}}</th>
+                <th rowspan="2">{{"Client"|trans}}</th>
+                <th colspan="2">{{"Mouvements"|trans}}</th>
+                <th colspan="2">{{"Solde"|trans}}</th>
+            </tr>
+            <tr>
+                <th>{{"Debit"|trans}}</th>
+                <th>{{"Credit"|trans}}</th>
+                <th>{{"Debit"|trans}}</th>
+                <th>{{"Credit"|trans}}</th>
+            </tr>
+       </thead>
+        <tbody>
+            {% for commande in commandes %} 
+        
+                <tr>
+                    <td>{{commande['compte'] }}</td>
+                    <td><a href="{{ path('finance_days_tiers_history', {'client' : commande['id'],'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}">{{commande['nom'] }}</a></td>
+                    <td>{{commande['ca']|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{commande['achat']|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    {% set solde = commande['achat'] - commande['ca'] %}
+                    <td> {% if solde > 0 %} {{ solde|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% endif %}</td>
+                    <td> {% if solde < 0 %} {{ (-1 *solde) |number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% endif %}</td>
+                   
+                </tr>
+            {% else %}
+            {% endfor %}
+        </tbody>
+       </table> 
+        </div>
+    </div>
+{% endblock %}
