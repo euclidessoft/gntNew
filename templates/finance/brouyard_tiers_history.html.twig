@@ -75,7 +75,7 @@
                         <tr>
                        
                     {% endfor %}
-                    {% set solde = credit - debit %}
+                    {% set solde = debit - credit %}
                     </tbody>
                     </tfooter>
                         <tr>
@@ -83,7 +83,10 @@
                             {% if solde > 0 %}
                                 <th> {{ solde|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
                                 <th> </th>
-                            {% elseif solde <0  %}
+                            {% elseif solde == 0 %}
+                                <th> </th>
+                                <th> </th>
+                            {% elseif solde < 0  %}
                               <th></th>
                                 <th> {{ (-1 * solde)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
                             {% endif %}

@@ -97,7 +97,7 @@
                     <td>{{commande['nom'] }}</td>
                     <td>{{commande['ca']|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{commande['achat']|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    {% set solde = commande['achat'] - commande['ca'] %}
+                    {% set solde = commande['ca'] - commande['achat'] %}
                     <td> {% if solde > 0 %} {{ solde|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% endif %}</td>
                     <td> {% if solde < 0 %} {{ (-1 *solde) |number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% endif %}</td>
                    
