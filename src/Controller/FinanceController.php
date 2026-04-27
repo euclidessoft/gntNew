@@ -210,6 +210,7 @@ class FinanceController extends AbstractController
             return $response;
         }
     }
+
     #[Route("/AvantageClient", name :"avantage_client") ]
     public function avantageclient(Request $request, AvantageRepository $repo): Response
     {
@@ -220,6 +221,39 @@ class FinanceController extends AbstractController
             $response = $this->render('officine/avantage.html.twig', [
                 "avantages" => $repo->findBy(['client' => $this->getUser()] ),
                 "panier" => $panier,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/Palmares_AvantageClient/{client}", name :"avantage_client_palmares") ]
+    public function palamaresavantageclient(Client $client, AvantageRepository $repo): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+         
+            $response = $this->render('vente/avantage.html.twig', [
+                "avantages" => $repo->findBy(['client' => $client] ),
+                "user" => $client,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -418,46 +452,35 @@ class FinanceController extends AbstractController
     }
 
     #[Route("/Palmares_compte/{client}", name :"journal_client") ]
-    public function journalCompteclient(Client $client, EcritureRepository $repository): Response
+    public function journalCompteclient(Client $client, PaiementRepository $paierepo, VersementRepository $versementrepo): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
-            $ecritures = $repository->findAll();
-            $compte = $client->getCompte();
 
-            $caisse = 0;
-            $bank = 0;
-            $debitbanque = 0;
-            $debitcaisse = 0;
-            $ecrit = [];
-            foreach ($ecritures as $ecriture) {
-                if ($compte == $ecriture->getComptecredit() || $compte == $ecriture->getComptedebit()) {
-                    $credit = null;
-                    $debit = null;
-                    if ($ecriture->getType() == null) {
-                        
-                        $debitbanque += $ecriture->getMontant();
-                        $bank = $bank + $ecriture->getMontant();
-                    } else if ($ecriture->getCredit() != null) {
-                        $credit = $ecriture->getCredit();
-
-                        $bank = $bank + $credit->getMontant();
-                    } else {
-
-                        $debit = $ecriture->getDebit();
-
-                        $debitbanque = $debitbanque + $debit->getMontant();
-
+              $commandes = $this->entityManager->getRepository(Commande::class)->historiquecompteclient($client->getId());
+             $paiements = $paierepo->balancecompte($client->getId());
+                $versements = $versementrepo->balancecompte($client->getId());
+               
+                $result = [];
+                foreach ([$commandes, $paiements, $versements] as $tableau) {
+                    foreach ($tableau as $row) {
+                        $date = $row->getDate()->format('Y-m-d');
+                        // dd($date);
+                        // On regroupe les lignes par date
+                        $result[$date][] = $row;
                     }
-                    $ecrit[] = $ecriture;
                 }
+                ksort($result);
+                // dd($result);
+                $flat = [];
 
-            }
+                foreach ($result as $date => $rows) {
+                    foreach ($rows as $row) {
+                        $flat[] = $row;
+                    }
+                } 
 
             return $this->render('vente/compte.html.twig', [
-                'caisse' => $caisse - $debitcaisse,
-                'banque' => $bank - $debitbanque,
-                'ecritures' => $ecrit,
-                'compte' => $compte,
+               'commandes' => $flat,
                 'user' => $client,
             ]);
         } else {
@@ -1647,6 +1670,56 @@ class FinanceController extends AbstractController
                     }
                 }  
             return $this->render('finance/brouyard_tiers_history.html.twig', [
+                'commandes' => $flat,
+                'user' => $cli,
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    
+
+    #[Route("/HistoriqueTiers_print/{client}/{date1}/{date2}", name :"days_tiers_history_print") ]
+    public function historiqueclientprint(Request $request, $client, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+              $cli = $this->entityManager->getRepository(Client::class)->find($client);
+              $commandes = $this->entityManager->getRepository(Commande::class)->historiqueclient($cli->getId(), $date1, $date2);
+             $paiements = $paierepo->balance($cli->getId(), $date1, $date2);
+                $versements = $versementrepo->balance($cli->getId(), $date1, $date2);
+               
+                $result = [];
+                foreach ([$commandes, $paiements, $versements] as $tableau) {
+                    foreach ($tableau as $row) {
+                        $date = $row->getDate()->format('Y-m-d');
+                        // dd($date);
+                        // On regroupe les lignes par date
+                        $result[$date][] = $row;
+                    }
+                }
+                ksort($result);
+                // dd($result);
+                $flat = [];
+
+                foreach ($result as $date => $rows) {
+                    foreach ($rows as $row) {
+                        $flat[] = $row;
+                    }
+                }  
+            return $this->render('finance/brouyard_tiers_history_print.html.twig', [
                 'commandes' => $flat,
                 'user' => $cli,
                 'day1' => $date1,

@@ -105,6 +105,7 @@
                 var date1 = new Date($('#date1').val());
                 var date2 = new Date($('#date2').val());
                 if (date1 < date2 && date2 < new Date()) {
+                     $("#daysbtn").html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
                     $.ajax({
                         type: "POST",
                         url: "{{ path('finance_days_tiers_lien') }}",

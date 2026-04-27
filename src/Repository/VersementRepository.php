@@ -40,6 +40,19 @@ class VersementRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function balancecompte($client){
+       
+        $qb = $this->createQueryBuilder('c')
+        ->andWhere('c.Client = :user')
+            ->setParameter('user', $client);
+            // ->setParameter('espece', false);
+        // ->join('c.achats', 'a')
+        // ->groupBy('u.id');
+        // ->orderBy('mois', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Versement[] Returns an array of Versement objects
     //  */

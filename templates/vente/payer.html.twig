@@ -42,6 +42,11 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="{{ path('finance_avantage_client_palmares',{'client' :user.id}) }}">
+                {{'Avantages'|trans}}
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="{{ path('finance_journal_client',{client :user.id}) }}">
                 {{'Compte'|trans}}
             </a>

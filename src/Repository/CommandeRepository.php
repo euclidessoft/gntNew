@@ -322,6 +322,15 @@ class CommandeRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+     public function historiquecompteclient($client){
+       
+        $qb = $this->createQueryBuilder('c')
+        ->andWhere('c.user = :user')
+            ->setParameter('user', $client);
+
+        return $qb->getQuery()->getResult();
+    }
     //  public function deuxiemetranche($user)
     // {
     //      $endDate = new \DateTime('last day of this month 23:59:59');
