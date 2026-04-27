@@ -86,6 +86,11 @@
                     </tbody>
                     </tfooter>
                         <tr>
+                            <th colspan="2" class="text-right">Totaux</th>
+                            <th> {{ debit|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                            <th> {{ credit|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
+                        </tr>
+                        <tr>
                             <th colspan="2" class="text-right">Solde</th>
                             {% if solde > 0 %}
                                 <th> {{ solde|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
