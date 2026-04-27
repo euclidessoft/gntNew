@@ -316,9 +316,10 @@
                     </div>
                     <input id="signature64" name="signed" style="display: none"/>
                     <div>
-                 {{ form_start(form) }}
+                 {# {{ form_start(form) }}
                 {{ form_widget(form) }}
-                {{ form_rest(form) }}
+                {{ form_rest(form) }} #}
+                <input type="text" name="recepteur" id="recepteur" class="form-control" placeholder="Votre nom"/>
                 </div>
                 </div>
                 <div id="source"></div>

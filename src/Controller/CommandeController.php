@@ -1203,7 +1203,7 @@ class CommandeController extends AbstractController
     #[Route("/Paiement_commande/{commande}", name :"paiement_client") ]
     public function paiementClient(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
-        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
+        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
             $this->getUser()->getTuteur() === null ?
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
@@ -2416,7 +2416,7 @@ class CommandeController extends AbstractController
     #[Route("/Pint_Details_commande/{commande}", name :"print_Detail") ]
     public function printdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
-        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
+        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
             $this->getUser()->getTuteur() === null ?
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
@@ -2498,7 +2498,7 @@ class CommandeController extends AbstractController
     #[Route("/Pint_Bon_commande/{commande}", name :"print_Bon") ]
     public function printbon(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
-        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser() == $this->getUser()) {
+        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
             $this->getUser()->getTuteur() === null ?
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);

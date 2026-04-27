@@ -46,25 +46,41 @@
         <table class="table table-success-light table-bordered table-hover table-striped w-100 text-center mt-5">
             <thead>
             <tr>
-                <th>{{ 'Code Produit'|trans }}</th>
+                <th>{{ 'CIP'|trans }}</th>
                 <th class="text-start">{{ 'Désignation'|trans }}</th>
                 <th>{{'Fournisseur'|trans}}</th>
                 <th>{{'N° Lot'|trans}}</th>
                 <th>{{'Péremption'|trans}}</th>
                 {#            <th>etat stosk</th>#}
                 <th>{{'Quantité'|trans}}</th>
+                <th>{{'PGHT'|trans}}</th>
+                <th>{{'PGHT Total'|trans}}</th>
+                <th>{{'P. Cession'|trans}}</th>
+                <th>{{'P. Cession Total'|trans}}</th>
             </tr>
             </thead>
             <tbody>
+            {% set pght = 0 %}
+            {% set pghtproduit = 0 %}
+            {% set cession = 0 %}
+            {% set cessionproduit = 0 %}
             {% for approvisionnement in approvisionnements %}
                 <tr>
-                    <td> {{ approvisionnement.produit.id }} </td>
+                    <td> {{ approvisionnement.produit.reference }} </td>
                     <td class="text-start"><a href="{{ path('produit_show', {'id': approvisionnement.produit.id}) }}">{{ approvisionnement.produit.desigantion }}</a> </td>
                     <td>{{ approvisionnement.fournisseur ? approvisionnement.fournisseur.designation : 'Retour Produit'}} </td>
                     <td>{{ approvisionnement.lot }} </td>
                     <td>{{ approvisionnement.peremption|date('d/m/Y') }} </td>
                     {#                <td> {{ approvisionnement.produit.stock }} </td>#}
                     <td>{{ approvisionnement.quantite }}</td>
+                    <td>{{ approvisionnement.pght|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{ (approvisionnement.pght * approvisionnement.quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}</td>
+                    <td>{{ approvisionnement.cession|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{ (approvisionnement.cession * approvisionnement.quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}</td>
+            {% set pght = pght + approvisionnement.pght %}
+            {% set pghtproduit = pghtproduit + approvisionnement.pght * approvisionnement.quantite %}
+            {% set cession = cession + approvisionnement.cession %}
+            {% set cessionproduit = approvisionnement.cession * approvisionnement.quantite %}
 
 
                 </tr>
@@ -73,6 +89,15 @@
               
             {% endfor %}
             </tbody>
+            <tfooter>
+                <tr>
+                    <th colspan="6">Totaux</th>
+                    <th>{{ pght|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                    <th>{{ pghtproduit|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                    <th>{{ cession|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                    <th>{{ cessionproduit|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</th>
+                </tr>
+            </tfooter>
         </table>
 
         <div class="col-md-2 offset-md-4 mt-5 mb-5 pt-2 pb-2 fond-7">

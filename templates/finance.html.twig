@@ -55,6 +55,13 @@
                                 {{ 'Balance'|trans }}
                             </a>
                             <ul class="dropdown-submenu" aria-labelledby="balance">
+                            <li class="dropdown-item">
+                                    <a class="nav-link {% block balance_tiers %}{% endblock %}"
+                                    href="{{ path('finance_rapport_tiers') }}">
+                                        <i class="fa-solid fa-user"></i>
+                                        {{ 'Tiers'|trans }}
+                                    </a>
+                                </li>
                                 <li class="dropdown-item">
                                     <a class="nav-link {% block balance_journaliere %}{% endblock %}"
                                        href="#" data-bs-toggle="modal" data-bs-target="#rapport">

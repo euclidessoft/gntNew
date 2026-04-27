@@ -261,10 +261,10 @@ class LivrerController extends AbstractController
     {// traitement livraison
 
         if ($this->security->isGranted('ROLE_LIVREUR') && $livrer->getLivreur() == $this->getUser()) {
-             $commande = new Commande();
+            //  $commande = new Commande();
 
-            $form = $this->createForm(PharmauserType::class, $commande, ['attr' => ['id' => $livrer->getCommande()->getUser()->getPharmacie()->getId()]]);
-            $form->handleRequest($request);
+            // $form = $this->createForm(PharmauserType::class, $commande, ['attr' => ['id' => $livrer->getCommande()->getUser()->getPharmacie()->getId()]]);
+            // $form->handleRequest($request);
 
             // if ($form->isSubmitted()) {}
 
@@ -272,7 +272,7 @@ class LivrerController extends AbstractController
 //                'commandes' => $commandeproduits,
                 'commandereference' => $livrer->getCommande(),
                 'livrer' => $livrer,
-                'form' => $form->createView(),
+                // 'form' => $form->createView(),
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -1297,8 +1297,9 @@ class LivrerController extends AbstractController
 
         $em = $this->entityManager;
         $livraison = $em->getRepository(Livrer::class)->find($liver);
-        $client = $em->getRepository(Client::class)->find($recepteur);
-        $livraison->setRecepteur($client);
+        // $client = $em->getRepository(Client::class)->find($recepteur);
+        // $livraison->setRecepteur($client);
+        $livraison->setNom($recepteur);
         $livraison->setLivrer(true);
         $livraison->getCommande()->setLivrer(true);
         $livraison->getCommande()->setDateefectlivraison(new \DateTime());

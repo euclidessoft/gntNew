@@ -80,15 +80,15 @@ class CommandeRepository extends ServiceEntityRepository
 
      public function retourClient($client)
     {
-        $date = new \Datetime();
-        date_sub($date,date_interval_create_from_date_string("30 days"));
-        $creation = date_format($date,"Y-m-d");
+        // $date = new \Datetime();
+        // date_sub($date,date_interval_create_from_date_string("30 days"));
+        // $creation = date_format($date,"Y-m-d");
 
 
 
         $query = $this->createQueryBuilder('a')
-            ->Where('a.dateefectlivraison > :date')
-            ->setParameter('date', $creation)
+            // ->Where('a.dateefectlivraison > :date')
+            // ->setParameter('date', $creation)
             ->Andwhere('a.livrer = :val')
             ->setParameter('val', true)
             ->Andwhere('a.user = :client')

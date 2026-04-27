@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ApprovisionnementRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:ApprovisionnementRepository::class) ]
@@ -41,6 +42,9 @@ class Approvisionnement
 
     #[ORM\Column(nullable : true)]
     private ?float $pght = null;
+
+    #[ORM\Column(nullable : true)]
+    private ?float $cession = null;
 
     /**
      * Constructor
@@ -165,6 +169,18 @@ class Approvisionnement
     public function setPght(float $pght): static
     {
         $this->pght = $pght;
+
+        return $this;
+    }
+
+    public function getCession(): ?float
+    {
+        return $this->cession;
+    }
+
+    public function setCession(?float $cession): static
+    {
+        $this->cession = $cession;
 
         return $this;
     }

@@ -321,7 +321,8 @@
 
         function image(commande) {
             var image = $('#signature64').val();
-            var recepteur = $('#pharmauser_user option:selected').val();
+           // var recepteur = $('#pharmauser_user option:selected').val();
+            var recepteur = $('#recepteur').val();
  
             if (image !== "" && recepteur !== "") {
                 $("#valider").html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
