@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CommandeProduitRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:CommandeProduitRepository::class) ]
@@ -34,6 +35,9 @@ class CommandeProduit
     #[ORM\Column(type:"integer") ]
     private $quantite;
 
+    
+    #[ORM\Column(type:"integer", nullable: true) ]
+    private $quantitecommande;
 
     private $stock;
     #[ORM\Column(type:"float") ]
@@ -41,6 +45,9 @@ class CommandeProduit
 
     #[ORM\Column]
     private ?float $pght = null;
+    
+    #[ORM\Column(type:"boolean", nullable: true) ]
+    private $extranet;
 
     /**
      * Constructor
@@ -171,6 +178,30 @@ class CommandeProduit
     public function setPght(float $pght): static
     {
         $this->pght = $pght;
+
+        return $this;
+    }
+
+    public function getQuantitecommande(): ?int
+    {
+        return $this->quantitecommande;
+    }
+
+    public function setQuantitecommande(int $quantitecommande): static
+    {
+        $this->quantitecommande = $quantitecommande;
+
+        return $this;
+    }
+
+    public function isExtranet(): ?bool
+    {
+        return $this->extranet;
+    }
+
+    public function setExtranet(bool $extranet): static
+    {
+        $this->extranet = $extranet;
 
         return $this;
     }

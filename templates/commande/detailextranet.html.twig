@@ -1,46 +1,31 @@
-{% extends
-    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
-    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
-    is_granted('ROLE_RH') ? 'rh.html.twig' :
-    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
-    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
-    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
-    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
-    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
-    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
-%}
-{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% extends 'client.html.twig' %}
+{% block title %} {{ "Facture "|trans }} {{ commande.id}}-{{ commande.numerofacture }} - GNT Pharma {% endblock %}
 {% block commande %}active{% endblock %}
-{% block suivi %}active{% endblock %}
+{% block my_commande %}active{% endblock %}
 
 {% block body %}
+    <div class="container mt-4 fond-7">
+        <h3 class="mt-4 mb-5 text-bold">
+            <i class="fa fa-shopping-cart me-2"></i>
+            {{ "Détails commande"|trans }}
+        </h3>
 
-    <div class="container mt-4  mb-5 fond-7">
-    <h3 class="mt-4 mb-5 text-bold">
-        <i class="fa fa-shopping-cart me-2"></i>
-        {{ "Traitement commande à credit"|trans }}
-    </h3>
-    {% for message in app.flashes('danger') %}
-        <div role="alert" class="alert alert-danger alert-dismissible fade show radius-10 shadow-black">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            {{ message|trans }}
-        </div>
-    {% endfor %}
-     <h3 class="text-center text-bold text-uppercase mt-4">
+        <a href="#" onclick="history.back()" class="btn btn-success-light mb-3">
+            <i class="fa fa-chevron-left"></i> {{ "Retour"|trans }} </a>
+        <h3 class="text-center text-bold text-uppercase mt-4">
             {{ ' Facture'|trans }}
         </h3>
         <h6 class="text-center text-bold text-uppercase mb-3">
         {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
         </h6>
-    <div class="row">
+        <div class="row">
             <div class="col-md-12">
                 <table class="table table-success-light table-bordered table-hover table-striped">
                     <thead>
                     <tr>
-                        <th>{{ 'Date'|trans }}</th>
                         <th>{{ 'N° Commande'|trans }}</th>
-                         <th>{{ 'Client'|trans }}</th>
+                        <th>{{ 'Date Commande'|trans }}</th>
+                        <th>{{ 'Date Traitement'|trans }}</th>
                          <th>{{ 'NIU'|trans }}</th>
                         {% if commande.credit == 1 and commande.payer == 0 %}
                         <th>{{ 'date d\'echeance de paiement'|trans }}</th>
@@ -50,9 +35,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
                     <td>{{ commande.id }}</td>
-                     <td>{{ commande.user.nom ~ " " ~ commande.user.prenom }}</td>
+                    <td>{{ commande.date|date('d/m/Y H:is') }}</td>
+                    <td>{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
                      <td>{{ commande.user.niu }}</td>
                          {% if commande.credit == 1 and commande.payer == 0 %}
                              <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
@@ -69,38 +54,39 @@
                 </table>
             </div>
         </div>
-    {% set total=0 %}
-    {% set reduction=0 %}
-    {% set tva=0 %}
-    <table class="table table-success-light table-bordered table-hover table-striped w-100">
-        <thead>
-        <tr>
-            <th>{{ 'CIP'|trans }}</th>
-            <th>{{ 'Désignation'|trans }}</th>
-            <th>{{ 'DCI'|trans }}</th>
-            <th>{{ 'Quantité Commandée'|trans }}</th>
-            <th>{{ 'Quantité Livrée'|trans }}</th>
-            <th>{{ 'Prix Cession'|trans }}</th>
-            <th>{{ 'Réduction'|trans }}</th>
-            <th>{{ 'TVA'|trans }}</th>
-            <th>{{ 'Prix Public'|trans }}</th>
-            <th>{{ 'Montant'|trans }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for commandeproduit in commandeproduits %}
-          {% set ug = 0 %}
-            {% set reductionproduit = 0 %}
+        {% set total=0 %}
+        {% set reduction=0 %}
+        {% set tva=0 %}
+        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
+            <thead>
             <tr>
-                <td> {{ commandeproduit.produit.reference }} </td>
-                <td>{{ commandeproduit.produit.desigantion }} </td>
-                <td>{{ commandeproduit.produit.dci }} </td>
-                <td>{{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }} </td>
-                <td> {{ commandeproduit.quantite }}
-                  {% if commandeproduit.promotion is not null %}
+                <th>{{ 'CIP'|trans }}</th>
+                <th>{{ 'Désignation'|trans }}</th>
+                {# <th>{{ 'DCI'|trans }}</th> #}
+                <th>{{ 'Quantité Commandée'|trans }}</th>
+                            <th>Quantite Disponible</th>
+                {#            <th>Quantite Restante</th>#}
+                <th>{{ 'Prix Cession'|trans }}</th>
+                <th class="noExport">{{ 'Réduction'|trans }}</th>
+                <th>{{ 'TVA'|trans }}</th>
+                <th>{{ 'Prix Public'|trans }}</th>
+                <th>{{ 'Montant'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commandeproduit in commandeproduits %}
+                {% set ug = 0 %}
+                {% set reductionproduit = 0 %}
+                <tr>
+                    <td> {{ commandeproduit.produit.reference }} </td>
+                    <td>{{ commandeproduit.produit.desigantion }} </td>
+                    {# <td>{{ commandeproduit.produit.dci }} </td> #}
+                    <td>
+                        {{ commandeproduit.quantite }}
+                        {% if commandeproduit.promotion is not null %}
                             {% if commandeproduit.promotion.premier is not null %}
 
-                                 {% set suite = 0 %}
+                               {% set suite = 0 %}
                                 {% if commandeproduit.quantite / commandeproduit.promotion.cinquieme >= 1 %}
 
                                     {% set unite = (commandeproduit.quantite / commandeproduit.promotion.cinquieme)|round(0, 'floor') %}
@@ -283,101 +269,128 @@
                             </span>
                             {% endif %}
                         {% endif %}
-                 </td>
-                <td>
-                    {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                    </td>
+                    
+                    <td>
+                    
+                        <span class="badge bg-danger"> {{ commandeproduit.produit.stock }} </span>
+                       
+                    </td>
+                                    {# <td>
+                                        {% set quantite = 0 %}
+                                        {% for livrerproduit  in livrerproduits  %}
+                                            {% if livrerproduit.commande.id  == commande.id and livrerproduit.produit.id == commandeproduit.produit.id %}
+                                                {% set quantite = quantite + livrerproduit.quantitelivrer %}
+                                            {% endif %}
 
-                </td>
-                <td>
-                    {% if commandeproduit.promotion is not null %}
-                        {% if commandeproduit.promotion.reduction is not null %}
-                            {% set reductionproduit =  commandeproduit.quantite * commandeproduit.session * commandeproduit.promotion.reduction /100 %}
+                                        {% else %}
+                                        {% endfor %}
+                                        {{ quantite != 0 ? quantite : ''  }}
+                                    </td> #}
+                    {#                <td> </td>#}
+                    <td class="montant noExport">
+                        {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
-                            {% set reduction =  reduction + reductionproduit %}
-                            <span class="badge bg-danger">
+                    </td>
+                    <td>
+                        {% if commandeproduit.promotion is not null %}
+                            {% if commandeproduit.promotion.reduction is not null %}
+                                {% set reductionproduit =  commandeproduit.quantite * commandeproduit.session * commandeproduit.promotion.reduction /100 %}
+
+                                {% set reduction =  reduction + reductionproduit %}
+                                <span class="badge bg-danger">
                                     -{{ commandeproduit.session * commandeproduit.promotion.reduction /100 }} F
                             </span>
+                            {% else %}
+                                -
+                            {% endif %}
                         {% else %}
                             -
                         {% endif %}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    {% if commandeproduit.tva != 0 %}
-                        {% set tva = tva + (((commandeproduit.quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
-                        {% if commandeproduit.promotion is not null %}
-                            {% if commandeproduit.promotion.reduction is not null %}
-                                {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction /100)) * 0.1925 }}
+                    </td>
+                    <td>
+                        {% if commandeproduit.tva != 0 %}
+                            {% set tva = tva + (((commandeproduit.quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
+                            {% if commandeproduit.promotion is not null %}
+                                {% if commandeproduit.promotion.reduction is not null %}
+                                    {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction /100)) * 0.1925 }}
+                                {% else %}
+                                    {{ commandeproduit.session  * 0.1925 }}
+                                {% endif %}
                             {% else %}
                                 {{ commandeproduit.session  * 0.1925 }}
                             {% endif %}
                         {% else %}
-                            {{ commandeproduit.session  * 0.1925 }}
+                            -
                         {% endif %}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>{{ commandeproduit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                <td class="text-nowrap">
-                    {{ (commandeproduit.quantite * commandeproduit.produit.prix)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                    {% set total = total + (commandeproduit.quantite * commandeproduit.produit.prix) %}
-                </td>
-            </tr>
-        {% endfor %}
-        <tr class="text-bold">
-            <td colspan="8" class="text-end">
-                {{ "Total HT"|trans }}
-            </td>
-            <td>
-                <span id="" class="text-nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-            </td>
-        </tr>
-        {% if reduction != 0 %}
+                    </td>
+                    <td class="montant">{{ commandeproduit.publique|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td class="montant">
+                        {{ (commandeproduit.quantite * commandeproduit.session)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {% set total = total + (commandeproduit.quantite * commandeproduit.session) %}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tbody>
+            <tfoot>
             <tr>
                 <td colspan="8" class="text-end">
-                    {{ "Total Réduction"|trans }}
+                    {{ "Total HT"|trans }}
                 </td>
-                <td>
-                    <span id="" class="text-nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                <td class="montant">
+                    <span id="" class="text-nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                 </td>
             </tr>
-        {% endif %}
-        <tr>
-            <td colspan="8" class="text-end">
-                {{ "Total TVA"|trans }}
-            </td>
-            <td>
-                <span id="" class="text-nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-            </td>
-        </tr>
+            {% if reduction != 0 %}
+                <tr>
+                    <td colspan="8" class="text-end">
+                        {{ "Total Réduction"|trans }}
+                    </td>
+                    <td class="montant">
+                        <span id="" class="text-nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td colspan="8" class="text-end">
+                    {{ "Total TVA"|trans }}
+                </td>
+                <td class="montant">
+                    <span id="" class="text-nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                </td>
+            </tr>
             <tr>
                 <td colspan="8" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
-             
+               
                     <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
             </tr>
 
-        <tr class="text-bold">
-            <td colspan="8" class="text-end">
-                {{ "Net à payer"|trans }}
-            </td>
-            <td>
-                <span class="text-nowrap">{{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                <span id="total" class="text-nowrap" style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            <tr class="text-bold">
+                <td colspan="8" class="text-end">
+                    {{ "Net à payer"|trans }}
+                </td>
+                <td class="montant">
+                    <span class="text-nowrap">{{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                          <span id="total" class="text-nowrap" style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+
+        {#Conversion prix en lettre #}
+        <div class="my-5">
+            {{ 'Arrêtée la présente à la somme de '|trans }} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA TTC</b>
+        </div>
+        {#/***** end*****/#}
     </div>
-    <div class="container mt-4 mb-5 py-3 fond-7">
-     <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="facture" style="display:none;">
+    <div class="container mt-4 mb-5 p-3 fond-7">
+    
+        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="facture" style="display:none;">
             <thead>
             <tr>
                 <th>{{ 'Date'|trans }}</th>
@@ -435,57 +448,43 @@
                      {% set ug= 0 %}
                        {% if commandeproduit.promotion is not null %}
                             {% if commandeproduit.promotion.premier is not null %}
-
+{% set suite = 0 %}
                                 {% if commandeproduit.quantite / commandeproduit.promotion.cinquieme >= 1 %}
 
                                     {% set unite = (commandeproduit.quantite / commandeproduit.promotion.cinquieme)|round(0, 'floor') %}
                                     {% set ug = ug + unite * commandeproduit.promotion.ugcinquieme %}
                                     {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.cinquieme %}
-
+                                   
                                     {% if suite / commandeproduit.promotion.quatrieme >= 1 %}
-
                                         {% set unite = (suite / commandeproduit.promotion.quatrieme)|round(0, 'floor') %}
                                         {% set ug = ug + unite * commandeproduit.promotion.ugquatrieme %}
                                         {% set suite = suite - unite * commandeproduit.promotion.quatrieme %}
 
                                         {% if suite / commandeproduit.promotion.troisieme >= 1 %}
-
                                             {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
                                             {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
                                             {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
-
+                                        
                                             {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
-                                                {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
-                                                {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
-                                                {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
 
-                                                {% if suite / commandeproduit.promotion.premier >= 1 %}
-                                                    {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                                    {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
 
-                                                {% endif %}
+                                                    {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                                    {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                                    {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                                        {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                                        {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                                    {% endif %}                                                                 
 
                                             {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+
                                                 {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
                                                 {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
 
                                             {% endif %}
-                                        {% endif %}
-                                    {% endif %}
-
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.quatrieme >= 1 %}
-
-                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.quatrieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commandeproduit.promotion.ugquatrieme %}
-                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.quatrieme %}
-
-                                    {% if suite / commandeproduit.promotion.troisieme >= 1 %}
-
-                                        {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
-                                        {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
-
-                                        {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
+                                        {% elseif suite / commandeproduit.promotion.deuxieme >= 1 %}
                                             {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
                                             {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
                                             {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
@@ -494,15 +493,100 @@
                                                 {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
                                                 {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
 
-                                            {% endif %}
+                                            {% endif %} 
+                                    
+                                        {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+                    
+                                        {% endif %}
+                                    {% elseif suite / commandeproduit.promotion.troisieme >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
+                                        {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
+                                    
+                                        {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
+
+
+                                                {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                                {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                                {% endif %}                                                                 
 
                                         {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+
                                             {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
                                             {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
 
                                         {% endif %}
+                                    {% elseif suite / commandeproduit.promotion.deuxieme >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                        {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                        {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                        {% endif %} 
+                                   
+                                    {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+                
                                     {% endif %}
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.troisieme >= 1 %}
+                                {% elseif commandeproduit.quantite / commandeproduit.promotion.quatrieme >= 1 %}
+
+                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.quatrieme)|round(0, 'floor') %}
+                                    {% set ug = ug + unite * commandeproduit.promotion.ugquatrieme %}
+                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.quatrieme %}
+
+                                     {% if suite / commandeproduit.promotion.troisieme >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
+                                        {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
+                                    
+                                        {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
+
+
+                                                {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                                {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                                {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                                {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                                    {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                                    {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                                {% endif %}                                                                 
+
+                                        {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+
+                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                        {% endif %}
+                                    {% elseif suite / commandeproduit.promotion.deuxieme >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
+                                        {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
+
+                                        {% if suite / commandeproduit.promotion.premier >= 1 %}
+                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+
+                                        {% endif %} 
+                                   
+                                    {% elseif suite / commandeproduit.promotion.premier >= 1 %}
+                                        {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
+                                        {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+                
+                                    {% endif %}
+                                 {% elseif commandeproduit.quantite / commandeproduit.promotion.troisieme >= 1 %}
 
                                     {% set unite = (commandeproduit.quantite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
                                     {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
@@ -517,16 +601,14 @@
                                             {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
                                             {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
 
-                                        {% endif %}
-
+                                        {% endif %} 
+                                   
                                     {% elseif suite / commandeproduit.promotion.premier >= 1 %}
                                         {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
                                         {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
+                
                                     {% endif %}
-
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.deuxieme >= 1 %}
-
+                                 {% elseif commandeproduit.quantite / commandeproduit.promotion.deuxieme >= 1 %}
 
                                     {% set unite = (commandeproduit.quantite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
                                     {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
@@ -535,13 +617,13 @@
                                     {% if suite / commandeproduit.promotion.premier >= 1 %}
                                         {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
                                         {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
+                
                                     {% endif %}
-
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.premier >= 1 %}
+                                 {% elseif commandeproduit.quantite / commandeproduit.promotion.premier >= 1 %}
 
                                     {% set unite = (commandeproduit.quantite / commandeproduit.promotion.premier)|round(0, 'floor') %}
                                     {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
+                                    
 
                                 {% endif %}
                                     {# {{ ug }} #}
@@ -550,7 +632,7 @@
                         {{ ug !=0 ? ug : ''}}
                     </td> 
                     <td>
-                        {{ commandeproduit.produit.prix }}
+                        {{ commandeproduit.session }}
 
                     </td>
                     <td>
@@ -561,12 +643,12 @@
                     {{ tva }}%
                     {% endif %}
                     </td>
-                    <td>{{ commandeproduit.produit.prixpublic }}</td>
+                    <td>{{ commandeproduit.publique }}</td>
                     <td>
                     {% if commandeproduit.produit.tva is true %}
-                         {{ commandeproduit.produit.prixpublic + commandeproduit.produit.prixpublic * tva }}
+                         {{ commandeproduit.publique + commandeproduit.publique * tva }}
                     {% else %}
-                      {{ commandeproduit.produit.prix }}
+                      {{ commandeproduit.session }}
                     {% endif %}
                      
                     </td>
@@ -576,188 +658,16 @@
             <tbody>
            
         </table>
-           <input type="hidden" id="numfact" value="{{ commande.id}}-{{ commande.numerofacture }}"/>
+        <input type="hidden" id="numfact" value="{{ commande.id}}-{{ commande.numerofacture }}"/>
         <div class="centrer">
-            <div class="row">
-            <div class="col-12">
-                {% if commande.suivi == 1 %}
-
-                <button type="button" class="btn btn-success me-3"
-                        data-bs-toggle="modal" data-bs-target="#modal"
-                        id="btn">
-                    <i class="fa fa-money-bill"></i>
-                    {{' Règlement'|trans}}
-                </button>
-                {% else %}
-                    <a id="valid" onclick="load('valid')" href="{{ path('commande_panier_valider_credit', {'commande': commande.id}) }}" type="button"
-                       class="btn btn-success me-3">
-                        <i class="fa-solid fa-sack-dollar"></i>
-                        {{' Valider Crédit'|trans }}
-                    </a>
-                {% endif %}
-
-                 <a id="print" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
-                   class="btn btn-success-light me-3">
-                    <i class="fa fa-print"></i>
-                    {{ "Imprimer"|trans }}
-                </a>
-
-                <span id="exportexcel" class=""></span>
-                
-                {% if is_granted("ROLE_STOCK") and commande.suivi == false%}
-                    <a id="edit" onclick="load('edit')" href="{{ path('commande_panier_commande_edit',{'commande': commande.id }) }}"
-                    class="btn btn-success ms-3">
-                        <i class="fa fa-edit"></i>
-                        {{ "Modifier"|trans }}
-                    </a>
-                {% endif %}
-
-
-                <div class="modal fade" id="modal" tabindex="-1" tabindex="-1" aria-labelledby="" aria-hidden="true"
-                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered text-center">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                    {{'Règlement'|trans}}  <span id="valeur"></span>
-                                </h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close">
-
-                                </button>
-                            </div>
-                            <div class="modal-body px-5">
-
-                                {# traitement paiement #}
-                                {{ form_start(form, {'attr':{'id': 'form'}}) }}
-                                <div class="form-group mt-2">
-                                    {{ form_errors(form.montant) }}
-                                    <div class="input-group">
-                                        {{ form_widget(form.montant, {'label':false, 'attr' : {'id' : 'nombre', 'placeholder':'Montant', 'value': total + commande.acompte + tva - reduction}}) }}
-                                        <input type="hidden" id="tamp"/>
-                                        <input type="hidden" id="tamp1"/>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">F CFA </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group mt-4">
-                                    {{ form_row(form.type, {'label':false, 'attr' : {'onchange' : 'typeversement()'}}) }}
-                                </div>
-                                <div id="versement">
-                                    <div class="form-group mt-4">
-                                        {{ form_row(form.banque, {'label':false, 'attr' : {'placeholder':'Banque'}}) }}
-                                    </div>
-                                    <div class="form-group mt-4">
-                                        {{ form_row(form.numero, {'label':false, 'attr' : {'placeholder':'Numéro'}}) }}
-                                    </div>
-                                </div>
-                                {% if "Now"|date('Y-m-d') < commande.date|date_modify('+10 days')|date('Y-m-d') %}
-                                <input type="number" class="form-control mt-3" name="escompte" id="escompte" placeholder="Escompte de reglement" label="Escompte de reglement" onkeyup="valeur({{total + commande.acompte + tva - reduction}})" />
-                                {% endif %}
-                                {{ form_rest(form) }}
-
-                                {# fin paiement#}
-                            </div>
-                            <div class="modal-footer px-5 py-4">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        id="annuler"><i class="fa fa-undo"></i>
-                                    {{ 'Annuler'|trans }}
-                                </button>
-                                <button type="button" class="btn btn-success ms-3"
-                                        id="ajouter"
-                                        onclick="number()"><i
-                                            class="fa fa-money-bill"></i>
-                                    {{ 'Payer'|trans }}
-                                </button>
-                            </div>
-                            {{ form_end(form) }}
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>
-            </div>
+            <a id="print" onclick="load('print')"
+               href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
+               class="btn btn-success float-end me-2">
+                <i class="fa fa-print"></i>
+                {{ "Imprimer"|trans }}
+            </a>
+             <span id="exportexcel" class=""></span>
         </div>
     </div>
-    <div class="container mt-4 mb-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
-            <i class="fa fa-shopping-cart me-2"></i>
-            {{ "Historiques des règlements"|trans }}
-        </h3>
-        <table class="table table-success-light table-bordered table-hover table-striped">
-            <thead>
-            <tr>
-                <th>{{'numero règlement'|trans}}</th>
-                <th>{{'Date'|trans}}</th>
-                <th>{{ 'Montant'|trans }}</th>
 
-            </tr>
-            </thead>
-            <tbody>
-            {% for versement in  commande.versements %}
-                <tr>
-                    <td>{{ versement.id }}</td>
-                    <td>{{ versement.date|date('d/m/Y') }}</td>
-                    <td>{{ versement.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                </tr>
-            {% else %}
-            {% endfor %}
-<tr>
-    <td colspan="2" class="text-end text-nowrap">{{'Total règlement'|trans}}</td>
-    <td>{{ commande.versement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-</tr>
-    {% if commande.escompte is null %}
-                    <tr>
-                        <td colspan="2" class="text-end">{{ 'Montant Restant'|trans }}</td>
-                        <td>{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="2" class="text-end">{{ 'Escompte de reglement'|trans }}</td>
-                        <td>{{commande.escompte}}%</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-
-{% endblock %}
-{% block scripts %}
-    <script>
-        function number() {
-            var reg = new RegExp("^[0-9]{3,9}$");
-            {# if (reg.test($('#versement_montant').val()) ) { #}
-            if ($('#versement_montant').val() != 0 ) {
-                if ($('#versement_type option:selected').val() == 'Cheque' || $('#versement_type option:selected').val() == 'Virement') {
-                    if ($('#versement_montant').val() != '' && $('#versement_type').val() != '') {
-                        $('#ajouter').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
-                        $('#form').submit();
-                    } else alert('{{ 'Veuillez renseigner tous les champs'|trans }}');
-                } else {
-                    if ($('#versement_montant').val() != '' && $('#versement_type').val() != '') {
-                        $('#ajouter').html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
-                        $('#form').submit();
-                    } else alert('{{ 'Veuillez renseigner tous les champs'|trans }}');
-                }
-            } else alert("{{ 'Nombre compris entre 3 et 9 chiffres'|trans }}");
-
-        }
-        function typeversement() {
-            if ($('#versement_type option:selected').val() == 'Cheque' || $('#versement_type option:selected').val() == 'Virement') {
-                $('#versement').show();
-                $('#versement_numero').val();
-            } else {
-                $('#versement').hide();
-                $('#versement_numero').val();
-            }
-        }
-        function valeur(montant){
-            
-            var val = Number(montant) - Number(montant) * $("#escompte").val() / 100;
-            $("#valeur").html(val.toFixed(2));
-        }
-    </script>
 {% endblock %}

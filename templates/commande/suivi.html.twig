@@ -34,7 +34,15 @@
             <tbody>
             {% for commande in commandes %}
                 <tr>
-                    <td>{{ commande.id }}</td>
+                    <td>
+                    {{ commande.id }}
+                     {% if commande.extranet == true %}
+                     <a href="{{ path('commande_panier_suivi_extranet')}}">
+                        <span class="badge bg-danger"> Extranet </span>
+                        </a>
+                    {% endif %}
+                    </td>
+
                     <td>{{ commande.date|date('d/m/Y') }}</td>
                     {% if is_granted("ROLE_CLIENT_ADMIN") %}
                     <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : "" }}</td>

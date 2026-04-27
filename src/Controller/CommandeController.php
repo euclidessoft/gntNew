@@ -250,6 +250,11 @@ class CommandeController extends AbstractController
                     $montant = $montant + $product->getQuantite() * $produit->getPrix();
 
                     $commandeproduit = new CommandeProduit($produit, $commande, $produit->getPrix(), $produit->getPrixpublic(), $product->getQuantite());
+                    if($product->getQuantite() > $produit->getStock()){
+                        $commandeproduit->setExtranet(true);
+                        $commande->setExtranet(true);
+
+                    }
                     if($produit->getTva()){
                         $tvaproduit = (($product->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925;
                          $tva = $tva + $tvaproduit;
@@ -455,6 +460,7 @@ class CommandeController extends AbstractController
                 $reduction = 0;
                 $tva = 0;
                 foreach ($commandeproduits as $product) {
+                    $product->setExtranet(false);
                     
                     $produit = $product->getProduit();
 
@@ -474,8 +480,11 @@ class CommandeController extends AbstractController
                     }
 
                     $montant = $montant + $panier[$produit->getid()] * $produit->getPrix();
-
+                    
+                    
+                    $product->setQuantitecommande($product->getQuantite());
                     $product->setQuantite($panier[$produit->getid()]);
+
                         if($produit->getTva()){
                         $tvaproduit = (($panier[$produit->getid()] * $produit->getPrix()) - $reductionproduit) * 0.1925;
                          $tva = $tva + $tvaproduit;
@@ -495,6 +504,7 @@ class CommandeController extends AbstractController
                 $commande->setMontant(round($montant,2));
                 $commande->setTva(round($tva,2));
                 $commande->setReduction(round($reduction,2));
+                $commande->setExtranet(false);
                 $this->entityManager->persist($commande);
                 
                 $this->entityManager->flush();
@@ -870,8 +880,8 @@ class CommandeController extends AbstractController
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
              $this->getUser()->getTuteur() === null ? 
-            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'suivi' => false]) :
-            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'suivi' => false]);
+            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'extranet' => true]) :
+            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'extranet' => true]);
            
             $response = $this->render('commande/extranet.html.twig', [
                 'commandes' => $commandes,
@@ -2299,6 +2309,75 @@ class CommandeController extends AbstractController
                   'livrerproduits' => $livrerRepository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+
+        /* // On "fabrique" les données
+
+         return $this->render('produit/index.html.twig', compact("dataPanier", "total"));*/
+    }
+
+    #[Route("/Details_commande_extranet/{commande}", name :"Detail_extranet") ]
+    public function detailsextranet(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, LivrerProduitRepository $livrerRepository)
+    {
+        if ($this->security->isGranted('ROLE_CLIENT')) {
+             if($this->getUser()->getTuteur() === null){
+                if($commande->getUser() != $this->getUser()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             } else{
+                if($commande->getUser() != $this->getUser()->getTuteur()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             }
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
+
+            $response = $this->render('commande/detailextranet.html.twig', [
+                'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                'livrerproduits' => $livrerRepository->findBy(['commande' => $commande]),
+                'commande' => $commande,
+                'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

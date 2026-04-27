@@ -70,7 +70,8 @@
             <tr>
                 <th>{{ 'Référence'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
-                <th>{{ 'Quantité'|trans }}</th>
+                <th>{{ 'Quantité commandée'|trans }}</th>
+                <th>{{ 'Quantité Livrée'|trans }}</th>
                 {# <th>{{ 'Stock'|trans }}</th> #}
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Réduction'|trans }}</th>
@@ -89,6 +90,7 @@
                 <tr>
                     <td data-label="Référence">{{ produit.produit.reference }}</td>
                     <td data-label="Désignation">{{ produit.produit.desigantion }}</td>
+                    <td data-label="quantite">{{ produit.quantite }}</td>
                     <td data-label="Quantité" class="text-center" id="tdprod{{ produit.produit.id }}">
                         {{ donnees[produit.produit.id] }}
                     </td>
@@ -128,7 +130,7 @@
                 </tr>
             {% endfor %}
             <tr class="text-bold">
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total"|trans }}
                 </td>
                 <td class="text-center">
@@ -137,7 +139,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total Réduction"|trans }}
                 </td>
                 <td class="text-center">
@@ -146,7 +148,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total TVA"|trans }}
                 </td>
                 <td class="text-center">
@@ -157,7 +159,7 @@
             {% set acompte = 0 %}
             {% if prelevement == true %}
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
@@ -168,7 +170,7 @@
             </tr>
             {% endif %}
             <tr class="text-bold">
-                <td colspan="7" class="text-end text-bold">
+                <td colspan="8" class="text-end text-bold">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="text-center">

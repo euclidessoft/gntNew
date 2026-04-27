@@ -23,15 +23,15 @@ class Commande
     private $pharmaemploye;
 
     #[ORM\ManyToOne(targetEntity:"App\Entity\Employe") ]
-#[ORM\JoinColumn(nullable:true) ]
+    #[ORM\JoinColumn(nullable:true) ]
     private $admin;
 
     #[ORM\ManyToOne(targetEntity:"App\Entity\Employe") ]
-#[ORM\JoinColumn(nullable:true) ]
+    #[ORM\JoinColumn(nullable:true) ]
     private $livreur;
 
     #[ORM\ManyToOne(targetEntity:"App\Entity\Paiement") ]
-#[ORM\JoinColumn(nullable:true) ]
+    #[ORM\JoinColumn(nullable:true) ]
     private $paiement;
 
     #[ORM\Id]
@@ -72,6 +72,7 @@ class Commande
 
     #[ORM\Column(type:"boolean") ]
     private $payer;
+
     #[ORM\Column(type:"boolean") ]
     private $livrer;
 
@@ -98,6 +99,10 @@ class Commande
     
     #[ORM\Column(type:"boolean") ]
     private $retour;
+
+    
+    #[ORM\Column(type:"boolean", nullable: true) ]
+    private $extranet;
 
     /**
      * Constructor
@@ -508,6 +513,18 @@ class Commande
     public function setMontantht(float $Montantht): static
     {
         $this->Montantht = $Montantht - $this->tva - $this->acompte - $this->reduction;
+
+        return $this;
+    }
+
+    public function isExtranet(): ?bool
+    {
+        return $this->extranet;
+    }
+
+    public function setExtranet(bool $extranet): static
+    {
+        $this->extranet = $extranet;
 
         return $this;
     }
