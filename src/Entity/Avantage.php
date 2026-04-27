@@ -15,7 +15,7 @@ class Avantage
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    private ?aveCom $AveCom = null;
+    private ?AveCom $AveCom = null;
 
 
     #[ORM\Column]
@@ -138,12 +138,12 @@ class Avantage
         return $this;
     }
 
-    public function getAveCom(): ?avecom
+    public function getAveCom(): ?AveCom
     {
         return $this->AveCom;
     }
 
-    public function setAveCom(?avecom $AveCom): static
+    public function setAveCom(?AveCom $AveCom): static
     {
         $this->AveCom = $AveCom;
 
