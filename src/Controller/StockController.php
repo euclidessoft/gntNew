@@ -11,6 +11,7 @@ use App\Entity\Commande;
 use App\Entity\Produit;
 use App\Entity\Retour;
 use App\Entity\RetourProduit;
+use App\Entity\CommandeProduit;
 use App\Entity\Stock;
 use App\Form\CandidatureType;
 use App\Repository\CommandeProduitRepository;
@@ -455,8 +456,8 @@ class StockController extends AbstractController
             $com = $request->get('commande');
             $em = $this->entityManager;
             $commande = $em->getRepository(Commande::class)->find($com);
-            $commande->setRetour(true);
-            $em->persist($commande);
+            $commandeProduits = $em->getRepository(CommandeProduit::class)->findBy(['commande' => $commande]);
+           
             $produits = $session->get('retour', []);
             $retour = new Retour();
             $avoir = new Avoir($commande->getUser(), $this->getUser(), $commande);
@@ -470,9 +471,35 @@ class StockController extends AbstractController
             $approvisionner->setUser($this->getUser());
             $em->persist($approvisionner);
             $montant = 0;
+            $tva = 0;
+            $prelevement = 0;
             foreach ($produits as $prod) {
                 $produit = $em->getRepository(Produit::class)->find($prod['id']);
-                $montant = $montant + $prod['quantite'] * $produit->getPrix();
+                $tvaproduit = 0;
+                $prelevementproduit = 0;
+                $montantproduit = 0;
+                foreach($commandeProduits as $commandeProduit){
+                    if($commandeProduit->getProduit()->getId() ==  $produit->getId() 
+                        && $commandeProduit->getCommande()->getId() == $commande->getId()){
+                        // modification de la commande
+                        $commandeProduit->setQuantite($commandeProduit->getQuantite() - $prod['quantite']);;
+                         $montantproduit = $prod['quantite'] * $commandeProduit->getSession();
+                        if($commandeProduit->getTva() != 0){
+                            $tvaproduit = $prod['quantite'] * 0.1925;
+                            $commandeProduit->setTva($commandeProduit->getTva() - $tvaproduit);
+                        } 
+                        if($commande->getAcompte() != 0){
+                            $prelevementproduit = $montanproduit * 0.02;
+                            // $commande->setAcompte($commande->getAcompte() - $prelevementproduit);
+                        }
+                        $em->persist($commandeProduit);
+
+                        $montant = $montant + $montantproduit;
+                        $tva += $tvaproduit;
+                        $prelevement += $prelevementproduit;
+                    }
+                }
+
                 $retourproduit = new RetourProduit();
                 $retourproduit->setProduit($produit);
                 $retourproduit->setRetour($retour);
@@ -519,7 +546,12 @@ class StockController extends AbstractController
             }
             
            
-           
+            $commande->setMontant($commande->getMontant() - $montant);
+            $commande->setTva($commande->getTva() - $tva);
+            $commande->setAcompte($commande->getAcompte() - $prelevement);
+            $commande->setRetour(true);
+            $em->persist($commande);
+
             $avoir->setMontant($montant);
             $avoir->setRetour($retour);
             $em->persist($avoir);
