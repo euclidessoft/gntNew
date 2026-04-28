@@ -55,55 +55,181 @@
     <table class="table table-success-light table-bordered table-hover table-striped my-3">
         <thead>
         <tr>
+            <th colspan="8" class="text-center">{{ produit.reference~ " -  "~ produit.desigantion }}</th>
+        </tr>
+        <tr>
             <th>{{ 'Date'|trans }}</th>
-            <th>{{ 'commande'|trans }}</th>
+            <th>{{ 'Type'|trans }}</th>
+            <th>{{ 'Piece'|trans }}</th>
+            <th>{{ 'Tiers'|trans }}</th>
+            <th>{{ 'Entree stock'|trans }}</th>
             <th>{{ 'Quatité commandée'|trans }}</th>
             <th>{{ 'Quatité livrée'|trans }}</th>
-            <th>{{ 'Stock'|trans }}</th>
+            <th>{{ 'Solde'|trans }}</th>
         </tr>
         </thead>
         <tbody>
-        {% for produit in stock %}
+        {% set solde = 0%}
+        {% set entree = 0%}
+        {% set commande = 0%}
+        {% set livre = 0%}
+        {% for stock in stocks %}
             <tr>
-                <td>{{ produit.livrer.date|date("d/m/Y") }}</td>
+                <td>{{ stock.date|date("d/m/Y") }}</td>
                 <td>
-                 <a id="b{{ produit.commande.id }}" onclick="load('b{{ produit.commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : produit.commande.id}) }}" class="btn btn-success">
-                 {{ produit.commande.id }}
-                </a>
+                     {% if  stock.fournisseur is defined %}
+                        appro.
+                    {% else %}
+                       liv.
+                    {% endif %}
                 </td>
-                <td>{{ produit.quantitecommander|number_format(0,',' , ' ') }}</td>
-                <td>{{ produit.quantitelivrer|number_format(0,',' , ' ') }}</td>
-                <td>{{ produit.archive|number_format(0,',' , ' ') }}</td>
+                <td>
+                     {% if  stock.fournisseur is defined %}
+                        {{ stock.approvisionner.id }}
+                    {% else %}
+                        {{ stock.livrer.id }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if  stock.fournisseur is defined %}
+                        {{ stock.fournisseur ? stock.fournisseur.designation : stock.approvisionner.retour.commande.user.nom }}
+                    {% else %}
+                        {{ stock.commande.user.nom }}
+                    {% endif %}
+                </td>
+                <td>
+                 {% if  stock.fournisseur is defined %}
+                        {{ stock.quantite|number_format(0,',' , ' ') }}
+                        {% set entree = entree + stock.quantite %}
+                        {% set solde = solde + stock.quantite %}
+                   
+                {% endif %}
+                </td>
+                <td>
+                    {% if  stock.quantitecommander is defined %}
+                        {{ stock.quantitecommander|number_format(0,',' , ' ') }}
+                         {% set commande = commande + stock.quantitecommander %}
+                   
+                    {% endif %}
+                </td>
+                <td>
+                     {% if  stock.quantitelivrer is defined %}
+
+                        {{ stock.quantitelivrer|number_format(0,',' , ' ') }}
+                        {% set livre = livre + stock.quantitelivrer %}
+                        {% set solde = solde - stock.quantitelivrer %}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ solde|number_format(0,',' , ' ') }} 
+                </td>
 
             </tr>
         {% endfor %}
         </tbody>
+        <tfooter>
+            <tr>
+                <th colspan="4"> Totaux </th>
+                <th> {{ entree|number_format(0,',' , ' ') }} </th>
+                <th> {{ commande|number_format(0,',' , ' ') }} </th>
+                <th> {{ livre|number_format(0,',' , ' ') }} </th>
+                <th>
+                     {{ solde|number_format(0,',' , ' ') }}
+                 </th>
+            </tr>
+        </tfooter>
     </table>
     <div class="centrer gap-3  m-4 fond-7">
              <table class="table table-success-light table-bordered table-hover table-striped my-3" id="facture" style="display:none;">
-        <thead>
+         <thead>
         <tr>
+        <th></th>
+            <th colspan="8" class="text-center">{{ produit.reference~ " -  "~ produit.desigantion }}</th>
+        </tr>
+        <tr>
+            <th></th>
             <th>{{ 'Date'|trans }}</th>
-            <th>{{ 'commande'|trans }}</th>
+            <th>{{ 'Type'|trans }}</th>
+            <th>{{ 'Piece'|trans }}</th>
+            <th>{{ 'Tiers'|trans }}</th>
+            <th>{{ 'Entree stock'|trans }}</th>
             <th>{{ 'Quatité commandée'|trans }}</th>
             <th>{{ 'Quatité livrée'|trans }}</th>
-            <th>{{ 'Stock'|trans }}</th>
+            <th>{{ 'Solde'|trans }}</th>
         </tr>
         </thead>
         <tbody>
-        {% for produit in stock %}
+        {% set ord = 1%}
+        {% set solde = 0%}
+        {% set entree = 0%}
+        {% set commande = 0%}
+        {% set livre = 0%}
+        {% for stock in stocks %}
             <tr>
-                <td>{{ produit.livrer.date|date("d/m/Y") }}</td>
-                <td>  <a id="b{{ produit.commande.id }}" onclick="load('b{{ produit.commande.id }}')" href="{{ path('commande_panier_bon', {'commande' : produit.commande.id}) }}" class="btn btn-success">
-                 {{ produit.commande.id }}
+                <td>{{ ord }}{% set ord = ord + 1 %}</td>
+                <td>{{ stock.date|date("d/m/Y") }}</td>
+                <td>
+                     {% if  stock.fournisseur is defined %}
+                        appro.
+                    {% else %}
+                       liv.
+                    {% endif %}
                 </td>
-                <td>{{ produit.quantitecommander }}</td>
-                <td>{{ produit.quantitelivrer }}</td>
-                <td>{{ produit.archive }}</td>
+                <td>
+                     {% if  stock.fournisseur is defined %}
+                        {{ stock.approvisionner.id }}
+                    {% else %}
+                        {{ stock.livrer.id }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if  stock.fournisseur is defined %}
+                        {{ stock.fournisseur ? stock.fournisseur.designation : 'Retour Produit' }}
+                    {% else %}
+                        {{ stock.commande.user.nom }}
+                    {% endif %}
+                </td>
+                <td>
+                 {% if  stock.fournisseur is defined %}
+                        {{ stock.quantite }}
+                        {% set entree = entree + stock.quantite %}
+                        {% set solde = solde + stock.quantite %}
+                   
+                {% endif %}
+                </td>
+                <td>
+                    {% if  stock.quantitecommander is defined %}
+                        {{ stock.quantitecommander }}
+                         {% set commande = commande + stock.quantitecommander %}
+                   
+                    {% endif %}
+                </td>
+                <td>
+                     {% if  stock.quantitelivrer is defined %}
+
+                        {{ stock.quantitelivrer }}
+                        {% set livre = livre + stock.quantitelivrer %}
+                        {% set solde = solde - stock.quantitelivrer %}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ solde }} 
+                </td>
 
             </tr>
         {% endfor %}
         </tbody>
+        <tfooter>
+            <tr>
+                <th colspan="5"> Totaux </th>
+                <th> {{ entree }} </th>
+                <th> {{ commande }} </th>
+                <th> {{ livre }} </th>
+                <th>
+                     {{ solde }}
+                 </th>
+            </tr>
+        </tfooter>
     </table>
       <span id="exportexcel" class=""></span>
         </div>

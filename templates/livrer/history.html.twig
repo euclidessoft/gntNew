@@ -31,6 +31,7 @@
         <table class="table table-success-light table-bordered table-hover table-striped w-100" id="liste">
             <thead>
             <tr>
+                <th>{{'N° bordereau liv.'|trans}} </th>
                 <th>{{'N° commande'|trans}} </th>
                 <th>{{'Client'|trans}}</th>
                 <th>{{ "Date d'émission"|trans }}</th>
@@ -41,6 +42,7 @@
             <tbody>
             {% for livrer in livrers %}
                 <tr>
+                    <td>{{ livrer.id }}</td>
                     <td>{{ livrer.commande.id }}</td>
                     <td>{{ livrer.commande.user.nom }}</td>
                     <td>{{ livrer.date|date('d/m/Y') }}</td>

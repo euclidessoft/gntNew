@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ApprovisionnerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:ApprovisionnerRepository::class) ]
@@ -18,6 +19,10 @@ class Approvisionner
     #[ORM\ManyToOne(targetEntity:"App\Entity\Employe") ]
      #[ORM\JoinColumn(nullable:false) ]
     private $user;
+
+    #[ORM\ManyToOne(targetEntity:"App\Entity\Retour") ]
+     #[ORM\JoinColumn(nullable:true) ]
+    private $retour;
 
     #[ORM\Column(type:"date") ]
     private $date;
@@ -89,6 +94,18 @@ class Approvisionner
                 $facture->setApprovisionner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRetour(): ?Retour
+    {
+        return $this->retour;
+    }
+
+    public function setRetour(?Retour $retour): static
+    {
+        $this->retour = $retour;
 
         return $this;
     }

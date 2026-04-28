@@ -15,6 +15,7 @@ use App\Entity\CommandeProduit;
 use App\Entity\Stock;
 use App\Form\CandidatureType;
 use App\Repository\CommandeProduitRepository;
+use App\Repository\ApprovisionnementRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\ImageRepository;
 use App\Repository\LivrerProduitRepository;
@@ -743,12 +744,32 @@ class StockController extends AbstractController
     
 
     #[Route("/History_Produit/{id}", name :"history_produit_show", methods : ["GET"]) ]
-    public function produithistory(Produit $produit, LivrerProduitRepository $repository): Response
+    public function produithistory(Produit $produit, LivrerProduitRepository $repository, ApprovisionnementRepository $repo): Response
     {
         if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+            $livraison = $repository->findBy(['produit' => $produit]);
+            $reappro = $repo->findBy(['produit' => $produit]);
+             $result = [];
+                foreach ([$reappro,$livraison] as $tableau) {
+                    foreach ($tableau as $row) {
+                        $date = $row->getDate()->format('Y-m-d');
+                        // dd($date);
+                        // On regroupe les lignes par date
+                        $result[$date][] = $row;
+                    }
+                }
+                ksort($result);
+                // dd($result);
+                $flat = [];
 
+                foreach ($result as $date => $rows) {
+                    foreach ($rows as $row) {
+                        $flat[] = $row;
+                    }
+                } 
+                // dd($flat);
             $response = $this->render('stock/sortie_show.html.twig', [
-                'stock' => $repository->findBy(['produit' => $produit],['id' => "DESC"]),
+                'stocks' => $flat,
                 'produit' => $produit,
             ]);
             $response->setSharedMaxAge(0);
