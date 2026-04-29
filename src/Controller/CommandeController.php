@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Complement\Promotion;
 use App\Entity\Commande;
 use App\Entity\Produit;
 use App\Entity\Panier;
@@ -184,7 +185,7 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/valider", name :"valider") ]
-    public function valider(Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
+    public function valider(Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository, Promotion $promo)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
              $sheet = $session->get('sheetvalider',[]);
@@ -238,6 +239,7 @@ class CommandeController extends AbstractController
                 $tva = 0;
                 foreach ($panier as $product) {
                     $reductionproduit = 0;
+                    $ug = 0;
                     $produit = $produitRepository->find($product->getProduit()->getId());
                     if (!empty($produit->getPromotion())) {//traitement de la promotion avec reduction
                         if (!empty($produit->getPromotion()->getReduction())) {
@@ -245,11 +247,15 @@ class CommandeController extends AbstractController
 
                             $reduction = $reduction + $reductionproduit;
                         }
+                        if ($produit->getPromotion()->getPremier() !== null) {
+                            $ug = $promo->ug($produit, $product->getQuantite());
+                        }
                     }
 
                     $montant = $montant + $product->getQuantite() * $produit->getPrix();
 
                     $commandeproduit = new CommandeProduit($produit, $commande, $produit->getPrix(), $produit->getPrixpublic(), $product->getQuantite());
+                    $commandeproduit->setUg($ug);
                     if($product->getQuantite() > $produit->getStock()){
                         $commandeproduit->setExtranet(true);
                         $commande->setExtranet(true);
@@ -540,7 +546,7 @@ class CommandeController extends AbstractController
 
 
     #[Route("/valider_extranet_promo", name :"valider_extranet_promo") ]
-    public function validerextranetpromo(Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
+    public function validerextranetpromo(Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository, Promotion $promo)
     {
         if ($this->security->isGranted('ROLE_FINANCE')  && $this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
 
@@ -570,6 +576,7 @@ class CommandeController extends AbstractController
                 $tva = 0;
                 foreach ($panier as $product) {
                     $reductionproduit = 0;
+                    $ug = 0;
                     $produit = $produitRepository->find($product['produit']->getId());
                     if (!empty($produit->getPromotion())) {//traitement de la promotion avec reduction
                         if (!empty($produit->getPromotion()->getReduction())) {
@@ -577,11 +584,15 @@ class CommandeController extends AbstractController
 
                             $reduction = $reduction + $reductionproduit;
                         }
+                        if ($produit->getPromotion()->getPremier() !== null) {
+                            $ug = $promo->ug($produit, $product['produit']->getQuantite());
+                        }
                     }
 
                     $montant = $montant + $product['produit']->getQuantite() * $produit->getPrix();
 
                     $commandeproduit = new CommandeProduit($produit, $commande, $produit->getPrix(), $produit->getPrixpublic(), $product['produit']->getQuantite());
+                    $commandeproduit->setUg($ug);
                     if($produit->getTva()){
                         $tvaproduit = (($product['produit']->getQuantite() * $produit->getPrix()) - $reductionproduit) * 0.1925;
                          $tva = $tva + $tvaproduit;

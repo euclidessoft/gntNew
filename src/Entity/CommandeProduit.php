@@ -39,6 +39,9 @@ class CommandeProduit
     #[ORM\Column(type:"integer", nullable: true) ]
     private $quantitecommande;
 
+    #[ORM\Column(type:"integer", nullable: true) ]
+    private $ug;
+
     private $stock;
     #[ORM\Column(type:"float") ]
     private $tva;
@@ -60,6 +63,7 @@ class CommandeProduit
         $this->session = $session;
         $this->publique = $publique;
         $this->quantite = $quantite;
+        $this->ug = 0;
     }
 
 
@@ -202,6 +206,18 @@ class CommandeProduit
     public function setExtranet(bool $extranet): static
     {
         $this->extranet = $extranet;
+
+        return $this;
+    }
+
+    public function getUg(): ?int
+    {
+        return $this->ug;
+    }
+
+    public function setUg(?int $ug): static
+    {
+        $this->ug = $ug;
 
         return $this;
     }
