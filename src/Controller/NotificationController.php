@@ -9,6 +9,7 @@ namespace App\Controller;
 // use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
+use App\Complement\Promotion;
 use App\Service\WhatsAppNotifier;
 use App\Service\SMSService;
 use App\Service\LamService;
@@ -16,6 +17,8 @@ use App\Entity\Commande;
 use App\Entity\Versement;
 use App\Entity\Client;
 use App\Entity\RetourProduit;
+use App\Entity\CommandeProduit;
+use App\Entity\LivrerProduit;
 use App\Entity\Pharmacie;
 use App\Entity\Paiement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,7 +69,7 @@ public function test(ParameterBagInterface $params)
     }
 
        #[Route('/test-lam')]
-    public function testlam(HttpClientInterface $client,ParameterBagInterface $params)
+    public function testlam(HttpClientInterface $client,ParameterBagInterface $param, Promotion $promo)
     {
         // $lam = new lamService("GNTPharma - sortie de stock\n Commande: 575\n Client: Client\n Montant:".number_format(13500, 2, ',', ' '), $client, $params);
         // $response = true;
@@ -109,43 +112,70 @@ public function test(ParameterBagInterface $params)
         // return new Response("okay");
 
         //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
-         $commandes =  $this->entityManager->getRepository(Commande::Class)->findAll();
+         $commandes =  $this->entityManager->getRepository(CommandeProduit::Class)->findAll();
         foreach($commandes as $commande){
-
+                if(!empty($commande->getPromotion())){
+                    $ug = 0;
+                     if ($commande->getPromotion()->getPremier() !== null) {
+                            $ug = $promo->promo($commande->getPromotion(), $commande->getQuantite());
+                        }
+                        $commande->setUg($ug);
+                        $this->entityManager->persist($commande);
+                }
         //     if($commande->getTraitement() == null){
         //     if($commande->getSuivi() == true){
         //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
-            $commande->setMontantht($commande->getMontant());
-            $this->entityManager->persist($commande);
+            // $commande->setMontantht($commande->getMontant());
+            // $this->entityManager->persist($commande);
             //$this->entityManager->flush();
             // }
         // }
         }
 
-        $paiements =  $this->entityManager->getRepository(Paiement::Class)->findAll();
-        foreach($paiements as $paiement){
-
+         $livrers =  $this->entityManager->getRepository(LivrerProduit::Class)->findAll();
+        foreach($livrers as $livrer){
+                if(!empty($livrer->getPromotion())){
+                    $ug = 0;
+                     if ($livrer->getPromotion()->getPremier() !== null) {
+                            $ug = $promo->promo($livrer->getPromotion(), $livrer->getQuantitecommander());
+                        }
+                        $livrer->setUg($ug);
+                        $this->entityManager->persist($livrer);
+                }
         //     if($commande->getTraitement() == null){
         //     if($commande->getSuivi() == true){
         //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
-            $paiement->setClient($paiement->getCommande()->getUser());
-            $this->entityManager->persist($paiement);
+            // $commande->setMontantht($commande->getMontant());
+            // $this->entityManager->persist($commande);
             //$this->entityManager->flush();
             // }
         // }
         }
-        $versements =  $this->entityManager->getRepository(Versement::Class)->findAll();
-        foreach($versements as $versement){
 
-        //     if($commande->getTraitement() == null){
-        //     if($commande->getSuivi() == true){
-        //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
-            $versement->setClient($versement->getCommande()->getUser());
-            $this->entityManager->persist($versement);
-            //$this->entityManager->flush();
-            // }
+        // $paiements =  $this->entityManager->getRepository(Paiement::Class)->findAll();
+        // foreach($paiements as $paiement){
+
+        // //     if($commande->getTraitement() == null){
+        // //     if($commande->getSuivi() == true){
+        // //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
+        //     $paiement->setClient($paiement->getCommande()->getUser());
+        //     $this->entityManager->persist($paiement);
+        //     //$this->entityManager->flush();
+        //     // }
+        // // }
         // }
-        }
+        // $versements =  $this->entityManager->getRepository(Versement::Class)->findAll();
+        // foreach($versements as $versement){
+
+        // //     if($commande->getTraitement() == null){
+        // //     if($commande->getSuivi() == true){
+        // //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
+        //     $versement->setClient($versement->getCommande()->getUser());
+        //     $this->entityManager->persist($versement);
+        //     //$this->entityManager->flush();
+        //     // }
+        // // }
+        // }
         $this->entityManager->flush();
         return new Response("okay");
     }
