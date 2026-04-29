@@ -1049,4 +1049,28 @@
     }//-----------------------------------------------------------------------
 
     /*****end Script de conversion le prix en lettre*****/
+
+        // Go to Top Button
+    const goToTopBtn = document.createElement('button');
+    goToTopBtn.className = 'go-to-top';
+    goToTopBtn.setAttribute('aria-label', 'Retour en haut');
+    goToTopBtn.setAttribute('title', 'Retour en haut');
+    document.body.appendChild(goToTopBtn);
+
+    // Show/Hide Go to Top button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 900) {
+            goToTopBtn.classList.add('visible');
+        } else {
+            goToTopBtn.classList.remove('visible');
+        }
+    });
+
+    // Go to Top functionality
+    goToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
 </script>

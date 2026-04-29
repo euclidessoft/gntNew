@@ -627,6 +627,16 @@
                         </div>
                     </a>
                 </li>
+                <li class="nav-item" title="{{ 'Livraison'|trans }}">
+                    <a class="nav-link {% block livraison %} {% endblock %}" href="{{ path('livraison_historique') }}">
+                        <div class="icone">
+                            <i class="fa-solid fa-truck-fast fa-lg"></i>
+                        </div>
+                        <div class="title">
+                            {{ 'Livraison'|trans }}
+                        </div>
+                    </a>
+                </li>
                 <li class="nav-item" title="{{ 'Réclamation'|trans }}">
                     <a class="nav-link {% block reclamation %} {% endblock %}"
                        href="{{ path('reclamation_index',{'user':app.user.id}) }}">
