@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LivrerProduitRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:LivrerProduitRepository::class) ]
@@ -34,6 +35,10 @@ class LivrerProduit
     #[ORM\ManyToOne(targetEntity:"App\Entity\Livrer") ]
      #[ORM\JoinColumn(nullable:false) ]
     private $livrer;
+
+    
+    #[ORM\Column(type:"integer", nullable: true) ]
+    private $ug;
 
     #[ORM\Column(type:"string", length:255) ]
     private $lot;
@@ -252,6 +257,23 @@ class LivrerProduit
     public function setRetour(?Retour $retour): self
     {
         $this->retour = $retour;
+
+        return $this;
+    }
+
+    public function isReste(): ?bool
+    {
+        return $this->reste;
+    }
+
+    public function getUg(): ?int
+    {
+        return $this->ug;
+    }
+
+    public function setUg(?int $ug): static
+    {
+        $this->ug = $ug;
 
         return $this;
     }
