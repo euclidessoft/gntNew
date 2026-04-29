@@ -73,6 +73,7 @@
         {% set entree = 0%}
         {% set commande = 0%}
         {% set livre = 0%}
+        {% set tableau = [] %}
         {% for stock in stocks %}
             <tr>
                 <td>{{ stock.date|date("d/m/Y") }}</td>
@@ -108,7 +109,10 @@
                 <td>
                     {% if  stock.quantitecommander is defined %}
                         {{ stock.quantitecommander|number_format(0,',' , ' ') }}
-                         {% set commande = commande + stock.quantitecommander %}
+                        {% if stock.commande.id not in tableau %}
+                            {% set tableau = tableau|merge([stock.commande.id]) %}
+                            {% set commande = commande + stock.quantitecommander %}
+                        {% endif %}
                    
                     {% endif %}
                 </td>
@@ -164,6 +168,7 @@
         {% set entree = 0%}
         {% set commande = 0%}
         {% set livre = 0%}
+        {% set tableau = [] %}
         {% for stock in stocks %}
             <tr>
                 <td>{{ ord }}{% set ord = ord + 1 %}</td>
@@ -200,7 +205,10 @@
                 <td>
                     {% if  stock.quantitecommander is defined %}
                         {{ stock.quantitecommander }}
-                         {% set commande = commande + stock.quantitecommander %}
+                         {% if stock.commande.id not in tableau %}
+                            {% set tableau = tableau|merge([stock.commande.id]) %}
+                            {% set commande = commande + stock.quantitecommander %}
+                        {% endif %}
                    
                     {% endif %}
                 </td>

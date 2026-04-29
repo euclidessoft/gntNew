@@ -122,7 +122,7 @@ class LivrerController extends AbstractController
     #[Route("/Historique/", name :"historique") ]
     public function histo_admin(LivrerRepository $repository, SessionInterface $session, CommandeRepository $commandeRepository)
     {
-        if ($this->security->isGranted('ROLE_STOCK')) {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
             //$panier = $session->get("panier", []);
 
             $response = $this->render('livrer/history.html.twig', [
@@ -517,7 +517,7 @@ class LivrerController extends AbstractController
     public function history_show(Commande $commande, LivrerRepository $livrerRepository, LivrerProduitRepository $livrerProduitRepository, ProduitRepository $repository, SessionInterface $session): Response
     {// traitement livraison
 
-        if ($this->security->isGranted('ROLE_STOCK')) {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
 
             if ($commande->getLivraison()) {
 
