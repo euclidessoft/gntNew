@@ -15,6 +15,7 @@
             <tr>
                 <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'Colisage'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Réduction'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
@@ -32,16 +33,33 @@
                 <tr>
                     <td>{{ produit['produit'].reference }}</td>
                     <td>{{ produit['produit'].desigantion }}</td>
-                    <td>{{ produit['produit'].prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>
+                    {% if  produit.colisage %}
+                        Carton
+                    {% else %}
+                        piece
+                    {% endif %}
+                    </td>
+                    <td>
+                        {% if produit.colisage %}
+                            {{ (produit.produit.colisage * produit['produit'].prix)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {% else %}
+                            {{ produit['produit'].prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {% endif %}
+                    </td>
+                    <td data-label="Réduction">
                         {% if produit['produit'].promotion is not null %}
                             {% if produit['promotion'] != 0 %}
-                                {% set reductionproduit =  produit['produit'].quantite * produit['produit'].prix * produit['promotion'] /100 %}
-
+                                {% if produit.colisage %}
+                                     {% set reductionproduit = produit.produit.colisage * produit['produit'].quantite * produit['produit'].prix * produit['promotion'] /100 %}
+                                {% else %}
+                                    {% set reductionproduit =  produit['produit'].quantite * produit['produit'].prix * produit['promotion'] /100 %}
+                                {% endif %}
+                                
                                 {% set reduction =  reduction + reductionproduit %}
                                 <span class="badge bg-danger">
                                     -{{ produit['produit'].prix * produit['promotion'] /100 }} F
-                            </span>
+                                </span>
                             {% else %}
                                 -
                             {% endif %}
@@ -49,10 +67,17 @@
                             -
                         {% endif %}
                     </td>
-                    <td>
+                     <td data-label="TVA">
                         {% if produit['produit'].tva == 1 %}
-                            {% set tva = tva + (((produit['produit'].quantite * produit['produit'].prix) - reductionproduit) * 0.1925) %}
-                            {{ (produit['produit'].prix - (produit['produit'].prix * produit['promotion'] /100)) * 0.1925 }}
+                        {% set tvaprod = 0 %}
+                            {% if produit.colisage %}
+                                {% set tvaprod = ((produit.produit.colisage * produit['produit'].quantite * produit['produit'].prix) - reductionproduit) * 0.1925 %}
+                            {% else %}
+                                 {% set tvaprod = ((produit['produit'].quantite * produit['produit'].prix) - reductionproduit) * 0.1925 %}
+                             {% endif %}
+                             {% set tva = tva + tvaprod %}
+
+                            {{ tvaprod|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         {% else %}
                             -
                         {% endif %}
@@ -66,26 +91,21 @@
 
 
                     </td>
-                    <td class="text-center" id="soustotal{{ produit.produit.id }}">
-                        {{ (produit['produit'].prix * produit['produit'].quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                        {% set total = total + (produit.produit.prix * produit['produit'].quantite) %}
-                        {#<div class="input-group align-center" style="width:100px">
-                            <input type="number" id="text{{ produit.produit.id }}" class="form-control"
-                                   style="padding:0 10px">
-                            <div class="input-group-append">
-                                            <span class="input-group-text bg-primaire text-light"
-                                                  onclick="numerochambre({{ produit.produit.id }})"
-                                                  id="bt{{ produit.produit.id }}">
-                                                <i class="fa fa-save"></i>
-                                            </span>
-                            </div>
-                        </div>#}
+                   <td data-l="Total" class="text-center" id="soustotal{{ produit.produit.id }}">
+                        {% if produit.colisage %}
+                            {{ (produit.produit.colisage * produit['produit'].prix * produit['produit'].quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                            {% set total = total + (produit.produit.colisage * produit.produit.prix * produit['produit'].quantite) %}
+                        {% else %}
+                            {{ (produit['produit'].prix * produit['produit'].quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                            {% set total = total + (produit.produit.prix * produit['produit'].quantite) %}
+                        {% endif %}
+                        
 
                     </td>
                 </tr>
             {% endfor %}
             <tr class="text-bold">
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total"|trans }}
                 </td>
                 <td class="text-center text-nowrap">
@@ -94,7 +114,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total Réduction"|trans }}
                 </td>
                 <td class="text-center">
@@ -103,7 +123,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Total TVA"|trans }}
                 </td>
                 <td class="text-center">
@@ -114,7 +134,7 @@
             {% set acompte = 0 %}
             {% if app.user.prelevement == true %}
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
@@ -125,7 +145,7 @@
             </tr>
             {% endif %}
             <tr class="text-bold">
-                <td colspan="7" class="text-end text-bold">
+                <td colspan="8" class="text-end text-bold">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="text-center">

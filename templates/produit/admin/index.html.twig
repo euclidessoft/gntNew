@@ -36,10 +36,10 @@
                 <th>{{ 'CIP'|trans }}</th>
                 <th class="text-start">{{ 'Désignation'|trans }}</th>
                 <th>{{ 'DCI'|trans }}</th>
+                <th>{{ 'Colisage'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
                 <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th>
-                <th class="text-start">{{ 'Fabricant'|trans }}</th>
                 <th>{{ 'Actions'|trans }}</th>
             </tr>
         </thead>
@@ -49,10 +49,10 @@
                 <td>{{ produit.reference }}</td>
                 <td class="text-start">{{ produit.desigantion }}</td>
                 <td>{{ produit.dci }}</td>
+                <td class="text-center">{{ produit.colisage }}</td>
                 <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 <td>{{ produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 <td>{{ produit.mincommande }}</td>
-                <td class="text-start">{{ produit.fabriquant }}</td>
                 <td class="text-nowrap">
                     <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" title="{{ 'Voir'|trans }}" href="{{ path('produit_show', {'id': produit.id}) }}">
                         <i class="fa fa-eye"></i>

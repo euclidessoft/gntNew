@@ -23,10 +23,10 @@
                 <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
                 <th>{{ 'DCI'|trans }}</th>
+                <th>{{ 'Colisage'|trans }}</th>
                 <th>{{ 'Cession'|trans }}</th>
                 <th>{{ 'Public'|trans }}</th>
                 <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th>
-                <th>{{ 'Fabriquant'|trans }}</th>
                 <th>{{ 'Quantité'|trans }}</th>
                 <th>{{ 'Actions'|trans }}</th>
             </tr>
@@ -61,10 +61,10 @@
                         {% endif %}
                     </td>
                     <td>{{ approvisionnement.produit.dci }}</td>
+                    <td class="text-center">{{ approvisionnement.produit.colisage }}</td>
                     <td>{{ approvisionnement.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ approvisionnement.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ approvisionnement.produit.mincommande }}</td>
-                    <td>{{ approvisionnement.produit.fabriquant }}</td>
                     {% set tamp ='no' %}
                     <td class="text-center align-middle" id="tdprod{{ approvisionnement.produit.id }}">
 

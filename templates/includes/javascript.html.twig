@@ -204,6 +204,27 @@
         }
 
     }
+    function colisage(id) {// fonction pour modifier un produit dans le panier
+        //var reg = new RegExp("^[0-9]+$");
+                $('#col' + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('commande_colisage') }}",
+                    data: "prod=" + id ,
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                          document.location.href = '{{ path('commande_panier_panier') }}'
+                        } else {
+                            alert("{{ 'Vérifier la quantité saisie'|trans }}")
+                        }
+                    },
+                    error: function () {
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                    }
+                });
+           
+
+    }
 
      function editinventaire(id,quant) {// id stock et la quantite quantite actuelle
         var reg = new RegExp("^[0-9]+$");

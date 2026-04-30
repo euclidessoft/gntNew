@@ -28,11 +28,11 @@
             <tr>
                 <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'Colisage'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Réduction'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
-                {# <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th> #}
                 <th>{{ 'Quantité'|trans }}</th>
                 <th>{{ 'Total'|trans }}</th>
                 <th>{{ 'Actions'|trans }}</th>
@@ -47,16 +47,33 @@
                 <tr>
                     <td data-label="Référence">{{ produit['produit'].reference }}</td>
                     <td data-label="Désignation">{{ produit['produit'].desigantion }}</td>
-                    <td data-label="Prix Cession">{{ produit['produit'].prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td data-label="Colisage" class="text-center">
+                    {{ produit['produit'].colisage }}
+                            <div class="form-check">
+                             <input type="checkbox"  {% if produit.colisage %}checked{% endif %} onchange="colisage({{produit['produit'].id}})" class="form-check-input">
+                            <span id="col{{produit['produit'].id}}"> Activer</span>
+                             </div>
+                    </td>
+                    <td data-label="Prix Cession">
+                    {% if produit.colisage %}
+                         {{ (produit.produit.colisage * produit['produit'].prix)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                    {% else %}
+                        {{ produit['produit'].prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                    {% endif %}
+                    </td>
                     <td data-label="Réduction">
                         {% if produit['produit'].promotion is not null %}
                             {% if produit['promotion'] != 0 %}
-                                {% set reductionproduit =  produit['produit'].quantite * produit['produit'].prix * produit['promotion'] /100 %}
-
+                                {% if produit.colisage %}
+                                     {% set reductionproduit = produit.produit.colisage * produit['produit'].quantite * produit['produit'].prix * produit['promotion'] /100 %}
+                                {% else %}
+                                    {% set reductionproduit =  produit['produit'].quantite * produit['produit'].prix * produit['promotion'] /100 %}
+                                {% endif %}
+                                
                                 {% set reduction =  reduction + reductionproduit %}
                                 <span class="badge bg-danger">
                                     -{{ produit['produit'].prix * produit['promotion'] /100 }} F
-                            </span>
+                                </span>
                             {% else %}
                                 -
                             {% endif %}
@@ -66,39 +83,44 @@
                     </td>
                     <td data-label="TVA">
                         {% if produit['produit'].tva == 1 %}
-                            {% set tva = tva + (((produit['produit'].quantite * produit['produit'].prix) - reductionproduit) * 0.1925) %}
-                            {{ (produit['produit'].prix - (produit['produit'].prix * produit['promotion'] /100)) * 0.1925 }}
+                        {% set tvaprod = 0 %}
+                            {% if produit.colisage %}
+                                {% set tvaprod = ((produit.produit.colisage * produit['produit'].quantite * produit['produit'].prix) - reductionproduit) * 0.1925 %}
+                            {% else %}
+                                 {% set tvaprod = ((produit['produit'].quantite * produit['produit'].prix) - reductionproduit) * 0.1925 %}
+                             {% endif %}
+                             {% set tva = tva + tvaprod %}
+
+                            {{ tvaprod|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         {% else %}
                             -
                         {% endif %}
                     </td>
                     <td data-label="Prix Public">{{ produit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    {# <td data-label="Commande">{{ produit['produit'].mincommande }}</td> #}
+                    
 
                     <td data-label="Quantité" class="text-center" id="tdprod{{ produit.produit.id }}">
                         {{ produit['produit'].quantite }}
                     </td>
                     <td data-l="Total" class="text-center" id="soustotal{{ produit.produit.id }}">
-                        {{ (produit['produit'].prix * produit['produit'].quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                        {% set total = total + (produit.produit.prix * produit['produit'].quantite) %}
-                        {#<div class="input-group align-center" style="width:100px">
-                            <input type="number" id="text{{ produit.produit.id }}" class="form-control"
-                                   style="padding:0 10px">
-                            <div class="input-group-append">
-                                            <span class="input-group-text bg-primaire text-light"
-                                                  onclick="numerochambre({{ produit.produit.id }})"
-                                                  id="bt{{ produit.produit.id }}">
-                                                <i class="fa fa-save"></i>
-                                            </span>
-                            </div>
-                        </div>#}
+                        {% if produit.colisage %}
+                            {{ (produit.produit.colisage * produit['produit'].prix * produit['produit'].quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                            {% set total = total + (produit.produit.colisage * produit.produit.prix * produit['produit'].quantite) %}
+                        {% else %}
+                            {{ (produit['produit'].prix * produit['produit'].quantite)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                            {% set total = total + (produit.produit.prix * produit['produit'].quantite) %}
+                        {% endif %}
+                        
 
                     </td>
                     <td>
                        
+                           
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal{{ produit['produit'].id }}" title="{{ 'Modifier quantité'|trans }}">
                                 <i class="fa fa-edit"></i>
                             </button>
+                            
+                             {{ include('commande/_delete_form.html.twig')}}
                             <div class="modal fade" id="modal{{ produit['produit'].id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered text-center">
                                     <div class="modal-content">
@@ -128,11 +150,10 @@
                                                 {{ 'Modifier'|trans}}
                                             </button>
                                         </div>
-                                        {# {{ form_end(form) }} #}
+                                        
                                     </div>
                                 </div>
                             </div>
-                            {{ include('commande/_delete_form.html.twig')}}
 
                    
 
@@ -141,7 +162,7 @@
             {% endfor %}
             {% if panier|length > 0 %}
                 <tr class="text-bold">
-                    <td data-label="Total" colspan="7" class="text-end">
+                    <td data-label="Total" colspan="8" class="text-end">
                         {{ "Total"|trans }}
                     </td>
                     <td class="text-center">
@@ -157,7 +178,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="7" class="text-end">
+                    <td colspan="8" class="text-end">
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td class="text-center">
@@ -166,7 +187,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="7" class="text-end">
+                    <td colspan="8" class="text-end">
                         {{ "Total TVA"|trans }}
                     </td>
                     <td class="text-center">
@@ -175,7 +196,7 @@
                     </td>
                 </tr>
                 <tr class="text-bold">
-                    <td colspan="7" class="text-end">
+                    <td colspan="8" class="text-end">
                         {{ "Net à payer"|trans }}
                     </td>
                     <td class="text-center">
@@ -185,7 +206,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="10" class="text-center py-4">
+                    <td colspan="11" class="text-center py-4">
                         {{ "Panier vide"|trans }}
                     </td>
                 </tr>

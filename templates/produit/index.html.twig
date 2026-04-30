@@ -22,10 +22,10 @@
                 <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
                 <th>{{ 'DCI'|trans }}</th>
+                <th>{{ 'Colisage'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
                 <th>{{ 'Commande'|trans }}<br> {{ 'Minimum'|trans }}</th>
-                <th>{{ 'Fabricant'|trans }}</th>
                 <th>{{ 'Quantite'|trans }}</th>
 
                 <th>{{ "Actions"|trans }}</th>
@@ -59,10 +59,10 @@
                         {% endif %}
                     </td>
                      <td>{{ produit.dci }}</td>
+                     <td>{{ produit.colisage }}</td>
                     <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ produit.mincommande }}</td>
-                    <td>{{ produit.fabriquant }}</td>
                     {% set tamp ='no' %}
                     <td class="text-center" id="tdprod{{ produit.id }}">
 

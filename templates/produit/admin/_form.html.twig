@@ -163,8 +163,11 @@
         {{ form_row(form.adresse, {'attr':{'placeholder':'Adresse'}, 'label':'Adresse'}) }}
         {#        </div>#}
     </div>
-    <div class="col-md-5 text-bold">
+    <div class="col-md-2 text-bold">
         {{ form_row(form.tva, {'label':'Soumis à la TVA'}) }}
+    </div>
+    <div class="col-md-3">
+        {{ form_row(form.colisage, {'attr':{'placeholder':'Colisage'}, 'label':'Colisage'}) }}
     </div>
     <div class="col-md-5 text-bold">
         {{ form_widget(form.fournisseurs, {'label':'Fournisseur'}) }}

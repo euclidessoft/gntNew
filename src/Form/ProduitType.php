@@ -18,6 +18,7 @@ class ProduitType extends AbstractType
             ->add('alternatif')// code cip alternatif
             // ->add('interne')// code interne
             ->add('desigantion')
+            ->add('colisage')
             ->add('dci')
             ->add('prix')
             ->add('prixpublic')

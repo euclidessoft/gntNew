@@ -75,6 +75,10 @@ class Produit
     #[ORM\Column(type:"integer") ]
     private $stock;
 
+    
+    #[ORM\Column(type:"integer", nullable: true) ]
+    private $colisage;
+
     #[ORM\Column(type:"date") ]
     private $creation;
 
@@ -496,6 +500,18 @@ class Produit
     public function setLaboratoire(?Laboratoire $laboratoire): static
     {
         $this->laboratoire = $laboratoire;
+
+        return $this;
+    }
+
+    public function getColisage(): ?int
+    {
+        return $this->colisage;
+    }
+
+    public function setColisage(?int $colisage): static
+    {
+        $this->colisage = $colisage;
 
         return $this;
     }

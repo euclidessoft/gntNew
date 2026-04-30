@@ -26,6 +26,10 @@
                 <td>{{ produit.dci }}</td>
             </tr>
             <tr>
+                <th>{{ 'Colisage'|trans }}</th>
+                <td>{{ produit.colisage }}</td>
+            </tr>
+            <tr>
                 <th>{{ 'Prix'|trans }}</th>
                 <td>{{ produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
             </tr>

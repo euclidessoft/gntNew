@@ -27,6 +27,18 @@ class Panier
     #[ORM\Column(nullable: true)]
     private ?int $reduction = null;
 
+    
+    #[ORM\Column(type:"boolean") ]
+    private $colisage;
+
+     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->colisage = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,6 +89,24 @@ class Panier
     {
         $this->reduction = $reduction;
 
+        return $this;
+    }
+
+    public function isColisage(): ?bool
+    {
+        return $this->colisage;
+    }
+
+    public function setColisage(bool $colisage): static
+    {
+        $this->colisage = $colisage;
+
+        return $this;
+    }
+
+    public function bascule(): self
+    {
+        $this->colisage = !$this->colisage;
         return $this;
     }
 }

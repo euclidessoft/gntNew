@@ -33,9 +33,9 @@
                 <th>{{ 'CIP'|trans }}</th>
                 <th class="text-start">{{ 'Désignation'|trans }}</th>
                 <th>{{ 'DCI'|trans }}</th>
+                <th>{{ 'Colisage'|trans }}</th>
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
-                <th class="text-start">{{ 'Fabricant'|trans }}</th>
             </tr>
             </thead>
             <tbody>
@@ -44,9 +44,10 @@
                     <td>{{ approvisionnement.produit.reference }}</td>
                     <td class="text-start">{{ approvisionnement.produit.desigantion }}</td>
                     <td>{{ approvisionnement.produit.dci }}</td>
+                    <td class="text-center">{{ approvisionnement.produit.colisage }}</td>
                     <td>{{ approvisionnement.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>{{ approvisionnement.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    <td class="text-start">{{ approvisionnement.produit.fabriquant }}</td>
+                    
                 </tr>
             {% endfor %}
             </tbody>

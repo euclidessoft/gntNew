@@ -467,6 +467,35 @@ class PanierController extends AbstractController
 
     }
 
+
+    #[Route("/colisagePanier/", name :"colisage") ]
+    public function colisagePanier(Request $request, ProduitRepository $produitRepository, SessionInterface $session, PromotionRepository $promotionRepository)
+    {
+        // On récupère le panier actuel
+        // $panier = $session->get("panier", []);
+        if( $request->isXmlHttpRequest() )
+        {// traitement de la requete ajax
+            $id = $request->get('prod');// recuperation de id produit
+            // $quantite = $request->get('quantite');// recuperation de la quantite commamde
+            $this->getUser()->getTuteur() === null ? $client = $this->getUser()->getId() : $client = $this->getUser()->getTuteur()->getId();
+            $panier = $this->entityManager->getRepository(Panier::class)->findOneBy(['client' => $client, 'produit' => $id]);
+            $panier->bascule();
+          
+            $this->entityManager->persist($panier);
+            $this->entityManager->flush();
+
+
+            $res['id'] = 'ok';
+               
+            $response = new Response();
+            $response->headers->set('content-type','application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        }
+
+    }
+
     #[Route("/delete/{id}", name :"delete") ]
     public function delete(Produit $Produit, SessionInterface $session)
     {

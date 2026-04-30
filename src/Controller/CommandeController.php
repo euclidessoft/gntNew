@@ -55,6 +55,7 @@ class CommandeController extends AbstractController
                 $dataPanier[] = [
                     "produit" => $commande->getProduit(),
                     "promotion" => $commande->getReduction(),
+                    "colisage" => $commande->isColisage(),
                 ];
             }
 
@@ -82,7 +83,7 @@ class CommandeController extends AbstractController
             // }
 
             $response = $this->render('commande/index.html.twig', [
-                'produits' => $produitRepository->findAll(),
+                // 'produits' => $produitRepository->findAll(),
                 'panier' => $dataPanier,
                 // 'sheet' => $sheet,
             ]);
@@ -241,6 +242,9 @@ class CommandeController extends AbstractController
                     $reductionproduit = 0;
                     $ug = 0;
                     $produit = $produitRepository->find($product->getProduit()->getId());
+                    if($product->isColisage()){
+                        $product->setQuantite($product->getQuantite() * $produit->getColisage());
+                    }
                     if (!empty($produit->getPromotion())) {//traitement de la promotion avec reduction
                         if (!empty($produit->getPromotion()->getReduction())) {
                             $reductionproduit = $product->getQuantite() * $produit->getPrix() * $produit->getPromotion()->getReduction() / 100;
@@ -1276,6 +1280,7 @@ class CommandeController extends AbstractController
                 $dataPanier[] = [
                     "produit" => $commande->getProduit(),
                     "promotion" => $commande->getReduction(),
+                    "colisage" => $commande->isColisage(),
                 ];
             }
             $sheet = $session->get('sheetconfirm',[]);
@@ -1464,6 +1469,7 @@ class CommandeController extends AbstractController
                 $dataPanier[] = [
                     "produit" => $commande->getProduit(),
                     "promotion" => $commande->getReduction(),
+                    "colisage" => $commande->isColisage(),
                 ];
             }
             if(count($sheet) > 0){// commande par importation
@@ -1650,6 +1656,7 @@ class CommandeController extends AbstractController
                 $dataPanier[] = [
                     "produit" => $commande->getProduit(),
                     "promotion" => $commande->getReduction(),
+                    "colisage" => $commande->isColisage(),
                 ];
             }
              $sheet = $session->get('sheetchoix',[]);
