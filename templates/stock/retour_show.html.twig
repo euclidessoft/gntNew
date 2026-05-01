@@ -161,39 +161,6 @@
                     </tr>
                     </thead>
                     <tbody id="selectprod" class="text-center">
-{#                    {% for produit in retour %}#}
-{#                        <tr id="tr{{ produit['id'] }}{{ produit['lot'] }}">#}
-{#                            <td class="text-start">{{ produit['designation'] }}</td>#}
-{#                            <td>{{ produit['lot'] }}</td>#}
-
-{#                            <td>#}
-
-{#                                {{ produit['quantite'] }}#}
-
-{#                            </td>#}
-{#                            <td rowspan="2">#}
-
-
-{#                                <button class="btn btn-danger me-2 mb-2"#}
-{#                                        title="Supprimer cet article" onclick="retour_supprim({{ produit['id'] }},{{ produit['lot'] }})">#}
-{#                                    <i class="fa fa-trash"></i>#}
-{#                                </button>#}
-
-{#                                #}{#                                <button type="button" class="btn btn-success mb-2"#}
-{#                                #}{#                                        data-bs-toggle="modal" data-bs-target="#modal{{ produit['id'] }}"#}
-{#                                #}{#                                        id="btn{{ produit['id'] }}">#}
-{#                                #}{#                                    <i class="fa fa-plus"></i> Lot#}
-{#                                #}{#                                </button>#}
-
-{#                            </td>#}
-{#                        </tr>#}
-{#                        <tr id="trs{{ produit['id'] }}{{ produit['lot'] }}">#}
-{#                            <td colspan="3">{{ produit['motif'] }}</td>#}
-{#                        </tr>#}
-
-{#                    {% else %}#}
-
-{#                    {% endfor %}#}
 
                     </tbody>
                 </table>
@@ -226,8 +193,9 @@
                             </div>
                             <div class="modal-body px-5">
                                 <div class="center mt-3">
-                                   <button id="avoirretour" class="btn btn-success-light" onclick="validerRetourAvoir({{ commande.id }})"> Retour avec Avoir</button>
-                                   <button id="simpleretour" class="btn btn-success" onclick="validerRetour({{ commande.id }})"> Retour Simple</button>
+                                   <button id="avoirretour" class="btn btn-success-light me-3" onclick="validerRetourAvoir({{ commande.id }})"> Retour avec Avoir</button>
+                                   <button id="simpleretour" class="btn btn-success me-3" onclick="validerRetour({{ commande.id }})"> Retour avec modification de facture</button>
+                                   <button id="simple" class="btn btn-success-light" onclick="validersimple({{ commande.id }})"> Retour Simple</button>
                                 </div>
 
                             </div>
@@ -325,10 +293,34 @@
             }
         }
 
+        function validersimple(commande) {
+           
+            if (confirm("{{ 'Voulez-vous confirmer un retour simple?'|trans }}")) {
+                 $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                 $("#valider2").addClass("disabled");
+                 
+                $("#simple").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
+                 $("#simple").addClass("disabled");
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('stock_retour_valider_simple') }}",
+                    data: {commande: commande},
+                    success: function (data) {
+                        if (data['id'] == 'ok') {
+                           document.location.href="{{ path('stock_ajust') }}";
+                        }
+                    },
+                    error: function () {
+                        alert("{{ 'La requête n\'a pas abouti'|trans }}");
+                    }
+                });
+            }
+        }
+
 
         function validerRetour(commande) {
            
-            if (confirm("{{ 'Voulez-vous confirmer la validation?'|trans }}")) {
+            if (confirm("{{ 'Voulez-vous confirmer un retour avec modification de la facture?'|trans }}")) {
                  $("#valider2").html("<i class='fa-solid fa-spinner fa-spin-pulse'></i>");
                  $("#valider2").addClass("disabled");
                  

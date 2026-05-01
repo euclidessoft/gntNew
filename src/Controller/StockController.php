@@ -370,6 +370,140 @@ class StockController extends AbstractController
             $com = $request->get('commande');
             $em = $this->entityManager;
             $commande = $em->getRepository(Commande::class)->find($com); 
+            if($commande->getPayer()){
+                 $this->addFlash('notice', 'Retour pas pris en compte, Pour commande a credit non payée');
+                goto saut;
+            }
+            $commandeProduits = $em->getRepository(CommandeProduit::class)->findBy(['commande' => $commande]);
+           
+            $commande->setRetour(true);
+            $em->persist($commande);
+            $produits = $session->get('retour', []);
+            $retour = new Retour();
+            $retour->setPharmacie($commande->getUser()->getPharmacie());
+            $em->persist($retour);
+            $retour->setCommande($commande);
+
+            
+            $approvisionner = new Approvisionner();
+            $approvisionner->setUser($this->getUser());
+            $approvisionner->setretour($retour);
+            $em->persist($approvisionner);
+            $montant = 0;
+            $tva = 0;
+            $prelevement = 0;
+            foreach ($produits as $prod) {
+                $produit = $em->getRepository(Produit::class)->find($prod['id']);
+                $tvaproduit = 0;
+                $prelevementproduit = 0;
+                $montantproduit = 0;
+                $prix = 0;
+                $prixpublic = 0;
+                foreach($commandeProduits as $commandeProduit){
+                    if($commandeProduit->getProduit()->getId() ==  $produit->getId() 
+                        && $commandeProduit->getCommande()->getId() == $commande->getId()){
+                        // modification de la commande
+                        $commandeProduit->setQuantitecommande($commandeProduit->getQuantite());
+                        $commandeProduit->setQuantite($commandeProduit->getQuantite() - $prod['quantite']);
+                        $prix = $commandeProduit->getSession();
+                        $prixpublic = $commandeProduit->getPublique();
+                         $montantproduit = $prod['quantite'] * $prix;
+                        if($commandeProduit->getTva() != 0){
+                            $tvaproduit = $prix * $prod['quantite'] * 0.1925;
+                            $commandeProduit->setTva($commandeProduit->getTva() - $tvaproduit);
+                        } 
+                        if($commande->getAcompte() != 0){
+                            $prelevementproduit = $montantproduit * 0.02;
+                            // $commande->setAcompte($commande->getAcompte() - $prelevementproduit);
+                        }
+                        $em->persist($commandeProduit);
+
+                        $montant = $montant + $montantproduit;
+                        $tva += $tvaproduit;
+                        $prelevement += $prelevementproduit;
+                    }
+                }
+                $retourproduit = new RetourProduit();
+                $retourproduit->setProduit($produit);
+                $retourproduit->setRetour($retour);
+                $retourproduit->setCommande($commande);
+                $retourproduit->setMotif($prod['motif']);
+                $retourproduit->setLot($prod['lot']);
+                $retourproduit->setPeremption(new \Datetime($prod['peremption']));
+                $retourproduit->setQuantite($prod['quantite']);
+                $retourproduit->setPrix($prix);
+                $retourproduit->setPrixpublic($prixpublic);
+                $tvaproduit != 0 ? $retourproduit->setTva($tvaproduit): $retourproduit->setTva(0);
+                
+            //      $quantite = $request->get('quantite');
+            // $lot = $request->get('lot');
+            // $peremption = $request->get('peremption');
+            // $id = $request->get('produit');
+            // $retour = $request->get('retour');
+            // $em = $this->entityManager;
+            // $produit = $em->getRepository(Produit::class)->find($id);
+            // $retour = $em->getRepository(RetourProduit::class)->findOneBy(['retour' => $retour, 'produit' => $produit, 'lot' => $lot]);
+            $retourproduit->setReapprovisionner(true);
+            $em->persist($retourproduit);
+            $approvisionnenment = new Approvisionnement($produit, $approvisionner, $prod['quantite'], null);
+            $approvisionnenment->setLot($prod['lot']);
+            $approvisionnenment->setPeremption(new \DateTime($prod['peremption']));
+            $stock = $em->getRepository(Stock::class)->findOneBy(['produit' => $produit, 'lot' => $prod['lot']]);
+            $stock == null ? $stock = new Stock($produit, $prod['lot'], $prod['peremption'], $prod['quantite']) : $stock->setQuantite($stock->getQuantite() + $prod['quantite']);
+            $em->persist($stock);
+            $produit->setStock($produit->getStock() + $prod['quantite']);
+            $em->persist($produit);
+            $em->persist($approvisionnenment);
+
+            // $em->flush();
+
+                // $em->persist($retourproduit);
+                $em->flush();
+
+            }
+            
+            $commande->setMontant($commande->getMontant() - $montant);
+            $commande->setTva($commande->getTva() - $tva);
+            $commande->setAcompte($commande->getAcompte() - $prelevement);
+            $commande->setRetour(true);
+            $em->persist($commande);
+            $em->flush();
+
+            $this->addFlash('notice', 'Retour enregisté avec succès');
+            $session->remove('retour');
+                saut:
+            $res['id'] = 'ok';
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/Retour_simple/", name :"retour_valider_simple", methods : ["POST"]) ]
+    public function retour_simple(Request $request, SessionInterface $session): Response
+    {
+
+        if ($this->security->isGranted('ROLE_STOCK')) {
+            
+            $com = $request->get('commande');
+            $em = $this->entityManager;
+            $commande = $em->getRepository(Commande::class)->find($com); 
+           
             $commandeProduits = $em->getRepository(CommandeProduit::class)->findBy(['commande' => $commande]);
            
             $commande->setRetour(true);
@@ -458,16 +592,10 @@ class StockController extends AbstractController
 
             }
             
-            $commande->setMontant($commande->getMontant() - $montant);
-            $commande->setTva($commande->getTva() - $tva);
-            $commande->setAcompte($commande->getAcompte() - $prelevement);
-            $commande->setRetour(true);
-            $em->persist($commande);
-            $em->flush();
 
             $this->addFlash('notice', 'Retour enregisté avec succès');
             $session->remove('retour');
-
+                saut:
             $res['id'] = 'ok';
             $response = new Response();
             $response->headers->set('content-type', 'application/json');
@@ -489,6 +617,7 @@ class StockController extends AbstractController
         }
     }
 
+
     #[Route("/Retour_valider_avoir/", name :"retour_valider_avoir", methods : ["POST"]) ]
     public function retour_valider_avoir(Request $request, SessionInterface $session): Response
     {
@@ -498,6 +627,10 @@ class StockController extends AbstractController
             $com = $request->get('commande');
             $em = $this->entityManager;
             $commande = $em->getRepository(Commande::class)->find($com);
+             if(!$commande->getPayer()){
+                 $this->addFlash('notice', 'Retour pas pris en compte, Pour commande deja payée');
+                goto sautavoir;
+            }
             $commandeProduits = $em->getRepository(CommandeProduit::class)->findBy(['commande' => $commande]);
            
             $produits = $session->get('retour', []);
@@ -515,11 +648,11 @@ class StockController extends AbstractController
             $em->persist($approvisionner);
             $montant = 0;
             $tva = 0;
-            $prelevement = 0;
+            // $prelevement = 0;
             foreach ($produits as $prod) {
                 $produit = $em->getRepository(Produit::class)->find($prod['id']);
                 $tvaproduit = 0;
-                $prelevementproduit = 0;
+                // $prelevementproduit = 0;
                 $montantproduit = 0;
                 $prix = 0;
                 $prixpublic = 0;
@@ -527,24 +660,25 @@ class StockController extends AbstractController
                     if($commandeProduit->getProduit()->getId() ==  $produit->getId() 
                         && $commandeProduit->getCommande()->getId() == $commande->getId()){
                         // modification de la commande
-                        $commandeProduit->setQuantitecommande($commandeProduit->getQuantite());
-                        $commandeProduit->setQuantite($commandeProduit->getQuantite() - $prod['quantite']);
+                        // $commandeProduit->setQuantitecommande($commandeProduit->getQuantite());
+                        // $commandeProduit->setQuantite($commandeProduit->getQuantite() - $prod['quantite']);
                         $prix = $commandeProduit->getSession();
                         $prixpublic = $commandeProduit->getPublique();
                          $montantproduit = $prod['quantite'] * $prix;
+
                         if($commandeProduit->getTva() != 0){
                             $tvaproduit = $prix * $prod['quantite'] * 0.1925;
-                            $commandeProduit->setTva($commandeProduit->getTva() - $tvaproduit);
+                            // $commandeProduit->setTva($commandeProduit->getTva() - $tvaproduit);
                         } 
-                        if($commande->getAcompte() != 0){
-                            $prelevementproduit = $montanproduit * 0.02;
-                            // $commande->setAcompte($commande->getAcompte() - $prelevementproduit);
-                        }
+                        // if($commande->getAcompte() != 0){
+                        //     $prelevementproduit = $montantproduit * 0.02;
+                        //     // $commande->setAcompte($commande->getAcompte() - $prelevementproduit);
+                        // }
                         $em->persist($commandeProduit);
 
                         $montant = $montant + $montantproduit;
                         $tva += $tvaproduit;
-                        $prelevement += $prelevementproduit;
+                        // $prelevement += $prelevementproduit;
                     }
                 }
 
@@ -594,11 +728,11 @@ class StockController extends AbstractController
             }
             
            
-            $commande->setMontant($commande->getMontant() - $montant);
-            $commande->setTva($commande->getTva() - $tva);
-            $commande->setAcompte($commande->getAcompte() - $prelevement);
-            $commande->setRetour(true);
-            $em->persist($commande);
+            // $commande->setMontant($commande->getMontant() - $montant);
+            // $commande->setTva($commande->getTva() - $tva);
+            // $commande->setAcompte($commande->getAcompte() - $prelevement);
+            // $commande->setRetour(true);
+            // $em->persist($commande);
 
             $avoir->setMontant($montant);
             $avoir->setRetour($retour);
@@ -607,7 +741,7 @@ class StockController extends AbstractController
 
             $this->addFlash('notice', 'Retour plus avoir enregistés avec succès');
             $session->remove('retour');
-
+                sautavoir:
             $res['id'] = 'ok';
             $response = new Response();
             $response->headers->set('content-type', 'application/json');
