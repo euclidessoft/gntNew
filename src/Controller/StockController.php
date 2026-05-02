@@ -1179,10 +1179,15 @@ class StockController extends AbstractController
         try {
             if ($this->isCsrfTokenValid('delete' . $stock->getId(). 'lot' . $stock->getLot(), $request->request->get('_token'))) {
                 $entityManager = $this->entityManager;
+                $quant = $stock->getQuantite();
                 $stock->getProduit()->setStock(0);
                 $entityManager->persist($stock->getProduit());
                 $entityManager->remove($stock);
                 $entityManager->flush();
+                 // log
+             $heure = date("d/m/Y H:i:s");
+            file_put_contents(__DIR__ . '/inventaitre.log', $heure." ".$this->getUser()->getId()." ".$this->getUser()->getNom()." ".$this->getUser()->getPrenom()." ".$produit->getDesigantion()." Qauntite anterieur:".$quant." nouvelle quantite: 0 \n", FILE_APPEND);
+
             }
             $this->addFlash('notice', 'Produit Supprimé');
             return $this->redirectToRoute('stock_inventaire', [], Response::HTTP_SEE_OTHER);
