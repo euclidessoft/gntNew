@@ -1179,6 +1179,8 @@ class StockController extends AbstractController
         try {
             if ($this->isCsrfTokenValid('delete' . $stock->getId(). 'lot' . $stock->getLot(), $request->request->get('_token'))) {
                 $entityManager = $this->entityManager;
+                $stock->getProduit()->setStock(0);
+                $entityManager->persist($stock->getProduit());
                 $entityManager->remove($stock);
                 $entityManager->flush();
             }
