@@ -30,6 +30,93 @@ class AvoirRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+       public function premiertranche($client, $mois)
+    {
+         $date = $mois."-01  00:00:00";
+         $startDate = new \DateTime($date);
+         $date = $mois."-15  23:59:59";
+        $endDate = new \DateTime($date);
+        return $this->createQueryBuilder('p')
+            ->where('p.client = :id')
+            ->andWhere('p.date BETWEEN :start AND :end')
+            // ->andWhere('p.payer = :payer')
+            ->setParameter('id' , $client)
+            // ->setParameter('payer' , false)
+            ->setParameter('start' , $startDate)
+            ->setParameter('end' , $endDate)
+            ->orderBy('p.date', "DESC")
+            ->getQuery()
+            ->getResult();
+    }
+
+     public function commandepremiertranche( $mois)
+    {
+         $date = $mois."-01  00:00:00";
+         $startDate = new \DateTime($date);
+         $date = $mois."-15  23:59:59";
+        $endDate = new \DateTime($date);
+        return $this->createQueryBuilder('p')
+            // ->where('p.client = :id')
+            ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.credit = :credit')
+            ->andWhere('p.payer = :payer')
+            // ->setParameter('id' , $client)
+            ->setParameter('credit' , true)
+            ->setParameter('payer' , false)
+            ->setParameter('start' , $startDate)
+            ->setParameter('end' , $endDate)
+            ->groupBy('p.client')
+            ->orderBy('p.date', "DESC")
+            ->getQuery()
+            ->getResult();
+    }
+      public function deuxiemetranche($client, $mois)
+    {
+         $date = $mois."-15  00:00:00";
+         $startDate = new \DateTime($date);
+         $date = $mois."-15";
+        $endDate = new \DateTime($date);
+        $dernierjour = $endDate->format('t');
+        $date = $mois."-".$dernierjour."  23:59:59";
+        $endDate = new \DateTime($date);
+        return $this->createQueryBuilder('p')
+            ->where('p.client = :id')
+            ->andWhere('p.date BETWEEN :start AND :end')
+            // ->andWhere('p.payer = :payer')
+            ->setParameter('id' , $client)
+            // ->setParameter('payer' , false)
+            ->setParameter('start' , $startDate)
+            ->setParameter('end' , $endDate)
+            ->orderBy('p.date', "DESC")
+            ->getQuery()
+            ->getResult();
+    }
+
+      public function commandedeuxiemetranche( $mois)
+    {
+         $date = $mois."-15  00:00:00";
+         $startDate = new \DateTime($date);
+         $date = $mois."-15";
+        $endDate = new \DateTime($date);
+        $dernierjour = $endDate->format('t');
+        $date = $mois."-".$dernierjour."  23:59:59";
+        $endDate = new \DateTime($date);
+        return $this->createQueryBuilder('p')
+            // ->where('p.client = :id')
+            ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.credit = :credit')
+            ->andWhere('p.payer = :payer')
+            // ->setParameter('id' , $client)
+            ->setParameter('credit' , true)
+            ->setParameter('payer' , false)
+            ->setParameter('start' , $startDate)
+            ->setParameter('end' , $endDate)
+            ->groupBy('p.client')
+            ->orderBy('p.date', "DESC")
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Avoir[] Returns an array of Avoir objects
     //  */

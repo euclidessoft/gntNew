@@ -1,0 +1,74 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Officine"|trans }} - GNT Pharma {% endblock %}
+{% block commande %}active{% endblock %}
+{% block suivi %}active{% endblock %}
+
+{% block body %}
+    <div class="container mt-4 fond-7">
+        <h3 class="mt-2 mb-5 text-bold">
+            <i class="fa fa-list fa-lg"></i>
+             <i class="fa fa-users fa-lg"></i>
+            {{ "Relevés Factures"|trans }} 
+        </h3>
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_suivi') }}">
+                    {{ 'Validation paiement'|trans }}
+                </a>
+            </li>
+            {% if is_granted("ROLE_FINANCE")%}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_validation_credit') }}">
+                    {{'Validation crédit'|trans}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_credit') }}">
+                    {{'Commandes à crédit'|trans}}
+                </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_history') }}">
+                    {{'Commandes déjà payées'|trans}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active " href="#">
+                    {{'Relevé Factures'|trans}}
+                </a>
+            </li>
+        </ul>
+         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
+           <thead>
+                <th>Mois</th>
+                <th>premier quinzaine</th>
+                <th>Deuxieme quinzaine</th>
+            </thead>
+            {% set numero = commandes|length *2 %}
+
+            {% for mois, data in commandes %}
+                <tr>
+                    <td>{{ mois }}</td>
+                    <td><a href="{{ path('commande_panier_commande_premier', { 'mois' : mois})}}">RELEVE DES FACTURES</a></td>
+                    <td><a href="{{ path('commande_panier_commande_deuxieme', { 'mois' : mois})}}">RELEVE DES FACTURES</a></td>
+                </tr>
+            {% else %}
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

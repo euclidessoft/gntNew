@@ -1,0 +1,90 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block commande %}active{% endblock %}
+{% block suivi %}active{% endblock %}
+{% block body %}
+    <div class="container-fluid mt-4 fond-7">
+       <h3 class="mt-2 mb-5 text-bold">
+            <i class="fa fa-list fa-lg"></i>
+             <i class="fa fa-users fa-lg"></i>
+            {{ "Relevés Factures"|trans }} - {{"Deuxieme quinzaine"|trans}} {{ mois|date('m/Y')}}
+        </h3>
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_suivi') }}">
+                    {{ 'Validation paiement'|trans }}
+                </a>
+            </li>
+            {% if is_granted("ROLE_FINANCE")%}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_validation_credit') }}">
+                    {{'Validation crédit'|trans}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_credit') }}">
+                    {{'Commandes à crédit'|trans}}
+                </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('commande_panier_history') }}">
+                    {{'Commandes déjà payées'|trans}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active " href="#">
+                    {{'Relevé Factures'|trans}}
+                </a>
+            </li>
+        </ul>
+       
+        <table class="table table-success-light table-bordered table-hover table-striped my-3" id="affichage">
+            <thead>
+            <tr>
+                <th>{{ 'Nº Compte'|trans }}</th>
+                <th>{{ 'Nom'|trans }}</th>
+                <th>{{ 'Prénom'|trans }}</th>
+                <th>{{ 'Téléphone'|trans }}</th>
+                <th>{{ 'Email'|trans }}</th>
+                {# <th>{{ 'Adresse'|trans }}</th>
+                <th>{{ 'Prelevement'|trans }}</th>
+                <th class="text-center">
+                    {{ 'Statut'|trans }}
+                </th> #}
+                <th class="text-center">{{ 'Actions'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for client in commandes %}
+            <tr>
+                <td data-label="Nº Compte">{{ client.user.compte }}</td>
+                <td data-label="Nom">{{ client.user.nom }}</td>
+                <td data-label="Prénom">{{ client.user.prenom }}</td>
+                <td data-label="Téléphone">{{ client.user.phone }}</td>
+                <td data-label="Email">{{ client.user.email }}</td>
+                
+                <td data-label="Actions" class="text-center">
+                    <a href="{{ path('commande_panier_releve_deuxieme', {'mois' : mois, 'client': client.user.id}) }}" class="btn btn-success-light" id="{{client.user.id}}" onclick="load({{client.user.id}})"
+                       title="{{ "Afficher"|trans }}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </td>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% block scripts %}
+        {{ include('client/_script.html.twig') }}
+    {% endblock %}
+{% endblock %}

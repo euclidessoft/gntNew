@@ -31,7 +31,7 @@ final class LaboratoireController extends AbstractController
         $laboratoires = $entityManager->getRepository(Laboratoire::class)
             ->findAll();
 
-        return $this->render('laboratoire/index.html.twig', [
+        return $this->render('laboratoire/admin/index.html.twig', [
             'laboratoires' => $laboratoires,
         ]);
     }
@@ -70,7 +70,7 @@ final class LaboratoireController extends AbstractController
     {/*  selection produits a affecter a un laboratoire*/
         if ($this->security->isGranted('ROLE_FINANCE')) {
          
-            $response = $this->render('laboratoire/produits.html.twig', [
+            $response = $this->render('laboratoire/admin/produits.html.twig', [
                 'laboratoire' => $laboratoire,
                 'produits' => $repository->laboratoirenonAssocier($laboratoire),
             ]);

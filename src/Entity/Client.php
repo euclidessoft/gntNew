@@ -44,12 +44,19 @@ class Client extends User implements UserInterface
     #[ORM\Column(type:"float") ]
     private $solde;
 
+    /**
+     * @var Collection<int, Releve>
+     */
+    #[ORM\OneToMany(targetEntity: Releve::class, mappedBy: 'client')]
+    private Collection $releves;
+
     public function __construct()
     {
         parent::__construct();
         $this->commandes = new ArrayCollection();
         $this->employecommandes = new ArrayCollection();
         $this->prelevement = false;
+        $this->releves = new ArrayCollection();
     }
 
     public function getCompte(): ?string
@@ -208,6 +215,36 @@ class Client extends User implements UserInterface
     public function setSolde(float $solde): static
     {
         $this->solde = $solde;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Releve>
+     */
+    public function getReleves(): Collection
+    {
+        return $this->releves;
+    }
+
+    public function addRelefe(Releve $relefe): static
+    {
+        if (!$this->releves->contains($relefe)) {
+            $this->releves->add($relefe);
+            $relefe->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelefe(Releve $relefe): static
+    {
+        if ($this->releves->removeElement($relefe)) {
+            // set the owning side to null (unless already changed)
+            if ($relefe->getClient() === $this) {
+                $relefe->setClient(null);
+            }
+        }
 
         return $this;
     }

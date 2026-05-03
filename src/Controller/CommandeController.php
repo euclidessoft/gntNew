@@ -16,6 +16,8 @@ use App\Entity\Versement;
 use App\Form\CommandeType;
 use App\Form\PaiementFormType;
 use App\Form\VersementType;
+use App\Repository\AvoirRepository;
+use App\Repository\ReleveRepository;
 use App\Repository\CommandeProduitRepository;
 use App\Repository\LivrerProduitRepository;
 use App\Repository\CommandeRepository;
@@ -2894,21 +2896,22 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/Officine/", name :"officine") ]
-    public function officine(SessionInterface $session, CommandeRepository $repository)
+    public function officine(ReleveRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
             
-            $commandes = $repository->findBy(['suivi' =>true, 'user' => $this->getUser()->getId()],['date' =>"DESC"]);
+            // $commandes = $repository->findBy(['suivi' =>true, 'user' => $this->getUser()->getId()],['date' =>"DESC"]);
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]); 
             
-             $date = date('d');
+            //  $date = date('d');
             // if($date <= 15){
             //    $commandes = $repository->premiertranche($user);
             // }else{
             //    $commandes = $repository->deuxiemetranche($user); 
             // }
             $response = $this->render('officine/index.html.twig', [
-                'commandes' => $this->Quinzaine($commandes),
+                // 'commandes' => $this->Quinzaine($commandes),
+                'releves' => $repository->findBy(['client' => $this->getUser()->getId()]),
                 'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
@@ -2933,16 +2936,16 @@ class CommandeController extends AbstractController
             return $response;
         }
     }
-    #[Route("/Releve/{client}", name :"releve") ]
-    public function releve(Client $client, CommandeRepository $repository)
+
+    #[Route("/Releve", name :"releve") ]
+    public function releve(CommandeRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
             
-            $commandes = $repository->findBy(['suivi' => true, 'credit' => true, 'user' => $client->getId()],['traitement' =>"DESC"]);
+            $commandes = $repository->findBy(['suivi' => true, 'credit' => true],['traitement' =>"DESC"]);
             
-            $response = $this->render('officine/admin/index.html.twig', [
+            $response = $this->render('commande/admin/releve.html.twig', [
                 'commandes' => $this->Quinzaine($commandes),
-                'user' => $client,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -2967,20 +2970,64 @@ class CommandeController extends AbstractController
         }
     }
 
+    // #[Route("/Releve/{client}", name :"releve") ]
+    // public function releve(Client $client, CommandeRepository $repository)
+    // {
+    //     if ($this->security->isGranted('ROLE_CAISSIER')) {
+            
+    //         $commandes = $repository->findBy(['suivi' => true, 'credit' => true, 'user' => $client->getId()],['traitement' =>"DESC"]);
+            
+    //         $response = $this->render('officine/admin/index.html.twig', [
+    //             'commandes' => $this->Quinzaine($commandes),
+    //             'user' => $client,
+    //         ]);
+    //         $response->setSharedMaxAge(0);
+    //         $response->headers->addCacheControlDirective('no-cache', true);
+    //         $response->headers->addCacheControlDirective('no-store', true);
+    //         $response->headers->addCacheControlDirective('must-revalidate', true);
+    //         $response->setCache([
+    //             'max_age' => 0,
+    //             'private' => true,
+    //         ]);
+    //         return $response;
+    //     } else {
+    //         $response = $this->redirectToRoute('security_logout');
+    //         $response->setSharedMaxAge(0);
+    //         $response->headers->addCacheControlDirective('no-cache', true);
+    //         $response->headers->addCacheControlDirective('no-store', true);
+    //         $response->headers->addCacheControlDirective('must-revalidate', true);
+    //         $response->setCache([
+    //             'max_age' => 0,
+    //             'private' => true,
+    //         ]);
+    //         return $response;
+    //     }
+    // }
+
      #[Route("/Releve/Premier/{mois}/{client}", name :"releve_premier") ]
-    public function relevepremier($mois,$client, CommandeRepository $repository)
+    public function relevepremier($mois,$client, ReleveRepository $repo)
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
 
         $client = $this->entityManager->getRepository(Client::class)->find($client);
-            
-            $commandes = $repository->premiertranche($client->getId(), $mois);
+        $releve = $repo->findOneBy(['client' =>$client->getId(), 'periode' => $mois]);
+         if($releve != null){
+
+          $commandes = json_decode($releve->getCommandes(), true) ;
+         $avoirs = json_decode($releve->getAvoir(), true);
+         }else{
+            $commandes = [];
+            $avoirs = [];
+         }            
+           
              
-            $response = $this->render('officine/admin/quinze.html.twig', [
-                'commandes' => $commandes,
-                'quinzaine' => "Premier",
+            $response = $this->render('commande/admin/quinze.html.twig', [
+                'releve' => $releve,
+                'quinzaine' => "premier",
                 'mois' => $mois,
                 'user' => $client,
+                'commandes' => $commandes,
+                'avoirs' => $avoirs,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -3008,19 +3055,99 @@ class CommandeController extends AbstractController
     
     
      #[Route("/Releve/Deuxieme/{mois}/{client}", name :"releve_deuxieme") ]
-    public function relevedeuxieme($mois,$client, CommandeRepository $repository)
+    public function relevedeuxieme($mois,$client, ReleveRepository $repo)
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
 
         $client = $this->entityManager->getRepository(Client::class)->find($client);
-            
-            $commandes = $repository->deuxiemetranche($client->getId(), $mois);
+        $releve = $repo->findOneBy(['client' =>$client->getId(), 'periode' => $mois]);
+         if($releve != null){
+
+          $commandes = json_decode($releve->getCommandes(), true) ;
+         $avoirs = json_decode($releve->getAvoir(), true);
+         }else{
+            $commandes = [];
+            $avoirs = [];
+         }            
+           
              
-            $response = $this->render('officine/admin/quinze.html.twig', [
-                'commandes' => $commandes,
+            $response = $this->render('commande/admin/quinze.html.twig', [
+                'releve' => $releve,
                 'quinzaine' => "Deuxieme",
                 'mois' => $mois,
                 'user' => $client,
+                'commandes' => $commandes,
+                'avoirs' => $avoirs,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    
+    #[Route("/Commande/Premier/{mois}", name :"commande_premier") ]
+    public function commandepremier($mois,CommandeRepository $repository)
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+            
+            $commandes = $repository->commandepremiertranche($mois);
+            // dd($commandes);
+            $response = $this->render('commande/admin/quinzaine.html.twig', [
+                'commandes' => $commandes,
+                'mois' => $mois,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    
+    #[Route("/Commande/Deuxieme/{mois}", name :"commande_deuxieme") ]
+    public function commandedeuxieme($mois,CommandeRepository $repository)
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+            
+            $commandes = $repository->commandedeuxiemetranche($mois);
+            // dd($commandes);
+            $response = $this->render('commande/admin/deuxiemequinzaine.html.twig', [
+                'commandes' => $commandes,
+                'mois' => $mois,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -3046,22 +3173,33 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/Officine/Premier/{mois}", name :"officine_premier") ]
-    public function officinepremier($mois,CommandeRepository $repository)
+    public function officinepremier($mois,ReleveRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
             
-            $commandes = $repository->premiertranche($this->getUser()->getId(), $mois);
+            // $commandes = $repository->premiertranche($this->getUser()->getId(), $mois);
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]); 
-            
-             $date = date('d');
+            $releve = $repository->findOneBy(['client' => $this->getUser()->getId(), 'periode' => $mois, 'quinzaine' => 1]);
+             if($releve != null){
+
+            $commandes = json_decode($releve->getCommandes(), true) ;
+            $avoirs = json_decode($releve->getAvoir(), true);
+            }else{
+                $commandes = [];
+                $avoirs = [];
+            } 
+            //  $date = date('d');
             // if($date <= 15){
             //    $commandes = $repository->premiertranche($user);
             // }else{
             //    $commandes = $repository->deuxiemetranche($user); 
             // }
             $response = $this->render('officine/quinze.html.twig', [
-                'commandes' => $commandes,
+                'releve' => $releve,
+                // 'commandes' => $commandes,
                 'panier' => $panier,
+                'commandes' => $commandes,
+                'avoirs' => $avoirs,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -3086,22 +3224,29 @@ class CommandeController extends AbstractController
         }
     }
     #[Route("/Officine/Deuxieme/{mois}", name :"officine_deuxieme") ]
-    public function officinedeuxieme($mois,CommandeRepository $repository)
+    public function officinedeuxieme($mois,ReleveRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
             
-            $commandes = $repository->deuxiemetranche($this->getUser()->getId(), $mois);
+            // $commandes = $repository->deuxiemetranche($this->getUser()->getId(), $mois);
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]); 
-            
-             $date = date('d');
-            // if($date <= 15){
-            //    $commandes = $repository->premiertranche($user);
-            // }else{
-            //    $commandes = $repository->deuxiemetranche($user); 
-            // }
+              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]); 
+            $releve = $repository->findOneBy(['client' => $this->getUser()->getId(), 'periode' => $mois, 'quinzaine' => 2]);
+             if($releve != null){
+
+            $commandes = json_decode($releve->getCommandes(), true) ;
+            $avoirs = json_decode($releve->getAvoir(), true);
+            }else{
+                $commandes = [];
+                $avoirs = [];
+            } 
+             
             $response = $this->render('officine/quinze.html.twig', [
-                'commandes' => $commandes,
+                // 'commandes' => $commandes,
+                'releve' => $releve,
                 'panier' => $panier,
+                'commandes' => $commandes,
+                'avoirs' => $avoirs,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

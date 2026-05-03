@@ -14,6 +14,8 @@ use App\Service\WhatsAppNotifier;
 use App\Service\SMSService;
 use App\Service\LamService;
 use App\Entity\Commande;
+use App\Entity\Releve;
+use App\Entity\Avoir;
 use App\Entity\Versement;
 use App\Entity\Client;
 use App\Entity\RetourProduit;
@@ -178,6 +180,68 @@ public function test(ParameterBagInterface $params)
         // }
         $this->entityManager->flush();
         return new Response("okay");
+    }
+
+  #[Route('/releve/')]
+    public function releve()
+    {
+        $mois =date("Y-m");
+        $date = new \DateTime();
+
+        $dernierJour = (clone $date)
+            ->modify('last day of previous month');
+
+        dd($dernierJour->format('Y-m'));
+         $clientcoms = $this->entityManager->getRepository(Commande::Class)->commandepremiertranche($mois);
+        foreach($clientcoms as $clientcom){
+            $client = $clientcom->getUser();
+         $releve = new Releve();
+            $montant = 0;
+            $avance = 0;
+            $total = 0;
+            $tva = 0;
+            $prelevement = 0;
+            $commandes = $this->entityManager->getRepository(Commande::Class)->deuxiemetranche($client->getId(), $mois);
+            $com = [];
+            foreach($commandes as $commande){
+                $com[] = [
+                    'date' => $commande->getDate()->format('d/m/Y'),
+                    'numerofacture' => $commande->getId()."-".$commande->getNumerofacture(),
+                    'montant' => $commande->getMontant() - $commande->getTva() - $commande->getAcompte(),
+                ];
+                $montant += ($commande->getMontant() - $commande->getTva() - $commande->getAcompte());
+                $avance += $commande->getVersement();
+                $total += $commande->getMontant();
+                $tva += $commande->getTva();
+                $prelevement += $commande->getAcompte();
+
+            }
+            $releve->setCommandes(json_encode($com));
+            $avoirs = $this->entityManager->getRepository(Avoir::Class)->deuxiemetranche($client->getId(), $mois);
+            $av =[];
+            foreach($avoirs as $avoir){
+                $av[] = [
+                    'date' => $avoir->getDate()->format('d/m/Y'),
+                    'montant' => $avoir->getMontant(),
+                ];
+                $avance += $avoir->getMontant();
+            }
+             $releve->setClient($client);
+             $releve->setAvoir(json_encode($av));
+             $releve->setPeriode($mois);
+             $releve->setAvantage(0);
+             $releve->setAvance($avance);
+             $releve->setPrelevement($prelevement);
+             $releve->setTva($tva);
+             $releve->setTotal($total);
+             $releve->setReste($total - $avance);
+             $releve->setHt($montant);
+             $this->entityManager->persist($releve);
+        }
+
+            $this->entityManager->flush();
+            return new Response("okay");
+      
     }
 
 
