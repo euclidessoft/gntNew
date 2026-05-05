@@ -172,6 +172,7 @@ class FinanceController extends AbstractController
                     $avantage->setCLient($commande[0]->getUser());
                     $avantage->setAveCom($avecom);
                     $avantage->setCa($commande['ca']);
+                    $avantage->setTva($request->request->get('tva'));
                     $avantage->setAchat($commande['achat']);
                     $avantage->setCommission($gain->commission($commande['ca'], $request->request->get('com1'),$request->request->get('com2'),$request->request->get('com3'),$request->request->get('com4') ));
                     $avantage->setEscompte($gain->escompte($commande['achat'], $request->request->get('esc1'),$request->request->get('esc2'),$request->request->get('esc3'),$request->request->get('esc4')));

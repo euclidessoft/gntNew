@@ -23,8 +23,8 @@ class Releve
     #[ORM\Column(type: Types::TEXT)]
     private ?string $commandes = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $avoir = null;
+    // #[ORM\Column(type: Types::TEXT)]
+    // private ?string $avoir = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $avantage = null;
@@ -39,10 +39,22 @@ class Releve
     private ?float $prelevement = null;
 
     #[ORM\Column]
+    private ?float $prelevementavoir = null;
+
+    #[ORM\Column]
     private ?float $tva = null;
 
     #[ORM\Column]
+    private ?float $tvaavoir = null;
+
+    #[ORM\Column]
+    private ?float $avoir = null;
+
+    #[ORM\Column]
     private ?float $ht = null;
+
+    #[ORM\Column]
+    private ?float $htavoir = null;
 
     #[ORM\Column]
     private ?float $total = null;
@@ -67,17 +79,17 @@ class Releve
         return $this;
     }
 
-    public function getAvoir(): ?string
-    {
-        return $this->avoir;
-    }
+    // public function getAvoir(): ?string
+    // {
+    //     return $this->avoir;
+    // }
 
-    public function setAvoir(string $avoir): static
-    {
-        $this->avoir = $avoir;
+    // public function setAvoir(string $avoir): static
+    // {
+    //     $this->avoir = $avoir;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getAvantage(): ?string
     {
@@ -195,6 +207,54 @@ class Releve
     public function setQuinzaine(int $quinzaine): static
     {
         $this->quinzaine = $quinzaine;
+
+        return $this;
+    }
+
+    public function getPrelevementavoir(): ?float
+    {
+        return $this->prelevementavoir;
+    }
+
+    public function setPrelevementavoir(float $prelevementavoir): static
+    {
+        $this->prelevementavoir = $prelevementavoir;
+
+        return $this;
+    }
+
+    public function getTvaavoir(): ?float
+    {
+        return $this->tvaavoir;
+    }
+
+    public function setTvaavoir(float $tvaavoir): static
+    {
+        $this->tvaavoir = $tvaavoir;
+
+        return $this;
+    }
+
+    public function getAvoir(): ?float
+    {
+        return $this->avoir;
+    }
+
+    public function setAvoir(float $avoir): static
+    {
+        $this->avoir = $avoir;
+
+        return $this;
+    }
+
+    public function getHtavoir(): ?float
+    {
+        return $this->htavoir;
+    }
+
+    public function setHtavoir(float $htavoir): static
+    {
+        $this->htavoir = $htavoir;
 
         return $this;
     }

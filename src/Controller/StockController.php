@@ -620,7 +620,7 @@ class StockController extends AbstractController
 
     #[Route("/Retour_valider_avoir/", name :"retour_valider_avoir", methods : ["POST"]) ]
     public function retour_valider_avoir(Request $request, SessionInterface $session): Response
-    {
+    {// retour avec avoir
 
         if ($this->security->isGranted('ROLE_STOCK')) {
 
@@ -735,6 +735,7 @@ class StockController extends AbstractController
             // $em->persist($commande);
 
             $avoir->setMontant($montant);
+            $avoir->setTva($tva);
             $avoir->setRetour($retour);
             $em->persist($avoir);
             $em->flush();

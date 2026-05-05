@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Avantage;
 use App\Entity\Avoir;
 use App\Entity\Commande;
 use App\Entity\Releve;
@@ -46,53 +47,109 @@ class premiercron extends Command
          $clientcoms = $this->entityManager->getRepository(Commande::Class)->commandepremiertranche($mois);
         foreach($clientcoms as $clientcom){
             $client = $clientcom->getUser();
-        
+            
             $montant = 0;
+            $montantavoir = 0;
             $avance = 0;
             $total = 0;
             $tva = 0;
+            $tvaavoir = 0;
+            $avoir = 0;
             $prelevement = 0;
+            $prelevementavoir = 0;
+            $avant = [];
             $commandes = $this->entityManager->getRepository(Commande::Class)->premiertranche($client->getId(), $mois);
-            $com = [];
-            foreach($commandes as $commande){
-                $com[] = [
+            $avoirs = $this->entityManager->getRepository(Avoir::Class)->premiertranche($client->getId(), $mois);
+            $avantage = $this->entityManager->getRepository(Avantage::Class)->findOneby(["payer" => false, 'client' => $client->getId()]);
+            if($avantage !== null){
+                $avantage->setPayer(true);
+                $this->entityManager->persist($avantage);
+                 $avant[] = [
+                    'commision' => $avantage->getCommission(),
+                    'ristourne' => $avantage->getRistourne(),
+                    'escompte' => $avantage->getEscompte(),
+                    'tva' => $avantage->getTva(),
+                ];
+
+            }
+            $result = [];
+        
+            foreach ([$commandes,$avoirs] as $tableau) {
+            foreach ($tableau as $row) {
+                if($row instanceof Commande)
+                 $date = $row->getTraitement()->format('Y-m-d');
+                else $date = $row->getDate()->format('Y-m-d');
+                // dd($date);
+                // On regroupe les lignes par date
+                $result[$date][] = $row;
+                }
+            }
+            ksort($result);
+            // dd($result);
+            $flat = [];
+
+            foreach ($result as $date => $rows) {
+                foreach ($rows as $row) {
+                    $flat[] = $row;
+                }
+            } 
+
+         
+             $com = [];
+            foreach($flat as $commande){
+                 if($commande instanceof Commande){
+                 $com[] = [
                     'date' => $commande->getDate()->format('d/m/Y'),
                     'datedue' => "26/".date("m/Y"),
                     'traitement' => $commande->getTraitement()->format('d/m/Y'),
                     'numerofacture' => $commande->getId()."-".$commande->getNumerofacture(),
+                    // 'montant' => $commande->getMontant(),
                     'montant' => $commande->getMontant() - $commande->getTva() - $commande->getAcompte(),
                 ];
+                
+                // $montant += $comme->getMontant();
                 $montant += ($commande->getMontant() - $commande->getTva() - $commande->getAcompte());
                 $avance += $commande->getVersement();
                 $total += $commande->getMontant();
                 $tva += $commande->getTva();
                 $prelevement += $commande->getAcompte();
+                }else{ 
+                    $com[] = [
+                    'date' => $commande->getDate()->format('d/m/Y'),
+                    'datedue' => '',
+                    'traitement' => $commande->getDate()->format('d/m/Y'),
+                    'numerofacture' => $commande->getCommande()->getId()."-".$commande->getCommande()->getNumerofacture()."-".$commande->getId(),
+                    // 'montant' => $commande->getMontant() - $commande->getPrelevement(),
+                    'prelement' => $commande->getPrelevement(),
+                    'montant' => $commande->getMontant() - $commande->getTva() - $commande->getPrelevement(),
+                ];
+                
+                // $montant -= $commande->getMontant();
+                $montantavoir += ($commande->getMontant() - $commande->getTva() - $commande->getPrelevement());
+                // $avance += $commande->getVersement();
+                $avoir += $commande->getMontant();
+                $tvaavoir += $commande->getTva();
+                $prelevementavoir += $commande->getPrelevement();
+                }
 
             }
-           
-            $avoirs = $this->entityManager->getRepository(Avoir::Class)->premiertranche($client->getId(), $mois);
-            $av =[];
-            foreach($avoirs as $avoir){
-                $av[] = [
-                    'date' => $avoir->getDate()->format('d/m/Y'),
-                    'montant' => $avoir->getMontant(),
-                ];
-                $avance += $avoir->getMontant();
-            }
-            if(count($commandes) > 0 || count($avoirs) > 0){
+            if(count($commandes) > 0){
              $releve = new Releve();
              $releve->setCommandes(json_encode($com));
              $releve->setQuinzaine(1);
              $releve->setClient($client);
-             $releve->setAvoir(json_encode($av));
+             $releve->setAvoir($avoir);
              $releve->setPeriode($mois);
-             $releve->setAvantage(0);
+             $releve->setAvantage(json_encode($avant));
              $releve->setAvance($avance);
              $releve->setPrelevement($prelevement);
+             $releve->setPrelevementavoir($prelevementavoir);
              $releve->setTva($tva);
+             $releve->setTvaavoir($tva);
              $releve->setTotal($total);
-             $releve->setReste($total - $avance);
+             $releve->setReste($total - $avance - $avoir);
              $releve->setHt($montant);
+             $releve->setHtavoir($montantavoir);
              $this->entityManager->persist($releve);
             }
         }

@@ -28,10 +28,17 @@ class Avantage
     private ?float $commission = null;
 
     #[ORM\Column]
+    private ?float $tva = null;
+
+    #[ORM\Column]
     private ?float $achat = null;
 
     #[ORM\Column]
     private ?float $escompte = null;
+
+    
+    #[ORM\Column(type:"boolean") ]
+    private $payer;
 
     #[ORM\ManyToOne]
     private ?Client $client = null;
@@ -41,13 +48,13 @@ class Avantage
     private ?Employe $employe = null;
 
 
-    // /**
-    //  * Constructor
-    //  */
-    // public function __construct()
-    // {
-    //     $this->date = new \Datetime();
-    // }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->payer = false;
+    }
 
     public function getId(): ?int
     {
@@ -146,6 +153,30 @@ class Avantage
     public function setAveCom(?AveCom $AveCom): static
     {
         $this->AveCom = $AveCom;
+
+        return $this;
+    }
+
+    public function getTva(): ?float
+    {
+        return $this->tva;
+    }
+
+    public function setTva(float $tva): static
+    {
+        $this->tva = $tva;
+
+        return $this;
+    }
+
+    public function isPayer(): ?bool
+    {
+        return $this->payer;
+    }
+
+    public function setPayer(bool $payer): static
+    {
+        $this->payer = $payer;
 
         return $this;
     }

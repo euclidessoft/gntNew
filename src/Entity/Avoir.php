@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AvoirRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:AvoirRepository::class) ]
@@ -40,6 +41,12 @@ class Avoir
     #[ORM\Column(type:"float") ]
     private $Montant;
 
+    #[ORM\Column(type:"float") ]
+    private $prelevement;
+
+    #[ORM\Column(type:"float") ]
+    private $tva;
+
     #[ORM\Column(type:"boolean") ]
     private $rebourser;
 
@@ -60,7 +67,9 @@ class Avoir
         $this->admin = $admin;
         $this->commande = $commande;
         $this->Montant = 0;
-        $this->rebourser    = 0;
+        $this->rebourser = 0;
+        $this->prelevement = 0;
+        $this->tva = 0;
     }
 
     public function getId(): ?int
@@ -87,7 +96,7 @@ class Avoir
 
     public function setMontant(float $Montant): self
     {
-        $this->Montant = $Montant;
+        $this->Montant = $this->acompte($Montant);
 
         return $this;
     }
@@ -194,6 +203,44 @@ class Avoir
         }
 
         $this->remboursement = $remboursement;
+
+        return $this;
+    }
+
+    public function acompte($montant){
+        if ($this->commande->getAcompte() != 0){
+            $prelevement= $montant * 0.02;
+            $montant += $prelevement;
+            $this->setPrelevement($prelevement);
+        }
+        return $montant;
+    }
+
+    public function getPrelevement(): ?float
+    {
+        return $this->prelevement;
+    }
+
+    public function setPrelevement(float $prelevement): static
+    {
+        $this->prelevement = $prelevement;
+
+        return $this;
+    }
+
+    public function isRebourser(): ?bool
+    {
+        return $this->rebourser;
+    }
+
+    public function getTva(): ?float
+    {
+        return $this->tva;
+    }
+
+    public function setTva(float $tva): static
+    {
+        $this->tva = $tva;
 
         return $this;
     }

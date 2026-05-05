@@ -41,20 +41,20 @@
                     {{ "Activer"|trans }}
                 </button>
             {% endif %}
-            <a class="btn btn-success-light me-2 mb-2" href="{{ path('client_edit', {'id': user.id}) }}">
+            <a class="btn btn-success-light me-2 mb-2" href="{{ path('client_edit', {'id': user.id}) }}" id="edit{{ user.id }}" onclick="load('edit{{user.id}}')">
                 <i class="fas fa-user-edit"></i>
                 {{ "Modifier"|trans }}
             </a>
         {% endif %}
-        <a class="btn btn-success me-2 mb-2" href="{{ path('vente_chiffre_client', {'client': user.id}) }}">
+        <a class="btn btn-success me-2 mb-2" href="{{ path('vente_chiffre_client', {'client': user.id}) }}" id="chif{{ user.id }}" onclick="load('chif{{user.id}}')">
             <i class="fas fa-chart-line"></i>
             {{ "Chiffres"|trans }}
         </a>
-        <a class="btn btn-outline-success me-2 mb-2" href="{{ path('commande_panier_releve', {'client': user.id}) }}">
+        <a class="btn btn-outline-success me-2 mb-2" href="{{ path('commande_panier_releve_client', {'client': user.id}) }}" id="rel{{ user.id }}" onclick="load('rel{{user.id}}')">
             <i class="fa fa-list"></i>
             {{ "Relevé factures"|trans }}
         </a>
-        <a class="btn btn-success-light me-2 mb-2" href="{{ path('commande_panier_commande_client', {'client': user.id}) }}">
+        <a class="btn btn-success-light me-2 mb-2" href="{{ path('commande_panier_commande_client', {'client': user.id}) }}" id="com{{ user.id }}" onclick="load('com{{user.id}}')">
             <i class="fa fa-shopping-cart"></i>
             {{ "Commandes"|trans }}
         </a>

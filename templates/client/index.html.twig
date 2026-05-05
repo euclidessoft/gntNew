@@ -73,7 +73,7 @@
                     {% endif %}
                 </td> #}
                 <td data-label="Actions" class="text-center">
-                    <a href="{{ path('client_show', {'id': client.id}) }}" class="btn btn-success-light"
+                    <a href="{{ path('client_show', {'id': client.id}) }}" class="btn btn-success-light" id="{{client.id}}" onclick="load({{client.id}})"
                        title="{{ "Afficher"|trans }}">
                         <i class="fa fa-eye"></i>
                     </a>

@@ -125,26 +125,26 @@
                     {{ "Total TVA"|trans }}
                 </td>
                 <td class="montant">
-                    <span id="" class="text-nowrap">- {{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id="" class="text-nowrap">- {{ avoir.tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                 </td>
             </tr>
-            {# <tr>
+            <tr>
                 <td colspan="6" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
-                <td class="text-center">
+                <td class="text-end">
                
-                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
+                    <span id="">- {{ avoir.prelevement != 0 ? avoir.prelevement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
-            </tr> #}
+            </tr>
 
             <tr class="text-bold">
                 <td colspan="6" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="montant">
-                    <span class="text-nowrap">- {{ (total  + tva )|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span class="text-nowrap">- {{ avoir.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                           <span id="total" class="text-nowrap" style="display:none;">{{ (total  + tva)|number_format(2, '.' , '') }}</span>
                 </td>
             </tr>

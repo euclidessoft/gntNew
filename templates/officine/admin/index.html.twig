@@ -38,20 +38,27 @@
                 <a class="nav-link" href="{{ path('commande_panier_credit') }}">{{'Dette'|trans}}</a>
             </li>
         </ul> #}
-         <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
+        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="liste">
            <thead>
-                <th>Mois</th>
-                <th>premier quinzaine</th>
-                <th>Deuxieme quinzaine</th>
+                <th>Numero</th>
+                <th>Releve</th>
             </thead>
-            {% set numero = commandes|length *2 %}
+            {# {% set numero = commandes|length *2 %} #}
+            {% set i = 1 %}
 
-            {% for mois, data in commandes %}
+            {% for releve in releves %}
                 <tr>
-                    <td>{{ mois }}</td>
-                    <td><a href="{{ path('commande_panier_releve_premier', { 'mois' : mois, 'client' :user.id})}}">RELEVE DES FACTURES {{numero-1}}</a></td>
-                    <td><a href="{{ path('commande_panier_releve_deuxieme', { 'mois' : mois, 'client' :user.id})}}">RELEVE DES FACTURES {{numero}}</a> {% set numero = numero -2 %}</td>
+                    <td>numero {{i}}</td>
+                    <td>
+                    {% if releve.quinzaine == 1 %}
+                        <a href="{{ path('commande_panier_releve_premier', { 'client' : user.id, 'mois' : releve.periode})}}">RELEVE DES FACTURES - PREMIER QUINZAINE {{releve.periode}}
+                        </a>
+                    {% else %}
+                        <a href="{{ path('commande_panier_releve_deuxieme', { 'client' : user.id, 'mois' : releve.periode})}}">RELEVE DES FACTURES - DEUXIEME QUINZAINE  {{releve.periode}}</a>
+                    {% endif %}
+                    </td>
                 </tr>
+                {% set i = i +1 %}
             {% else %}
             {% endfor %}
             </tbody>
