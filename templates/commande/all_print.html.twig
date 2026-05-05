@@ -1,10 +1,13 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <title>&nbsp;</title>
     <style>
@@ -22,117 +25,6 @@
         .badge {
             background-color: red !important;
         }
-
-        .col-lg-8 {
-            flex: 0 0 auto;
-            width: 66.66666667%;
-        }
-
-        .offset-lg-2 {
-            margin-left: 16.66666667%;
-        }
-
-        .row {
-            --bs-gutter-x: 1.5rem;
-            --bs-gutter-y: 0;
-            display: flex;
-            flex-wrap: wrap;
-            margin-top: calc(var(--bs-gutter-y) * -1);
-            margin-right: calc(var(--bs-gutter-x) * -.5);
-            margin-left: calc(var(--bs-gutter-x) * -.5);
-        }
-
-        .container-fluid {
-            width: 100%;
-            padding-right: var(--bs-gutter-x, 0.75rem);
-            padding-left: var(--bs-gutter-x, 0.75rem);
-            margin-right: auto;
-            margin-left: auto;
-        }
-
-        .col-2 {
-            flex: 0 0 auto;
-            width: 16.66666667%;
-        }
-
-        .col-10 {
-            flex: 0 0 auto;
-            width: 83.33333333%;
-        }
-
-        .text-center {
-            text-align: center !important;
-        }
-
-        .col-12 {
-            flex: 0 0 auto;
-            width: 100%;
-        }
-
-        .text-bold {
-            font-weight: bold;
-        }
-
-        .text-uppercase {
-            text-transform: uppercase !important;
-        }
-
-        .mt-4 {
-            margin-top: 1.5rem !important;
-        }
-
-        .mb-3 {
-            margin-bottom: 1rem !important;
-        }
-
-        .table {
-            --bs-table-bg: transparent;
-            --bs-table-accent-bg: transparent;
-            --bs-table-striped-color: #212529;
-            --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
-            --bs-table-active-color: #212529;
-            --bs-table-active-bg: rgba(0, 0, 0, 0.1);
-            --bs-table-hover-color: #212529;
-            --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
-            width: 100%;
-            margin-bottom: 1rem;
-            color: #212529;
-            vertical-align: top;
-            border-color: #dee2e6;
-        }
-
-        .text-success {
-            color: #198754 !important;
-        }
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .mt-2 {
-            margin-top: 0.5rem !important;
-        }
-
-        .text-nowrap {
-            white-space: nowrap !important;
-        }
-
-        .bg-danger {
-            background-color: #dc3545 !important;
-        }
-
-        .text-end {
-            text-align: right !important;
-        }
-
-        .fw-bolder {
-            font-weight: bolder !important;
-        }
-
-        .mt-5 {
-            margin-top: 3rem !important;
-        }
-
-
 
         @media print {
             .table-success-light {
@@ -157,341 +49,234 @@
     </style>
 
 </head>
-
-<body{# onload="print()" onafterprint="history.back()"#}>
-    <div class="container-fluid">
-        <div class="col-lg-8 offset-lg-2">
-            <div class="row" style="border-bottom: 1px solid #039c4f;padding-bottom: 20px;">
-                <div class="col-2">
-                    <img src="{{ absolute_url(asset('images/gntpharma.jpeg')) }}" alt="Logo" class="w-100">
-                </div>
-                <div class="col-10 text-center">
-                    <div class="row">
-                        <div class="col-12 titre text-center">
-                            GNT PHARMA
-                        </div>
-                        <div class="col-12 text">
-                            BP : 3582 Yaoundé – Cameroun, NGOUSSO
-                            <br>
-                            Montée Éleveur Immeuble Sainte Marie
-                        </div>
-                        <div class="col-12 text">
-                            +237 69 71 49 4 12 / +237 67 52 47 865
-                        </div>
-                        <div class="col-12 text">
-                            info@gntpharma-cameroun.com / www.gnt-pharma.com
-                        </div>
-                    <div class="col-12 text">
+<body>
+<div style="width: 100%;padding-right: var(--bs-gutter-x, 0.75rem);padding-left: var(--bs-gutter-x, 0.75rem);margin-right: auto;margin-left: auto;">
+    <div style="flex: 0 0 auto;width: 66.66666667%;margin-left: 16.66666667%;">
+        <div style="border-bottom: 1px solid #039c4f;padding-bottom: 20px;--bs-gutter-x: 1.5rem;--bs-gutter-y: 0;display: flex;flex-wrap: wrap;margin-top: calc(var(--bs-gutter-y) * -1);margin-right: calc(var(--bs-gutter-x) * -.5);margin-left: calc(var(--bs-gutter-x) * -.5);">
+            <div style="flex: 0 0 auto;width: 16.66666667%;">
+                <img src="{{ asset('images/gntpharma.jpeg') }}" alt="Logo" class="w-100">
+            </div>
+            <div style="flex: 0 0 auto;width: 83.33333333%;text-align: center !important;">
+                <div style="--bs-gutter-x: 1.5rem;--bs-gutter-y: 0;display: flex;flex-wrap: wrap;margin-top: calc(var(--bs-gutter-y) * -1);margin-right: calc(var(--bs-gutter-x) * -.5);margin-left: calc(var(--bs-gutter-x) * -.5);">
+                    <div style="flex: 0 0 auto;width: 100%;font-family: Verdana, Geneva, Tahoma, sans-serif;font-size: 30px;font-weight: bold;color: #039c4f;text-align: center !important;">
+                        GNT PHARMA
+                    </div>
+                    <div style="flex: 0 0 auto;width: 100%;font-size: 14px;">
+                        BP : 3582 Yaoundé – Cameroun, NGOUSSO
+                        <br>
+                        Montée Éleveur Immeuble Sainte Marie
+                    </div>
+                    <div style="flex: 0 0 auto;width: 100%;font-size: 14px;">
+                        +237 69 71 49 4 12 / +237 67 52 47 865
+                    </div>
+                    <div style="flex: 0 0 auto;width: 100%;font-size: 14px;">
+                        info@gntpharma-cameroun.com / www.gnt-pharma.com
+                    </div>
+                    <div style="flex: 0 0 auto;width: 100%;font-size: 14px;">
                         RCCM N° : RC/YAE/2023/M/105 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIU : M122217881373Q
                     </div>
-                    {# <div class="col-12 text">
+                    {# <div style="flex: 0 0 auto;width: 100%;font-size: 14px;">
                        SARL au CAPITAL de 100 000 000 F CFA
                     </div> #}
-                        <!-- <div class="col-12 text-bold">
+                    <!-- <div class="col-12 text-bold" style="">
 
-                </div> -->
-                    </div>
+                    </div> -->
                 </div>
             </div>
-           <h3 class="text-center text-bold text-uppercase mt-4">
+        </div>
+        <h3 style="text-align: center !important;font-weight: bold;text-transform: uppercase !important;margin-top: 1.5rem !important;">
             {{ ' Facture'|trans }}
         </h3>
-        <h6 class="text-center text-bold text-uppercase mb-3">
-        {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
+        <h6 style="text-align: center !important;font-weight: bold;text-transform: uppercase !important;margin-bottom: 1rem !important;">
+            {{ 'Numero'|trans }} : {{ commande.id }}-{{ commande.numerofacture }}
         </h6>
 
-            <div class="row">
-            <div class="col-12">
-                    <table class="table table-success-light text-center table-bordered">
-                        <thead>
-                            <tr>
-                                <th>{{ 'Date Commande'|trans }}</th>
-                                <th>{{ 'Numero Commande'|trans }}</th>
+        <div style="--bs-gutter-x: 1.5rem;--bs-gutter-y: 0;display: flex;flex-wrap: wrap;margin-top: calc(var(--bs-gutter-y) * -1);margin-right: calc(var(--bs-gutter-x) * -.5);margin-left: calc(var(--bs-gutter-x) * -.5);">
+            <div style="flex: 0 0 auto;width: 100%;">
+                <table style="--bs-table-bg: transparent;--bs-table-accent-bg: transparent;--bs-table-striped-color: #212529;--bs-table-striped-bg: rgba(0, 0, 0, 0.05);--bs-table-active-color: #212529;--bs-table-active-bg: rgba(0, 0, 0, 0.1);--bs-table-hover-color: #212529;--bs-table-hover-bg: rgba(0, 0, 0, 0.075);width: 100%;margin-bottom: 1rem;vertical-align: top;color: #000 !important;text-align: center !important;border: 1px solid #000 !important;">
+                    <thead>
+                    <tr>
+                        <th>{{ 'Numero'|trans }} <br>{{ 'Commande'|trans }}</th>
+                        <th>{{ 'Date'|trans }}</th>
+                        <th>{{ 'Client'|trans }}</th>
                         <th>{{ 'NIU'|trans }}</th>
                         {% if commande.credit == 1 and commande.payer == 0 %}
-                        <th>{{ 'date d\'echeance de paiement'|trans }}</th>
+                            <th>{{ 'date d\'echeance de paiement'|trans }}</th>
                         {% endif %}
 
-                                <th>{{ 'Status Commande'|trans }}</th>
-                                {#            <th>Date de Livraison</th>#}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <td>{{ commande.date|date('d/m/Y') }}</td>
-                            <td>{{ commande.id }}</td>
-                        <td>{{ commande.user.niu }}</td>
-                         {% if commande.credit == 1 and commande.payer == 0 %}
-                             <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
-                        {% endif %}
-                            <td>
-                                {% if commande.payer == 0 %}
-                                <span class="text-danger">Non payée</span>
-                                {% else %}
-                                <span class="text-success">Payée</span>
-                                {% endif %}
-                            </td>
-                            {#        <td> </td>#}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {% set total=0 %}
-            {% set reduction=0 %}
-            {% set tva=0 %}
-            <table class="table table-success-light text-center table-bordered mt-2">
-                <thead>
-                    <tr>
-                        <th>{{ 'CIP'|trans }}</th>
-                        <th class="tt">{{ 'Désignation'|trans }}</th>
-                        <th>{{'Qté Commandée'|trans}}</th>
-                        {#            <th>Qté Livree</th>#}
-                        {#            <th>Qté Restante</th>#}
-                        <th class="text-nowrap">{{'Prix Ces.'|trans}}</th>
-                        <th>{{ 'Réduc.'|trans }}</th>
-                        <th>{{ 'TVA'|trans }}</th>
-                        <th>{{ 'Prix Public'|trans }}</th>
-                        <th>{{ 'Montant'|trans }}</th>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for commandeproduit in commandeproduits %}
-                    {% set ug = 0 %}
-                    {% set reductionproduit = 0 %}
+                    </thead>
+                    <tbody>
                     <tr>
-                        <td> {{ commandeproduit.produit.reference }} </td>
-                        <td>{{ commandeproduit.produit.desigantion }} </td>
-                        <td>
-                            {{ commandeproduit.quantite }}
-                            {% if commandeproduit.promotion is not null %}
-                            {% if commandeproduit.promotion.premier is not null %}
-
-                                {% if commandeproduit.quantite / commandeproduit.promotion.cinquieme >= 1 %}
-
-                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.cinquieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commandeproduit.promotion.ugcinquieme %}
-                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.cinquieme %}
-
-                                    {% if suite / commandeproduit.promotion.quatrieme >= 1 %}
-
-                                        {% set unite = (suite / commandeproduit.promotion.quatrieme)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commandeproduit.promotion.ugquatrieme %}
-                                        {% set suite = suite - unite * commandeproduit.promotion.quatrieme %}
-
-                                        {% if suite / commandeproduit.promotion.troisieme >= 1 %}
-
-                                            {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
-                                            {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
-                                            {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
-
-                                            {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
-                                                {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
-                                                {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
-                                                {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
-
-                                                {% if suite / commandeproduit.promotion.premier >= 1 %}
-                                                    {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                                    {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                                {% endif %}
-
-                                            {% elseif suite / commandeproduit.promotion.premier >= 1 %}
-                                                {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                                {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endif %}
-
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.quatrieme >= 1 %}
-
-                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.quatrieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commandeproduit.promotion.ugquatrieme %}
-                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.quatrieme %}
-
-                                    {% if suite / commandeproduit.promotion.troisieme >= 1 %}
-
-                                        {% set unite = (suite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
-                                        {% set suite = suite - unite * commandeproduit.promotion.troisieme %}
-
-                                        {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
-                                            {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
-                                            {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
-                                            {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
-
-                                            {% if suite / commandeproduit.promotion.premier >= 1 %}
-                                                {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                                {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                            {% endif %}
-
-                                        {% elseif suite / commandeproduit.promotion.premier >= 1 %}
-                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                        {% endif %}
-                                    {% endif %}
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.troisieme >= 1 %}
-
-                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.troisieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commandeproduit.promotion.ugtroisieme %}
-                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.troisieme %}
-
-                                    {% if suite / commandeproduit.promotion.deuxieme >= 1 %}
-                                        {% set unite = (suite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
-                                        {% set suite = suite - unite * commandeproduit.promotion.deuxieme %}
-
-                                        {% if suite / commandeproduit.promotion.premier >= 1 %}
-                                            {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                            {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                        {% endif %}
-
-                                    {% elseif suite / commandeproduit.promotion.premier >= 1 %}
-                                        {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                    {% endif %}
-
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.deuxieme >= 1 %}
-
-
-                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.deuxieme)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commandeproduit.promotion.ugdeuxieme %}
-                                    {% set suite = commandeproduit.quantite - unite * commandeproduit.promotion.deuxieme %}
-
-                                    {% if suite / commandeproduit.promotion.premier >= 1 %}
-                                        {% set unite = (suite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                        {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                    {% endif %}
-
-                                {% elseif commandeproduit.quantite / commandeproduit.promotion.premier >= 1 %}
-
-                                    {% set unite = (commandeproduit.quantite / commandeproduit.promotion.premier)|round(0, 'floor') %}
-                                    {% set ug = ug + unite * commandeproduit.promotion.ugpremier %}
-
-                                {% endif %}
-                                <span class="badge bg-danger">
-                                    +{{ ug }} U.G.
-                            </span>
-                            {% endif %}
+                        <td>{{ commande.id }}</td>
+                        <td>{{ commande.date|date('d/m/Y') }}</td>
+                        <td>{{ commande.user.nom }}</td>
+                        <td>{{ commande.user.niu }}</td>
+                        {% if commande.credit == 1 and commande.payer == 0 %}
+                            <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
                         {% endif %}
-                        </td>
-                        {#                <td>#}
-                        {#                {{ commande.livraison ? commance.quantitelivrer : '' }}#}
-                        {#                </td>#}
-                        {#                <td> </td>#}
-                        <td>
-                            {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% set total=0 %}
+        {% set reduction=0 %}
+        {% set tva=0 %}
+        <table style="--bs-table-bg: transparent; --bs-table-accent-bg: transparent; --bs-table-striped-color: #212529; --bs-table-striped-bg: rgba(0, 0, 0, 0.05); --bs-table-active-color: #212529; --bs-table-active-bg: rgba(0, 0, 0, 0.1); --bs-table-hover-color: #212529; --bs-table-hover-bg: rgba(0, 0, 0, 0.075); margin-bottom: 1rem; vertical-align: top;color: #000 !important;text-align: center !important;border: 1px solid #000 !important;margin-top: 3rem !important;width: 100% !important;">
+            <thead>
+            <tr>
+                <th>{{ 'CIP'|trans }}</th>
+                <th class="tt">{{ 'Désignation'|trans }}</th>
+                <th>{{ 'Qté'|trans }}</th>
+                <th>{{ 'Prix Ces.'|trans }}</th>
+                <th>{{ 'Réduc.'|trans }}</th>
+                <th>{{ 'TVA'|trans }}</th>
+                <th>{{ 'Prix Public'|trans }}</th>
+                <th>{{ 'Montant'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commandeproduit in commandeproduits %}
+                {% set ug = commandeproduit.ug %}
+                {% set reductionproduit = 0 %}
+                <tr>
+                    <td> {{ commandeproduit.produit.reference }} </td>
+                    <td style="display: inline-block;border: none;width: 180px !important;">{{ commandeproduit.produit.desigantion }} </td>
+                    <td>
+                        {{ commandeproduit.quantite }}
+                        {% if commandeproduit.ug != 0 %}
+                            <span class="badge bg-danger" style="">
+                                    + {{ commandeproduit.ug }} U.G
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td style="white-space: nowrap !important;">
+                        {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
-                        </td>
-                        <td>
-                            {% if commandeproduit.promotion is not null %}
+                    </td>
+                    <td>
+                        {% if commandeproduit.promotion is not null %}
                             {% if commandeproduit.promotion.reduction is not null %}
-                            {% set reductionproduit =  commandeproduit.quantite * commandeproduit.session * commandeproduit.promotion.reduction /100 %}
+                                {% set reductionproduit =  commandeproduit.quantite * commandeproduit.session * commandeproduit.promotion.reduction /100 %}
 
-                            {% set reduction =  reduction + reductionproduit %}
-                            <span class="badge bg-danger">
-                                -{{ commandeproduit.session * commandeproduit.promotion.reduction /100 }} F
-                            </span>
+                                {% set reduction =  reduction + reductionproduit %}
+                                <span style="display: inline-block; padding: 0.35em 0.65em; font-size: 0.75em; font-weight: 700; line-height: 1; color: #fff; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: 0.25rem;background-color: #dc3545 !important;">
+                                    -{{ commandeproduit.session * commandeproduit.promotion.reduction /100 }} F
+                                </span>
                             {% else %}
-                            -
+                                -
                             {% endif %}
-                            {% else %}
+                        {% else %}
                             -
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if commandeproduit.tva != 0 %}
+                        {% endif %}
+                    </td>
+                    <td style="white-space: nowrap !important;">
+                        {% if commandeproduit.produit.tva == 1 %}
                             {% set tva = tva + (((commandeproduit.quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
                             {% if commandeproduit.promotion is not null %}
-                            {% if commandeproduit.promotion.reduction is not null %}
-                            {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction /100)) * 0.1925 }}
+                                {% if commandeproduit.promotion.reduction is not null %}
+                                    {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction /100)) * 0.1925 }}
+                                {% else %}
+                                    {{ commandeproduit.session  * 0.1925 }}
+                                {% endif %}
                             {% else %}
-                            {{ commandeproduit.session  * 0.1925 }}
+                                {{ commandeproduit.session  * 0.1925 }}
                             {% endif %}
-                            {% else %}
-                            {{ commandeproduit.session  * 0.1925 }}
-                            {% endif %}
-                            {% else %}
+                        {% else %}
                             -
-                            {% endif %}
-                        </td>
-                        <td>{{ commandeproduit.publique|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        <td>
-                            {{ (commandeproduit.quantite * commandeproduit.session)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                            {% set total = total + (commandeproduit.quantite * commandeproduit.session) %}
-                        </td>
+                        {% endif %}
+                    </td>
+                    <td>{{ commandeproduit.produit.prixpublic|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td style="white-space: nowrap !important;text-align: right !important;">
+                        {{ (commandeproduit.quantite * commandeproduit.produit.prix)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {% set total = total + (commandeproduit.quantite * commandeproduit.produit.prix) %}
+                    </td>
+                </tr>
 
-
-
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="7" class="text-end fw-bolder">
-                            {{ "Total HT"|trans }}
-                        </td>
-                        <td>
-                            <span id="" class="fw-bolder">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                        </td>
-                    </tr>
-                    {% if reduction != 0 %}
-                    <tr>
-                        <td colspan="7" class="text-end fw-bolder">
-                            {{ "Total Réduction"|trans }}
-                        </td>
-                        <td>
-                            <span id="" class="fw-bolder">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                        </td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td colspan="7" class="text-end">
-                            {{ "Total TVA"|trans }}
-                        </td>
-                        <td>
-                            <span id="">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                        </td>
-                    </tr>
+            {% else %}
+                <tr>
+                    <td colspan="10">{{ 'Aucune commande'|trans }}</td>
+                </tr>
+            {% endfor %}
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                    {{ "Total HT"|trans }}
+                </td>
+                <td style="text-align: right !important;">
+                    <span id="" style="font-weight: bolder !important;white-space: nowrap !important;">
+                        {{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                    </span>
+                </td>
+            </tr>
+            {% if reduction != 0 %}
+                <tr>
+                    <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                        {{ "Total Réduction"|trans }}
+                    </td>
+                    <td>
+                        <span id="" style="font-weight: bolder !important;">
+                            {{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        </span>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                    {{ "Total TVA"|trans }}
+                </td>
+                <td style="text-align: right !important;white-space: nowrap !important;">
+                    <span id="">
+                        {{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7" style="text-align: right !important;">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
-                <td class="text-center">
-             
-                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
+                <td style="text-align: center !important;">
+                    <span id="">
+                        {{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '' }}
+                    </span>
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
             </tr>
 
-                    <tr>
-                        <td colspan="7" class="text-end fw-bolder">
-                            {{ "Net à payer"|trans }}
-                        </td>
-                        <td>
-                            <span class="fw-bolder">{{ (total+ commande.acompte + tva -reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                             <span id="total" class="text-nowrap" style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {#Conversion prix en lettre #}
-            <div class="mt-5">
-                {{ 'Arrêtée la présente à la somme de '|trans}} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA TTC</b>
-            </div>
-            {#/***** end*****/#}
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    window.print();
-                    window.addEventListener('afterprint', function() {
-                        history.back();
-                    });
-                });
-            </script>
-            {{ include('includes/javascript.html.twig') }}
+            <tr>
+                <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                    {{ "Net à payer"|trans }}
+                </td>
+                <td class="fw-bolder text-nowrap" style="">
+                    <span style="white-space: nowrap !important;">
+                        {{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                    </span>
+                    <span id="total" style="display:none;white-space: nowrap !important;">
+                        {{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        {# Conversion prix en lettre #}
+        <div style="margin-top: 3rem !important;">
+            {{ 'Arrêtée la présente à la somme de '|trans }} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA
+                TTC</b>
+        </div>
+        {# /***** end*****/ #}
 
+        {{ include('includes/javascript.html.twig') }}
+        <script>
+            {{ include('includes/impression.html.twig') }}
+
+
+            // Quand l'impression est terminée
+            window.onafterprint = function () {
+                document.location.href = '{{ path('commande_panier_Detail',{'commande': commande.id}) }}'
+            };
+        </script>
+    </div>
+</div>
 </body>
 
 </html>
