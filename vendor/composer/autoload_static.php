@@ -263,6 +263,11 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
             'Matrix\\' => 7,
             'Masterminds\\' => 12,
         ),
+        'K' =>
+        array (
+            'Knp\\Snappy\\' => 11,
+            'Knp\\Bundle\\SnappyBundle\\' => 24,
+        ),
         'F' =>
         array (
             'FontLib\\' => 8,
@@ -830,6 +835,14 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         'Masterminds\\' =>
         array (
             0 => __DIR__ . '/..' . '/masterminds/html5/src',
+        ),
+        'Knp\\Snappy\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy',
+        ),
+        'Knp\\Bundle\\SnappyBundle\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/knplabs/knp-snappy-bundle/src',
         ),
         'FontLib\\' =>
         array (

@@ -78,14 +78,16 @@
                 </td>
                 <td data-label="{{ 'Statut'|trans }}" class="text-center">
                     {{ employe.status ? "Actif"|trans : "Inactif"|trans }}</td>
-                <td data-label="{{ 'Action'|trans }}" class="text-center noExport">
+                <td data-label="{{ 'Action'|trans }}" class="text-center text-nowrap noExport">
                     <a href="{{ path('employe_show', {'id': employe.id}) }}" class="btn btn-green" title="{{ "Voir"|trans }}">
                         <i class="fa fa-eye"></i>
                     </a>
+                    {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('employe_edit', {'id': employe.id}) }}" class="btn btn-success-light"
                        title="{{ "Modifier"|trans }}">
                         <i class="fa fa-edit"></i>
                     </a>
+                    {% endif %}
                     <form action="{{ path('employe_toggle_status', { 'id': employe.id }) }}" method="post"
                           class="d-inline" onsubmit="return confirm('{% if employe.status %} Êtes-vous sûr de vouloir désactiver cet employé ? {% else %} Êtes-vous sûr de vouloir activer cet employé ? {% endif %}');">
                         <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ employe.id) }}">

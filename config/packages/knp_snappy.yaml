@@ -1,0 +1,17 @@
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     '%env(WKHTMLTOPDF_PATH)%'
+        options:
+            margin-top:        10px
+            margin-right:      10px
+            margin-bottom:     10px
+            margin-left:       10px
+            page-size:         A4
+            encoding:          UTF-8
+            no-outline:        true
+             # enable local file access for wkhtmltopdf >= 0.12.6 (
+    image:
+        enabled:    true
+        binary:     '%env(WKHTMLTOIMAGE_PATH)%'
+        options:    []
