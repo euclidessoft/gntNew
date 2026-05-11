@@ -3172,6 +3172,69 @@ class CommandeController extends AbstractController
             return $response;
         }
     }
+
+    
+    
+     #[Route("/Relevepdf/Deuxieme/{mois}/{client}", name :"releve_deuxieme_pdf") ]
+    public function relevedeuxiemepdf($mois,$client, ReleveRepository $repo, GotenbergPdfInterface $gotenberg)
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+        $client = $this->entityManager->getRepository(Client::class)->find($client);
+        $releve = $repo->findOneBy(['client' =>$client->getId(), 'periode' => $mois]);
+        
+         if($releve != null){
+
+          $commandes = json_decode($releve->getCommandes(), true) ;
+         $avantage = json_decode($releve->getAvantage(), true);
+         }else{
+            $commandes = [];
+            $avantage = [];
+         }            
+        return $gotenberg
+        ->html()
+        ->content('commande/admin/quinzepdf.html.twig', [
+                'releve' => $releve,
+                'quinzaine' => "Deuxieme",
+                'mois' => $mois,
+                'user' => $client,
+                'commandes' => $commandes,
+                'avantage' => $avantage,
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+             
+            // $response = $this->render('commande/admin/quinze.html.twig', [
+            //     'releve' => $releve,
+            //     'quinzaine' => "Deuxieme",
+            //     'mois' => $mois,
+            //     'user' => $client,
+            //     'commandes' => $commandes,
+            //     'avantage' => $avantage,
+            // ]);
+            // $response->setSharedMaxAge(0);
+            // $response->headers->addCacheControlDirective('no-cache', true);
+            // $response->headers->addCacheControlDirective('no-store', true);
+            // $response->headers->addCacheControlDirective('must-revalidate', true);
+            // $response->setCache([
+            //     'max_age' => 0,
+            //     'private' => true,
+            // ]);
+            // return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
     
     #[Route("/Commande/Premier/{mois}", name :"commande_premier") ]
     public function commandepremier($mois,CommandeRepository $repository)

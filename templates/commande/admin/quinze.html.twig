@@ -193,5 +193,26 @@
         </table>
 
     </div>
+    <div class="container mt-4 mb-5 py-3 fond-7">
+    <div class="centrer">
+               
+{# 
+                 <a id="print" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
+                   class="btn btn-success-light me-3">
+                    <i class="fa fa-print"></i>
+                    {{ "Imprimer"|trans }}
+                </a> #}
+
+                 <a id="print" target="_blank" href="{{ path('commande_panier_releve_deuxieme_pdf', {'mois' : mois, 'client': user.id}) }}"
+                   class="btn btn-danger me-3">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ "Vers Pdf"|trans }}
+                </a>
+                
+
+
+    
+        </div>
+        </div>
 
 {% endblock %}
