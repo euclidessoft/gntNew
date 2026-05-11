@@ -2617,7 +2617,7 @@ class CommandeController extends AbstractController
 
         return $gotenberg
         ->html()
-        ->content('commande/all_print.html.twig', [
+        ->content('commande/admin/detailspdf.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande])

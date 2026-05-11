@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title> &nbsp; </title>
+    <style>
+        .titre {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+            color: #039c4f;
+        }
+
+        .text {
+            font-size: 14px;
+        }
+
+        .badge {
+            background-color: red !important;
+        }
+
+        @media print {
+            .table-success-light {
+                color: #000 !important;
+            }
+
+            .table-bordered {
+                border: 1px solid #000 !important;
+            }
+
+            thead {
+                background-color: #c5fbae !important;
+                color: #000;
+            }
+
+            .td {
+                display: inline-block;
+                border: none;
+                /*width: 150px !important;*/
+            }
+        }
+    </style>
+
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="row" style="border-bottom: 1px solid #039c4f;padding-bottom: 20px;">
+            <div class="col-2">
+                <img src="https://gnt-pharma.com/images/gntpharma.jpeg" alt="Logo" class="w-100">
+            </div>
+            <div class="col-10 text-center">
+                <div class="row">
+                    <div class="col-12 titre text-center">
+                        GNT PHARMA
+                    </div>
+                    <div class="col-12 text">
+                        BP : 3582 Yaoundé – Cameroun, NGOUSSO
+                        <br>
+                        Montée Éleveur Immeuble Sainte Marie
+                    </div>
+                    <div class="col-12 text">
+                        +237 69 71 49 4 12 / +237 67 52 47 865
+                    </div>
+                    <div class="col-12 text">
+                        info@gntpharma-cameroun.com / www.gnt-pharma.com
+                    </div>
+                    <div class="col-12 text">
+                        RCCM N° : RC/YAE/2023/M/105 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIU : M122217881373Q
+                    </div>
+                </div>
+            </div>
+        </div>
+ <h3 class="text-center text-bold text-uppercase mt-4">
+            {{ ' Facture'|trans }}
+        </h3>
+        <h6 class="text-center text-bold text-uppercase mb-3">
+        {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
+        </h6>
+        <div class="row">
+
+            <div class="col-lg-12">
+                <table class="table table-success-light table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>{{ 'N° Commande'|trans }}</th>
+                        <th>{{ 'Date commande'|trans }}</th>
+                        <th>{{ 'Date Traitement'|trans }}</th>
+                        <th>{{ 'Client'|trans }}</th>
+                         <th>{{ 'NIU'|trans }}</th>
+                        {% if commande.paiement %}
+                            <th>{{ 'Date de Paiement'|trans }}</th>
+                            <th>{{ 'Type'|trans }}</th>
+                        {% else %}
+                            <th>{{ 'Type'|trans }}</th>
+                        {% endif %}
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <td data-label="Numero Commande">{{ commande.id }}</td>
+                    <td data-label="Date commande">{{ commande.date|date('d/m/Y H:i:s') }}</td>
+                    <td data-label="Date traitement">{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
+                    <td data-label="Client">{{ commande.user.nom }}</td>
+                     <td>{{ commande.user.niu }}</td>
+                    {% if commande.paiement %}
+                        <td data-label="Date de Paiement">{{ commande.paiement ? paiement.date|date('d/m/Y') : '' }}</td>
+                        <td data-label="Type">
+                            {% if commande.paiement.type == "Espece" %}
+                                Espèce
+                            {% else %}
+                                {{ commande.paiement ? commande.paiement.type : '' }} :
+                                {{ commande.paiement.banque ? commande.paiement.banque.nom : '' }} <br>
+                                N°: {{ commande.paiement ? commande.paiement.numero : '' }}
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td data-label="Credit">Credit </td>
+                    {% endif %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% set total=0 %}
+        {% set reduction=0 %}
+        {% set tva=0 %}
+        <table class="table table-success-light table-bordered table-hover table-striped w-100">
+            <thead>
+            <tr>
+                <th>{{'CIP'|trans}}</th>
+                <th>{{ 'Désignation'|trans }}</th>
+                {# <th>{{ 'DCI'|trans }}</th> #}
+                <th>{{ 'Quantité Commandée'|trans }}</th>
+                <th>{{ 'Quantité Livrée'|trans }}</th>
+                <th>{{ 'Prix Cession'|trans }}</th>
+                <th>{{ 'Réduction'|trans }}</th>
+                <th>{{ 'TVA'|trans }}</th>
+                <th>{{ 'Prix Public'|trans }}</th>
+                <th>{{ 'Montant'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commandeproduit in commandeproduits %}
+                {% set reductionproduit = 0 %}
+                <tr>
+                    <td> {{ commandeproduit.produit.reference }} </td>
+                    <td>{{ commandeproduit.produit.desigantion }} </td>
+                    {# <td>{{ commandeproduit.produit.dci }} </td> #}
+                    <td>
+                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                    
+                    </td>
+                     <td>
+                                   {{ commandeproduit.quantite }}
+                                     {% if commandeproduit.ug != 0%}
+                            <span class="badge bg-danger">
+                                        + {{ commandeproduit.ug }} U.G
+                            </span>
+                        {% endif %}  
+                                    </td>
+                    <td>
+                        {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+
+                    </td>
+                    <td>
+                        {% if commandeproduit.promotion is not null %}
+                            {% if commandeproduit.promotion.reduction is not null %}
+                                {% set reductionproduit =  commandeproduit.quantite * commandeproduit.session * commandeproduit.promotion.reduction /100 %}
+
+                                {% set reduction =  reduction + reductionproduit %}
+                                <span class="badge bg-danger">
+                                    -{{ commandeproduit.session * commandeproduit.promotion.reduction /100 }} F
+                            </span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if commandeproduit.tva != 0 %}
+                            {% set tva = tva + (((commandeproduit.quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
+                            {% if commandeproduit.promotion is not null %}
+                                {% if commandeproduit.promotion.reduction is not null %}
+                                    {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction /100)) * 0.1925 }}
+                                {% else %}
+                                    {{ commandeproduit.session  * 0.1925 }}
+                                {% endif %}
+                            {% else %}
+                                {{ commandeproduit.session  * 0.1925 }}
+                            {% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ commandeproduit.publique|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>
+                        {{ (commandeproduit.quantite * commandeproduit.session)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
+                        {% set total = total + (commandeproduit.quantite * commandeproduit.session) %}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="8" class="text-end text-bold">
+                    {{ "Total HT"|trans }}
+                </td>
+                <td class=" text-bold">
+                    <span id="" class="text-nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                </td>
+            </tr>
+            {% if reduction != 0 %}
+                <tr>
+                    <td colspan="8" class="text-end">
+                        {{ "Total Réduction"|trans }}
+                    </td>
+                    <td>
+                        <span id="" class="text-nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td colspan="8" class="text-end">
+                    {{ "Total TVA"|trans }}
+                </td>
+                <td>
+                    <span id="" class="text-nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="8" class="text-end">
+                    {{ "Prélèvement (2%)"|trans }}
+                </td>
+                <td class="text-center">
+               
+                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
+                    <input type="hidden" value="{{ tva }}" id="totaltamp"/>
+                </td>
+            </tr>
+
+            <tr class="text-bold">
+                <td colspan="8" class="text-end">
+                    {{ "Net à payer"|trans }}
+                </td>
+                <td class="montant">
+                    <span class="text-nowrap">{{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                          <span id="total" class="text-nowrap" style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
+                </td>
+            </tr>
+            {#        /***Conversion prix en lettre **/#}
+            <tr>
+                <td colspan="11" class="text-end">
+                    <span class="text-bold"></span>
+                    {{ 'Arrêtée la présente à la somme de'|trans }}&nbsp;<b id="conversion"></b><b id="virgule"></b> <b>{{ 'francs CFA TTC'|trans }}</b>
+                </td>
+            </tr>
+            {#/***** end*****/#}
+            </tbody>
+        </table>
+    </div>
+
+        </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+    var nombre = document.getElementById("total").innerText;
+    var total = Math.floor(document.getElementById("total").innerText);
+    var decimal = Math.round((nombre - total) * 100);
+    var totalEnLettres = NumberToLetter(total);
+    var virgule = NumberToLetter(decimal);
+    document.getElementById("conversion").innerHTML = totalEnLettres;
+    document.getElementById("virgule").innerHTML = " "+"{{'virgule'|trans}}"+ " " + virgule;
+
+});
+      /*****Start Script de conversion le prix en lettre*****/
+
+        // Utilisation de la fonction NumberToLetter
+   
+    function Unite( nombre ){
+        var unite;
+        switch( nombre ){
+            case 0: unite = "{{ 'zéro'|trans }}";		break;
+            case 1: unite = "{{ 'un'|trans }}";		break;
+            case 2: unite = "{{ 'deux'|trans }}";		break;
+            case 3: unite = "{{ 'trois'|trans }}"; 	break;
+            case 4: unite = "{{ 'quatre'|trans }}"; 	break;
+            case 5: unite = "{{ 'cinq'|trans }}"; 	break;
+            case 6: unite = "{{ 'six'|trans }}"; 		break;
+            case 7: unite = "{{ 'sept'|trans }}"; 	break;
+            case 8: unite = "{{ 'huit'|trans }}"; 	break;
+            case 9: unite = "{{ 'neuf'|trans }}"; 	break;
+        }//fin switch
+        return unite;
+    }//-----------------------------------------------------------------------
+
+    function Dizaine( nombre ){
+        switch( nombre ){
+            case 10: dizaine = "{{ 'dix'|trans }}"; break;
+            case 11: dizaine = "{{ 'onze'|trans }}"; break;
+            case 12: dizaine = "{{ 'douze'|trans }}"; break;
+            case 13: dizaine = "{{ 'treize'|trans }}"; break;
+            case 14: dizaine = "{{ 'quatorze'|trans }}"; break;
+            case 15: dizaine = "{{ 'quinze'|trans }}"; break;
+            case 16: dizaine = "{{ 'seize'|trans }}"; break;
+            case 17: dizaine = "{{ 'dix-sept'|trans }}"; break;
+            case 18: dizaine = "{{ 'dix-huit'|trans }}"; break;
+            case 19: dizaine = "{{ 'dix-neuf'|trans }}"; break;
+            case 20: dizaine = "{{ 'vingt'|trans }}"; break;
+            case 30: dizaine = "{{ 'trente'|trans }}"; break;
+            case 40: dizaine = "{{ 'quarante'|trans }}"; break;
+            case 50: dizaine = "{{ 'cinquante'|trans }}"; break;
+            case 60: dizaine = "{{ 'soixante'|trans }}"; break;
+            case 70: dizaine = "{{ 'soixante-dix'|trans }}"; break;
+            case 71: dizaine = "{{ 'soixante-onze'|trans }}"; break;
+            case 72: dizaine = "{{ 'soixante-douze'|trans }}"; break;
+            case 73: dizaine = "{{ 'soixante-treize'|trans }}"; break;
+            case 74: dizaine = "{{ 'soixante-quatorze'|trans }}"; break;
+            case 75: dizaine = "{{ 'soixante-quinze'|trans }}"; break;
+            case 76: dizaine = "{{ 'soixante-seize'|trans }}"; break;
+            case 77: dizaine = "{{ 'soixante-dix-sept'|trans }}"; break;
+            case 78: dizaine = "{{ 'soixante-dix-huit'|trans }}"; break;
+            case 79: dizaine = "{{ 'soixante-dix-neuf'|trans }}"; break;
+            case 80: dizaine = "{{ 'quatre-vingt'|trans }}"; break;
+            case 90: dizaine = "{{ 'quatre-vingt-dix'|trans }}"; break;
+            case 91: dizaine = "{{ 'quatre-vingt-onze'|trans }}"; break;
+            case 92: dizaine = "{{ 'quatre-vingt-douze'|trans }}"; break;
+            case 93: dizaine = "{{ 'quatre-vingt-treise'|trans }}"; break;
+            case 94: dizaine = "{{ 'quatre-vingt-quatorze'|trans }}"; break;
+            case 95: dizaine = "{{ 'quatre-vingt-quinze'|trans }}"; break;
+            case 96: dizaine = "{{ 'quatre-vingt-seize'|trans }}"; break;
+            case 97: dizaine = "{{ 'quatre-vingt-dix-sept'|trans }}"; break;
+            case 98: dizaine = "{{ 'quatre-vingt-dix-huit'|trans }}"; break;
+            case 99: dizaine = "{{ 'quatre-vingt-dix-neuf'|trans }}"; break;
+        }//fin switch
+        return dizaine;
+    }//-----------------------------------------------------------------------
+
+    function NumberToLetter( nombre ){
+        var i, j, n, quotient, reste, nb ;
+        var ch
+        var numberToLetter='';
+        //__________________________________
+
+        if(  nombre.toString().replace( / /gi, "" ).length > 15  )	return "dépassement de capacité";
+        if(  isNaN(nombre.toString().replace( / /gi, "" ))  )		return "Nombre non valide";
+
+        nb = parseFloat(nombre.toString().replace( / /gi, "" ));
+        if(  Math.ceil(nb) != nb  )	return  "Nombre avec virgule non géré.";
+
+        n = nb.toString().length;
+        switch( n ){
+            case 1: numberToLetter = Unite(nb); break;
+            case 2: if(  nb > 19  ){
+                quotient = Math.floor(nb / 10);
+                reste = nb % 10;
+                if(  nb < 71 || (nb > 79 && nb < 91)  ){
+                    if(  reste == 0  ) numberToLetter = Dizaine(quotient * 10);
+                    if(  reste == 1  ) numberToLetter = Dizaine(quotient * 10) + "{{ '-et-'|trans }}" + Unite(reste);
+                    if(  reste > 1   ) numberToLetter = Dizaine(quotient * 10) + "-" + Unite(reste);
+                }else numberToLetter = Dizaine(nb);
+                // }else numberToLetter = Dizaine((quotient - 1) * 10) + "-" + Dizaine(10 + reste); 
+            }else numberToLetter = Dizaine(nb);
+                break;
+            case 3: quotient = Math.floor(nb / 100);
+                reste = nb % 100;
+                if(  quotient == 1 && reste == 0   ) numberToLetter = "{{ 'cent'|trans }}";
+                if(  quotient == 1 && reste != 0   ) numberToLetter = "{{ 'cent'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0    ) numberToLetter = Unite(quotient) +" "+ "{{ 'cents'|trans }}";
+                if(  quotient > 1 && reste != 0    ) numberToLetter = Unite(quotient) +" "+ "{{ 'cent'|trans }}"+" " + NumberToLetter(reste);
+                break;
+            case 4 :  quotient = Math.floor(nb / 1000);
+                reste = nb - quotient * 1000;
+                if(  quotient == 1 && reste == 0   ) numberToLetter = "{{ 'mille'|trans }}";
+                if(  quotient == 1 && reste != 0   ) numberToLetter = "{{ 'mille'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0    ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'mille'|trans }}";
+                if(  quotient > 1 && reste != 0    ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'mille'|trans }}"+" " + NumberToLetter(reste);
+                break;
+            case 5 :  quotient = Math.floor(nb / 1000);
+                reste = nb - quotient * 1000;
+                if(  quotient == 1 && reste == 0   ) numberToLetter = "{{ 'mille'|trans }}";
+                if(  quotient == 1 && reste != 0   ) numberToLetter = "{{ 'mille'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0    ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'mille'|trans }}";
+                if(  quotient > 1 && reste != 0    ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'mille'|trans }}"+" " + NumberToLetter(reste);
+                break;
+            case 6 :  quotient = Math.floor(nb / 1000);
+                reste = nb - quotient * 1000;
+                if(  quotient == 1 && reste == 0   ) numberToLetter = "{{ 'mille'|trans }}";
+                if(  quotient == 1 && reste != 0   ) numberToLetter = "{{ 'mille'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0    ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'mille'|trans }}";
+                if(  quotient > 1 && reste != 0    ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'mille'|trans }}"+" " + NumberToLetter(reste);
+                break;
+            case 7: quotient = Math.floor(nb / 1000000);
+                reste = nb % 1000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "{{ 'un million'|trans }}";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "{{ 'un million'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'millions'|trans }}";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'millions'|trans }}"+" " + NumberToLetter(reste);
+                break;
+            case 8: quotient = Math.floor(nb / 1000000);
+                reste = nb % 1000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "{{ 'un million'|trans }}";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "{{ 'un million'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'millions'|trans }}";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'millions'|trans }}"+" " + NumberToLetter(reste);
+                break;
+            case 9: quotient = Math.floor(nb / 1000000);
+                reste = nb % 1000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "{{ 'un million'|trans }}";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "{{ 'un million'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'millions'|trans }}";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) +" "+ "{{ 'millions'|trans }}"+" " + NumberToLetter(reste);
+                break;
+            case 10: quotient = Math.floor(nb / 1000000000);
+                reste = nb - quotient * 1000000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "un milliard";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "un milliard" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) + " milliards";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) + " milliards " + NumberToLetter(reste);
+                break;
+            case 11: quotient = Math.floor(nb / 1000000000);
+                reste = nb - quotient * 1000000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "{{'un milliard'|trans }}";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "{{'un milliard'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) +" " + "{{ 'milliards'|trans }}";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) +" " + "{{ 'milliards'|trans }}"+ " " + NumberToLetter(reste);
+                break;
+            case 12: quotient = Math.floor(nb / 1000000000);
+                reste = nb - quotient * 1000000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "{{'un milliard'|trans }}";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "{{'un milliard'|trans }}" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) +" " + "{{ 'milliards'|trans }}";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) +" " + "{{ 'milliards'|trans }}"+ " " + NumberToLetter(reste);
+                break;
+            case 13: quotient = Math.floor(nb / 1000000000000);
+                reste = nb - quotient * 1000000000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "un billion";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "un billion" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) + " billions";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) + " billions " + NumberToLetter(reste);
+                break;
+            case 14: quotient = Math.floor(nb / 1000000000000);
+                reste = nb - quotient * 1000000000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "un billion";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "un billion" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) + " billions";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) + " billions " + NumberToLetter(reste);
+                break;
+            case 15: quotient = Math.floor(nb / 1000000000000);
+                reste = nb - quotient * 1000000000000;
+                if(  quotient == 1 && reste == 0  ) numberToLetter = "un billion";
+                if(  quotient == 1 && reste != 0  ) numberToLetter = "un billion" + " " + NumberToLetter(reste);
+                if(  quotient > 1 && reste == 0   ) numberToLetter = NumberToLetter(quotient) + " billions";
+                if(  quotient > 1 && reste != 0   ) numberToLetter = NumberToLetter(quotient) + " billions " + NumberToLetter(reste);
+                break;
+        }//fin switch
+        /*respect de l'accord de quatre-vingt*/
+        if(  numberToLetter.substr(numberToLetter.length-"quatre-vingt".length,"quatre-vingt".length) == "quatre-vingt"  ) numberToLetter = numberToLetter + "s";
+
+        return numberToLetter;
+    }//-----------------------------------------------------------------------
+
+    /*****end Script de conversion le prix en lettre*****/
+    </script>
+</body>
+</html>
