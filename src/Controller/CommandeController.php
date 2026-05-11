@@ -2539,7 +2539,7 @@ class CommandeController extends AbstractController
             return $response;
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
-               $html = $this->renderView('commande/admin/details_print.html.twig', [
+               $html = $this->renderView('commande/all_print.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
@@ -2554,7 +2554,7 @@ class CommandeController extends AbstractController
         // Retourner en téléchargement
         return new Response($pdfContent, 200, [
             'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="facture-' . $id . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="facture.pdf"',
         ]);
             // $response = $this->render('commande/admin/details_print.html.twig', [
             //     'commandeproduits' => $repository->findBy(['commande' => $commande]),
