@@ -1855,6 +1855,7 @@ class CommandeController extends AbstractController
                 if (($paiement->getMontant() >= $commande->getMontant()) || $commande->getCredit()) {
                     $paiement->setUser($this->getUser());
                     $paiement->setCommande($commande);
+                    $paiement->setClient($commande->getUser());
                     $commande->setSuivi(true);
                     $commande->setTraitement(new \Datetime());
                     $commande->setPayer(true);
@@ -2105,6 +2106,7 @@ class CommandeController extends AbstractController
                     }
                     $versement->setUser($this->getUser());
                     $versement->setCommande($commande);
+                    $versement->setClient($commande->getUser());
                     if($versement->getType() == 'Espece'){
 
                         $credit->setType('Espece');
