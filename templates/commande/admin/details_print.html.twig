@@ -135,7 +135,8 @@
             <tr>
                 <th>CIP</th>
                 <th class="tt">{{ 'Désignation'|trans }}</th>
-                <th>{{ 'Qté'|trans }}</th>
+                <th>{{ 'Qté Cdée'|trans }}</th>
+                <th>{{ 'Qté Livrée'|trans }}</th>
                 <th class="text-nowrap">{{ 'Prix Ces.'|trans }}</th>
                 <th>{{ '' |trans }}{{ 'Réduc.'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
@@ -149,13 +150,18 @@
                 <tr>
                     <td> {{ commandeproduit.produit.reference }} </td>
                     <td>{{ commandeproduit.produit.desigantion }} </td>
-                    <td> {{ commandeproduit.quantite }}
-                      {% if commandeproduit.ug != 0%}
+                   <td>
+                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                    
+                    </td>
+                     <td>
+                                   {{ commandeproduit.quantite }}
+                                     {% if commandeproduit.ug != 0%}
                             <span class="badge bg-danger">
                                         + {{ commandeproduit.ug }} U.G
                             </span>
-                        {% endif %}
-                         </td>
+                        {% endif %}  
+                                    </td>
                     <td>
                         {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 

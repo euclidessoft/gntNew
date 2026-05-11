@@ -128,7 +128,8 @@
             <tr>
                 <th>{{ 'CIP'|trans }}</th>
                 <th class="tt">{{ 'Désignation'|trans }}</th>
-                <th>{{ 'Qté'|trans }}</th>
+                <th>{{ 'Qté cdée'|trans }}</th>
+                <th>{{ 'Qté Lvrée'|trans }}</th>
                 <th>{{ 'Prix Ces.'|trans }}</th>
                 <th>{{ 'Réduc.'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
@@ -144,13 +145,17 @@
                     <td> {{ commandeproduit.produit.reference }} </td>
                     <td style="display: inline-block;border: none;width: 180px !important;">{{ commandeproduit.produit.desigantion }} </td>
                     <td>
-                        {{ commandeproduit.quantite }}
-                        {% if commandeproduit.ug != 0 %}
-                            <span class="badge bg-danger" style="">
-                                    + {{ commandeproduit.ug }} U.G
-                        </span>
-                        {% endif %}
+                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                    
                     </td>
+                     <td>
+                                   {{ commandeproduit.quantite }}
+                                     {% if commandeproduit.ug != 0%}
+                            <span class="badge bg-danger">
+                                        + {{ commandeproduit.ug }} U.G
+                            </span>
+                        {% endif %}  
+                                    </td>
                     <td style="white-space: nowrap !important;">
                         {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
@@ -196,11 +201,11 @@
 
             {% else %}
                 <tr>
-                    <td colspan="10">{{ 'Aucune commande'|trans }}</td>
+                    <td colspan="11">{{ 'Aucune commande'|trans }}</td>
                 </tr>
             {% endfor %}
             <tr>
-                <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                <td colspan="8" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
                     {{ "Total HT"|trans }}
                 </td>
                 <td style="text-align: right !important;">
@@ -211,7 +216,7 @@
             </tr>
             {% if reduction != 0 %}
                 <tr>
-                    <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                    <td colspan="8" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td>
@@ -222,7 +227,7 @@
                 </tr>
             {% endif %}
             <tr>
-                <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                <td colspan="8" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
                     {{ "Total TVA"|trans }}
                 </td>
                 <td style="text-align: right !important;white-space: nowrap !important;">
@@ -232,7 +237,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" style="text-align: right !important;">
+                <td colspan="8" style="text-align: right !important;">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td style="text-align: center !important;">
@@ -244,7 +249,7 @@
             </tr>
 
             <tr>
-                <td colspan="7" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
+                <td colspan="8" style="text-align: right !important;font-weight: bolder !important;white-space: nowrap !important;">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="fw-bolder text-nowrap" style="">

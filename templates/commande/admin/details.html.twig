@@ -96,24 +96,17 @@
                     <td> {{ commandeproduit.produit.reference }} </td>
                     <td>{{ commandeproduit.produit.desigantion }} </td>
                     {# <td>{{ commandeproduit.produit.dci }} </td> #}
-                    <td> {{ commandeproduit.quantite }} 
-                     {% if commandeproduit.ug != 0%}
+                    <td>
+                    {{ commande.quantitecommande ? commande.quantitecommande : commande.quantite }}
+                    
+                    </td>
+                     <td>
+                                   {{ commande.quantite }}
+                                     {% if commandeproduit.ug != 0%}
                             <span class="badge bg-danger">
                                         + {{ commandeproduit.ug }} U.G
                             </span>
-                        {% endif %}
-                    </td>
-                     <td>
-                    {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }}#}
-                                        {% set quantite = 0 %}
-                                        {% for livrerproduit  in livrerproduits  %}
-                                            {% if livrerproduit.commande.id  == commande.id and livrerproduit.produit.id == commandeproduit.produit.id %}
-                                                {% set quantite = quantite + livrerproduit.quantitelivrer %}
-                                            {% endif %}
-
-                                        {% else %}
-                                        {% endfor %}
-                                        {{ quantite != 0 ? quantite : ''  }}
+                        {% endif %}  
                                     </td>
                     <td>
                         {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}

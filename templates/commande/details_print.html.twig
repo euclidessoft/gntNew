@@ -248,7 +248,7 @@
                         <th>{{ 'CIP'|trans }}</th>
                         <th class="tt">{{ 'Désignation'|trans }}</th>
                         <th>{{'Qté Commandée'|trans}}</th>
-                        {#            <th>Qté Livree</th>#}
+                                   <th>Qté Livree</th>
                         {#            <th>Qté Restante</th>#}
                         <th class="text-nowrap">{{'Prix Ces.'|trans}}</th>
                         <th>{{ 'Réduc.'|trans }}</th>
@@ -264,18 +264,18 @@
                     <tr>
                         <td> {{ commandeproduit.produit.reference }} </td>
                         <td>{{ commandeproduit.produit.desigantion }} </td>
-                        <td>
-                            {{ commandeproduit.quantite }}
-                            {% if commandeproduit.ug != 0%}
+                       <td>
+                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                    
+                    </td>
+                     <td>
+                                   {{ commandeproduit.quantite }}
+                                     {% if commandeproduit.ug != 0%}
                             <span class="badge bg-danger">
                                         + {{ commandeproduit.ug }} U.G
                             </span>
-                        {% endif %}
-                        </td>
-                        {#                <td>#}
-                        {#                {{ commande.livraison ? commance.quantitelivrer : '' }}#}
-                        {#                </td>#}
-                        {#                <td> </td>#}
+                        {% endif %}  
+                                    </td>
                         <td>
                             {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
@@ -323,7 +323,7 @@
                     </tr>
                     {% endfor %}
                     <tr>
-                        <td colspan="7" class="text-end fw-bolder">
+                        <td colspan="8" class="text-end fw-bolder">
                             {{ "Total HT"|trans }}
                         </td>
                         <td>
@@ -332,7 +332,7 @@
                     </tr>
                     {% if reduction != 0 %}
                     <tr>
-                        <td colspan="7" class="text-end fw-bolder">
+                        <td colspan="8" class="text-end fw-bolder">
                             {{ "Total Réduction"|trans }}
                         </td>
                         <td>
@@ -341,7 +341,7 @@
                     </tr>
                     {% endif %}
                     <tr>
-                        <td colspan="7" class="text-end">
+                        <td colspan="8" class="text-end">
                             {{ "Total TVA"|trans }}
                         </td>
                         <td>
@@ -349,7 +349,7 @@
                         </td>
                     </tr>
             <tr>
-                <td colspan="7" class="text-end">
+                <td colspan="8" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
@@ -360,7 +360,7 @@
             </tr>
 
                     <tr>
-                        <td colspan="7" class="text-end fw-bolder">
+                        <td colspan="8" class="text-end fw-bolder">
                             {{ "Net à payer"|trans }}
                         </td>
                         <td>
