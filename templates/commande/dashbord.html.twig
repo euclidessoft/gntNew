@@ -203,7 +203,7 @@
                     </div>
                 </div>
             </div>
-
+            {% if is_granted("ROLE_CLIENT_ADMIN") %}
             <div class="col-lg-3 col-md-4 col-sm-6 mt-3 mb-3">
                 <div class="card border-green">
                     <div class="card-header bg-success-light text-green">
@@ -223,11 +223,11 @@
                     </div>
                     <div class="card-footer bg-light bt-green">
                     <span class="float-left">
-                        <a href="{{ path('avoir_index') }}" class="text-green">{{ 'Voir les détails'|trans }}
+                        <a href="{{ path('avoir_officine') }}" class="text-green">{{ 'Voir les détails'|trans }}
                         </a>
                     </span>
                         <span class="float-right">
-                        <a href="{{ path('avoir_index') }}" class="text-green">
+                        <a href="{{ path('avoir_officine') }}" class="text-green">
                             <i class="fa fa-arrow-circle-right fa-lg"></i>
                         </a>
                     </span>
@@ -254,12 +254,12 @@
                     </div>
                     <div class="card-footer bg-light bt-green">
                     <span class="float-left">
-                        <a href="{{ path('finance_dette', {'user' : app.user.id}) }}" class="text-green">
+                        <a href="{{ path('commande_panier_credit') }}" class="text-green">
                             {{ 'Voir les détails'|trans }}
                         </a>
                     </span>
                         <span class="float-right">
-                        <a href="{{ path('finance_dette', {'user' : app.user.id}) }}" class="text-green">
+                        <a href="{{ path('commande_panier_credit') }}" class="text-green">
                             <i class="fa fa-arrow-circle-right fa-lg"></i>
                         </a>
                     </span>
@@ -267,6 +267,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 
