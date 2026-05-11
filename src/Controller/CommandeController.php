@@ -33,12 +33,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Knp\Snappy\Pdf;
 
 
 #[Route("/{_locale}/Commande_Panier", name :"commande_panier_") ]
 class CommandeController extends AbstractController
 {
-      public function __construct(private Security $security, private EntityManagerInterface $entityManager)
+      public function __construct(private Security $security, private EntityManagerInterface $entityManager,private Pdf $pdf)
     {
     }
 
@@ -2538,44 +2539,37 @@ class CommandeController extends AbstractController
             return $response;
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
-            // $options = new Options();
-            // $options->set('defaultFont', 'Arial');
-
-            // $dompdf = new Dompdf($options);
-
-            // $html =  $response = $this->renderView('commande/all_print.html.twig', [
-            //             'commandeproduits' => $repository->findBy(['commande' => $commande]),
-            //             'commande' => $commande,
-            //             'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
-            //         ]);
-
-            // $dompdf->loadHtml($html);
-
-            // $dompdf->setPaper('A4', 'portrait');
-
-            // $dompdf->render();
-
-            // return new Response(
-            //     $dompdf->stream('document.pdf', ["Attachment" => false]),
-            //     200,
-            //     [
-            //         'Content-Type' => 'application/pdf'
-            //     ]
-            // );
-            $response = $this->render('commande/admin/details_print.html.twig', [
+               $html = $this->renderView('commande/admin/details_print.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
             ]);
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
+
+        // Générer le PDF
+        $pdfContent = $this->pdf->getOutputFromHtml($html, [
+            'page-size'   => 'A4',
+            'orientation' => 'Portrait',
+        ]);
+
+        // Retourner en téléchargement
+        return new Response($pdfContent, 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="facture-' . $id . '.pdf"',
+        ]);
+            // $response = $this->render('commande/admin/details_print.html.twig', [
+            //     'commandeproduits' => $repository->findBy(['commande' => $commande]),
+            //     'commande' => $commande,
+            //     'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
+            // ]);
+            // $response->setSharedMaxAge(0);
+            // $response->headers->addCacheControlDirective('no-cache', true);
+            // $response->headers->addCacheControlDirective('no-store', true);
+            // $response->headers->addCacheControlDirective('must-revalidate', true);
+            // $response->setCache([
+            //     'max_age' => 0,
+            //     'private' => true,
+            // ]);
+            // return $response;
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

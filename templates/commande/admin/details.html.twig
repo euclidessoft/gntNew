@@ -97,11 +97,11 @@
                     <td>{{ commandeproduit.produit.desigantion }} </td>
                     {# <td>{{ commandeproduit.produit.dci }} </td> #}
                     <td>
-                    {{ commande.quantitecommande ? commande.quantitecommande : commande.quantite }}
+                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
                     
                     </td>
                      <td>
-                                   {{ commande.quantite }}
+                                   {{ commandeproduit.quantite }}
                                      {% if commandeproduit.ug != 0%}
                             <span class="badge bg-danger">
                                         + {{ commandeproduit.ug }} U.G
