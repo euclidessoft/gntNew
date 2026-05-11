@@ -33,13 +33,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Knp\Snappy\Pdf;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 
 #[Route("/{_locale}/Commande_Panier", name :"commande_panier_") ]
 class CommandeController extends AbstractController
 {
-      public function __construct(private Security $security, private EntityManagerInterface $entityManager,private Pdf $pdf)
+      public function __construct(private Security $security, private EntityManagerInterface $entityManager)
     {
     }
 
@@ -2516,7 +2516,7 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/Pint_Details_commande/{commande}", name :"print_Detail") ]
-    public function printdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
+    public function printdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, GotenbergPdfInterface $gotenberg)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
             $this->getUser()->getTuteur() === null ?
@@ -2539,23 +2539,92 @@ class CommandeController extends AbstractController
             return $response;
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
-               $html = $this->renderView('commande/all_print.html.twig', [
+            $response = $this->render('commande/admin/details_print.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
             ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
 
-        // Générer le PDF
-        $pdfContent = $this->pdf->getOutputFromHtml($html, [
-            'page-size'   => 'A4',
-            'orientation' => 'Portrait',
-        ]);
 
-        // Retourner en téléchargement
-        return new Response($pdfContent, 200, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="facture.pdf"',
-        ]);
+        /* // On "fabrique" les données
+
+         return $this->render('produit/index.html.twig', compact("dataPanier", "total"));*/
+    }
+
+    
+    #[Route("/Pint_Details_commande_pdf/{commande}", name :"print_Detail_pdf") ]
+    public function pdfprintdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, GotenbergPdfInterface $gotenberg)
+    {
+        if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
+
+            $response = $this->render('commande/details_print.html.twig', [
+                'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                'commande' => $commande,
+                'panier' => $panier,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } elseif ($this->security->isGranted('ROLE_FINANCE')) {
+
+        //        $html = $this->renderView('commande/all_print.html.twig', [
+        //         'commandeproduits' => $repository->findBy(['commande' => $commande]),
+        //         'commande' => $commande,
+        //         'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
+        //     ]);
+
+        // // Générer le PDF
+        // $pdfContent = $this->pdf->getOutputFromHtml($html, [
+        //     'page-size'   => 'A4',
+        //     'orientation' => 'Portrait',
+        // ]);
+
+        // // Retourner en téléchargement
+        // return new Response($pdfContent, 200, [
+        //     'Content-Type'        => 'application/pdf',
+        //     'Content-Disposition' => 'attachment; filename="facture.pdf"',
+        // ]);
+
+        return $gotenberg
+        ->html()
+        ->content('commande/all_print.html.twig', [
+                'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                'commande' => $commande,
+                'paiement' => $paiementRepository->findOneBy(['commande' => $commande])
+                ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
             // $response = $this->render('commande/admin/details_print.html.twig', [
             //     'commandeproduits' => $repository->findBy(['commande' => $commande]),
             //     'commande' => $commande,
