@@ -66,16 +66,16 @@
             </tr>
             </thead>
             <tbody>
-            {% for client in commandes %}
+            {% for releve in releves %}
             <tr>
-                <td data-label="Nº Compte">{{ client.user.compte }}</td>
-                <td data-label="Nom">{{ client.user.nom }}</td>
-                <td data-label="Prénom">{{ client.user.prenom }}</td>
-                <td data-label="Téléphone">{{ client.user.phone }}</td>
-                <td data-label="Email">{{ client.user.email }}</td>
+                <td data-label="Nº Compte">{{ releve.client.compte }}</td>
+                <td data-label="Nom">{{ releve.client.nom }}</td>
+                <td data-label="Prénom">{{ releve.client.prenom }}</td>
+                <td data-label="Téléphone">{{ releve.client.phone }}</td>
+                <td data-label="Email">{{ releve.client.email }}</td>
                 
                 <td data-label="Actions" class="text-center">
-                    <a href="{{ path('commande_panier_releve_deuxieme', {'mois' : mois, 'client': client.user.id}) }}" class="btn btn-success-light" id="{{client.user.id}}" onclick="load({{client.user.id}})"
+                    <a href="{{ path('commande_panier_releve_quinzaine', {'releve': releve.id}) }}" class="btn btn-success-light" id="{{releve.client.id}}" onclick="load({{releve.client.id}})"
                        title="{{ "Afficher"|trans }}">
                         <i class="fa fa-eye"></i>
                     </a>

@@ -377,6 +377,43 @@ class CommandeRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+      public function precedent()
+    {
+         $date = "2026-04-14  23:59:59";
+         $startDate = new \DateTime($date);
+        return $this->createQueryBuilder('p')
+            // ->where('p.user = :id')
+            ->andWhere('p.traitement <= :start')
+            ->andWhere('p.credit = :credit')
+            ->andWhere('p.payer = :payer')
+            // ->setParameter('id' , $user)
+            ->setParameter('credit' , true)
+            ->setParameter('payer' , false)
+            ->setParameter('start' , $startDate)
+            ->groupBy('p.user')
+            ->orderBy('p.date', "DESC")
+            ->getQuery()
+            ->getResult();
+    }
+       public function clientprecedent($user)
+    {
+         $date = "2026-04-14  23:59:59";
+         $startDate = new \DateTime($date);
+        return $this->createQueryBuilder('p')
+            ->where('p.user = :id')
+            ->andWhere('p.traitement <= :start')
+            ->andWhere('p.credit = :credit')
+            ->andWhere('p.payer = :payer')
+            ->setParameter('id' , $user)
+            ->setParameter('credit' , true)
+            ->setParameter('payer' , false)
+            ->setParameter('start' , $startDate)
+            ->orderBy('p.date', "DESC")
+            ->getQuery()
+            ->getResult();
+    }
+
     //  public function deuxiemetranche($user)
     // {
     //      $endDate = new \DateTime('last day of this month 23:59:59');

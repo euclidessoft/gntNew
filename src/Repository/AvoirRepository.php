@@ -117,6 +117,22 @@ class AvoirRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+     public function clientprecedent($client)
+    {
+         
+         $date = "2026-04-14  23:59:59";
+         $startDate = new \DateTime($date);
+        return $this->createQueryBuilder('p')
+            ->where('p.client = :id')
+            ->andWhere('p.date <= :start')
+            // ->andWhere('p.payer = :payer')
+            ->setParameter('id' , $client)
+            // ->setParameter('payer' , false)
+            ->setParameter('start' , $startDate)
+            ->orderBy('p.date', "DESC")
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return Avoir[] Returns an array of Avoir objects
     //  */

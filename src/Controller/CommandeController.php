@@ -12,6 +12,7 @@ use App\Entity\Ecriture;
 use App\Entity\Paiement;
 use App\Entity\User;
 use App\Entity\Client;
+use App\Entity\Releve;
 use App\Entity\Versement;
 use App\Form\CommandeType;
 use App\Form\PaiementFormType;
@@ -3070,14 +3071,15 @@ class CommandeController extends AbstractController
             return $response;
         }
     }
-
-     #[Route("/Releve/Premier/{mois}/{client}", name :"releve_premier") ]
-    public function relevepremier($mois,$client, ReleveRepository $repo)
+    
+    
+     #[Route("/Releve_Quinzaine/{releve}", name :"releve_quinzaine") ]
+    public function relevequinzaine(Releve $releve)
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
 
-        $client = $this->entityManager->getRepository(Client::class)->find($client);
-        $releve = $repo->findOneBy(['client' =>$client->getId(), 'periode' => $mois]);
+        // $client = $this->entityManager->getRepository(Client::class)->find($client);
+        // $releve = $repo->find($releve);
         
          if($releve != null){
 
@@ -3088,14 +3090,10 @@ class CommandeController extends AbstractController
             $avantage = [];
          }            
            
-                   
-           
              
             $response = $this->render('commande/admin/quinze.html.twig', [
                 'releve' => $releve,
-                'quinzaine' => "premier",
-                'mois' => $mois,
-                'user' => $client,
+                'user' => $releve->getClient(),
                 'commandes' => $commandes,
                 'avantage' => $avantage,
             ]);
@@ -3124,14 +3122,10 @@ class CommandeController extends AbstractController
 
     
     
-     #[Route("/Releve/Deuxieme/{mois}/{client}", name :"releve_deuxieme") ]
-    public function relevedeuxieme($mois,$client, ReleveRepository $repo)
-    {
+     #[Route("/Releve_Quinzaine_pdf/{releve}", name :"releve_quinzaine_pdf") ]
+    public function relevequinzainepdf(Releve $releve, GotenbergPdfInterface $gotenberg)    {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
 
-        $client = $this->entityManager->getRepository(Client::class)->find($client);
-        $releve = $repo->findOneBy(['client' =>$client->getId(), 'periode' => $mois]);
-        
          if($releve != null){
 
           $commandes = json_decode($releve->getCommandes(), true) ;
@@ -3139,65 +3133,12 @@ class CommandeController extends AbstractController
          }else{
             $commandes = [];
             $avantage = [];
-         }            
-           
-             
-            $response = $this->render('commande/admin/quinze.html.twig', [
-                'releve' => $releve,
-                'quinzaine' => "Deuxieme",
-                'mois' => $mois,
-                'user' => $client,
-                'commandes' => $commandes,
-                'avantage' => $avantage,
-            ]);
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
-        } else {
-            $response = $this->redirectToRoute('security_logout');
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
-        }
-    }
-
-    
-    
-     #[Route("/Relevepdf/Deuxieme/{mois}/{client}", name :"releve_deuxieme_pdf") ]
-    public function relevedeuxiemepdf($mois,$client, ReleveRepository $repo, GotenbergPdfInterface $gotenberg)
-    {
-        if ($this->security->isGranted('ROLE_CAISSIER')) {
-
-        $client = $this->entityManager->getRepository(Client::class)->find($client);
-        $releve = $repo->findOneBy(['client' =>$client->getId(), 'periode' => $mois]);
-        
-         if($releve != null){
-
-          $commandes = json_decode($releve->getCommandes(), true) ;
-         $avantage = json_decode($releve->getAvantage(), true);
-         }else{
-            $commandes = [];
-            $avantage = [];
-         }            
+         }                      
         return $gotenberg
         ->html()
         ->content('commande/admin/quinzepdf.html.twig', [
                 'releve' => $releve,
-                'quinzaine' => "Deuxieme",
-                'mois' => $mois,
-                'user' => $client,
+                'user' => $releve->getClient(),
                 'commandes' => $commandes,
                 'avantage' => $avantage,
             ])
@@ -3237,14 +3178,14 @@ class CommandeController extends AbstractController
     }
     
     #[Route("/Commande/Premier/{mois}", name :"commande_premier") ]
-    public function commandepremier($mois,CommandeRepository $repository)
+    public function commandepremier($mois, ReleveRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
             
-            $commandes = $repository->commandepremiertranche($mois);
+            $commandes = $repository->findBy(['periode' => $mois, 'quinzaine' => 1]);
             // dd($commandes);
             $response = $this->render('commande/admin/quinzaine.html.twig', [
-                'commandes' => $commandes,
+                'releves' => $commandes,
                 'mois' => $mois,
             ]);
             $response->setSharedMaxAge(0);
@@ -3273,14 +3214,14 @@ class CommandeController extends AbstractController
     
     
     #[Route("/Commande/Deuxieme/{mois}", name :"commande_deuxieme") ]
-    public function commandedeuxieme($mois,CommandeRepository $repository)
+    public function commandedeuxieme($mois, ReleveRepository $repository)
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
             
-            $commandes = $repository->commandedeuxiemetranche($mois);
+            $commandes = $repository->findBy(['periode' => $mois, 'quinzaine' => 2]);
             // dd($commandes);
             $response = $this->render('commande/admin/deuxiemequinzaine.html.twig', [
-                'commandes' => $commandes,
+                'releves' => $commandes,
                 'mois' => $mois,
             ]);
             $response->setSharedMaxAge(0);
@@ -3306,15 +3247,15 @@ class CommandeController extends AbstractController
         }
     }
 
-    #[Route("/Officine/Premier/{mois}", name :"officine_premier") ]
-    public function officinepremier($mois,ReleveRepository $repository)
+    #[Route("/Officine_Quinzaine/{releve}", name :"officine_quinzaine") ]
+    public function officinequinzaine(Releve $releve)
     {
         if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
             
-            // $commandes = $repository->premiertranche($this->getUser()->getId(), $mois);
+            // $commandes = $repository->deuxiemetranche($this->getUser()->getId(), $mois);
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]); 
-            $releve = $repository->findOneBy(['client' => $this->getUser()->getId(), 'periode' => $mois, 'quinzaine' => 1]);
-           
+            // $releve = $repository->findOneBy(['client' => $this->getUser()->getId(), 'periode' => $mois, 'quinzaine' => 2]);
+            
          if($releve != null){
 
           $commandes = json_decode($releve->getCommandes(), true) ;
@@ -3325,15 +3266,10 @@ class CommandeController extends AbstractController
          }            
            
              
-            //  $date = date('d');
-            // if($date <= 15){
-            //    $commandes = $repository->premiertranche($user);
-            // }else{
-            //    $commandes = $repository->deuxiemetranche($user); 
-            // }
+             
             $response = $this->render('officine/quinze.html.twig', [
-                'releve' => $releve,
                 // 'commandes' => $commandes,
+                'releve' => $releve,
                 'panier' => $panier,
                 'commandes' => $commandes,
                 'avantage' => $avantage,
@@ -3360,15 +3296,18 @@ class CommandeController extends AbstractController
             return $response;
         }
     }
-    #[Route("/Officine/Deuxieme/{mois}", name :"officine_deuxieme") ]
-    public function officinedeuxieme($mois,ReleveRepository $repository)
+
+    
+    #[Route("/Officine_Quinzaine_pdf/{releve}", name :"officine_quinzaine_pdf") ]
+    public function officinequinzainepdf(Releve $releve, GotenbergPdfInterface $gotenberg)
     {
         if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+                               
+       
             
             // $commandes = $repository->deuxiemetranche($this->getUser()->getId(), $mois);
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]); 
-              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]); 
-            $releve = $repository->findOneBy(['client' => $this->getUser()->getId(), 'periode' => $mois, 'quinzaine' => 2]);
+            // $releve = $repository->findOneBy(['client' => $this->getUser()->getId(), 'periode' => $mois, 'quinzaine' => 2]);
             
          if($releve != null){
 
@@ -3378,25 +3317,21 @@ class CommandeController extends AbstractController
             $commandes = [];
             $avantage = [];
          }            
-           
-             
-             
-            $response = $this->render('officine/quinze.html.twig', [
+         
+         return $gotenberg
+        ->html()
+        ->content('officine/quinzepdf.html.twig', [
                 // 'commandes' => $commandes,
                 'releve' => $releve,
                 'panier' => $panier,
                 'commandes' => $commandes,
                 'avantage' => $avantage,
-            ]);
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+             
+             
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

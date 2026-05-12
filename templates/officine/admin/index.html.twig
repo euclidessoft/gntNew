@@ -51,10 +51,10 @@
                     <td>numero {{i}}</td>
                     <td>
                     {% if releve.quinzaine == 1 %}
-                        <a href="{{ path('commande_panier_releve_premier', { 'client' : user.id, 'mois' : releve.periode})}}">RELEVE DES FACTURES - PREMIER QUINZAINE {{releve.periode}}
+                        <a href="{{ path('commande_panier_releve_quinzaine', { 'releve' : releve.id})}}">RELEVE DES FACTURES - PREMIER QUINZAINE {{releve.periode}}
                         </a>
                     {% else %}
-                        <a href="{{ path('commande_panier_releve_deuxieme', { 'client' : user.id, 'mois' : releve.periode})}}">RELEVE DES FACTURES - DEUXIEME QUINZAINE  {{releve.periode}}</a>
+                        <a href="{{ path('commande_panier_releve_quinzaine', { 'releve' : releve.id})}}">RELEVE DES FACTURES - DEUXIEME QUINZAINE  {{releve.periode}}</a>
                     {% endif %}
                     </td>
                 </tr>

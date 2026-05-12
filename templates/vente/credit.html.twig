@@ -79,7 +79,7 @@
                 <tr>
                     <td data-label="Numero Commande">{{ commande.id }}</td>
                     <td data-label="Date commande">{{ commande.date|date('d/m/Y H:i:s') }}</td>
-                    <td data-label="Date  traitement">{{ commande.date|date('d/m/Y H:i:s') }}</td>
+                    <td data-label="Date  traitement">{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
                     <td data-label="Montant Commande">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td data-label="Montant Restant">{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                       <td>

@@ -4,10 +4,18 @@
 
 {% block body %}
     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-2 text-bold">
             <i class="fas fa-staff-snake fa-lg"></i>
             {{ "Officine"|trans }} :  {{ "Factures"|trans }}
         </h3>
+         <h4 class="mt-2 mb-5 text-bold">
+            <i class="fa fa-list fa-lg"></i>
+            {% if releve.periode != "Precedent" %}
+            {{ "Releve Factures"|trans }} {{releve.quinzaine}} {{ "quinzaine"}} {{ releve.periode|date("m/Y")}} 
+            {% else %} 
+             {{ "Releve Factures de la periode precedente à la deuxieme quinzaine d'avril 20226"|trans }} 
+            {% endif %}
+        </h4>
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
                 <a class="nav-link active" href="#">{{ 'Facture'|trans }}</a>
@@ -161,5 +169,26 @@
         </table>
 
     </div>
+     <div class="container mt-4 mb-5 py-3 fond-7">
+    <div class="centrer">
+               
+{# 
+                 <a id="print" href="{{ path('commande_panier_print_Detail',{'commande': commande.id }) }}"
+                   class="btn btn-success-light me-3">
+                    <i class="fa fa-print"></i>
+                    {{ "Imprimer"|trans }}
+                </a> #}
+
+                 <a id="print" target="_blank" href="{{ path('commande_panier_officine_quinzaine_pdf', { 'releve': releve.id}) }}"
+                   class="btn btn-danger me-3">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ "Vers Pdf"|trans }}
+                </a>
+                
+
+
+    
+        </div>
+        </div>
 
 {% endblock %}

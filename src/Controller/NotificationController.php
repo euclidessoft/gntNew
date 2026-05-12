@@ -185,14 +185,14 @@ public function test(ParameterBagInterface $params)
   #[Route('/releve/')]
     public function releve()
     {
-        $mois =date("Y-m");
-        $date = new \DateTime();
+        // $mois =date("Y-m");
+        // $date = new \DateTime();
 
-        $dernierJour = (clone $date)
-            ->modify('last day of previous month');
+        // $dernierJour = (clone $date)
+        //     ->modify('last day of previous month');
 
-        dd($dernierJour->format('Y-m'));
-         $clientcoms = $this->entityManager->getRepository(Commande::Class)->commandepremiertranche($mois);
+        // dd($dernierJour->format('Y-m'));
+         $clientcoms = $this->entityManager->getRepository(Commande::Class)->precedent();
         foreach($clientcoms as $clientcom){
             $client = $clientcom->getUser();
          $releve = new Releve();
@@ -201,7 +201,7 @@ public function test(ParameterBagInterface $params)
             $total = 0;
             $tva = 0;
             $prelevement = 0;
-            $commandes = $this->entityManager->getRepository(Commande::Class)->deuxiemetranche($client->getId(), $mois);
+            $commandes = $this->entityManager->getRepository(Commande::Class)->clientprecedent($client->getId());
             $com = [];
             foreach($commandes as $commande){
                 $com[] = [
@@ -217,7 +217,7 @@ public function test(ParameterBagInterface $params)
 
             }
             $releve->setCommandes(json_encode($com));
-            $avoirs = $this->entityManager->getRepository(Avoir::Class)->deuxiemetranche($client->getId(), $mois);
+            $avoirs = $this->entityManager->getRepository(Avoir::Class)->clientprecedent($client->getId());
             $av =[];
             foreach($avoirs as $avoir){
                 $av[] = [
