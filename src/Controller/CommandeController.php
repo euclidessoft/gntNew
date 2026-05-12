@@ -3301,7 +3301,7 @@ class CommandeController extends AbstractController
     #[Route("/Officine_Quinzaine_pdf/{releve}", name :"officine_quinzaine_pdf") ]
     public function officinequinzainepdf(Releve $releve, GotenbergPdfInterface $gotenberg)
     {
-        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')){
                                
        
             

@@ -106,19 +106,14 @@
         {% for commande in commandes %}
             <tr>
                 <td>{{ commande.date|date("d/m/Y H:i:s") }}</td>
-                 <td>
-                {% if commande.reste is defined %}
-                    <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('avoir_show', {'id' : commande.id}) }}" class="btn btn-success">
-                    {{ commande.id }}
-                    </a>
-                {% else %}
-                     <a id="a{{ commande.id }}" onclick="load('a{{ commande.id }}')" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
-                    {{ commande.id }}
-                    </a>
-                {% endif %}
+                <td>
+                 <a id="b{{ commande.id }}" onclick="load('b{{ commande.id }}')" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
+                 {{ commande.id }}
+                </a>
                 </td>
-                <td class="text-center">{% if commande.reste is defined %} - {% endif %}{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</td>
+                <td class="text-center">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')  }}</td>
                
+
             </tr>
         {% endfor %}
         </tbody>

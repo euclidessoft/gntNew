@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Avoir;
 use App\Entity\Commande;
 use App\Entity\Produit;
 use App\Entity\Panier;
@@ -316,12 +317,34 @@ class VenteController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_BACK')) {
              $commandes = $repository->vente_client($client->getId());
+             $avoirs = $this->entityManager->getRepository(Avoir::class)->findBy([ 'client' => $client->getId()]);
+            //  dd($avoirs);
+                $result = [];
+                foreach ([$commandes, $avoirs] as $tableau) {
+                    foreach ($tableau as $row) {
+                        $date = $row->getDate()->format('Y-m-d');
+                        // dd($date);
+                        // On regroupe les lignes par date
+                        $result[$date][] = $row;
+                    }
+                }
+                ksort($result);
+                // dd($result);
+                $flat = [];
+
+                foreach ($result as $date => $rows) {
+                    foreach ($rows as $row) {
+                        $flat[] = $row;
+                    }
+                } 
+
             $montant = 0;
-            foreach($commandes as $commande){
-                $montant += $commande->getMontant();
+            foreach($flat as $commande){
+                if($commande instanceof Avoir) $montant -= $commande->getMontant();
+                else $montant += $commande->getMontant();
             }
             $response = $this->render('vente/client.html.twig', [
-                'commandes' => $commandes,
+                'commandes' => $flat,
                 'user' => $client,
                 'montant' => $montant,
             ]);

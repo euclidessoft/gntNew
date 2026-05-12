@@ -30,6 +30,18 @@ class AvoirRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    
+    public function Annuelle(int $year): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date >= :start')
+            ->andWhere('c.date < :end')
+            ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
+            ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
+            ->getQuery()
+            ->getResult();
+    }
+
        public function premiertranche($client, $mois)
     {
          $date = $mois."-01  00:00:00";
@@ -132,6 +144,44 @@ class AvoirRepository extends ServiceEntityRepository
             ->orderBy('p.date', "DESC")
             ->getQuery()
             ->getResult();
+    }
+
+     public function avantage($client, $p1, $p2){
+        $date = new \Datetime($p1);
+        $debut = (clone $date)->setTime(0, 0, 0);
+
+        $date = new \Datetime($p2);
+        $fin = (clone $date)->setTime(23, 59, 59);
+        $qb = $this->createQueryBuilder('c')
+       
+        ->andWhere('c.date BETWEEN :debut AND :fin')
+        ->andWhere('c.client = :client')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->setParameter('client', $client);
+
+        return $qb->getQuery()->getResult();
+    }
+
+     public function balance($client, $p1, $p2){
+        $debut = new \Datetime($p1);
+        // $debut = (clone $date)->setTim;
+
+        $fin = new \Datetime($p2);
+        // $fin = (clone $date)->setTime(23, 59, 59);
+        $qb = $this->createQueryBuilder('c')
+        // ->Addselect("u.id, SUM(c.montant) as paie") 
+        ->andWhere('c.date BETWEEN :debut AND :fin')
+        ->andWhere('c.client = :user')
+            ->setParameter('user', $client)
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin);
+            // ->setParameter('espece', false);
+        // ->join('c.achats', 'a')
+        // ->groupBy('u.id');
+        // ->orderBy('mois', 'DESC');
+
+        return $qb->getQuery()->getResult();
     }
     // /**
     //  * @return Avoir[] Returns an array of Avoir objects

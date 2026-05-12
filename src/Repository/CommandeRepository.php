@@ -106,8 +106,8 @@ class CommandeRepository extends ServiceEntityRepository
             ->AndWhere('a.livraison = :livraison')
             ->AndWhere('a.credit = :credit')
             ->AndWhere('a.versement > :versement')
-            ->andWhere('a.date >= :start')
-            ->andWhere('a.date < :end')
+            ->andWhere('a.traitement >= :start')
+            ->andWhere('a.traitement < :end')
             ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
             ->setParameter('end', new \DateTimeImmutable(($year + 1) . "-01-01"))
             ->setParameter('payer', false)
@@ -123,8 +123,8 @@ class CommandeRepository extends ServiceEntityRepository
     public function Annuelle(int $year): array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.date >= :start')
-            ->andWhere('c.date < :end')
+            ->andWhere('c.traitement >= :start')
+            ->andWhere('c.traitement < :end')
             ->andWhere('c.payer = :payer')
             ->AndWhere('c.suivi = :suivi')
             ->setParameter('start', new \DateTimeImmutable("$year-01-01"))
@@ -341,7 +341,7 @@ class CommandeRepository extends ServiceEntityRepository
             END) AS achat
         ")
         ->join("c.user","u")
-        ->andWhere('c.date BETWEEN :debut AND :fin')
+        ->andWhere('c.traitement BETWEEN :debut AND :fin')
             ->setParameter('debut', $debut)
             ->setParameter('fin', $fin)
             ->setParameter('espece', false)

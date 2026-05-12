@@ -29,6 +29,7 @@ use App\Entity\Panier;
 use App\Entity\EcritureRepartition;
 use App\Entity\PaieSalaire;
 use App\Entity\LivrerReste;
+use App\Repository\AvoirRepository;
 use App\Repository\EcritureRepository;
 use App\Repository\PaieRepository;
 use App\Repository\PaiementRepository;
@@ -167,11 +168,17 @@ class FinanceController extends AbstractController
                $this->entityManager->persist($avecom);
 
                 foreach($commandes as $commande){
-                    $avantage = new Avantage();
+
+                $avoirs = $this->entityManager->getRepository(Avoir::class)->avantage($commande[0]->getUser()->getId(), $request->request->get('date1'), $request->request->get('date2'));
+                $montantavoir = 0;
+                foreach($avoirs as $avoir){
+                    $montantavoir += $avoir->getMontant();
+                }  
+                $avantage = new Avantage();
                     $avantage->setEmploye($this->getUser());
                     $avantage->setCLient($commande[0]->getUser());
                     $avantage->setAveCom($avecom);
-                    $avantage->setCa($commande['ca']);
+                    $avantage->setCa($commande['ca'] - $montantavoir);
                     $avantage->setTva($request->request->get('tva'));
                     $avantage->setAchat($commande['achat']);
                     $avantage->setCommission($gain->commission($commande['ca'], $request->request->get('com1'),$request->request->get('com2'),$request->request->get('com3'),$request->request->get('com4') ));
@@ -458,11 +465,12 @@ class FinanceController extends AbstractController
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
               $commandes = $this->entityManager->getRepository(Commande::class)->historiquecompteclient($client->getId());
+              $avoirs = $this->entityManager->getRepository(Avoir::class)->findBy(['client' => $client->getId()]);
              $paiements = $paierepo->balancecompte($client->getId());
                 $versements = $versementrepo->balancecompte($client->getId());
                
                 $result = [];
-                foreach ([$commandes, $paiements, $versements] as $tableau) {
+                foreach ([$commandes, $avoirs, $paiements, $versements] as $tableau) {
                     foreach ($tableau as $row) {
                         $date = $row->getDate()->format('Y-m-d');
                         // dd($date);
@@ -1594,7 +1602,7 @@ class FinanceController extends AbstractController
 
 
     #[Route("/DaysBrouyardTiers/{date1}/{date2}", name :"days_tiers") ]
-    public function daystiers(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo)
+    public function daystiers(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo, AvoirRepository $avoirrepo)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
@@ -1606,7 +1614,11 @@ class FinanceController extends AbstractController
                 // dd($commande[0]->getUser()->getVersements());
                 $paiements = $paierepo->balance($commande['id'], $date1, $date2);
                 $versements = $versementrepo->balance($commande['id'], $date1, $date2);
-
+                $avoirs = $avoirrepo->balance($commande['id'], $date1, $date2);
+                 $montantavoir = 0;
+                foreach($avoirs as $avoir){
+                    $montantavoir += $avoir->getMontant();
+                }
                 foreach($versements as $versement){
                     $montant += $versement->getMontant();
                 }
@@ -1614,10 +1626,11 @@ class FinanceController extends AbstractController
                 foreach($paiements as $paiement){
                     $montant += $paiement->getMontant();
                 }
+               
                 $com['id'] = $commande['id'];
                 $com['compte'] = $commande[0]->getUser()->getCompte();
                 $com['nom'] = $commande[0]->getUser()->getNom();
-                $com['ca'] = $commande['ca'];
+                $com['ca'] = $commande['ca'] - $montantavoir;
                 $com['achat'] = $montant;
                 $comm[] = $com;
            }
@@ -1743,7 +1756,7 @@ class FinanceController extends AbstractController
 
 
     #[Route("/DaysBrouyardTiers_print/{date1}/{date2}", name :"days_tiers_print") ]
-    public function daystiersprint(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo)
+    public function daystiersprint(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo, AvoirRepository $avoirrepo)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
@@ -1755,6 +1768,11 @@ class FinanceController extends AbstractController
                 // dd($commande[0]->getUser()->getVersements());
                 $paiements = $paierepo->balance($commande['id'], $date1, $date2);
                 $versements = $versementrepo->balance($commande['id'], $date1, $date2);
+                $avoirs = $avoirrepo->balance($commande['id'], $date1, $date2);
+                 $montantavoir = 0;
+                foreach($avoirs as $avoir){
+                    $montantavoir += $avoir->getMontant();
+                }
 
                 foreach($versements as $versement){
                     $montant += $versement->getMontant();
@@ -1765,7 +1783,7 @@ class FinanceController extends AbstractController
                 }
                 $com['compte'] = $commande[0]->getUser()->getCompte();
                 $com['nom'] = $commande[0]->getUser()->getNom();
-                $com['ca'] = $commande['ca'];
+                $com['ca'] = $commande['ca'] - $montantavoir;
                 $com['achat'] = $montant;
                 $comm[] = $com;
            }
@@ -3377,14 +3395,14 @@ class FinanceController extends AbstractController
                     $ventepassee -= $restelivrer * $reste->getSession() + $tva;
             }
             
-            $avoirs = $this->entityManager->getRepository(Avoir::class)->findby(['rebourser' => false]);
+            $avoirs = $this->entityManager->getRepository(Avoir::class)->Annuelle($annee);
             foreach($avoirs as $avoir){    
-                $autrescharges += $avoir->getMontant(); 
+                $vente -= $avoir->getMontant(); 
             }
             
             $avoirspassee = $this->entityManager->getRepository(Avoir::class)->Annuellepassee($annee);
             foreach($avoirspassee as $avoir){    
-                $autreschargespassee += $avoir->getMontant(); 
+                $ventepassee -= $avoir->getMontant(); 
             }
             $autrescharges = $autrescharges - $autreschargespassee;// on enleve les charges des annees passees
 
@@ -3916,16 +3934,16 @@ class FinanceController extends AbstractController
             
 
             $detteavoir = 0;
-            $avoirs = $this->entityManager->getRepository(Avoir::class)->findBy(['rebourser' => false]);
-            foreach($avoirs as $avoir){    
-                $detteavoir += $avoir->getMontant(); 
-            }
+            // $avoirs = $this->entityManager->getRepository(Avoir::class)->findBy(['rebourser' => false]);
+            // foreach($avoirs as $avoir){    
+            //     $detteavoir += $avoir->getMontant(); 
+            // }
             
             $detteavoirpassee = 0;
-            $avoirspassee = $this->entityManager->getRepository(Avoir::class)->Annuellepassee($annee);// 
-            foreach($avoirspassee as $avoir){    
-                $detteavoirpassee += $avoir->getMontant(); 
-            }
+            // $avoirspassee = $this->entityManager->getRepository(Avoir::class)->Annuellepassee($annee);// 
+            // foreach($avoirspassee as $avoir){    
+            //     $detteavoirpassee += $avoir->getMontant(); 
+            // }
 
             // capital
             $capital = 0;
@@ -4272,14 +4290,14 @@ class FinanceController extends AbstractController
             }
             
     
-            $avoirs = $this->entityManager->getRepository(Avoir::class)->findby(['rebourser' => false]);
+            $avoirs = $this->entityManager->getRepository(Avoir::class)->Annuelle($annee);
             foreach($avoirs as $avoir){    
-                $charge += $avoir->getMontant(); 
+                $vente -= $avoir->getMontant(); 
             }
             
             $avoirspassee = $this->entityManager->getRepository(Avoir::class)->Annuellepassee($annee);
             foreach($avoirspassee as $avoir){    
-                $chargepassee += $avoir->getMontant(); 
+                $ventepassee -= $avoir->getMontant(); 
             }
             $charge = $charge - $chargepassee;
 

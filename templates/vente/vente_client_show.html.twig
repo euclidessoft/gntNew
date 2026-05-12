@@ -24,7 +24,7 @@
         <i class="fa fa-shopping-cart me-2"></i>
         {{ "Palmares des ventes Articles"|trans }}
     </h5>
-     <ul class="nav nav-tabs mb-4">
+    <ul class="nav nav-tabs mb-4">
         {# {% if is_granted('ROLE_STOCK') %} #}
         <li class="nav-item">
             <a class="nav-link" href="{{ path('vente_chiffre_client', {'client': user.id})}}">
@@ -44,6 +44,16 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ path('commande_panier_palmares_payer',{'client' :user.id}) }}">
                 {{'Factures Payees'|trans}}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('finance_avantage_client_palmares',{'client' :user.id}) }}">
+                {{'Avantages'|trans}}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('finance_journal_client',{'client' :user.id}) }}">
+                {{'Compte'|trans}}
             </a>
         </li>
     </ul>
