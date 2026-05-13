@@ -2086,7 +2086,8 @@ class CommandeController extends AbstractController
                 $escompte = round($commande->getMontant() * $escompte / 100, 2);
 
                 $entityManager = $this->entityManager;
-                if ($versement->getMontant() <= ($commande->getMontant() - $commande->getVersement())) {
+                // dd(($commande->getMontant() - $commande->getVersement()));
+                if ($versement->getMontant() < ($commande->getMontant() - $commande->getVersement())+1) {
                     $commande->setVersement($commande->getVersement() + $versement->getMontant());// MAJ versement
                     if ($commande->getVersement() == $commande->getMontant()- $escompte) {
 

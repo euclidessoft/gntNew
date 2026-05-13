@@ -333,10 +333,10 @@ class CommandeRepository extends ServiceEntityRepository
         $date = new \Datetime($p2);
         $fin = (clone $date)->setTime(23, 59, 59);
         $qb = $this->createQueryBuilder('c')
-        ->Addselect("u.id, SUM(c.Montantht) as ca") 
+        ->Addselect("u.id, SUM(c.Montant) as ca") 
         ->addSelect("
             SUM(CASE 
-                WHEN c.credit = :espece THEN c.Montantht 
+                WHEN c.credit = :espece THEN c.Montant 
                 ELSE 0 
             END) AS achat
         ")
