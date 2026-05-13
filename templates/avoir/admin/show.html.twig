@@ -57,7 +57,7 @@
                      <td>{{ commande.user.niu }}</td>
                      <td>{{ commande.user.rccm }}</td>
                          {% if commande.credit == 1 and commande.payer == 0 %}
-                             <td> {{ commande.date|date_modify('+10 days')|date('d/m/Y') }}</td>
+                             <td> {{ commande.echeance ? commande.echeance|date('d/m/Y'): ''  }}</td>
                         {% endif %}
                     {#        <td> </td>#}
                     </tbody>

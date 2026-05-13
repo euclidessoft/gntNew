@@ -52,8 +52,8 @@ class CommandeController extends AbstractController
             $total = 0;
             $notfound = 0;
              $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()],['desigantion' => 'ASC']) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()],['desigantion' => "ASC"]);  
              foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
@@ -1277,8 +1277,8 @@ class CommandeController extends AbstractController
              $dataPanier = [];
             $total = 0;
              $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()],['desigantion' => 'ASC']) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()],['desigantion' => 'ASC']);  
              foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [

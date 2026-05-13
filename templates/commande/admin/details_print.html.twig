@@ -99,6 +99,7 @@
                             <th>{{ 'Type'|trans }}</th>
                         {% else %}
                             <th>{{ 'Type'|trans }}</th>
+                              <th>{{ 'Echeance'|trans }}</th>
                         {% endif %}
 
                     </tr>
@@ -121,6 +122,7 @@
                         </td>
                     {% else %}
                         <td data-label="Credit">Credit </td>
+                         <td> {{ commande.echeance ? commande.echeance|date('d/m/Y'): ''  }}</td>
                     {% endif %}
 
                     </tbody>

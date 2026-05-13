@@ -94,6 +94,9 @@ class Commande
      #[ORM\Column(type:"datetime", nullable:true) ]// pour la gestion du bilan financier
     private $traitement;
 
+     #[ORM\Column(type:"datetime", nullable:true) ]// pour la gestion du bilan financier
+    private $echeance;
+
      #[ORM\Column(type:"datetime", nullable:true) ]// pour le rattrapage des exercices
     private $enregistrement;
     
@@ -122,6 +125,7 @@ class Commande
         $this->livrer = false;
         $this->Numerofacture = false;
         $this->retour = false;
+        
     }
 
 
@@ -435,6 +439,7 @@ class Commande
     public function setTraitement(?\DateTime $traitement): static
     {
         $this->traitement = $traitement;
+        $this->setEcheance($traitement);
 
         return $this;
     }
@@ -525,6 +530,25 @@ class Commande
     public function setExtranet(bool $extranet): static
     {
         $this->extranet = $extranet;
+
+        return $this;
+    }
+
+    public function getEcheance(): ?\DateTime
+    {
+        return $this->echeance;
+    }
+
+    public function setEcheance(?\DateTime $echeance): static
+    {
+        
+        $quinze = new \Datetime($echeance->format('Y-m-')."15 23:59:59");
+        if($echeance < $quinze)
+            $this->echeance = new \Datetime($echeance->format('Y-m-')."25");
+        else{ 
+            $date = $quinze->modify('+1 month');
+            $this->echeance =  new \Datetime($date->format('Y-m-')."10");;
+        }
 
         return $this;
     }
