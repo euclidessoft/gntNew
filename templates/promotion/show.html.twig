@@ -113,4 +113,13 @@
         <input type="hidden" id="stock"/>
 
         </div>
+        <div class="col-md-12 mt-5 mb-5 pt-2 pb-2 fond-7">
+            <div class="centrer">
+                <a target="__blank" href="{{ path('promotion_show_pdf', {'id': promotion.id}) }}"
+                   class="btn btn-danger me-3">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ "Vers Pdf"|trans }}
+                </a>
+            </div>
+        </div>
     {% endblock %}

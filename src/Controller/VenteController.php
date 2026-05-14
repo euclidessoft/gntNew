@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 
 #[Route("/{_locale}/Palmares_", name :"vente_") ]
@@ -85,120 +86,8 @@ class VenteController extends AbstractController
             foreach($ventes as $vente){
                 $quantite += $vente->getQuantite();
                 $montant += $vente->getSession() * $vente->getQuantite();
-                 $ug = 0;
-                    // traitement promotion floor()
-                    if (!empty($vente->getPromotion())) {
-                        if (!empty($vente->getPromotion()->getPremier())) {
-                            
-                            $promo = $vente->getPromotion();
-
-                            if ($vente->getQuantite() / $promo->getCinquieme() >= 1) {
-
-                                $unite = floor($vente->getQuantite() / $promo->getCinquieme());
-                                $ug += $unite * $promo->getUgcinquieme();
-                                $suite = $vente->getQuantite() - $unite * $promo->getCinquieme();
-
-                                if ($suite / $promo->getQuatrieme() >= 1) {
-
-                                    $unite = floor($suite / $promo->getQuatrieme());
-                                    $ug += $unite * $promo->getUgquatrieme();
-                                    $suite = $suite - $unite * $promo->getQuatrieme();
-
-                                    if ($suite / $promo->getTroisieme() >= 1) {
-
-                                        $unite = floor($suite / $promo->getTroisieme());
-                                        $ug += $unite * $promo->getUgtroisieme();
-                                        $suite = $suite - $unite * $promo->getTroisieme();
-
-                                        if ($suite / $promo->getDeuxieme() >= 1) {
-
-                                            $unite = floor($suite / $promo->getDeuxieme());
-                                            $ug += $unite * $promo->getUgdeuxieme();
-                                            $suite = $suite - $unite * $promo->getDeuxieme();
-
-                                            if ($suite / $promo->getPremier() >= 1) {
-                                                $unite = floor($suite / $promo->getPremier());
-                                                $ug += $unite * $promo->getUgpremier();
-                                            }
-
-                                        } elseif ($suite / $promo->getPremier() >= 1) {
-
-                                            $unite = floor($suite / $promo->getPremier());
-                                            $ug += $unite * $promo->getUgpremier();
-                                        }
-                                    }
-                                }
-
-                            } elseif ($vente->getQuantite() / $promo->getQuatrieme() >= 1) {
-
-                                $unite = floor($vente->getQuantite() / $promo->getQuatrieme());
-                                $ug += $unite * $promo->getUgquatrieme();
-                                $suite = $vente->getQuantite() - $unite * $promo->getQuatrieme();
-
-                                if ($suite / $promo->getTroisieme() >= 1) {
-
-                                    $unite = floor($suite / $promo->getTroisieme());
-                                    $ug += $unite * $promo->getUgtroisieme();
-                                    $suite = $suite - $unite * $promo->getTroisieme();
-
-                                    if ($suite / $promo->getDeuxieme() >= 1) {
-
-                                        $unite = floor($suite / $promo->getDeuxieme());
-                                        $ug += $unite * $promo->getUgdeuxieme();
-                                        $suite = $suite - $unite * $promo->getDeuxieme();
-
-                                        if ($suite / $promo->getPremier() >= 1) {
-                                            $unite = floor($suite / $promo->getPremier());
-                                            $ug += $unite * $promo->getUgpremier();
-                                        }
-
-                                    } elseif ($suite / $promo->getPremier() >= 1) {
-
-                                        $unite = floor($suite / $promo->getPremier());
-                                        $ug += $unite * $promo->getUgpremier();
-                                    }
-                                }
-                            } elseif ($vente->getQuantite() / $vente->getPromotion()->getTroisieme() >= 1) {
-
-                                $unite = floor($vente->getQuantite() / $vente->getPromotion()->getTroisieme());
-                                $ug = $ug + $unite * $vente->getPromotion()->getUgtroisieme();
-                                $suite = $vente->getQuantite() - $unite * $vente->getPromotion()->getTroisieme();
-
-                                if ($suite / $vente->getPromotion()->getDeuxieme() >= 1) {
-
-                                    $unite = floor($suite / $vente->getPromotion()->getDeuxieme());//round
-                                    $ug = $ug + $unite * $vente->getPromotion()->getUgdeuxieme();
-                                    $suite = $suite - $unite * $vente->getPromotion()->getDeuxieme();
-
-                                    if ($suite / $vente->getPromotion()->getPremier() >= 1) {
-                                        $unite = floor($suite / $vente->getPromotion()->getPremier());//round
-                                        $ug = $ug + $unite * $vente->getPromotion()->getUgpremier();
-                                    }
-
-                                } elseif ($suite / $vente->getPromotion()->getPremier() >= 1) {
-                                    $unite = floor($suite / $vente->getPromotion()->getPremier());//round
-                                    $ug = $ug + $unite * $vente->getPromotion()->getUgpremier();
-                                }
-
-                            } elseif ($vente->getQuantite() / $vente->getPromotion()->getDeuxieme() >= 1) {
-
-
-                                $unite = floor($vente->getQuantite() / $vente->getPromotion()->getDeuxieme());//round
-                                $ug = $ug + $unite * $vente->getPromotion()->getUgdeuxieme();
-                                $suite = $vente->getQuantite() - $unite * $vente->getPromotion()->getDeuxieme();
-
-                                if ($suite / $vente->getPromotion()->getPremier() >= 1) {
-                                    $unite = floor($suite / $vente->getPromotion()->getPremier());//round
-                                    $ug = $ug + $unite * $vente->getPromotion()->getUgpremier();
-                                }
-                            } elseif ($vente->getQuantite() / $vente->getPromotion()->getPremier() >= 1) {
-                                $unite = floor($vente->getQuantite() / $vente->getPromotion()->getPremier());//round
-                                $ug = $ug + $unite * $vente->getPromotion()->getUgpremier();
-
-                            }
-                        }
-                    }
-                    $totalug += $ug;
+                 
+                 $totalug += $vente->getUg();
             }
             $response = $this->render('vente/vente_show.html.twig', [
                 'ventes' => $ventes,
@@ -216,6 +105,51 @@ class VenteController extends AbstractController
                 'private' => true,
             ]);
             return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("/Article_pdf/{id}", name :"show_pdf", methods : ["GET"]) ]
+    public function produithistorypdf(Produit $produit, CommandeProduitRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+            $ventes = $repository->findBy(['produit' => $produit],['date' => "DESC"]);
+            $quantite = 0;
+            $montant = 0;
+            $totalug = 0;
+            foreach($ventes as $vente){
+                $quantite += $vente->getQuantite();
+                $montant += $vente->getSession() * $vente->getQuantite();
+                 
+                    
+                    $totalug += $vente->getUg();
+            }
+
+            return $gotenberg
+        ->html()
+        ->content('vente/vente_showpdf.html.twig', [
+                'ventes' => $ventes,
+                'produit' => $produit,
+                'quantite' => $quantite,
+                'montant' => $montant,
+                'totalug' => $totalug,
+            ])
+        ->fileName('palmares.pdf')
+        ->generate()
+        ->stream();
+            
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

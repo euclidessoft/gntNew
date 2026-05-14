@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/Promotions") ]
 class PromotionController extends AbstractController
@@ -245,6 +246,35 @@ class PromotionController extends AbstractController
         }
     }
 
+    
+    #[Route("/PromotionsCourantes_pdf", name :"promotion_courante_pdf", methods : ["GET","POST"]) ]
+    public function courantepdf(SessionInterface $session, PromotionRepository $promotionRepository, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK') || $this->security->isGranted('ROLE_CLIENT')) {
+
+            return $gotenberg
+        ->html()
+        ->content('promotion/admin/encourspdf.html.twig', [
+                'promotions' => $promotionRepository->Courante(),
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+
+        } else {
+            $response = $this->redirectToRoute('security_login');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
 
     #[Route("/add/", name :"promotion_add") ]
     public function add(Request $request, ProduitRepository $produitRepository, SessionInterface $session)
@@ -430,6 +460,55 @@ class PromotionController extends AbstractController
                 'panier' => $dataPanier,
                 'promo' => $promo,
             ]);
+        } else {
+            $response = $this->redirectToRoute('security_login');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("_pdf/{id}", name :"promotion_show_pdf", methods : ["GET"]) ]
+    public function showpdf(Promotion $promotion, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+
+          
+            return $gotenberg
+        ->html()
+        ->content('promotion/admin/showpdf.html.twig', [
+                'promotion' => $promotion,
+                // 'produitspromotion' => $produitrepo->findBy(['promotion' => $promotion])
+            ])
+        ->fileName('promotion.pdf')
+        ->generate()
+        ->stream();
+
+        } elseif ($this->security->isGranted('ROLE_CLIENT')) {
+            $date = new \DateTime();
+            $promo = 0;
+            if ($promotion->getDebut() <= $date) {
+                $promo = 1;
+            }
+            
+
+            return $gotenberg
+        ->html()
+        ->content('promotion/showpdf.html.twig', [
+                'promotion' => $promotion,
+                'promo' => $promo,
+            ])
+        ->fileName('promotion.pdf')
+        ->generate()
+        ->stream();
         } else {
             $response = $this->redirectToRoute('security_login');
             $response->setSharedMaxAge(0);

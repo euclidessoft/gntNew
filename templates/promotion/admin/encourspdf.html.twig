@@ -1,0 +1,33 @@
+{% extends
+    'pdf.html.twig'
+%}
+
+{% block contenu %}
+    <h3 class="mt-4 mb-5 text-bold text-center">
+        <i class="fa fa-shopping-cart me-2"></i>
+        {{ "Liste des promotions en cours"|trans }}
+    </h3>
+
+
+    <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+        <thead>
+            <tr>
+                <th>{{ 'Désignation'|trans }}</th>
+                <th>{{ 'Date Début'|trans }}</th>
+                <th>{{ 'Date Fin'|trans }}</th>
+                <th>{{ 'Type'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for promotion in promotions %}
+            <tr>
+                <td>{{ promotion.designation }}</td>
+                <td>{{ promotion.debut ? promotion.debut|date('d/m/Y') : '' }}</td>
+                <td>{{ promotion.fin ? promotion.fin|date('d/m/Y') : '' }}</td>
+                <td>{{ promotion.type }}</td>
+               
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

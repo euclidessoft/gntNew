@@ -1,27 +1,14 @@
 {% extends
-    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
-    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
-    is_granted('ROLE_RH') ? 'rh.html.twig' :
-    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
-    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
-    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
-    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
-    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
-    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
+    'pdf.html.twig'
 %}
-    {% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
-    {% block promotion %}active{% endblock %}
-    {% block current_promotion %}active{% endblock %}
 
-    {% block body %}
-<div class="container mt-4 fond-7">
+    {% block contenu %}
+<div class="container-fluid mt-4 fond-7">
     <h3 class="mt-4 mb-2 text-bold">
         <i class="fa fa-shop me-2"></i>
         {{ "Promotion"|trans }}
     </h3>
-    <a class='btn btn-success mb-3' href="{{ path('promotion_edit', {'id' : promotion.id})}}"> <i class="fa fa-edit"></i> modifier promotion </a>
-    <table class="table table-success-light table-bordered table-hover table-striped w-100">
+     <table class="table table-success-light table-bordered table-hover table-striped w-100">
         <thead>
         <tr>
             <th>{{'Désignation'|trans}}</th>
@@ -55,7 +42,7 @@
         </tbody>
     </table>
 </div>
-        <div class="container mt-4 fond-7">
+        <div class="container-fluid mt-4 fond-7">
             <h3 class="mt-4 mb-5 text-bold">
                 <i class="fa-brands fa-product-hunt me-2"></i>
                 {{ "Produits"|trans }}
@@ -88,14 +75,5 @@
                 </tbody>
             </table>
 
-</div>
-<div class="col-md-12 mt-5 mb-5 pt-2 pb-2 fond-7">
-            <div class="centrer">
-                <a target="_blank" href="{{ path('promotion_show_pdf', {'id': promotion.id}) }}"
-                   class="btn btn-danger me-3">
-                    <i class="fa fa-file-pdf"></i>
-                    {{ "Vers Pdf"|trans }}
-                </a>
-            </div>
-        </div>
+</div>>
 {% endblock %}
