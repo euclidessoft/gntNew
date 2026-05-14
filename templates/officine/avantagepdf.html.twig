@@ -1,42 +1,14 @@
 {% extends
    
-    'client.html.twig'
+    'pdf.html.twig'
 %}
 
-{% block title %} {{ "Officine"|trans }} - GNT Pharma {% endblock %}
-{% block officine %}active{% endblock %}
-
-{% block body %}
-
-  <div class="container-fluid mt-4 fond-7">
+{% block contenu %}
    <h3 class="mt-4 mb-5 text-bold">
             <i class="fas fa-staff-snake fa-lg"></i>
             {{ "Officine"|trans }} :   {{ 'Avantages commerciaux'|trans }}
         </h3>
-    <ul class="nav nav-tabs mb-4">
-    {% if is_granted("ROLE_CLIENT_ADMIN") %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('commande_panier_officine') }}">{{ 'Facture'|trans }}</a>
-            </li>
-     {% endif %}       
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('avoir_officine') }}">{{'Avoir'|trans}}</a>
-            </li>
-     {% if is_granted("ROLE_CLIENT_ADMIN") %}
-            <li class="nav-item">
-                <a class="nav-link active" href="#">{{'Avantages'|trans}}</a>
-            </li>
-    {% endif %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('commande_panier_credit') }}">{{'Dette'|trans}}</a>
-            </li>
-        </ul>
-    {% for message in app.flashes('notice') %}
-            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                {{ message|trans }}
-            </div>
-        {% endfor %}
+  
         <table class="table table-success-light table-bordered table-hover table-striped mt-3" id="liste">
        <thead>
             <tr>
@@ -65,21 +37,6 @@
             {% endfor %}
         </tbody>
        </table> 
-<div class="container mt-4 mb-5 p-3 fond-7">
-        <div class="centrer">
-        <a target="__blank" id="print" onclick="load('print')"
-               href="{{ path('finance_avantage_client_pdf')}}"
-               class="btn btn-danger me-2">
-                <i class="fa fa-file-pdf"></i>
-                {{ "vers Pdf"|trans }}
-            </a>
 
-             <span id="exportexcel" class=""></span>
-        </div>
-    </div>
-   
-</div>
-
- 
 {% endblock %}
 

@@ -1,35 +1,17 @@
-{% extends
-    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
-    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
-    is_granted('ROLE_RH') ? 'rh.html.twig' :
-    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
-    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
-    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
-    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
-    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
-    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
-%}
-{% block title %} {{ "Approvisionnement"|trans }} No {{ approvisionner.id }} - GNT Pharma {% endblock %}
-{% block stock %}active{% endblock %}
-{% block appro %}active{% endblock %}
-{% block all_appro %}active{% endblock %}
-
-{% block body %}
-    <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
-            <i class="fa fa-shop me-2"></i>
-            {{ "Détails Approvisionnement"|trans }}
+{% extends 'pdf.html.twig '%}
+{% block contenu %}
+        <h3 class="text-center text-bold text-uppercase my-5">
+            {{ 'Details Approvisionnement'|trans}}
         </h3>
 
         <div class="row justify-content-end">
             <div class="col-lg-5">
-                <table class="table table-success-light table-bordered table-hover table-striped">
+                <table class="table table-success-light table-bordered">
                     <thead>
                     <tr>
                         <th>{{ 'Numéro'|trans }}</th>
                         <th>{{ 'Date'|trans }}</th>
-                       <th>{{ 'Utilisateur'|trans }}</th>
+                        <th>{{ 'Utilisateur'|trans }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,7 +49,7 @@
             {% for approvisionnement in approvisionnements %}
                 <tr>
                     <td> {{ approvisionnement.produit.reference }} </td>
-                    <td class="text-start"><a href="{{ path('produit_show', {'id': approvisionnement.produit.id}) }}">{{ approvisionnement.produit.desigantion }}</a> </td>
+                    <td class="text-start">{{ approvisionnement.produit.desigantion }} </td>
                     <td>{{ approvisionnement.fournisseur ? approvisionnement.fournisseur.designation : 'Retour Produit'}} </td>
                     <td>{{ approvisionnement.lot }} </td>
                     <td>{{ approvisionnement.peremption|date('d/m/Y') }} </td>
@@ -99,19 +81,4 @@
                 </tr>
             </tfooter>
         </table>
-
-        <div class="col-md-12 offset-md-4 mt-5 mb-5 pt-2 pb-2 fond-7">
-            <div class="centrer">
-             <a target="__blank" id="{{ approvisionner.id }}" onclick="load({{ approvisionner.id }})" href="{{ path('stock_show_pdf',{ 'id': approvisionner.id}) }}" class="btn btn-danger me-2">
-                    <i class="fa fa-file-pdf"></i>
-                    {{ "vers Pdf"|trans }}
-                </a>
-            
-                <a id="{{ approvisionner.id }}" onclick="load({{ approvisionner.id }})" href="{{ path('stock_show_print',{ 'id': approvisionner.id}) }}" class="btn btn-success float-end">
-                    <i class="fa fa-print"></i>
-                    {{ "Imprimer"|trans }}
-                </a>
-            </div>
-        </div>
-    </div>
-{% endblock %}
+  {% endblock %}

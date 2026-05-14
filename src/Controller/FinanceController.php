@@ -46,6 +46,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\SecurityBundle\Security;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/finance", name :"finance_") ]
 class FinanceController extends AbstractController
@@ -254,6 +255,34 @@ class FinanceController extends AbstractController
     }
 
     
+
+    #[Route("/AvantageClient_pdf", name :"avantage_client_pdf") ]
+    public function avantageclientpdf(Request $request, AvantageRepository $repo, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+           
+             return $gotenberg
+        ->html()
+        ->content('officine/avantagepdf.html.twig', [
+                "avantages" => $repo->findBy(['client' => $this->getUser()] ),
+            ])
+        ->fileName('avantage.pdf')
+        ->generate()
+        ->stream();
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    
     #[Route("/Palmares_AvantageClient/{client}", name :"avantage_client_palmares") ]
     public function palamaresavantageclient(Client $client, AvantageRepository $repo): Response
     {
@@ -390,6 +419,36 @@ class FinanceController extends AbstractController
                 'private' => true,
             ]);
             return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/PeriodeShow_pdf/{id}", name :"avantage_show_pdf") ]
+    public function avantageshowpdf(Request $request,AveCom $id, AvantageRepository $repo,GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+           
+        return $gotenberg
+        ->html()
+        ->content('finance/avantage_showpdf.html.twig', [
+                        'periodes' => $repo->findBy(['AveCom' => $id]),
+                        'avecom' => $id,
+                       ])
+        ->fileName('avantage.pdf')
+        ->generate()
+        ->stream();
+           
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

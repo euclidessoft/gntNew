@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/Client") ]
 class ClientController extends AbstractController
@@ -31,6 +32,35 @@ class ClientController extends AbstractController
             return $this->render('client/index.html.twig', [
                 'client' => $client,
             ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+     #[Route("_pdf/", name :"client_index_pdf") ]
+    public function indexpdf(EntityManagerInterface $entityManager, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+            
+            $client = $entityManager->getRepository(Client::class)->findBy(['client' =>true]);
+           
+             return $gotenberg
+        ->html()
+        ->content('client/indexpdf.html.twig', [
+                'client' => $client,
+            ])
+        ->fileName('clients.pdf')
+        ->generate()
+        ->stream();
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

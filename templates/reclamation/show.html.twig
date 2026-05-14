@@ -96,10 +96,18 @@
     {% endfor %}
 </div>
 
+<div class="col-md-6 offset-md-3 mt-4 mb-5 pt-3 pb-2 fond-7">
+            <div class="centrer">
+
+<a target="_blank" id="r{{ reclamation.id }}" onclick="load('r{{ reclamation.id }}')" class="btn btn-danger me-2" href="{{ path('reclamation_show_pdf', {'id': reclamation.id}) }}">
+                            <i class="fa fa-file-pdf"></i>
+                            {{ 'vers Pdf'|trans }}
+                        </a>
     {% if reclamation.usercloture is null  %}
 
-        <div class="col-md-6 offset-md-3 mt-4 mb-5 pt-3 pb-2 fond-7">
-            <div class="centrer">
+        
+
+             
 
                 <a id="{{ reclamation.id }}" onclick="load({{ reclamation.id }})" href="{{ path('reponse_new', {'reclamation' : reclamation.id }) }}" class="btn btn-success">
                     <i class="fa fa-edit"></i>
@@ -107,23 +115,19 @@
                 </a>
 
 
-            </div>
-        </div>
         {% else %}
 
-        <div class="col-md-6 offset-md-3 mt-4 mb-5 pt-3 pb-2 fond-7">
-            <div class="centrer">
 
                 {{ 'Clôturer le'|trans }} {{ reclamation.cloture|date('d/m/Y H:i:s') }}
 
 
-            </div>
-        </div>
 
 
     {% endif %}
 
 
+            </div>
+        </div>
 
     <div class="modal fade" id="modal" tabindex="-1" tabindex="-1" aria-labelledby="" aria-hidden="true"
          aria-labelledby="exampleModalLabel" aria-hidden="true">

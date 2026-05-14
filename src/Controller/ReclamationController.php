@@ -23,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/Commande_Reclamation") ]
 class ReclamationController extends AbstractController
@@ -517,6 +518,56 @@ class ReclamationController extends AbstractController
                 'reclamations' => $reclamations,
                 'panier' => $panier,
             ]);
+        } else {
+            $response = $this->redirectToRoute('security_login');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("_pdf/{id}/", name :"reclamation_show_pdf", methods : ["GET"]) ]
+    public function showpdf(Reclamation $reclamation, ReclamationProduitRepository $repository, LivrerProduitRepository $livrerProduitRepository, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_BACK')) {
+
+
+
+            $commandeproduits = $livrerProduitRepository->findBy(['commande' => $reclamation->getCommande()]);
+            $reclamations = $repository->findBy(['commande' => $reclamation->getCommande()]);
+           
+             return $gotenberg
+        ->html()
+        ->content('reclamation/admin/showpdf.html.twig', [
+                'reclamation' => $reclamation,
+                'commandes' => $commandeproduits,
+                'reclamations' => $reclamations,
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+        } else if ($this->security->isGranted('ROLE_CLIENT')) {
+           
+            $commandeproduits = $livrerProduitRepository->findBy(['commande' => $reclamation->getCommande()]);
+            $reclamations = $repository->findBy(['commande' => $reclamation->getCommande()]);
+            
+            return $gotenberg
+        ->html()
+        ->content('reclamation/showpdf.html.twig', [
+                'reclamation' => $reclamation,
+                'commandes' => $commandeproduits,
+                'reclamations' => $reclamations,
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
         } else {
             $response = $this->redirectToRoute('security_login');
             $response->setSharedMaxAge(0);

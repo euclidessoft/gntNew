@@ -1,0 +1,35 @@
+{% extends
+    'pdf.html.twig'
+%}
+{% block contenu %}
+        <h4 class="text-bold mt-3 mb-5">
+            <i class="fa fa-user-tag"></i>
+            {{ "Tous les clients"|trans }}
+        </h4>
+       
+        <table class="table table-success-light table-bordered table-hover table-striped my-3 w-100">
+            <thead>
+            <tr>
+                <th>{{ 'Nº Compte'|trans }}</th>
+                <th>{{ 'Nom'|trans }}</th>
+                <th>{{ 'Prénom'|trans }}</th>
+                <th>{{ 'Téléphone'|trans }}</th>
+                <th>{{ 'Email'|trans }}</th>
+                <th>{{ 'Prelevement'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for client in client %}
+            <tr>
+                <td data-label="Nº Compte">{{ client.compte }}</td>
+                <td data-label="Nom">{{ client.nom }}</td>
+                <td data-label="Prénom">{{ client.prenom }}</td>
+                <td data-label="Téléphone">{{ client.phone }}</td>
+                <td data-label="Email">{{ client.email }}</td>
+                <td data-label="prelement">{{ client.prelevement ? 'oui' : 'non'}}</td>
+            </tr>
+            {% endfor %}
+              
+            </tbody>
+        </table>
+{% endblock %}

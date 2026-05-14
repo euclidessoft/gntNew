@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/Stock/Approvisionnement" , name :"stock_") ]
 class ApprovisionnementController extends AbstractController
@@ -377,6 +378,37 @@ class ApprovisionnementController extends AbstractController
         }
     }
 
+
+    
+
+    #[Route("/Details_pdf/{id}", name :"show_pdf", methods : ["GET"]) ]
+    public function detailspdf(Approvisionner $approvisionner, ApprovisionnementRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK')) {
+            
+         return $gotenberg
+        ->html()
+        ->content('approvisionnement/showpdf.html.twig', [
+                'approvisionner' => $approvisionner,
+                'approvisionnements' => $repository->findBy(['approvisionner' => $approvisionner]),
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+           
+        } else {
+            $response = $this->redirectToRoute('security_login');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
 
     #[Route("/Details/{id}", name :"show", methods : ["GET"]) ]
     public function details(Approvisionner $approvisionner, ApprovisionnementRepository $repository): Response

@@ -91,6 +91,15 @@
             </tbody>
         </table>
     </div>
+     <div class="col-md-12 offset-md-4 mt-5 mb-5 pt-2 pb-2 fond-7">
+            <div class="centrer">
+             <a target="__blank"href="{{ path('client_index_pdf') }}" class="btn btn-danger">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ "vers Pdf"|trans }}
+                </a>
+            
+            </div>
+        </div>
     {% block scripts %}
         {{ include('client/_script.html.twig') }}
     {% endblock %}

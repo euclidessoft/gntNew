@@ -1,0 +1,100 @@
+{% extends
+    'pdf.html.twig' %}
+
+{% block contenu %}
+<div class="container-fluid mt-4 py-4 fond-7">
+    <h3 class="mt-3 mb-3 text-bold text-center">
+        <i class="fa fa-rotate me-2"></i>
+        {{ 'Réclamation'|trans }}
+    </h3>
+    <div class="col-md-6 offset-md-3 mb-2 pt-3 pb-2 fond-7">
+            <div class="centrer">
+
+              <table class="table table-success-light table-bordered table-hover mn-1">
+        <thead>
+        <tr>
+            <th>{{'N° Commande'|trans}}</th>
+            <th>{{ 'Date commande'|trans }}</th>
+            <th>{{ 'Date Livraison'|trans }}</th>
+        </tr>
+        </thead>
+         <thead>
+        <tr>
+            <td> 
+                <button class="btn btn-success"
+                        data-bs-toggle="modal" data-bs-target="#modal">
+                    {{ reclamation.commande.id }}
+                </a>
+            </td>
+            <td>{{ reclamation.commande.date|date("d/m/Y H:i:s") }}</td>
+            <td>{{ reclamation.commande.dateefectlivraison|date("d/m/Y H:i:s") }}</td>
+        </tr>
+        </thead>
+        </table>
+            </div>
+        </div>
+    
+        
+        {% for reclamation in reclamations %}
+    <table class="table table-success-light table-bordered table-hover table-striped mb-4 w-100">
+         <thead>
+        <tr>
+            <th>{{'CIP'|trans}}</th>
+            <th>{{ 'Désignation'|trans }}</th>
+            <th>{{ 'N Lot'|trans }}</th>
+            <th>{{ 'Peremption'|trans }}</th>
+            <th>{{ 'Quantité Concernée'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ reclamation.produit.reference }}</td>
+            <td>{{ reclamation.produit.desigantion }}</td>
+            <td>{{ reclamation.lot }}</td>
+            <td>{{ reclamation.peremption|date("d/m/Y") }}</td>
+            <td>{{ reclamation.quantite }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Motif'|trans }}</th>
+            <td colspan="4">{{ reclamation.motif }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'Commentaire'|trans }}</th>
+            <td colspan="4">{{ reclamation.commentaire }}</td>
+        </tr>
+        </tbody>
+        
+    </table>
+        {% endfor %}
+
+</div>
+
+<div class="container py-4">
+    {% for reponse in reclamation.reponses %}
+        <div class="row mt-4">
+
+            {% if 'ROLE_CLIENT' in reponse.user.roles or 'ROLE_CLIENT_ADMIN' in reponse.user.roles %}
+
+                <div class="col-md-7  py-4 fond-7">
+                    {{ reponse.user.nom  }} | {{ reponse.date|date('d/m/Y H:i:s') }}
+                    <hr class="text-secondaire">
+                    {{ reponse.message }}
+                </div>
+                <div class="col-md-5"> </div>
+
+            {% else %}
+                <div class="col-md-5"> </div>
+                <div class="col-md-7  py-4 fond-7">
+                    {{ reponse.user.nom  }} | {{ reponse.date|date('d/m/Y H:i:s') }}
+                    <hr class="text-secondaire">
+                    {{ reponse.message }}
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+
