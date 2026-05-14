@@ -103,6 +103,12 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: CommandeProduit::class)]
     private Collection $commandeProduits;
 
+    /**
+     * @var Collection<int, Inventaire>
+     */
+    #[ORM\OneToMany(targetEntity: Inventaire::class, mappedBy: 'produit')]
+    private Collection $inventaires;
+
 
     public function __construct()
     {
@@ -114,6 +120,7 @@ class Produit
         // $this->promotionProduits = new ArrayCollection();
         $this->commandeProduits = new ArrayCollection();
         $this->promotions = new ArrayCollection();
+        $this->inventaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -512,6 +519,36 @@ class Produit
     public function setColisage(?int $colisage): static
     {
         $this->colisage = $colisage;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inventaire>
+     */
+    public function getInventaires(): Collection
+    {
+        return $this->inventaires;
+    }
+
+    public function addInventaire(Inventaire $inventaire): static
+    {
+        if (!$this->inventaires->contains($inventaire)) {
+            $this->inventaires->add($inventaire);
+            $inventaire->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInventaire(Inventaire $inventaire): static
+    {
+        if ($this->inventaires->removeElement($inventaire)) {
+            // set the owning side to null (unless already changed)
+            if ($inventaire->getProduit() === $this) {
+                $inventaire->setProduit(null);
+            }
+        }
 
         return $this;
     }

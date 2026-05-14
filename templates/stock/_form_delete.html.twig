@@ -1,6 +1,14 @@
-<form method="post" title="{{ 'Supprimer'|trans }}" action="{{ path('stock_epuise', {'id': stock.id}) }}" onsubmit="return confirm('{{ 'Etes vous sûr de vouloir supprimer ce produit du stock?'|trans }}');" style="display: inline;">
+<form method="post" title="{{ 'Supprimer'|trans }}" id="form{{stock.id}}" action="{{ path('stock_epuise', {'id': stock.id}) }}" onsubmit="return confirm('{{ 'Etes vous sûr de vouloir supprimer ce produit du stock?'|trans }}');" style="display: inline;">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ stock.id ~ 'lot' ~ stock.lot) }}">
-    <button class="btn btn-danger">
+    <select name="motif" id="motifdel{{ stock.id }}" class="form-control">
+    <option value="">-- Sélectionner un motif --</option>
+    <option value="MANQUANT">MANQUANT</option>
+    <option value="CONFUSION DE SAISIE">CONFUSION DE SAISIE</option>
+    <option value="REGULARISATION">REGULARISATION</option>
+    <option value="EN PLUS">EN PLUS</option>
+    <option value="ERREUR STOCK">ERREUR STOCK</option>
+</select>
+    <button type="button" class="btn btn-danger mt-3" id="btndel{{stock.id}}" onclick="deleteventaire({{stock.id}})">
         <i class="fa fa-trash"></i> stock épuisé
     </button>
 </form>

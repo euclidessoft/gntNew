@@ -189,6 +189,12 @@ class Employe extends User implements UserInterface
     #[ORM\OneToMany(targetEntity: Avantage::class, mappedBy: 'employe')]
     private Collection $avantages;
 
+    /**
+     * @var Collection<int, Inventaire>
+     */
+    #[ORM\OneToMany(targetEntity: Inventaire::class, mappedBy: 'employe')]
+    private Collection $inventaires;
+
 
     public function __construct()
     {
@@ -221,6 +227,7 @@ class Employe extends User implements UserInterface
         $this->primePerformances = new ArrayCollection();
         $this->accomptes = new ArrayCollection();
         $this->avantages = new ArrayCollection();
+        $this->inventaires = new ArrayCollection();
     }
 
 
@@ -1254,6 +1261,36 @@ class Employe extends User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($avantage->getEmploye() === $this) {
                 $avantage->setEmploye(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inventaire>
+     */
+    public function getInventaires(): Collection
+    {
+        return $this->inventaires;
+    }
+
+    public function addInventaire(Inventaire $inventaire): static
+    {
+        if (!$this->inventaires->contains($inventaire)) {
+            $this->inventaires->add($inventaire);
+            $inventaire->setEmploye($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInventaire(Inventaire $inventaire): static
+    {
+        if ($this->inventaires->removeElement($inventaire)) {
+            // set the owning side to null (unless already changed)
+            if ($inventaire->getEmploye() === $this) {
+                $inventaire->setEmploye(null);
             }
         }
 

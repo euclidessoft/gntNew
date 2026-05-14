@@ -899,8 +899,8 @@ class CommandeController extends AbstractController
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
              $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
              $this->getUser()->getTuteur() === null ? 
-            $commandes = $repository->findBy(['user' => $this->getUser()->getId(), 'extranet' => true]) :
-            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId(), 'extranet' => true]);
+            $commandes = $repository->findBy(['user' => $this->getUser()->getId()/*, 'extranet' => true*/]) :
+            $commandes = $repository->findBy(['user' => $this->getUser()->getTuteur()->getId()/*, 'extranet' => true*/]);
            
             $response = $this->render('commande/extranet.html.twig', [
                 'commandes' => $commandes,

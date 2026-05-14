@@ -16,10 +16,10 @@
 {% block start %} onkeyup="entrerinventaire()" {% endblock %}
 
 {% block body %}
-<div class="container mt-4 fond-7">
+<div class="container-fluid mt-4 fond-7">
     <h3 class="mt-4 mb-5 text-bold">
         <i class="fa fa-shopping-cart me-2"></i>
-        {{ "Etat stock produits"|trans }}
+        {{ "Etat stock produits"|trans }} |Inventaire
     </h3>
 
     {% for message in app.flashes('notice') %}
@@ -50,10 +50,10 @@
             <th>{{ 'Désignation'|trans }}</th>
             <th>{{ 'DCI'|trans }}</th>
             {# <th>{{ 'Fabricant'|trans }}</th> #}
-{#            <th>N° Lot</th>#}
-{#            <th>Peremptio</th>#}
+           <th>N° Lot</th>
+           <th>Peremptio</th>
             <th>{{ 'Qté supposée'|trans }}</th>
-            <th>{{ 'Qté Réelle'|trans }}</th>
+            {# <th>{{ 'Qté Réelle'|trans }}</th> #}
             {% if is_granted('ROLE_ADMIN') %}
             <th>{{ 'Actions'|trans }}</th>
         {% endif %}
@@ -66,22 +66,126 @@
                 <td>{{ stock.produit.desigantion }}</td>
                 <td>{{ stock.produit.dci }}</td>
                 {# <td>{{ stock.produit.fabriquant }}</td> #}
-{#                <td>{{ stock.lot }}</td>#}
-{#                <td>{{ stock.peremption|date('d/m/Y') }}</td>#}
+               <td>{{ stock.lot }}</td>
+               <td>{{ stock.peremption|date('d/m/Y') }}</td>
                 <td class"center">{{ stock.quantite|number_format(0,',' , ' ') }}</td>
-                <td id="tdq{{ stock.id }}">
+                {# <td id="tdq{{ stock.id }}"> champ pour quantite
                      <input type="number" id="text{{ stock.id }}" class="form-control"
                                     onfocus="focu({{ stock.id }}, {{ stock.quantite }}, 0)" onblur="nofocu()"
                                     style="vertical-align: middle; margin: auto; width: 80px; height: 40px;">
                                 <label for="text{{ stock.id }}"></label>
-                </td>
+                </td> #}
                  {% if is_granted('ROLE_STOCK') %}
                 <td id="tda{{ stock.id }}">
-                    <button id="btn{{ stock.id }}" onclick="editinventaire({{ stock.id }},{{stock.quantite}})" class="btn btn-success">
-                        <i class="fa fa-edit"></i>
-                         {{'Modifier'|trans}}
-                    </button>
-                    {{ include('stock/_form_delete.html.twig')}}
+                      <!-- Button trigger modal -->
+                                <button type="button"
+                                        class="btn btn-success"
+                                        data-bs-toggle="modal" data-bs-target="#modal{{ stock.id }}"
+                                        id="btn{{ stock.id }}">
+                                    <i class="fa fa-edit"></i> {{ "modifer"|trans }}
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modal{{ stock.id }}" tabindex="-1"
+                                     tabindex="-1" aria-labelledby="" aria-hidden="true"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered text-center">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title fs-5" id="exampleModalLabel">
+                                                   {{ stock.produit.desigantion }}</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+
+                                                </button>
+                                            </div>
+                                            <div class="modal-body px-5">
+                                                <div class="mt-3">
+                                                    Quantité réelle:
+                                                    <label for="quant{{ stock.id }}"></label>
+                                                    <input type="number" class="form-control"
+                                                           id="quant{{ stock.id }}">
+                                                </div>
+                                                <div class="mt-3">
+                                                   Motif:
+                                                   - 
+                                                    - 
+                                                    - 
+                                                    - 
+                                                    - 
+                                                           <select name="reclamer" id="motif{{ stock.id }}" class="form-control">
+                                                                <option value="">-- Sélectionner un motif --</option>
+                                                                <option value="MANQUANT">MANQUANT</option>
+                                                                <option value="CONFUSION DE SAISIE">CONFUSION DE SAISIE</option>
+                                                                <option value="REGULARISATION">REGULARISATION</option>
+                                                                <option value="EN PLUS">EN PLUS</option>
+                                                                <option value="ERREUR STOCK">ERREUR STOCK</option>
+                                                            </select>
+                                                </div>
+                                                {# <div class="mt-3">
+                                                    commenatire:
+                                                    <label for="numero{{ stock.id }}"></label>
+                                                    <textarea type="number" class="form-control"
+                                                              id="comment{{ stock.id }}">
+
+                                                    </textarea>
+                                                </div> #}
+
+                                            </div>
+                                            <div class="modal-footer px-5 py-4">
+                                                
+                                                 <button type="button" class="btn btn-secondary ms-5" data-bs-dismiss="modal"
+                                                        id="annuler{{ stock.id }}">Annuler
+                                                </button>
+                                                <button type="button" class="btn btn-success ms-3"
+                                                        id="ajouter{{ stock.id }}"
+                                                        onclick="editinventaire({{ stock.id }},{{stock.quantite}})">
+                                                    <i class="fa fa-edit"></i> Modifier
+                                                </button>
+                                                <div id="modification{{ stock.id }}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <button type="button"
+                                        class="btn btn-danger"
+                                        data-bs-toggle="modal" data-bs-target="#modaldel{{ stock.id }}"
+                                        id="boutondel{{ stock.id }}">
+                                    <i class="fa fa-trash"></i> stock épuisé
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modaldel{{ stock.id }}" tabindex="-1"
+                                     tabindex="-1" aria-labelledby="" aria-hidden="true"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered text-center">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title fs-5" id="exampleModalLabel">
+                                                   {{ stock.produit.desigantion }}</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+
+                                                </button>
+                                            </div>
+                                            <div class="modal-body px-5">
+                                                
+                                                {{ include('stock/_form_delete.html.twig')}}
+                                               
+
+                                            </div>
+                                            <div class="modal-footer px-5 py-4">
+                                                
+                                                 <button type="button" class="btn btn-secondary ms-5" data-bs-dismiss="modal"
+                                                        id="annulerdel{{ stock.id }}">Annuler
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                   
                 </td>
         {% endif %}
 
@@ -89,8 +193,8 @@
         {% endfor %}
         </tbody>
     </table>
-     <input type="hidden" id="tampon"/>
-        <input type="hidden" id="min"/>
+     {# <input type="hidden" id="tampon"/>
+        <input type="hidden" id="min"/> #}
     {# <div class="centrer gap-3  m-4 fond-7">
             <button id="exportExcel" class="btn btn-green">
                 <i class="fa fa-file-excel"></i> Exporter Excel

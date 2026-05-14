@@ -228,7 +228,9 @@
 
      function editinventaire(id,quant) {// id stock et la quantite quantite actuelle
         var reg = new RegExp("^[0-9]+$");
-        var quantite = $('#text' + id).val();
+        var quantite = $('#quant' + id).val();
+        var motif = $("#motif" + id).val();
+        //  var comment = $("#comment" + id); 
        
         if (reg.test(quantite) && quantite != quant && quantite != "0") {
              if (confirm("êtes-vous sur de vouloir modifier ce produit?")) {
@@ -237,11 +239,14 @@
                 $.ajax({
                     type: "POST",
                     url: "{{ path('stock_editinventaire') }}",
-                    data: { stock : id, quantite : quantite, quant : quant},
+                    data: { stock : id, quantite : quantite, quant : quant, motif : motif},
                     success: function (data) {
                         if (data['id'] == 'ok') {
-                            $('#tdq' + id).html($('#text' + id).val());
+                             $("#annuler" + id).trigger('click');
+                            $('#tdq' + id).html($('#quant' + id).val());
                             $('#tda' + id).html("");
+                            
+                               
                         } else {
                             alert("{{ 'Vérifier la quantité saisie'|trans }}")
                         }
@@ -260,6 +265,18 @@
             alert(mess);
         }
 
+    }
+     function deleteventaire(id) {// id stock et la quantite quantite actuelle
+      
+             
+                if($("#motifdel" + id).val() != ""){
+                $("#form" + id).submit();
+                $("#btndel" + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                $("#boutondel" + id).html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+
+                }
+                else alert("selectionnez le motif")
+         
     }
 
 //hebergement
