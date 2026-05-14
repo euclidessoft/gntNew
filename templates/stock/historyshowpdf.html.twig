@@ -1,0 +1,62 @@
+{% extends
+    'pdf.html.twig' %}
+{% block contenu %}
+    <div class="container-fluid mt-4 pb-4 fond-7">
+        <h3 class="mt-4 mb-3 text-bold">
+            <i class="fa fa-shop me-2"></i>
+            {{ "Retour Stock"|trans }}
+        </h3>
+        
+        <div class="col-6 fond-7">
+            <table class="table table-success-light table-bordered table-hover table-striped mt-3">
+                <thead>
+                <tr>
+                    <th>{{ 'N° Retour'|trans }}</th>
+                    <th>{{ 'Date retour'|trans }}</th>
+                    <th>{{ 'Client'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ retour.id }}</td>
+                    <td>{{ retour.date|date('d/m/Y') }}</td>
+                    <td> {{ retour.commande.user.nom }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+                {#                {% set inlist = [] %} #}
+                {#                {% for produit in panier %} #}
+
+                {#                    {% set inlist = inlist|merge([produit['id']]) %} #}
+                {#                {% else %} #}
+
+                {#                {% endfor %} #}
+
+                <table class="table table-success-light table-bordered table-hover table-striped text-center w-100">
+                    <thead>
+                    <tr>
+                        <th>{{ "CIP"|trans }}</th>
+                        <th class="text-start">{{ "Désignation"|trans }}</th>
+                        <th>{{ "N° lot"|trans }}</th>
+                        <th>{{ "Motif"|trans }}</th>
+                        <th>{{ "Qté retournée"|trans }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for retourproduit in retourproduits %}
+                        <tr id="listprod{{ retourproduit.produit.id }}">
+                            <td>{{ retourproduit.produit.reference }}</td>
+                            <td class="text-start">{{ retourproduit.produit.desigantion }}</td>
+                            {# <td>{{ retourproduit.produit.dci }}</td> #}
+                            <td>{{ retourproduit.lot }}</td>
+                            <td>{{ retourproduit.motif }}</td>
+                            <td>{{ retourproduit.quantite }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+    </div>
+{% endblock %}

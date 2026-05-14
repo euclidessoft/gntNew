@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/Stock" , name :"stock_") ]
 class StockController extends AbstractController
@@ -347,6 +348,37 @@ class StockController extends AbstractController
                 'private' => true,
             ]);
             return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/Retour_history_show_pdf/{id}", name :"retour_history_show_pdf", methods : ["GET"]) ]
+    public function retourhistoryshowpdf(Retour $retour, RetourProduitRepository $repository, GotenbergPdfInterface $gotenberg ): Response
+    {
+
+        if ($this->security->isGranted('ROLE_STOCK')) {
+
+            return $gotenberg
+        ->html()
+        ->content('stock/historyshowpdf.html.twig', [
+                'retour' => $retour,
+                'retourproduits' => $repository->findBy(['retour' => $retour]),
+            ])
+        ->fileName('retour.pdf')
+        ->generate()
+        ->stream();
+           
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

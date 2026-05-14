@@ -151,6 +151,13 @@
      <div class="container mt-4 mb-5 p-3 fond-7">
      <input type="hidden" id="numfact" value="{{ commande.id}}-{{ commande.numerofacture }}"/>
         <div class="centrer">
+         <a target="__blank" id="print" onclick="load('print')"
+               href="{{ path('avoir_show_pdf',{'id': avoir.id }) }}"
+               class="btn btn-danger me-2">
+                <i class="fa fa-file-pdf"></i>
+                {{ "vers Pdf"|trans }}
+            </a>
+
             <a id="print" onclick="load('print')"
                href="{{ path('avoir_show_print',{'id': avoir.id }) }}"
                class="btn btn-success float-end me-2">

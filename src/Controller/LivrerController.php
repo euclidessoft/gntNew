@@ -32,6 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/livraison", name :"livraison_") ]
 class LivrerController extends AbstractController
@@ -596,6 +597,88 @@ class LivrerController extends AbstractController
                     'private' => true,
                 ]);
                 return $response;
+
+            }
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+    }
+
+    
+
+    #[Route("/Historique_pdf/{id}", name :"historique_show_pdf", methods : ["GET"]) ]
+    public function history_showpdf(Commande $commande, LivrerRepository $livrerRepository, LivrerProduitRepository $livrerProduitRepository, ProduitRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    {// traitement livraison
+
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+
+            if ($commande->getLivraison()) {
+
+                $livrer = $livrerRepository->findBy(['commande' => $commande]);
+                 return $gotenberg
+                ->html()
+                ->content('livrer/historyshowpdf.html.twig', [
+//                'commandes' => $commandeproduits,
+                    'commandereference' => $commande,
+                    'livrer' => $livrer,
+                ])
+                ->fileName('livraison.pdf')
+                ->generate()
+                ->stream();
+
+
+            }
+        } elseif ($this->security->isGranted('ROLE_CLIENT')) {
+
+            if ($commande->getLivraison()) {
+                 if($this->getUser()->getTuteur() === null){
+                if($commande->getUser() != $this->getUser()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             } else{
+                if($commande->getUser() != $this->getUser()->getTuteur()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             }
+                $livrer = $livrerRepository->findBy(['commande' => $commande]);
+                return $gotenberg
+                ->html()
+                ->content('livrer/historyshowpdf.html.twig', [
+//                'commandes' => $commandeproduits,
+                    'commandereference' => $commande,
+                    'livrer' => $livrer,
+                ])
+                ->fileName('livraison.pdf')
+                ->generate()
+                ->stream();
 
             }
         } else {

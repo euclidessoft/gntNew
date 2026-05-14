@@ -1,39 +1,19 @@
 {% extends
-    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
-    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
-    is_granted('ROLE_RH') ? 'rh.html.twig' :
-    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
-    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
-    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
-    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
-    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
-    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
+    'pdf.html.twig'
 %}
-{% block title %} {{ "Avoir"|trans }} - GNT Pharma {% endblock %}
-{% block officine %}active{% endblock %}
-{% block all_avoir %}active{% endblock %}
-{% block client_suivi %}active{% endblock %}
 
-{% block body %}
-    {% set commande = avoir.commande %}
-     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
-            <i class="fa fa-shopping-cart me-2"></i>
-            {{ "Détails commande"|trans }}
-        </h3>
-
-        <a href="#" onclick="history.back()" class="btn btn-success-light mb-3">
-            <i class="fa fa-chevron-left"></i> {{ "Retour"|trans }} </a>
-        <h3 class="text-center text-bold text-uppercase mt-4">
+{% block contenu %}
+            {% set commande = avoir.commande %}
+           <h3 class="text-center text-bold text-uppercase mt-4">
             {{ 'Facture Avoir'|trans }}
         </h3>
         <h6 class="text-center text-bold text-uppercase mb-3">
         {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}-{{ avoir.id}}
         </h6>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-success-light table-bordered table-hover table-striped">
+
+            <div class="row">
+            <div class="col-12">
+                    <table class="table table-success-light table-bordered table-hover table-striped">
                     <thead>
                     <tr>
                         <th>{{ 'N° Commande'|trans }}</th>
@@ -62,12 +42,12 @@
                     {#        <td> </td>#}
                     </tbody>
                 </table>
+                </div>
             </div>
-        </div>
-        {% set total=0 %}
-        {% set reduction=0 %}
-        {% set tva=0 %}
-        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
+            {% set total=0 %}
+            {% set reduction=0 %}
+            {% set tva=0 %}
+            <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
             <thead>
             <tr>
                 <th>{{ 'CIP'|trans }}</th>
@@ -125,55 +105,33 @@
                     {{ "Total TVA"|trans }}
                 </td>
                 <td class="montant">
-                    <span id="" class="text-nowrap">- {{ avoir.tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id="" class="text-nowrap">- {{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                 </td>
             </tr>
-            <tr>
+            {# <tr>
                 <td colspan="6" class="text-end">
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
-                <td class="text-end">
+                <td class="text-center">
                
-                    <span id="">- {{ avoir.prelevement != 0 ? avoir.prelevement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
+                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
-            </tr>
+            </tr> #}
 
             <tr class="text-bold">
                 <td colspan="6" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="montant">
-                    <span class="text-nowrap">- {{ avoir.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span class="text-nowrap">- {{ (total  + tva )|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                           <span id="total" class="text-nowrap" style="display:none;">{{ (total  + tva)|number_format(2, '.' , '') }}</span>
                 </td>
             </tr>
             </tfoot>
         </table
-
-        {#Conversion prix en lettre #}
-        <div class="my-5">
-            {{ 'Arrêtée la présente à la somme de '|trans }} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA TTC</b>
-        </div>
-        {#/***** end*****/#}
-    </div>
-     <div class="container mt-4 mb-5 p-3 fond-7">
-     <input type="hidden" id="numfact" value="{{ commande.id}}-{{ commande.numerofacture }}"/>
-        <div class="centrer">
-        <a target="__blank" id="print" onclick="load('print')"
-               href="{{ path('avoir_show_pdf',{'id': avoir.id }) }}"
-               class="btn btn-danger me-2">
-                <i class="fa fa-file-pdf"></i>
-                {{ "vers Pdf"|trans }}
-            </a>
-
-            <a id="print" onclick="load('print')"
-               href="{{ path('avoir_show_print',{'id': avoir.id }) }}"
-               class="btn btn-success float-end me-2">
-                <i class="fa fa-print"></i>
-                {{ "Imprimer"|trans }}
-            </a>
-             {# <span id="exportexcel" class=""></span> #}
-        </div>
-    </div>
+            {#Conversion prix en lettre #}
+            <div class="mt-5">
+                {{ 'Arrêtée la présente à la somme de '|trans}} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA TTC</b>
+            </div>
 {% endblock %}

@@ -141,9 +141,10 @@
 
                 </tbody>
         </table>
-        <div class="col-4 mb-2">
-            <img src="{{ asset(livrer.signature) }}" alt="">
-        </div>
+         {% if livrer.signature is not null %}
+             Receptionner par: {{ livrer.nom }}<br/>
+                               <img src="{{ asset(livrer.signature) }}" alt="">
+            {% endif %}
 {#        <div class="col-md-2 offset-md-4 mt-5 mb-5 pt-2 pb-2 fond-7">#}
 {#            <div class="centrer">#}
 {#                <a href="{{ path('livraison_historique_show_print',{'id': commandereference.id }) }}" class="btn btn-success float-end">#}

@@ -2512,11 +2512,75 @@ class CommandeController extends AbstractController
             ]);
             return $response;
         }
+    }
+    
+
+     #[Route("/Bon_commande_pdf/{commande}", name :"bon_pdf") ]
+    public function bonpdf(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository,GotenbergPdfInterface $gotenberg)
+    {
+        if ($this->security->isGranted('ROLE_CLIENT')) {
+             if($this->getUser()->getTuteur() === null){
+                if($commande->getUser() != $this->getUser()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             } else{
+                if($commande->getUser() != $this->getUser()->getTuteur()){
+                    $response = $this->redirectToRoute('security_logout');
+                    $response->setSharedMaxAge(0);
+                    $response->headers->addCacheControlDirective('no-cache', true);
+                    $response->headers->addCacheControlDirective('no-store', true);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->setCache([
+                        'max_age' => 0,
+                        'private' => true,
+                    ]);
+                    return $response;
+                }
+             }
+            return $gotenberg
+        ->html()
+        ->content('commande/bonpdf.html.twig', [
+                'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                'commande' => $commande,
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+        } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
 
-        /* // On "fabrique" les données
-
-         return $this->render('produit/index.html.twig', compact("dataPanier", "total"));*/
+          
+             return $gotenberg
+        ->html()
+        ->content('commande/admin/bonpdf.html.twig', [
+                'commandeproduits' => $repository->findBy(['commande' => $commande]),
+                'commande' => $commande,
+                'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
     }
 
     #[Route("/Pint_Details_commande/{commande}", name :"print_Detail") ]

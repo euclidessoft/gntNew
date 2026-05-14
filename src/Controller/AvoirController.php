@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("/{_locale}/Avoir") ]
 class AvoirController extends AbstractController
@@ -581,6 +582,55 @@ class AvoirController extends AbstractController
                 'private' => true,
             ]);
             return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("Pdf/{id}", name :"avoir_show_pdf", methods : ["GET"]) ]
+    public function showpdf(Avoir $avoir, ReclamationProduitRepository $reclamationRepository, RetourProduitRepository $retourRepository, GotenbergPdfInterface $gotenberg): Response
+    {
+        if($avoir->getReclamation() !== null){
+            $commandeproduits = $reclamationRepository->findBy(['reclamation' => $avoir->getReclamation()->getId()]);
+        }else{
+             $commandeproduits = $retourRepository->findBy(['retour' => $avoir->getretour()->getId()]);
+        }
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+           
+        return $gotenberg
+        ->html()
+        ->content('avoir/admin/showpdf.html.twig', [
+                'avoir' => $avoir,
+                'commandeproduits' => $commandeproduits,
+                // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir])
+            ])
+        ->fileName('avoir.pdf')
+        ->generate()
+        ->stream();
+           
+        } elseif ($this->security->isGranted('ROLE_CLIENT')) {
+          return $gotenberg
+        ->html()  
+        ->content('avoir/showpdf.html.twig', [
+                'avoir' => $avoir,
+                'commandeproduits' => $commandeproduits,
+                // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
+            
+                ])
+        ->fileName('avoir.pdf')
+        ->generate()
+        ->stream();
+            
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

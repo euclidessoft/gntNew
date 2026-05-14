@@ -45,7 +45,7 @@
                     <td>{{ commande.id }}</td>
                     <td>{{ commande.commande.user.nom }}</td>
                     <td>{{ commande.date|date('d/m/Y') }}</td>
-                    <td>{{ commande.dateefectlivraison|date('d/m/Y') }}</td>
+                    <td>{{ commande.dateefectlivraison ? commande.dateefectlivraison|date('d/m/Y H:i:s'): '' }}</td>
                     <td>
                         <a id="{{ commande.id }}" onclick="load({{ commande.id }})" class="btn btn-success" href="{{ path('livraison_livreur_historique_show', {'id': commande.id}) }}">
                             <i class="fa fa-list"></i>
