@@ -35,6 +35,7 @@ class Facture
     public function __construct()
     {
         $this->payer = false;
+        $this->date = new \Datetime();
     }
 
     public function getId(): ?int
