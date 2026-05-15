@@ -19,7 +19,7 @@
 <div class="container mt-4 fond-7">
     <h3 class="mt-4 mb-5 text-bold">
         <i class="fa fa-shopping-cart me-2"></i>
-        {{ "Etat stock produits"|trans }}
+        {{ "Etat stock produits"|trans }} Inventaire
     </h3>
 
     {% for message in app.flashes('notice') %}
@@ -52,7 +52,7 @@
      <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
         <thead>
         <tr>
-            <th>{{ 'CIP'|trans }}</th>
+            <th>{{ 'INVENTAIRE'|trans }}</th>
         </tr>
         </thead>
         <tbody>

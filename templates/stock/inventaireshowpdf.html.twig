@@ -1,49 +1,13 @@
-{% extends
-    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
-    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
-    is_granted('ROLE_RH') ? 'rh.html.twig' :
-    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
-    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
-    is_granted('ROLE_inventaire') ? 'inventaire.html.twig' :
-    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
-    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
-    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
-    'layout.html.twig'
+{% extends 'pdf.html.twig'
 %}
-{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
-{% block inventaire %}active{% endblock %}
-{% block ajust %}active{% endblock %}
-{% block start %} onkeyup="entrerinventaire()" {% endblock %}
-
-{% block body %}
+{% block contenu %}
 <div class="container-fluid mt-4 fond-7">
     <h3 class="mt-4 mb-5 text-bold">
         <i class="fa fa-shopping-cart me-2"></i>
-        {{ "Etat inventaire produits"|trans }} 
+        {{ "Etat inventaire produits"|trans }}
     </h3>
 
-    {% for message in app.flashes('notice') %}
-            <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                {{ message|trans }}
-            </div>
-        {% endfor %}
-
-    <ul class="nav nav-tabs mb-4">
-        {# {% if is_granted('ROLE_inventaire') %} #}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('stock_ajust') }}">
-                {{ 'Retour Produit'|trans }}
-            </a>
-        </li>
-        {# {% endif %} #}
-        <li class="nav-item">
-            <a class="nav-link active" href="#">
-                {{'Inventaire'|trans}}
-            </a>
-        </li>
-    </ul>
-     <table class="table table-success-light table-bordered table-hover table-striped my-3" id="facture">
+     <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
         <thead>
         <tr>
             <th>{{ 'CIP'|trans }}</th>
@@ -108,19 +72,6 @@
             </tr>
         </tfooter>
     </table>
-     {# <input type="hidden" id="tampon"/>
-        <input type="hidden" id="min"/> #}
-    <div class="centrer gap-3  m-4 fond-7">
-
-            <a id="print" target="_blank" href="{{ path('stock_inventaire_show_pdf',{'date': date|date('Y-m-d') }) }}"
-                   class="btn btn-danger me-3">
-                    <i class="fa fa-file-pdf"></i>
-                    {{ "Vers Pdf"|trans }}
-                </a>
-
-            <span id="exportexcel" class=""></span>
-           
-        </div>
     </div>
 </div>
 {% endblock %}

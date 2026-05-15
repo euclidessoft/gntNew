@@ -136,6 +136,7 @@ class StockController extends AbstractController
         }
     }
 
+    
      #[Route("/Inventaire_show/{date}", name :"inventaire_show", methods : ["GET"]) ]
     public function inventaireshow(InventaireRepository $repository, $date): Response
     {
@@ -143,6 +144,7 @@ class StockController extends AbstractController
 
             $response = $this->render('stock/inventaireshow.html.twig', [
                 'inventaires' => $repository->findBy(['date' => new \Datetime($date)]),
+                'date' => $date,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -153,6 +155,33 @@ class StockController extends AbstractController
                 'private' => true,
             ]);
             return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+     #[Route("/Inventaire_show_pdf/{date}", name :"inventaire_show_pdf", methods : ["GET"]) ]
+    public function inventaireshowpdf(InventaireRepository $repository, $date, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+
+            return $gotenberg
+        ->html()
+        ->content('stock/inventaireshowpdf.html.twig', [
+                'inventaires' => $repository->findBy(['date' => new \Datetime($date)]),
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
