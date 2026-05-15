@@ -14,6 +14,7 @@ use App\Service\WhatsAppNotifier;
 use App\Service\SMSService;
 use App\Service\LamService;
 use App\Entity\Commande;
+use App\Entity\Facture;
 use App\Entity\Releve;
 use App\Entity\Avoir;
 use App\Entity\Versement;
@@ -114,26 +115,26 @@ public function test(ParameterBagInterface $params)
         // return new Response("okay");
 
         //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findBy(['traitement'=> null]);
-         $commandes =  $this->entityManager->getRepository(Commande::Class)->findAll();
-        foreach($commandes as $commande){
-                // if(!empty($commande->getPromotion())){
-                //     $ug = 0;
-                //      if ($commande->getPromotion()->getPremier() !== null) {
-                //             $ug = $promo->promo($commande->getPromotion(), $commande->getQuantite());
-                //         }
-                //         $commande->setUg($ug);
-                //         $this->entityManager->persist($commande);
-                // }
-            if($commande->getTraitement() != null){
-            // if($commande->getSuivi() == true){
-        //    $commande->getTraitement() != null ? 
-           $commande->setEcheance($commande->getTraitement());// : $commande->setTraitement($commande->getDate());
-            // $commande->setMontantht($commande->getMontant());
-            $this->entityManager->persist($commande);
-            // $this->entityManager->flush();
-            }
+        //  $commandes =  $this->entityManager->getRepository(Commande::Class)->findAll();
+        // foreach($commandes as $commande){
+        //         // if(!empty($commande->getPromotion())){
+        //         //     $ug = 0;
+        //         //      if ($commande->getPromotion()->getPremier() !== null) {
+        //         //             $ug = $promo->promo($commande->getPromotion(), $commande->getQuantite());
+        //         //         }
+        //         //         $commande->setUg($ug);
+        //         //         $this->entityManager->persist($commande);
+        //         // }
+        //     if($commande->getTraitement() != null){
+        //     // if($commande->getSuivi() == true){
+        // //    $commande->getTraitement() != null ? 
+        //    $commande->setEcheance($commande->getTraitement());// : $commande->setTraitement($commande->getDate());
+        //     // $commande->setMontantht($commande->getMontant());
+        //     $this->entityManager->persist($commande);
+        //     // $this->entityManager->flush();
+        //     }
+        // // }
         // }
-        }
 
         //  $livrers =  $this->entityManager->getRepository(LivrerProduit::Class)->findAll();
         // foreach($livrers as $livrer){
@@ -167,18 +168,18 @@ public function test(ParameterBagInterface $params)
         //     // }
         // // }
         // }
-        // $versements =  $this->entityManager->getRepository(Versement::Class)->findBy(['Client' => null]);
-        // foreach($versements as $versement){
+        $factures =  $this->entityManager->getRepository(Facture::Class)->findAll();
+        foreach($factures as $facture){
 
-        // //     if($commande->getTraitement() == null){
-        // //     if($commande->getSuivi() == true){
-        // //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
-        //     $versement->setClient($versement->getCommande()->getUser());
-        //     $this->entityManager->persist($versement);
-        //     //$this->entityManager->flush();
-        //     // }
-        // // }
+        //     if($commande->getTraitement() == null){
+        //     if($commande->getSuivi() == true){
+        //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
+            $facture->setDate($facture->getApprovisionner()->getDate());
+            $this->entityManager->persist($facture);
+            //$this->entityManager->flush();
+            // }
         // }
+        }
         $this->entityManager->flush();
         return new Response("okay");
     }

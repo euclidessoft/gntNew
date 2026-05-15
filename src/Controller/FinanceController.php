@@ -24,6 +24,7 @@ use App\Entity\Debit;
 use App\Entity\Depense;
 use App\Entity\Ecriture;
 use App\Entity\Financement;
+use App\Entity\Fournisseur;
 use App\Entity\Paie;
 use App\Entity\Panier;
 use App\Entity\EcritureRepartition;
@@ -550,6 +551,54 @@ class FinanceController extends AbstractController
             return $this->render('vente/compte.html.twig', [
                'commandes' => $flat,
                 'user' => $client,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
+    #[Route("/Analyse_compte/{fournisseur}", name :"journal_fournisseur") ]
+    public function journalComptefournisseur(Fournisseur $fournisseur, EcritureRepository $repoecri): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+              $factures = $this->entityManager->getRepository(Facture::class)->findBy(['fournisseur' => $fournisseur]);
+              $ecritures = $repoecri->findBy(['comptecredit' => $fournisseur->getCompte()]);
+             
+               
+                $result = [];
+                foreach ([$factures, $ecritures] as $tableau) {
+                    foreach ($tableau as $row) {
+                        $date = $row->getDate()->format('Y-m-d');
+                        // dd($date);
+                        // On regroupe les lignes par date
+                        $result[$date][] = $row;
+                    }
+                }
+                ksort($result);
+                // dd($result);
+                $flat = [];
+
+                foreach ($result as $date => $rows) {
+                    foreach ($rows as $row) {
+                        $flat[] = $row;
+                    }
+                } 
+
+            return $this->render('vente/comptefournisseur.html.twig', [
+               'commandes' => $flat,
+                'fournisseur' => $fournisseur,
             ]);
         } else {
             $response = $this->redirectToRoute('security_logout');

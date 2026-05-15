@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FactureRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:FactureRepository::class) ]
@@ -24,6 +25,9 @@ class Facture
 
     #[ORM\Column(type:"boolean") ]
     private $payer;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $date = null;
 
     /**
      * Constructor
@@ -82,6 +86,18 @@ class Facture
     public function setPayer(bool $payer): self
     {
         $this->payer = $payer;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTime
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }
