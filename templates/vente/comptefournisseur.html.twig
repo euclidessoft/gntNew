@@ -63,15 +63,15 @@
                     {% for commande in commandes %}
                         <tr>
                             <td> {{ commande.date|date("d/m/Y") }}</td>
-                            {% if commande.libelle is defined %}
-                                <td> {{"Paiement Fournisseur"|trans}}  Facture: {{ commande.id }}</td>
+                            {% if commande.banque is defined %}
+                                <td> {{"Paiement Fournisseur"|trans}} </td>
                                 <td> {{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                                 <td> </td>
                                {% set debit = debit + commande.montant %}
                             {% else %}
                                  <td>
                                
-                                    {{"Achat chez Fournisseur"|trans}} Facture: {{commande.approvisionner.id }}
+                                    {{"Achat chez Fournisseur"|trans}} 
                                      
                                
                                   </td>

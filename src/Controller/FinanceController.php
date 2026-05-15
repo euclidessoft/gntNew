@@ -11,6 +11,7 @@ use App\Entity\Repport;
 use App\Entity\Commande;
 use App\Entity\Avantage;
 use App\Entity\AveCom;
+use App\Entity\Achat;
 use App\Entity\CommandeProduit;
 use App\Entity\Approvisionnement;
 use App\Entity\Facture;
@@ -569,16 +570,17 @@ class FinanceController extends AbstractController
     
 
     #[Route("/Analyse_compte/{fournisseur}", name :"journal_fournisseur") ]
-    public function journalComptefournisseur(Fournisseur $fournisseur, EcritureRepository $repoecri): Response
+    public function journalComptefournisseur(Fournisseur $fournisseur): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
               $factures = $this->entityManager->getRepository(Facture::class)->findBy(['fournisseur' => $fournisseur]);
-              $ecritures = $repoecri->findBy(['comptecredit' => $fournisseur->getCompte()]);
+              $achats = $this->entityManager->getRepository(Achat::class)->findBy(['fournisseur' => $fournisseur]);
+            
              
                
                 $result = [];
-                foreach ([$factures, $ecritures] as $tableau) {
+                foreach ([$factures, $achats] as $tableau) {
                     foreach ($tableau as $row) {
                         $date = $row->getDate()->format('Y-m-d');
                         // dd($date);
