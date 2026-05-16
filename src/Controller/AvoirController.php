@@ -507,11 +507,15 @@ class AvoirController extends AbstractController
      #[Route("/Officine/", name :"avoir_officine", methods : ["GET"]) ]
     public function officine(AvoirRepository $avoirRepository, SessionInterface $session): Response
     {
-        if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
+        if ($this->security->isGranted('ROLE_CLIENT')) {
+             $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
+           
             
             $response = $this->render('officine/avoir.html.twig', [
                 'avoirs' => $avoirRepository->findby(['client' => $this->getUser()]),
-                'panier' => $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]),
+                'panier' => $panier,
             ]);
             $response->setSharedMaxAge(0);
             $response->headers->addCacheControlDirective('no-cache', true);

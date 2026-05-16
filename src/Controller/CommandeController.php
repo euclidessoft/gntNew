@@ -1028,9 +1028,11 @@ class CommandeController extends AbstractController
                 'private' => true,
             ]);
             return $response;
-        } else if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
-            $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]);
-
+        } else if ($this->security->isGranted('ROLE_CLIENT')) {
+            $this->getUser()->getTuteur() === null ?
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);;
+           
             $response = $this->render('officine/credit.html.twig', [
                 'commandes' => $repository->findBy(['user' => $this->getUser()->getId(), 'paiement' => null, 'credit' => true, 'suivi' => true, 'payer' => false]),
                 'panier' => $panier,

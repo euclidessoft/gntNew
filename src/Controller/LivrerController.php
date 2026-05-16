@@ -912,14 +912,14 @@ class LivrerController extends AbstractController
                 
             // }
             // catch(throwable $e){
-                try{
+                // try{
                
-                    $ws = new SMSService($params);//connect
-                    $ws->sendMessage($text);
-                }
-                catch(throwable $e){
-                    Goto suit;
-                }
+                //     $ws = new SMSService($params);//connect
+                //     $ws->sendMessage($text);
+                // }
+                // catch(throwable $e){
+                //     Goto suit;
+                // }
             // }
             // fin sms
             // $response = $this->redirectToRoute('livraison_index');

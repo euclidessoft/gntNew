@@ -231,9 +231,8 @@
                         </li>
                     </ul>
                 </li>
-                {% if is_granted("ROLE_CLIENT_ADMIN") %}
                  <li class="nav-item" title="{{ 'Officine'|trans }}">
-                    <a class="nav-link {% block officine %}{% endblock %}" href="{{ path('commande_panier_officine') }}">
+                    <a class="nav-link {% block officine %}{% endblock %}" href="{{ path('commande_panier_credit') }}">
                         <div class="icone">
                             <i class="fas fa-staff-snake fa-lg"></i>
                         </div>
@@ -242,7 +241,6 @@
                         </div>
                     </a>
                 </li>
-                {% endif %}
               
 
 

@@ -61,7 +61,7 @@
             {% for commande in commandes %}
                 <tr>
                     <td>{{ commande.id }}</td>
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ commande.date|date('d/m/Y H:s:i') }}</td>
                     <td> {{ commande.user.nom }}</td>
                     <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>

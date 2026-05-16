@@ -53,6 +53,7 @@
             <tr>
                 <th>{{ 'Numero Commande'|trans }}</th>
                 <th>{{ 'Date'|trans }}</th>
+                <th>{{ 'Date Traitement'|trans }}</th>
                 <th>{{ 'Client'|trans }} </th>
                 <th>{{ 'Montant Commande'|trans }}</th>
                 <th>{{ 'Montant Restant'|trans }}</th>
@@ -63,7 +64,8 @@
             {% for commande in commandes %}
                 <tr>
                     <td data-label="Numero Commande">{{ commande.id }}</td>
-                    <td data-label="Date">{{ commande.date|date('d/m/Y') }}</td>
+                    <td data-label="Date">{{ commande.date|date('d/m/Y H:s:i') }}</td>
+                    <td data-label="Date traitement">{{ commande.traitement|date('d/m/Y H:s:i') }}</td>
                     <td data-label="Client"> {{ commande.user.nom }}</td>
                     <td data-label="Montant Commande">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td data-label="Montant Restant">{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>

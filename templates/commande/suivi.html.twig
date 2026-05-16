@@ -43,7 +43,7 @@
                     {% endif %}
                     </td>
 
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ commande.date|date('d/m/Y H:s:i') }}</td>
                     {% if is_granted("ROLE_CLIENT_ADMIN") %}
                     <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : "" }}</td>
                     {% endif %}

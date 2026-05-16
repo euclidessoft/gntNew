@@ -71,7 +71,7 @@
             {% for commande in commandes %}
                 <tr>
                     <td data-label="{{'Numero'|trans}}">{{ commande.id }}</td>
-                    <td data-label="{{ 'Date'|trans }}">{{ commande.date|date('d/m/Y') }}</td>
+                    <td data-label="{{ 'Date'|trans }}">{{ commande.date|date('d/m/Y H:s:i') }}</td>
                     <td data-label="{{ 'Client'|trans }} " class="text-start">{{ commande.user.nom }} {{ commande.user.prenom }}</td>
                     <td data-label="{{ 'Telephone'|trans }} ">{{ commande.user.phone }}</td>
                     <td data-label="{{ 'Montant'|trans }}" class="text-end">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>

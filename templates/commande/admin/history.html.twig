@@ -60,6 +60,7 @@
         <tr>
             <th>{{ 'Numero Commande'|trans }}</th>
             <th>{{ 'Date de commande'|trans }}</th>
+            <th>{{ 'Date de traitement'|trans }}</th>
             <th>{{ 'Date de Livraison'|trans }}</th>
             <th>{{ 'Client'|trans }} </th>
             <th>{{ 'Montant'|trans }}</th>
@@ -71,8 +72,9 @@
         {% for commande in commandes %}
             <tr>
                 <td>{{ commande.id }}</td>
-                <td>{{ commande.date|date('d/m/Y') }}</td>
-                <td>{{ commande.datelivrer ? commande.datelivrer|date('d/m/Y') : '' }}</td>
+                <td>{{ commande.date|date('d/m/Y H:s:i') }}</td>
+                <td>{{ commande.traitement|date('d/m/Y H:s:i') }}</td>
+                <td>{{ commande.datelivrer ? commande.datelivrer|date('d/m/Y H:s:i') : '' }}</td>
                 <td> {{ commande.user.nom }}</td>
                 <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                 <td>

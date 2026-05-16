@@ -12,15 +12,19 @@
             {{ "Officine"|trans }} :  {{ "Dettes"|trans }}
         </h3>
         <ul class="nav nav-tabs mb-4">
+         {% if is_granted("ROLE_CLIENT_ADMIN") %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('commande_panier_officine') }}">{{ 'Facture'|trans }}</a>
             </li>
+        {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('avoir_officine') }}">{{'Avoir'|trans}}</a>
             </li>
+         {% if is_granted("ROLE_CLIENT_ADMIN") %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('finance_avantage_client')}}">{{'Avantages'|trans}}</a>
             </li>
+        {% endif %}
             <li class="nav-item">
                 <a class="nav-link active" href="#">{{'Dette'|trans}}</a>
             </li>

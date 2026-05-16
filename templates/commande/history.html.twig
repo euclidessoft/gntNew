@@ -52,8 +52,8 @@
                 {% if is_granted("ROLE_CLIENT_ADMIN") %}
                     <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : "" }}</td>
                 {% endif %}
-                <td>{{ commande.date|date('d/m/Y') }}</td>
-                <td>{{ commande.datelivrer ? commande.datelivrer|date('d/m/Y') : '' }}</td>
+                <td>{{ commande.date|date('d/m/Y H:s:i') }}</td>
+                <td>{{ commande.datelivrer ? commande.datelivrer|date('d/m/Y H:s:i') : '' }}</td>
 {#                <!-- <td> {{ commande.user.nom }}</td> -->#}
                  {% if is_granted("ROLE_CLIENT_ADMIN")%}
                     <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
