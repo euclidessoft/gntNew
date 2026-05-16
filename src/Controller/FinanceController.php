@@ -1560,7 +1560,46 @@ class FinanceController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
 
-            return $this->render('finance/rapport_tiers.html.twig');
+            return $this->render('finance/choixtiers.html.twig');
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/TiersRepport_client/", name :"rapport_tiers_client") ]
+    public function rapporttiersclient()
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+            return $this->render('finance/rapport_tiers_client.html.twig');
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    #[Route("/TiersRepport_fournisseur/", name :"rapport_tiers_fournisseur") ]
+    public function rapporttiersfournisseur()
+    {
+        if ($this->security->isGranted('ROLE_CAISSIER')) {
+
+            return $this->render('finance/rapport_tiers_fournisseur.html.twig');
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
@@ -1683,7 +1722,7 @@ class FinanceController extends AbstractController
     
 
     #[Route("/LienDaysTiers", name :"days_tiers_lien") ]
-    public function liendaystiers(Request $request)
+    public function liendaystiersclient(Request $request)// clients
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
             $date1 = $request->get('date1');
@@ -1710,10 +1749,10 @@ class FinanceController extends AbstractController
 
     }
 
-
+    
     #[Route("/DaysBrouyardTiers/{date1}/{date2}", name :"days_tiers") ]
-    public function daystiers(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo, AvoirRepository $avoirrepo)
-    {
+    public function daystiersclient(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo, AvoirRepository $avoirrepo)
+    {// clients
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
               $commandes = $this->entityManager->getRepository(Commande::class)->avantage( $date1, $date2);
@@ -1764,7 +1803,175 @@ class FinanceController extends AbstractController
         }
     }
 
+     #[Route("/LienDaysTiers_Fournisseur", name :"days_tiers_lien_fournisseur") ]
+    public function liendaystiersfournisseur(Request $request)//fournisseur
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            $lien = $this->generateUrl('finance_days_tiers_fournisseur', ['date1' => $date1, 'date2' => $date2]);
+            $res['ok'] = $lien;
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+    }
+
+
+    #[Route("/DaysBrouyardTiers_fournisseur/{date1}/{date2}", name :"days_tiers_fournisseur") ]
+    public function daystiersfournisseur(Request $request, $date1, $date2)
+    {// fournisseur
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+              $factures = $this->entityManager->getRepository(Facture::class)->avantage( $date1, $date2);
+           
+            //   dd($factures);
+              $comm = [];
+              foreach($factures as $commande){
+                $montant = 0;
+               
+                $achats = $this->entityManager->getRepository(Achat::class)->balance($commande['id'], $date1, $date2);
+
+                foreach($achats as $achat){
+                    $montant += $achat->getMontant();
+                }
+               
+                $com['id'] = $commande['id'];
+                $com['compte'] = $commande[0]->getFournisseur()->getCompte();
+                $com['nom'] = $commande[0]->getFournisseur()->getDesignation();
+                $com['ca'] = $commande['ca'];
+                $com['achat'] = $montant;
+                $comm[] = $com;
+           }
+                    
+            return $this->render('finance/brouyard_tiers_fournisseur.html.twig', [
+                'commandes' => $comm,
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route("/DaysBrouyardTiers_fournisseur_print/{date1}/{date2}", name :"days_tiers_fournisseur_print") ]
+    public function daystiersfournisseurprint(Request $request, $date1, $date2)
+    {// fournisseur
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+              $factures = $this->entityManager->getRepository(Facture::class)->avantage( $date1, $date2);
+           
+            //   dd($factures);
+              $comm = [];
+              foreach($factures as $commande){
+                $montant = 0;
+               
+                $achats = $this->entityManager->getRepository(Achat::class)->balance($commande['id'], $date1, $date2);
+
+                foreach($achats as $achat){
+                    $montant += $achat->getMontant();
+                }
+               
+                $com['id'] = $commande['id'];
+                $com['compte'] = $commande[0]->getFournisseur()->getCompte();
+                $com['nom'] = $commande[0]->getFournisseur()->getDesignation();
+                $com['ca'] = $commande['ca'];
+                $com['achat'] = $montant;
+                $comm[] = $com;
+           }
+                    
+            return $this->render('finance/brouyard_tiers_fournisseur_print.html.twig', [
+                'commandes' => $comm,
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
     
+    #[Route("/DaysBrouyardTiers_fournisseur_pdf/{date1}/{date2}", name :"days_tiers_fournisseur_pdf") ]
+    public function daystiersfournisseurpdf(Request $request, $date1, $date2, GotenbergPdfInterface $gotenberg)
+    {// fournisseur
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+              $factures = $this->entityManager->getRepository(Facture::class)->avantage( $date1, $date2);
+           
+            //   dd($factures);
+              $comm = [];
+              foreach($factures as $commande){
+                $montant = 0;
+               
+                $achats = $this->entityManager->getRepository(Achat::class)->balance($commande['id'], $date1, $date2);
+
+                foreach($achats as $achat){
+                    $montant += $achat->getMontant();
+                }
+               
+                $com['id'] = $commande['id'];
+                $com['compte'] = $commande[0]->getFournisseur()->getCompte();
+                $com['nom'] = $commande[0]->getFournisseur()->getDesignation();
+                $com['ca'] = $commande['ca'];
+                $com['achat'] = $montant;
+                $comm[] = $com;
+           }
+              
+            return $gotenberg
+        ->html()
+        ->content('finance/brouyard_tiers_fournisseurpdf.html.twig', [
+                'commandes' => $comm,
+                'day1' => $date1,
+                'day2' => $date2,
+            ])
+        ->fileName('balance.pdf')
+        ->generate()
+        ->stream();
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
 
     #[Route("/HistoriqueTiers/{client}/{date1}/{date2}", name :"days_tiers_history") ]
     public function historiqueclient(Request $request, $client, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo)
@@ -1903,6 +2110,65 @@ class FinanceController extends AbstractController
                 'day1' => $date1,
                 'day2' => $date2,
             ]);
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/DaysBrouyardTiers_pdf/{date1}/{date2}", name :"days_tiers_pdf") ]
+    public function daystierspdf(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo, AvoirRepository $avoirrepo, GotenbergPdfInterface $gotenberg)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+              $commandes = $this->entityManager->getRepository(Commande::class)->avantage( $date1, $date2);
+            //   dd($commandes);
+              $comm = [];
+              foreach($commandes as $commande){
+                $montant = 0;
+                // dd($commande[0]->getUser()->getVersements());
+                $paiements = $paierepo->balance($commande['id'], $date1, $date2);
+                $versements = $versementrepo->balance($commande['id'], $date1, $date2);
+                $avoirs = $avoirrepo->balance($commande['id'], $date1, $date2);
+                 $montantavoir = 0;
+                foreach($avoirs as $avoir){
+                    $montantavoir += $avoir->getMontant();
+                }
+
+                foreach($versements as $versement){
+                    $montant += $versement->getMontant();
+                }
+
+                foreach($paiements as $paiement){
+                    $montant += $paiement->getMontant();
+                }
+                $com['compte'] = $commande[0]->getUser()->getCompte();
+                $com['nom'] = $commande[0]->getUser()->getNom();
+                $com['ca'] = $commande['ca'] - $montantavoir;
+                $com['achat'] = $montant;
+                $comm[] = $com;
+           }
+                    
+           
+            return $gotenberg
+        ->html()
+        ->content('finance/brouyard_tierspdf.html.twig', [
+                'commandes' => $comm,
+                'day1' => $date1,
+                'day2' => $date2,
+            ])
+        ->fileName('balance.pdf')
+        ->generate()
+        ->stream();
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

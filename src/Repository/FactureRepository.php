@@ -32,6 +32,25 @@ class FactureRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+     public function avantage($p1, $p2){
+        $debut = new \Datetime($p1);
+        // $debut = (clone $date)->setTime(0, 0, 0);
+
+        $fin = new \Datetime($p2);
+        // $fin = (clone $date)->setTime(23, 59, 59);
+        $qb = $this->createQueryBuilder('c')
+        ->Addselect("u.id, SUM(c.montant) as ca") 
+        ->join("c.fournisseur","u")
+        ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+        // ->join('c.achats', 'a')
+        ->groupBy('u.id')
+        ->orderBy('u.id');
+
+        return $qb->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Facture[] Returns an array of Facture objects
     //  */

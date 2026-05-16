@@ -32,15 +32,15 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
-                {{'Fcature Payees'|trans}}
+            <a class="nav-link" href="{{ path('facture_paye', {'fournisseur' : fournisseur.id})}}">
+                {{'Facture Payees'|trans}}
             </a>
         </li>  
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ path('facture_impaye', {'fournisseur' : fournisseur.id})}}">
                 {{'Facture impayees'|trans}}
             </a>
-        </li>  
+        </li>   
         <li class="nav-item">
             <a class="nav-link active" href="#">
                 {{'Compte'|trans}}
@@ -64,14 +64,14 @@
                         <tr>
                             <td> {{ commande.date|date("d/m/Y") }}</td>
                             {% if commande.banque is defined %}
-                                <td> {{"Paiement Fournisseur"|trans}} </td>
+                                <td> {{"Paiement Fournisseur"|trans}} Facture: {{ commande.facture.id}} </td>
                                 <td> {{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                                 <td> </td>
                                {% set debit = debit + commande.montant %}
                             {% else %}
                                  <td>
                                
-                                    {{"Achat chez Fournisseur"|trans}} 
+                                    {{"Achat chez Fournisseur"|trans}} Facture: {{ commande.id}}
                                      
                                
                                   </td>

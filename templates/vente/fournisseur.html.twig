@@ -32,12 +32,12 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
-                {{'Fcature Payees'|trans}}
+            <a class="nav-link" href="{{ path('facture_paye', {'fournisseur' : fournisseur.id})}}">
+                {{'Facture Payees'|trans}}
             </a>
         </li>  
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ path('facture_impaye', {'fournisseur' : fournisseur.id})}}">
                 {{'Facture impayees'|trans}}
             </a>
         </li>  

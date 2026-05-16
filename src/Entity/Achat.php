@@ -40,6 +40,9 @@ class Achat
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'achats')]
+    private ?Facture $facture = null;
+
     /**
      * Constructor
      */
@@ -145,6 +148,18 @@ class Achat
     public function setDate(\DateTime $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getFacture(): ?Facture
+    {
+        return $this->facture;
+    }
+
+    public function setFacture(?Facture $facture): static
+    {
+        $this->facture = $facture;
 
         return $this;
     }
