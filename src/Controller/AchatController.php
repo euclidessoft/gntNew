@@ -90,7 +90,7 @@ class AchatController extends AbstractController
     {
 
         $response = $this->render('achat/facturepaye.html.twig', [
-            'approvisionnements' => $repository->findBy(['fournisseur' => $fournisseur, 'payer' => false]),
+            'approvisionnements' => $repository->findBy(['fournisseur' => $fournisseur, 'payer' => true]),
             'fournisseur' => $fournisseur,
         ]);
         $response->setSharedMaxAge(0);
