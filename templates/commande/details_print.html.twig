@@ -264,18 +264,27 @@
                     <tr>
                         <td> {{ commandeproduit.produit.reference }} </td>
                         <td>{{ commandeproduit.produit.desigantion }} </td>
-                       <td>
-                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
-                    
+                      <td>
+                         {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                       
                     </td>
-                     <td>
-                                   {{ commandeproduit.quantite }}
-                                     {% if commandeproduit.ug != 0%}
-                            <span class="badge bg-danger">
-                                        + {{ commandeproduit.ug }} U.G
-                            </span>
-                        {% endif %}  
-                                    </td>
+                    <td>
+                            {% if commande.suivi %}
+                                    {{ commandeproduit.quantite }}
+                            {% else %}
+                                    {% if commandeproduit.produit.stock > commandeproduit.quantite %}
+                                        {{ commandeproduit.quantite }}
+                                    {% else %}
+                                        {{ commandeproduit.produit.stock }}
+                                    {% endif %}
+                            {% endif %}
+                                {% if commandeproduit.ug != 0%}
+                                        <span class="badge bg-danger">
+                                                    + {{ commandeproduit.ug }} U.G
+                                        </span>
+                                    {% endif %}  
+
+                            </td> 
                         <td>
                             {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 

@@ -81,18 +81,26 @@
                     <td>{{ commandeproduit.produit.desigantion }} </td>
                     {# <td>{{ commandeproduit.produit.dci }} </td> #}
                    <td>
-                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
-                    
+                         {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                       
                     </td>
-                     <td>
-                                   {{ commandeproduit.quantite }}
-                                     {% if commandeproduit.ug != 0%}
-                            <span class="badge bg-danger">
-                                        + {{ commandeproduit.ug }} U.G
-                            </span>
-                        {% endif %}  
-                                    </td>
-                    {#                <td> </td>#}
+                    <td>
+                    {% if commande.suivi %}
+                            {{ commandeproduit.quantite }}
+                    {% else %}
+                            {% if commandeproduit.produit.stock > commandeproduit.quantite %}
+                                {{ commandeproduit.quantite }}
+                            {% else %}
+                                {{ commandeproduit.produit.stock }}
+                            {% endif %}
+                    {% endif %}
+                        {% if commandeproduit.ug != 0%}
+                                <span class="badge bg-danger">
+                                            + {{ commandeproduit.ug }} U.G
+                                </span>
+                            {% endif %}  
+
+                    </td> 
                     <td class="montant noExport">
                         {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
@@ -228,25 +236,20 @@
                     <td> {{ commandeproduit.produit.alternatif }} </td>
                     <td> {{ commandeproduit.produit.desigantion }} </td>
                     <td> {{ commandeproduit.produit.Fabriquant }} </td>
-                    <td>
-                        {{ commandeproduit.quantite }}
+                   <td>
+                         {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
                        
                     </td>
-                    {#                <td>#}
-                    {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }}#}
-                    {#                </td>#}
-                    {#                <td> </td>#}
                     <td>
-                    {# determination quantite livreee #}
-                    {% set quantite = 0 %}
-                    {% for livrerproduit  in livrerproduits  %}
-                        {% if livrerproduit.commande.id  == commande.id and livrerproduit.produit.id == commandeproduit.produit.id %}
-                            {% set quantite = quantite + livrerproduit.quantitelivrer %}
-                        {% endif %}
-
+                    {% if commande.suivi %}
+                            {{ commandeproduit.quantite }}
                     {% else %}
-                    {% endfor %}
-                      {{ quantite != 0 ? quantite : ''  }}
+                            {% if commandeproduit.produit.stock > commandeproduit.quantite %}
+                                {{ commandeproduit.quantite }}
+                            {% else %}
+                                {{ commandeproduit.produit.stock }}
+                            {% endif %}
+                    {% endif %}
 
                     </td> 
                      <td>

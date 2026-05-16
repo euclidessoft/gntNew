@@ -48,6 +48,10 @@
                             <i class="fa fa-list"></i>
                             {{ 'Détails'|trans }}
                         </a>
+                        <a id="print" target="_blank" href="{{ path('commande_panier_print_Detail_pdf',{'commande': commande.id }) }}"
+                   class="btn btn-danger ms-2">
+                    <i class="fa fa-file-pdf"></i>
+                </a>
                     </td>
                 </tr>
             {% endfor %}
