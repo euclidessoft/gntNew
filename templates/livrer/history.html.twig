@@ -36,6 +36,7 @@
                 <th>{{'Client'|trans}}</th>
                 <th>{{ "Date d'émission"|trans }}</th>
                 <th>{{ "Date de livraison"|trans }}</th>
+                <th>{{ "Recepteur"|trans }}</th>
                 <th>{{ 'Détails'|trans }}</th>
             </tr>
             </thead>
@@ -47,6 +48,7 @@
                     <td>{{ livrer.commande.user.nom }}</td>
                     <td>{{ livrer.date|date('d/m/Y') }}</td>
                     <td>{{ livrer.dateefectlivraison|date('d/m/Y') }}</td>
+                    <td>{{ livrer.nom }}</td>
                     <td>
                         <a id="{{ livrer.commande.id }}" onclick="load({{ livrer.commande.id}})" class="btn btn-success" href="{{ path('livraison_historique_show', {'id': livrer.commande.id}) }}"><i class="fa fa-list"></i>
                             {{ 'Afficher'|trans }}

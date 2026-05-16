@@ -62,7 +62,7 @@
                 <th class="text-center">{{'Numero'|trans}}<br>{{'Commande'|trans}}</th>
                 <th class="text-center">{{ 'Date'|trans }}</th>
                 <th class="text-start">{{ 'Client'|trans }} </th>
-                <th class="text-center">{{ 'Telephone'|trans }} </th>
+                {# <th class="text-center">{{ 'Telephone'|trans }} </th> #}
                 <th class="text-end">{{ 'Montant'|trans }}</th>
                 <th class="text-center">{{ 'Actions'|trans }} </th>
             </tr>
@@ -73,7 +73,7 @@
                     <td data-label="{{'Numero'|trans}}">{{ commande.id }}</td>
                     <td data-label="{{ 'Date'|trans }}">{{ commande.date|date('d/m/Y H:s:i') }}</td>
                     <td data-label="{{ 'Client'|trans }} " class="text-start">{{ commande.user.nom }} {{ commande.user.prenom }}</td>
-                    <td data-label="{{ 'Telephone'|trans }} ">{{ commande.user.phone }}</td>
+                    {# <td data-label="{{ 'Telephone'|trans }} ">{{ commande.user.phone }}</td> #}
                     <td data-label="{{ 'Montant'|trans }}" class="text-end">{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td data-label="{{ 'Validation'|trans }} ">
                         <a id="{{ commande.id }}" onclick="load({{ commande.id }})" href="{{ path('commande_panier_paiement', {'commande' : commande.id}) }}" class="btn btn-success">
