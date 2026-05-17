@@ -1,5 +1,5 @@
 {% extends 'client.html.twig' %}
-{% block title %} {{ "Facture "|trans }} {{ commande.id}}-{{ commande.numerofacture }} - GNT Pharma {% endblock %}
+{% block title %} {{ "Facture "|trans }} {{ commande.id }}-{{ commande.numerofacture }} - GNT Pharma {% endblock %}
 {% block commande %}active{% endblock %}
 {% block my_commande %}active{% endblock %}
 
@@ -16,7 +16,7 @@
             {{ ' Facture'|trans }}
         </h4>
         <h6 class="text-center text-uppercase">
-            {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
+            {{ 'Numero'|trans }} : {{ commande.id }}-{{ commande.numerofacture }}
         </h6>
         <div class="row">
             <div class="col-4"></div>
@@ -40,7 +40,7 @@
                     <td>{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
                     <td>{{ commande.user.niu }}</td>
                     {% if commande.credit == 1 and commande.payer == 0 %}
-                        <td> {{ commande.echeance ? commande.echeance|date('d/m/Y'): ''  }}</td>
+                        <td> {{ commande.echeance ? commande.echeance|date('d/m/Y'): '' }}</td>
                     {% endif %}
                     <td class="text-bold">
                         {% if commande.payer == 0 %}
@@ -90,10 +90,11 @@
                                 {{ commandeproduit.produit.stock }}
                             {% endif %}
                         {% endif %}
-                        {% if commandeproduit.ug != 0%}
+                        {% if commandeproduit.ug != 0 %}
                             <span class="badge bg-danger">
-                                            + {{ commandeproduit.ug }} U.G
-                                </span>
+                                <br>
+                                + {{ commandeproduit.ug }} U.G
+                            </span>
                         {% endif %}
 
                     </td>
@@ -147,7 +148,8 @@
                     {{ "Total HT"|trans }}
                 </td>
                 <td class="montant">
-                    <span id="" class="text-nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id=""
+                          class="text-nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                 </td>
             </tr>
             {% if reduction != 0 %}
@@ -156,7 +158,8 @@
                         {{ "Total Réduction"|trans }}
                     </td>
                     <td class="montant">
-                        <span id="" class="text-nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                        <span id=""
+                              class="text-nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                     </td>
                 </tr>
             {% endif %}
@@ -165,7 +168,8 @@
                     {{ "Total TVA"|trans }}
                 </td>
                 <td class="montant">
-                    <span id="" class="text-nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id=""
+                          class="text-nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                 </td>
             </tr>
             <tr>
@@ -174,7 +178,7 @@
                 </td>
                 <td class="text-center">
 
-                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : ''}}</span>
+                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '' }}</span>
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
             </tr>
@@ -185,101 +189,104 @@
                 </td>
                 <td class="montant">
                     <span class="text-nowrap">{{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                    <span id="total" class="text-nowrap" style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
+                    <span id="total" class="text-nowrap"
+                          style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
                 </td>
             </tr>
             </tfoot>
         </table>
 
-        {#Conversion prix en lettre #}
+        {# Conversion prix en lettre #}
         <div class="my-5">
-            {{ 'Arrêtée la présente à la somme de '|trans }} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA TTC</b>
+            {{ 'Arrêtée la présente à la somme de '|trans }} <b id="conversion"></b><b id="virgule"></b> <b>franc CFA
+                TTC</b>
         </div>
-        {#/***** end*****/#}
+        {# /***** end*****/ #}
     </div>
 
-        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="facture" style="display:none;">
-            <thead>
+    <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4" id="facture"
+           style="display:none;">
+        <thead>
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'Numero Facture'|trans }}</th>
+            <th>{{ 'Numero Ligne'|trans }}</th>
+            <th>{{ 'Code Interne'|trans }}</th>
+            <th>{{ 'Code Cip'|trans }}</th>
+            <th>{{ 'Code CIP Alternatif'|trans }}</th>
+            <th>{{ 'Description'|trans }}</th>
+            <th>{{ 'Laboratoire'|trans }}</th>
+            <th>{{ 'Quantite Demandee'|trans }}</th>
+            <th>{{ 'Quantitee livree'|trans }}</th>
+            <th>{{ 'Unite Gratuite'|trans }}</th>
+            <th>{{ 'Prix de Cession Hors Taxe'|trans }}</th>
+            <th>{{ 'Taux Taxe'|trans }}</th>
+            <th>{{ 'Prix public'|trans }}</th>
+            <th>{{ 'Prix TTC'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for commandeproduit in commandeproduits %}
+            {% set ug = 0 %}
+            {% set reductionproduit = 0 %}
             <tr>
-                <th>{{ 'Date'|trans }}</th>
-                <th>{{ 'Numero Facture'|trans }}</th>
-                <th>{{ 'Numero Ligne'|trans }}</th>
-                <th>{{ 'Code Interne'|trans }}</th>
-                <th>{{ 'Code Cip'|trans }}</th>
-                <th>{{ 'Code CIP Alternatif'|trans }}</th>
-                <th>{{ 'Description'|trans }}</th>
-                <th>{{ 'Laboratoire'|trans }}</th>
-                <th>{{ 'Quantite Demandee'|trans }}</th>
-                <th>{{ 'Quantitee livree'|trans }}</th>
-                <th>{{ 'Unite Gratuite'|trans }}</th>
-                <th>{{ 'Prix de Cession Hors Taxe'|trans }}</th>
-                <th>{{ 'Taux Taxe'|trans }}</th>
-                <th>{{ 'Prix public'|trans }}</th>
-                <th>{{ 'Prix TTC'|trans }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for commandeproduit in commandeproduits %}
-                {% set ug = 0 %}
-                {% set reductionproduit = 0 %}
-                <tr>
-                    <td> {{ commande.date|date('d/m/Y') }} </td>
-                    <td> {{ commande.id}}-{{ commande.numerofacture }} </td>
-                    <td>  </td>
-                    <td> {{ commandeproduit.produit.id }} </td>
-                    <td> {{ commandeproduit.produit.reference }} </td>
-                    <td> {{ commandeproduit.produit.alternatif }} </td>
-                    <td> {{ commandeproduit.produit.desigantion }} </td>
-                    <td> {{ commandeproduit.produit.Fabriquant }} </td>
-                    <td>
-                        {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                <td> {{ commande.date|date('d/m/Y') }} </td>
+                <td> {{ commande.id }}-{{ commande.numerofacture }} </td>
+                <td></td>
+                <td> {{ commandeproduit.produit.id }} </td>
+                <td> {{ commandeproduit.produit.reference }} </td>
+                <td> {{ commandeproduit.produit.alternatif }} </td>
+                <td> {{ commandeproduit.produit.desigantion }} </td>
+                <td> {{ commandeproduit.produit.Fabriquant }} </td>
+                <td>
+                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
 
-                    </td>
-                    <td>
-                        {% if commande.suivi %}
+                </td>
+                <td>
+                    {% if commande.suivi %}
+                        {{ commandeproduit.quantite }}
+                    {% else %}
+                        {% if commandeproduit.produit.stock > commandeproduit.quantite %}
                             {{ commandeproduit.quantite }}
                         {% else %}
-                            {% if commandeproduit.produit.stock > commandeproduit.quantite %}
-                                {{ commandeproduit.quantite }}
-                            {% else %}
-                                {{ commandeproduit.produit.stock }}
-                            {% endif %}
+                            {{ commandeproduit.produit.stock }}
                         {% endif %}
+                    {% endif %}
 
-                    </td>
-                    <td>
-                        {% if commandeproduit.ug != 0%}
-                            + {{ commandeproduit.ug }}
-                        {% endif %}
-                    </td>
-                    <td>
+                </td>
+                <td>
+                    {% if commandeproduit.ug != 0 %}
+                        + {{ commandeproduit.ug }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ commandeproduit.session }}
+
+                </td>
+                <td>
+                    {% set tva= 0 %}
+                    {% if commandeproduit.produit.tva is true %}
+                        19,25 {% set tva= 0.1925 %}%
+                    {% else %}
+                        {{ tva }}%
+                    {% endif %}
+                </td>
+                <td>{{ commandeproduit.publique }}</td>
+                <td>
+                    {% if commandeproduit.produit.tva is true %}
+                        {{ commandeproduit.publique + commandeproduit.publique * tva }}
+                    {% else %}
                         {{ commandeproduit.session }}
+                    {% endif %}
 
-                    </td>
-                    <td>
-                        {% set tva= 0%}
-                        {% if commandeproduit.produit.tva is true %}
-                            19,25 {% set tva= 0.1925 %}%
-                        {% else %}
-                            {{ tva }}%
-                        {% endif %}
-                    </td>
-                    <td>{{ commandeproduit.publique }}</td>
-                    <td>
-                        {% if commandeproduit.produit.tva is true %}
-                            {{ commandeproduit.publique + commandeproduit.publique * tva }}
-                        {% else %}
-                            {{ commandeproduit.session }}
-                        {% endif %}
+                </td>
 
-                    </td>
+            </tr>
+        {% endfor %}
+        <tbody>
 
-                </tr>
-            {% endfor %}
-            <tbody>
-
-        </table>
-        <input type="hidden" id="numfact" value="{{ commande.id}}-{{ commande.numerofacture }}"/>
+    </table>
+    <input type="hidden" id="numfact" value="{{ commande.id }}-{{ commande.numerofacture }}"/>
     <div class="container mb-5 p-3 fond-5">
         <div class="centrer gap-3">
             <a id="print" onclick="load('print')"
@@ -288,7 +295,8 @@
                 <i class="fa fa-print"></i>
                 {{ "Imprimer"|trans }}
             </a>
-            <a id="print" target="_blank" href="{{ path('commande_panier_print_Detail_pdf',{'commande': commande.id }) }}"
+            <a id="print" target="_blank"
+               href="{{ path('commande_panier_print_Detail_pdf',{'commande': commande.id }) }}"
                class="btn btn-danger">
                 <i class="fa fa-file-pdf"></i>
                 {{ "Vers Pdf"|trans }}
