@@ -5,13 +5,13 @@
 
 {% block body %}
 <div class="container-fluid mt-4 fond-7">
-    <h3 class="mt-4 mb-5 text-bold">
+    <h3 class="mt-4 mb-5 fw-bold">
         <i class="fa fa-shopping-cart me-2"></i>
         {{ "Liste des commandes pour livraison"|trans }}
     </h3>
 <div class="row">
     <div class="col-lg-6">
-        <h5 class="my-4 text-bold">
+        <h5 class="my-4 fw-bold">
             {{ "Commande en attente de livraison"|trans }}
         </h5>
     {% for message in app.flashes('notice') %}
@@ -50,7 +50,7 @@
     </table>
     </div>
     <div class="col-lg-6">
-        <h5 class="my-4 text-bold">
+        <h5 class="my-4 fw-bold">
             {{ "Commande avec reste à livrer"|trans }}
         </h5>
         <table class="table table-success-light table-bordered table-hover table-striped w-100">

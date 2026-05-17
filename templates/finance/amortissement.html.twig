@@ -20,7 +20,7 @@
 {% block body %}
 
     <div class="col-lg-11 mt-5 mb-5 fond-7">
-        <h3 class="mt-4 text-bold">
+        <h3 class="mt-4 fw-bold">
             <i class="fa-solid fa-money-bill-trend-up"></i>
             {{ 'Amortissement'|trans }}
         </h3>
@@ -34,7 +34,7 @@
 
         <div class="card border-green shadow-black mt-5 mb-3 fond-5">
             <div class="card-header bg-success-light bb-success">
-                <h5 class="text-success text-bold">
+                <h5 class="text-success fw-bold">
                     <i class="fa-solid fa-money-bill-trend-up"></i>
                      {{ depense.libelle }} | {{"acquis le : "|trans}} {{ depense.date|date('d/m/Y')}} | {{"Montant"|trans}} : {{ depense.montant|number_format(0, '', ' ')}}
                 </h5>

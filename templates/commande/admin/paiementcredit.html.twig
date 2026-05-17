@@ -17,7 +17,7 @@
 {% block body %}
 
     <div class="container mt-4  mb-5 fond-7">
-    <h3 class="mt-4 mb-5 text-bold">
+    <h3 class="mt-4 mb-5 fw-bold">
         <i class="fa fa-shopping-cart me-2"></i>
         {{ "Traitement commande à credit"|trans }}
     </h3>
@@ -27,10 +27,10 @@
             {{ message|trans }}
         </div>
     {% endfor %}
-     <h3 class="text-center text-bold text-uppercase mt-4">
+     <h3 class="text-center fw-bold text-uppercase mt-4">
             {{ ' Facture'|trans }}
         </h3>
-        <h6 class="text-center text-bold text-uppercase mb-3">
+        <h6 class="text-center fw-bold text-uppercase mb-3">
         {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
         </h6>
     <div class="row">
@@ -57,7 +57,7 @@
                          {% if commande.credit == 1 and commande.payer == 0 %}
                              <td> {{ commande.echeance ? commande.echeance|date('d/m/Y'): ''  }}</td>
                         {% endif %}
-                    <td class="text-bold">
+                    <td class="fw-bold">
                         {% if commande.payer == 0 %}
                             <span class="text-danger">Non payée</span>
                         {% else %}
@@ -146,7 +146,7 @@
                 </td>
             </tr>
         {% endfor %}
-        <tr class="text-bold">
+        <tr class="fw-bold">
             <td colspan="9" class="text-end">
                 {{ "Total HT"|trans }}
             </td>
@@ -183,7 +183,7 @@
                 </td>
             </tr>
 
-        <tr class="text-bold">
+        <tr class="fw-bold">
             <td colspan="9" class="text-end">
                 {{ "Net à payer"|trans }}
             </td>
@@ -396,7 +396,7 @@
         </div>
     </div>
     <div class="container mt-4 mb-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Historiques des règlements"|trans }}
         </h3>

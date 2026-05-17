@@ -13,7 +13,7 @@
 {% block all_banque %}active{% endblock %}
 {% block body %}
     <div class="col-lg-8 mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-money-bill me-2"></i>
             {{ "Liste des transactions du compte"|trans }} {{ compte }}
         </h3>
@@ -206,13 +206,13 @@
                 {% endif %}
             {% endfor %}
             <!-- <tr>
-                <td data-label="colspan" colspan="5" class="text-bold text-end">
+                <td data-label="colspan" colspan="5" class="fw-bold text-end">
                     {{ 'Total'|trans }}
                 </td>
-                <td class="text-center text-bold">
+                <td class="text-center fw-bold">
                     {{ debit|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                 </td>
-                <td class="text-center text-bold">
+                <td class="text-center fw-bold">
                     {{ credit|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                 </td>
                 <td></td>

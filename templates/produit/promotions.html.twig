@@ -5,7 +5,7 @@
 {% block start %} onkeyup="entrer()" {% endblock %}
 {% block body %}
     <div class="container-fluid mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa-brands fa-product-hunt me-2"></i>
             {{ "Liste Produits en promotion"|trans }}
         </h3>
@@ -26,7 +26,6 @@
                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
                 <th>{{ 'Quantite'|trans }}</th>
-
                 <th>{{ "Actions"|trans }}</th>
             </tr>
             </thead>
@@ -39,7 +38,7 @@
                                     {# {{ "indisponible"|trans }} #}
                                   
                                 <div class="dropdown d-inline">
-                                <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-danger btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Promo
                                 </button>
                                 <ul class="dropdown-menu text-center">

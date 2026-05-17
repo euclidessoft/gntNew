@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Validation de la commande"|trans }}
         </h3>
@@ -104,7 +104,7 @@
                     </td>
                 </tr>
             {% endfor %}
-            <tr class="text-bold">
+            <tr class="fw-bold">
                 <td colspan="8" class="text-end">
                     {{ "Total"|trans }}
                 </td>
@@ -144,12 +144,12 @@
                 </td>
             </tr>
             {% endif %}
-            <tr class="text-bold">
-                <td colspan="8" class="text-end text-bold">
+            <tr class="fw-bold">
+                <td colspan="8" class="text-end fw-bold">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="text-center">
-                    <span id="total" class="text-bold">{{ (total + acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span id="total" class="fw-bold">{{ (total + acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                     <input type="hidden" value="{{ total }}" id="totaltamp"/>
                 </td>
             </tr>

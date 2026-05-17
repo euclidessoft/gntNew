@@ -17,7 +17,7 @@
 
 {% block body %}
     <div class="col-lg-8 mt-4 pb-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa-brands fa-product-hunt me-2"></i>
             {{ "Détails Produit"|trans }}
         </h3>
@@ -40,7 +40,7 @@
                     {{'Designation'|trans }}
                 </th>
                 <td>{{ produit.desigantion }}</td>
-                <td rowspan="7" class="text-center text-bolder w-25">{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                <td rowspan="7" class="text-center fw-bolder w-25">{{ produit.stock|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
             </tr>
             <tr>
                 <th>

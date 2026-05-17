@@ -71,10 +71,10 @@
                 </div>
             </div>
         </div>
-        <h3 class="text-center text-bold text-uppercase my-5">
+        <h3 class="text-center fw-bold text-uppercase my-5">
             {{ 'Balance banque à la date du '|trans }} {{ day|date('d/m/Y') }}
         </h3>
-        <h4 class="text-success text-bold mb-4">
+        <h4 class="text-success fw-bold mb-4">
             {{ 'Solde d\'ouverture : '|trans }} {{ ouverture|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
         </h4>
         <table class="table table-success-light table-bordered table-hover table-striped">
@@ -227,7 +227,7 @@
             {% endfor %}
             </tbody>
         </table>
-        <h4 class="text-success text-bold">
+        <h4 class="text-success fw-bold">
             {{ 'Solde banque à la date du '|trans }} {{ day|date('d/m/Y') }} :
             <span class="text-nowrap">
                     {{ (banque)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA

@@ -17,7 +17,7 @@
 {% block body %}
 
     <div class="col-lg-8 justify-content-center fond-7 my-5 p-4">
-        <h4 class="text-bold mb-5">
+        <h4 class="fw-bold mb-5">
             <i class="fa fa-upload"></i>
             {{ 'Importation Commande en tenant compte des promos'|trans }}
         </h4>
@@ -29,10 +29,10 @@
         {% endfor %}
 
          {{ form_start(form,{'attr' : { 'id' : 'formimport'}}) }}
-                <div class="col-md-12 text-bold">
+                <div class="col-md-12 fw-bold">
         {{ form_row(form.user, {'label':'Selectionnez client'}) }}
     </div>
-    <div class="col-md-12 text-bold mt-3">
+    <div class="col-md-12 fw-bold mt-3">
         {{ form_widget(form.import, {'label':'importer un fichier'}) }}
     </div>
                

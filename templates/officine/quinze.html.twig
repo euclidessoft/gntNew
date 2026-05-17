@@ -4,11 +4,11 @@
 
 {% block body %}
     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-2 text-bold">
+        <h3 class="mt-4 mb-2 fw-bold">
             <i class="fas fa-staff-snake fa-lg"></i>
             {{ "Officine"|trans }} :  {{ "Factures"|trans }}
         </h3>
-         <h4 class="mt-2 mb-5 text-bold">
+         <h4 class="mt-2 mb-5 fw-bold">
             <i class="fa fa-list fa-lg"></i>
             {% if releve.periode != "Precedent" %}
             {{ "Releve Factures"|trans }} {{releve.quinzaine}} {{ "quinzaine"}} {{ releve.periode|date("m/Y")}} 
@@ -155,10 +155,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td  class="text-bold" colspan="3"> AVANCE : {{ releve ? releve.avance|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '' }}</td>
+                    <td  class="fw-bold" colspan="3"> AVANCE : {{ releve ? releve.avance|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '' }}</td>
                 </tr>
                  <tr>
-                    <td class="text-bold" colspan="3"> RESTE : {{ releve ? (releve.reste - totalavantage)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '' }}
+                    <td class="fw-bold" colspan="3"> RESTE : {{ releve ? (releve.reste - totalavantage)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '' }}
                    <span id="total" class="text-nowrap" style="display:none;">{{ releve ? (releve.reste - totalavantage)|number_format(2, '.' , '') : '' }}</span>
                     </td>
                 </tr>

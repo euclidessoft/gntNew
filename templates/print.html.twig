@@ -117,6 +117,14 @@
 {% endblock %}
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        window.print();
+        window.addEventListener('afterprint', function() {
+            history.back();
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
 
         var nombre = document.getElementById("total").innerText;

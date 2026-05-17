@@ -16,7 +16,7 @@
 
 {% block body %}
     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Suivi des commandes"|trans }}
         </h3>
@@ -64,7 +64,7 @@
                     <td>{{ commande.date|date('d/m/Y H:s:i') }}</td>
                     <td> {{ commande.user.nom }}</td>
                     <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    <td>
+                    <td class="text-nowrap">
                         <a href="{{ path('commande_panier_paiement_credit', {'commande' : commande.id}) }}" class="btn btn-success">
                             <i class="fa fa-gears"></i> {{ 'Traitement'|trans }}
                         </a>

@@ -21,7 +21,7 @@
 {% block body %}
 
     <div class="col-lg-11 mt-5 mb-5 fond-7">
-        <h3 class="mt-4 text-bold">
+        <h3 class="mt-4 fw-bold">
             <i class="fas fa-money-bill fa-lg"></i><i class="fas fa-hourglass-half"></i>
             {{ 'Journal Repartition Resultat'|trans }}
         </h3>
@@ -35,7 +35,7 @@
 
         <div class="card border-green shadow-black mt-5 mb-3 fond-5">
             <div class="card-header bg-success-light bb-success">
-                <h5 class="text-success text-bold">
+                <h5 class="text-success fw-bold">
                     <i class="fa fa-money-bill-transfer"></i>
                     {{ 'Journal Repartition Resultat'|trans }}
                 </h5>
@@ -135,7 +135,7 @@
                 </table>
             </div>
             {#<div class="card-footer bg-success-light bt-success">
-                <h4 class="text-success text-bold">
+                <h4 class="text-success fw-bold">
                     {{ 'Total transfert'|trans }} :
                     <span class="text-nowrap">
                     {{ montant2|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA

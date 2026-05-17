@@ -21,7 +21,7 @@
 {% block body %}
 
     <div class="col-lg-11 mt-5 mb-5 fond-7">
-        <h3 class="mt-4 text-bold">
+        <h3 class="mt-4 fw-bold">
             <i class="fas fa-money-bill fa-lg"></i><i class="fas fa-hourglass-half"></i>
             {{ 'Journal comptable'|trans }}
         </h3>
@@ -39,29 +39,29 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div role="alert" class="alert alert-success shadow-black radius-10 mt-4 p-4 text-green">
-                        <span class="text-bold">{{ 'Solde caisse'|trans }}</span> :
-                        <h3 class="text-nowrap text-bold text-center mt-3">
+                        <span class="fw-bold">{{ 'Solde caisse'|trans }}</span> :
+                        <h3 class="text-nowrap fw-bold text-center mt-3">
                             {{ caisse|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div role="alert" class="alert alert-success shadow-black radius-10 mt-4 p-4 text-green">
-                        <span class="text-bold">{{ 'Avoirs en banque :'|trans }}</span>
+                        <span class="fw-bold">{{ 'Avoirs en banque :'|trans }}</span>
                         <span class="float-right">
                             <a href="{{ path('banque_index') }}" class="text-green">
                                 {{ 'Détails >>'|trans }}
                             </a>
                         </span>
-                        <h3 class="text-nowrap text-bold text-center mt-3">
+                        <h3 class="text-nowrap fw-bold text-center mt-3">
                             {{ banque|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div role="alert" class="alert alert-success shadow-black radius-10 mt-4 p-4 text-green">
-                        <span class="text-bold">{{ 'Solde global'|trans }}</span> :
-                        <h3 class="text-nowrap text-bold text-center mt-3">
+                        <span class="fw-bold">{{ 'Solde global'|trans }}</span> :
+                        <h3 class="text-nowrap fw-bold text-center mt-3">
                             {{ (caisse + banque)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA
                         </h3>
                     </div>
@@ -71,7 +71,7 @@
 
         <div class="card border-green shadow-black mt-5 mb-3 fond-5">
             <div class="card-header bg-success-light bb-success">
-                <h5 class="text-success text-bold">
+                <h5 class="text-success fw-bold">
                     <i class="fa fa-money-bill-transfer"></i>
                     {{ 'Journal Comptable'|trans }}
                 </h5>
@@ -345,7 +345,7 @@
                 </table>
             </div>
             {#<div class="card-footer bg-success-light bt-success">
-                <h4 class="text-success text-bold">
+                <h4 class="text-success fw-bold">
                     {{ 'Total transfert'|trans }} :
                     <span class="text-nowrap">
                     {{ montant2|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA

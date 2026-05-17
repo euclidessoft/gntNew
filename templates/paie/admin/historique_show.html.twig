@@ -78,49 +78,49 @@
         <div class="row my-5">
             <div class="col-7">
                 <div class="row">
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "Matricule : "|trans }}
                     </div>
                     <div class="col-7">
                         {{ employe.matricule }}
                     </div>
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "Catégorie : "|trans }}
                     </div>
                     <div class="col-7">
                         {{ employe.categorie }} Echelon {{ employe.echelle }}
                     </div>
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "N° CNPS : "|trans }}
                     </div>
                     <div class="col-7">
                         {{ employe.cnps }}
                     </div>
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "Situation matrimoniale : "|trans }}
                     </div>
                     <div class="col-7">
                         {{ employe.civilite }}
                     </div>
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "Date d'embauche : "|trans }}
                     </div>
                     <div class="col-7">
                         {{ employe.hireDate|date('d/m/Y') }}
                     </div>
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "Ancienneté : "|trans }}
                     </div>
                     <div class="col-7">
                         {{ paie.anciennete }}
                     </div>
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "Code d'ancienneté : "|trans }}
                     </div>
                     <div class="col-7">
                         {{ paie.codeanciennete }}
                     </div>
-                    <div class="col-5 text-end text-bold">
+                    <div class="col-5 text-end fw-bold">
                         {{ "Congé : "|trans }}
                     </div>
                     <div class="col-7">
@@ -131,7 +131,7 @@
             </div>
             <div class="col-5">
                 <div class="col-12 border-green border-2 radius-10 p-4">
-                    <h4 class="text-bold text-dark">
+                    <h4 class="fw-bold text-dark">
                         {{ employe.nom }} {{ employe.prenom }}
                     </h4>
                     <p class="mb-0">
@@ -248,7 +248,7 @@
                         {% set totalheuresup = paie.baseheuresup * paie.tauxheuresup %}
                     {% endif %}
                     
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start" colspan="4">SALAIRE BRUT</td>
                         <td>
                            
@@ -257,7 +257,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start" colspan="4">Logement FISC</td>
                         <td>
                            
@@ -266,7 +266,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start"  colspan="4">Véhicule FISC</td>
                         <td>
                      
@@ -275,7 +275,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start" colspan="4">Logement CNPS</td>
                         <td>
                    
@@ -285,7 +285,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start"  colspan="4">Véhicule CNPS</td>
                         <td>
                  
@@ -294,7 +294,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start"  colspan="4">SALAIRE Brut Taxable inter</td>
                         <td>
                            
@@ -303,7 +303,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start"  colspan="4">SALAIRE Brut Taxable</td>
                         <td>
                             
@@ -312,7 +312,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start"  colspan="4">Salaire Cotisable</td>
                         <td>
                           
@@ -321,7 +321,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start" colspan="5">RETENUES SUR SALAIRE</td>
                         <th colspan="2" class="text-center"> CHARGES PATRONALES</th>
                     </tr>
@@ -406,8 +406,8 @@
                             {{ paie.crtv|number_format(0, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                             
                         </td>
-                        <td {# rowspan="2" #}class="text-bold text-end"> </td>
-                        <td {# rowspan="2" #} class="text-bold text-end"> </td>
+                        <td {# rowspan="2" #}class="fw-bold text-end"> </td>
+                        <td {# rowspan="2" #} class="fw-bold text-end"> </td>
                     </tr>
                     {% if paie.accompte != 0%}
                     <tr class="text-end">
@@ -453,7 +453,7 @@
                         <td></td>
                         <td></td>
                      </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start" colspan="4">TOTAL DES RETENUES</td>
                         <td>
                             {% set cotisation = paie.irpp|round  + paie.ca|round  + paie.local|round  + paie.vieil|round  + paie.foncier|round  + paie.CRTV|round  + totalretenue|round   + paie.accompte|round  %}
@@ -492,12 +492,12 @@
             <div class="col-5 ">
                 <div class="row p-3">
                     <div class="col border-1 border-green border-end-0 bg-success-light p-3">
-                        <h4 class="text-dark text-bold mb-0">
+                        <h4 class="text-dark fw-bold mb-0">
                             {{ "Net à payer"|trans }}
                         </h4>
                     </div>
                     <div class="col border-1 border-green border-start-0 bg-success-light p-3">
-                        <h4 class="text-dark text-end text-bold mb-0">
+                        <h4 class="text-dark text-end fw-bold mb-0">
                             {{ paie.salairenet|number_format(0, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </h4>
                     </div>
@@ -517,13 +517,13 @@
             <div class="col-5 p-4">
                 <div class="row bg-success-light p-3">
                     <div class="col-6">
-                        <h3 class="text-dark text-bold">
+                        <h3 class="text-dark fw-bold">
                             Net à payer
                         </h3>
                         #}{#                        <p class="mb-0"> Validé le : 29/03/2025</p>#}{#
                     </div>
                     <div class="col-6">
-                        <h3 class="text-dark text-end text-bold">
+                        <h3 class="text-dark text-end fw-bold">
                             {{ paie.salairenet|number_format(0, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
                         </h3>

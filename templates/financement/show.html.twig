@@ -34,7 +34,7 @@
 </div>
 
 <div class="container mt-4 fond-7">
-    <h3 class="mt-4 mb-3 text-bold">
+    <h3 class="mt-4 mb-3 fw-bold">
         <i class="fa fa-money-bill me-2"></i>
         {{ "Listes des Remboursements"|trans }}
     </h3>
@@ -62,8 +62,8 @@
             </tr>
         {% endfor %}
         <tr>
-            <td colspan="2" class="text-end text-bold">Total :</td>
-            <td class="text-bold"> {{somme|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}</td>
+            <td colspan="2" class="text-end fw-bold">Total :</td>
+            <td class="fw-bold"> {{somme|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',')}}</td>
         </tr>
         </tbody>
     </table>

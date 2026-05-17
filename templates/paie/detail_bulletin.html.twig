@@ -50,31 +50,31 @@
         <div class="row my-5">
             <div class="col-7">
                 <div class="row">
-                    <div class="col-4 text-end text-bold">
+                    <div class="col-4 text-end fw-bold">
                         {{ "Matricule : "|trans }}
                     </div>
                     <div class="col-8">
                         {{ employe.matricule }}
                     </div>
-                    <div class="col-4 text-end text-bold">
+                    <div class="col-4 text-end fw-bold">
                         {{ "Poste : "|trans }}
                     </div>
                     <div class="col-8">
                         {{ employe.poste.nom }}
                     </div>
-                    <div class="col-4 text-end text-bold">
+                    <div class="col-4 text-end fw-bold">
                         {{ "Département : "|trans }}
                     </div>
                     <div class="col-8">
                         {{ employe.poste.departement.nom }}
                     </div>
-                    <div class="col-4 text-end text-bold">
+                    <div class="col-4 text-end fw-bold">
                         {{ "Date d'embauche : "|trans }}
                     </div>
                     <div class="col-8">
                         {{ employe.hireDate|date('d/m/Y') }}
                     </div>
-                    <div class="col-4 text-end text-bold">
+                    <div class="col-4 text-end fw-bold">
                         {{ "Ancienneté : "|trans }}
                     </div>
                     <div class="col-8">
@@ -93,7 +93,7 @@
             </div>
             <div class="col-5 px-5">
                 <div class="col-12 border-green border-2 radius-10 p-4">
-                    <h4 class="text-bold text-dark">
+                    <h4 class="fw-bold text-dark">
                         {{ employe.nom }} {{ employe.prenom }}
                     </h4>
                     <p class="">
@@ -130,7 +130,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start">TOTAL DES GAINS(Brut)</td>
                         <td></td>
                         <td></td>
@@ -154,7 +154,7 @@
                         <td></td>
                         <td>7 000</td>
                     </tr>
-                    <tr class="text-bold text-end">
+                    <tr class="fw-bold text-end">
                         <td class="text-start">TOTAL DES COTISATIONS ET CONTRIBUTIONS</td>
                         <td></td>
                         <td></td>
@@ -162,7 +162,7 @@
                         <td>14 000</td>
                         <td>7 000</td>
                     </tr>
-                    <tr class="text-bold">
+                    <tr class="fw-bold">
                         <td colspan="3">
                             NET IMPOSABLE
                         </td>
@@ -200,13 +200,13 @@
             <div class="col-5 p-4">
                 <div class="row bg-success-light p-3">
                     <div class="col-6">
-                        <h3 class="text-dark text-bold">
+                        <h3 class="text-dark fw-bold">
                             Net à payer
                         </h3>
                         <p class="mb-0"> Validé le : {{ paie.date|date('d/m/Y') }}</p>
                     </div>
                     <div class="col-6">
-                        <h3 class="text-dark text-end text-bold">
+                        <h3 class="text-dark text-end fw-bold">
                             {{ (employe.sursalaire + employe.poste.salaire- 14000-8000)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                         </h3>
                         <p class="text-end mb-0"> Payé le :  {{ paie.datepaye|date('d/m/Y') }}</p>

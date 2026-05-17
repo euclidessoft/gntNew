@@ -14,11 +14,11 @@
 
 {% block body %}
     <div class="container mt-4 fond-7">
-     <h3 class="mt-4 mb-2 text-bold">
+     <h3 class="mt-4 mb-2 fw-bold">
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Suivi des commandes"|trans }}  | {{ client.nom ~ " " ~ client.prenom}}
         </h3>
-        <h5 class="mb-5 text-bold">
+        <h5 class="mb-5 fw-bold">
             <i class="fa fa-search me-2"></i>
             {{ "Resultat recherche du "|trans }}{{ jour|date("d/m/Y")}}
         </h5>

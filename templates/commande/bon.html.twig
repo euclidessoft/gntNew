@@ -1,26 +1,28 @@
 {% extends 'client.html.twig' %}
-{% block title %} {{ "Bon de commande"|trans }} - GNT Pharma {% endblock %}
+{% block title %} {{ "Bon de commande"|trans }} BC{{ commande.id }}{{ commande.numerofacture }} {% endblock %}
 {% block commande %}active{% endblock %}
 {% block my_commande %}active{% endblock %}
 
 {% block body %}
     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Bon de commande"|trans }}
         </h3>
 
         <a href="#" onclick="history.back()" class="btn btn-success-light mb-3">
-            <i class="fa fa-chevron-left"></i> {{ "Retour"|trans }} </a>
-        <h3 class="text-center text-bold text-uppercase mt-4">
+            <i class="fa fa-chevron-left"></i> {{ "Retour"|trans }}
+        </a>
+        <h4 class="text-center fw-bold text-uppercase mt-4">
             {{ ' Bon de commande'|trans }}
-        </h3>
-        <h6 class="text-center text-bold text-uppercase mb-3">
+        </h4>
+        <h6 class="text-center text-uppercase mb-3">
             {{ 'Numero'|trans }} : BC{{ commande.id }}{{ commande.numerofacture }}
         </h6>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-success-light table-bordered table-hover table-striped">
+        <div class="row my-5">
+            <div class="col-5"></div>
+            <div class="col-7">
+                <table class="table table-success-light table-bordered table-hover table-striped text-center w-100">
                     <thead>
                     <tr>
                         <th>{{ 'Date'|trans }}</th>
@@ -41,17 +43,17 @@
                         <td>{{ commande.user.niu }}</td>
                         <td>{{ commande.user.rccm }}</td>
                         {% if commande.credit == 1 and commande.payer == 0 %}
-                            <td>  {{ commande.echeance ? commande.echeance|date('d/m/Y'): ''  }}</td>
+                            <td>  {{ commande.echeance ? commande.echeance|date('d/m/Y'): '' }}</td>
                         {% endif %}
                         <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : commande.user.nom ~" "~ commande.user.prenom }}</td>
-                        {# <td class="text-bold">
+                        {# <td class="fw-bold">
                         {% if commande.payer == 0 %}
                             <span class="text-danger">Non payée</span>
                         {% else %}
                             <span class="text-success">Payée</span>
                         {% endif %}
-                    </td> #}
-                        {#        <td> </td> #}
+                    </td>
+                                <td> </td> #}
                     </tr>
                     </tbody>
                 </table>
@@ -60,15 +62,15 @@
         {% set total=0 %}
         {% set reduction=0 %}
         {% set tva=0 %}
-        <table class="table table-success-light table-bordered table-hover table-striped w-100 my-4">
+        <table class="table table-success-light table-bordered table-hover table-striped text-center">
             <thead>
             <tr>
                 <th>{{ 'CIP'|trans }}</th>
-                <th>{{ 'Désignation'|trans }}</th>
-                <th>{{ 'Quantité Commandée'|trans }}</th>
-                {#            <th>Quantite Livree</th> #}
-                {#            <th>Quantite Restante</th> #}
-                {# <th>{{ 'Prix Cession'|trans }}</th>
+                <th class="text-start">{{ 'Désignation'|trans }}</th>
+                <th>{{ 'Quantité'|trans }}<br>{{ 'commandée'|trans }}</th>
+                {#            <th>Quantite Livree</th>
+                            <th>Quantite Restante</th>
+                 <th>{{ 'Prix Cession'|trans }}</th>
                 <th>{{ 'Réduction'|trans }}</th>
                 <th>{{ 'TVA'|trans }}</th>
                 <th>{{ 'Prix Public'|trans }}</th>
@@ -80,20 +82,20 @@
                 {% set reductionproduit = 0 %}
                 <tr>
                     <td> {{ commandeproduit.produit.reference }} </td>
-                    <td>{{ commandeproduit.produit.desigantion }} </td>
+                    <td class="text-start">{{ commandeproduit.produit.desigantion }} </td>
                     <td>
                         {{ commandeproduit.quantite }}
-                        {% if commandeproduit.ug != 0%}
+                        {% if commandeproduit.ug != 0 %}
                             <span class="badge bg-danger">
                                         + {{ commandeproduit.ug }} U.G
                             </span>
                         {% endif %}
                     </td>
-                    {#                <td> #}
-                    {#                {{ commande.livraison ? commande.livrer.quantitelivrer : '' }} #}
-                    {#                </td> #}
-                    {#                <td> </td> #}
-                    {# <td class="montant">
+                    {#                <td>
+                                    {{ commande.livraison ? commande.livrer.quantitelivrer : '' }}
+                                    </td>
+                                    <td> </td>
+                     <td class="montant">
                         {{ commandeproduit.produit.prix|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
                     </td>
@@ -173,7 +175,7 @@
                 </td>
             </tr>
 
-            <tr class="text-bold">
+            <tr class="fw-bold">
                 <td colspan="7" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>
@@ -187,19 +189,18 @@
 
 
     </div>
-    <div class="container mt-4 mb-5 p-3 fond-7">
-        <div class="centrer">
-         <a id="pdf" onclick="load('pdf')" target="_blank" href="{{ path('commande_panier_bon_pdf',{'commande': commande.id }) }}"
-                   class="btn btn-danger me-3">
-                    <i class="fa fa-file-pdf"></i>
-                    {{ "Vers Pdf"|trans }}
-                </a>
-
-            <a id="print" onclick="load('print')"
-               href="{{ path('commande_panier_print_Bon',{'commande': commande.id }) }}"
-               class="btn btn-success float-end">
+    <div class="container mb-5 p-3 fond-5">
+        <div class="centrer gap-3">
+            <a
+                    href="{{ path('commande_panier_print_Bon',{'commande': commande.id }) }}"
+                    class="btn btn-success float-end">
                 <i class="fa fa-print"></i>
                 {{ "Imprimer"|trans }}
+            </a>
+            <a target="_blank" href="{{ path('commande_panier_bon_pdf',{'commande': commande.id }) }}"
+               class="btn btn-danger">
+                <i class="fa fa-file-pdf"></i>
+                {{ "Vers Pdf"|trans }}
             </a>
         </div>
     </div>

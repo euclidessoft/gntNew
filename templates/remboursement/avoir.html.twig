@@ -16,7 +16,7 @@
 
 {% block body %}
     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-money-bill me-2"></i>
             {{ "Avoir"|trans }}
         </h3>
@@ -70,10 +70,10 @@
             {% else %}
             {% endfor %}
             <tr>
-                <td colspan="5" class="text-end text-bold">
+                <td colspan="5" class="text-end fw-bold">
                     {{ 'Total Avoir'|trans }}
                 </td>
-                <td class="text-bold">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                <td class="fw-bold">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
             </tr>
         </table>
     </div>

@@ -10,9 +10,9 @@
                 <div class="col-lg-5 col-md-2 col-6 text-nowrap">
                     <span class="history-box">
                         <i class="fa fa-arrow-circle-left history-btn" title="Page précédente"
-                           onclick="window.history.back()"></i>
+                           onclick="window.history.back(); window.addEventListener('pageshow', () => location.reload());"></i>
                         <i class="fa fa-arrow-circle-right history-btn ms-3" title="Page suivante"
-                           onclick="window.history.forward()"></i>
+                           onclick="window.history.forward(); window.addEventListener('pageshow', () => location.reload());"></i>
                         <i class="fa fa-redo-alt history-btn ms-3" title="Actualiser la page"
                            onclick="window.location.reload()"></i>
                     </span>
@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="col-7">
                                         <div class="mt-0">
-                                            <h6 class="text-bold text-wrap">
+                                            <h6 class="fw-bold text-wrap">
                                                 {{ app.user.nom }}
                                                 {{ app.user.prenom }}
                                             </h6>
@@ -175,7 +175,7 @@
                              class="img-fluid mt-n4 mb-4 align-center">
                     </div>
                     <div class="col-lg-6">
-                        <h3 class="text-center text-bold">GNT PHARMA v{{ include('includes/version.html.twig') }}</h3>
+                        <h3 class="text-center fw-bold">GNT PHARMA v{{ include('includes/version.html.twig') }}</h3>
                         <p class="text-center mt-3">
                             Copyright &copy; 2023-{{ 'now'|date('Y') }}
                             <b>

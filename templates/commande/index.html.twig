@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-fluid mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Votre Panier"|trans }}
         </h3>
@@ -35,7 +35,7 @@
                 <th>{{ 'Prix Public'|trans }}</th>
                 <th>{{ 'Quantité'|trans }}</th>
                 <th>{{ 'Total'|trans }}</th>
-                <th>{{ 'Actions'|trans }}</th>
+                <th class="text-center">{{ 'Actions'|trans }}</th>
             </tr>
             </thead>
             <tbody>
@@ -113,9 +113,8 @@
                         
 
                     </td>
-                    <td>
-                       
-                           
+                    <td class="text-nowrap text-center">
+
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal{{ produit['produit'].id }}" title="{{ 'Modifier quantité'|trans }}">
                                 <i class="fa fa-edit"></i>
                             </button>
@@ -138,16 +137,16 @@
 
                                             {# fin paiement#}
                                         </div>
-                                        <div class="modal-footer px-5 py-4">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                        <div class="modal-footer justify-content-center px-5 py-4">
+                                            <button type="button" class="btn btn-success-light" data-bs-dismiss="modal"
                                                     id="annuler"><i class="fa fa-undo"></i>
                                                 {{ 'Annuler'|trans }}
                                             </button>
                                             <button type="button" class="btn btn-success ms-3"
                                                     id="btn{{produit['produit'].id }}" 
-                                                    onclick="modifier({{ produit['produit'].id }}, {{ produit['produit'].mincommande }},{{ produit['produit'].quantite }})"><i
-                                                        class="fa fa-money-bill"></i>
-                                                {{ 'Modifier'|trans}}
+                                                    onclick="modifier({{ produit['produit'].id }}, {{ produit['produit'].mincommande }},{{ produit['produit'].quantite }})">
+                                                <i class="fa fa-check"></i>
+                                                {{ 'Valider'|trans}}
                                             </button>
                                         </div>
                                         
@@ -161,7 +160,7 @@
                 </tr>
             {% endfor %}
             {% if panier|length > 0 %}
-                <tr class="text-bold">
+                <tr class="fw-bold">
                     <td data-label="Total" colspan="8" class="text-end">
                         {{ "Total"|trans }}
                     </td>
@@ -169,7 +168,7 @@
                         <span id="total">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                         <input type="hidden" value="{{ total }}" id="totaltamp"/>
                     </td>
-                    <td data-label="Vider le panier" rowspan="4">
+                    <td class="text-center" data-label="Vider le panier" rowspan="4">
 
                        
                              {{ include('commande/_delete.html.twig')}}
@@ -195,7 +194,7 @@
                         <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                     </td>
                 </tr>
-                <tr class="text-bold">
+                <tr class="fw-bold">
                     <td colspan="8" class="text-end">
                         {{ "Net à payer"|trans }}
                     </td>

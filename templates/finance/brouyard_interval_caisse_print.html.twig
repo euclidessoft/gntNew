@@ -71,11 +71,11 @@
                 </div>
             </div>
         </div>
-        <h3 class="text-center text-bold text-uppercase my-5">
+        <h3 class="text-center fw-bold text-uppercase my-5">
             {{ 'Balance caisse à la date du '|trans }} {{ day1|date('d/m/Y') }}
             {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
         </h3>
-        <h4 class="text-success text-bold mb-4">
+        <h4 class="text-success fw-bold mb-4">
             {{ 'Solde d\'ouverture : '|trans }} {{ ouverture|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
         </h4>
         <table class="table table-success-light table-bordered table-hover table-striped">
@@ -155,7 +155,7 @@
                     </tr>
                     </tfooter>
                 </table>
-        <h4 class="text-success text-bold">
+        <h4 class="text-success fw-bold">
             {{ 'Solde caisse à la date du '|trans }} {{ day1|date('d/m/Y') }}
             {{ 'au '|trans }} {{ day2|date('d/m/Y') }} :
             <span class="text-nowrap">

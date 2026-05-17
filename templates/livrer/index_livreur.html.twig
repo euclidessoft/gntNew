@@ -16,13 +16,13 @@
 
 {% block body %}
 <div class="container-fluid mt-4 fond-7">
-    <h3 class="mt-4 mb-5 text-bold">
+    <h3 class="mt-4 mb-5 fw-bold">
         <i class="fa fa-shopping-cart me-2"></i>
         {{ "Liste des commandes pour livraison"|trans }}
     </h3>
 <div class="row">
     <div class="col-lg-12">
-        <h5 class="mt-3 mb-2 text-bold">
+        <h5 class="mt-3 mb-2 fw-bold">
             {{ "Commande en attente de livraison"|trans }}
         </h5>
     {% for message in app.flashes('notice') %}

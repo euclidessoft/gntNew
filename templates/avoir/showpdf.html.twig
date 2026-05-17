@@ -4,10 +4,10 @@
 
 {% block contenu %}
             {% set commande = avoir.commande %}
-           <h3 class="text-center text-bold text-uppercase mt-4">
+           <h3 class="text-center fw-bold text-uppercase mt-4">
             {{ 'Facture Avoir'|trans }}
         </h3>
-        <h6 class="text-center text-bold text-uppercase mb-3">
+        <h6 class="text-center fw-bold text-uppercase mb-3">
         {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}-{{ avoir.id}}
         </h6>
 
@@ -119,7 +119,7 @@
                 </td>
             </tr> #}
 
-            <tr class="text-bold">
+            <tr class="fw-bold">
                 <td colspan="6" class="text-end">
                     {{ "Net à payer"|trans }}
                 </td>

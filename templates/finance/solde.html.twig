@@ -28,8 +28,8 @@
         <div class="col-lg-10 offset-lg-1 mb-5 mt-4">
                 
             <div role="alert" class="alert alert-success shadow-black radius-10 mt-4 p-4 text-green">
-                <span class="text-bold">{{ 'Solde caisse'|trans }}</span> :
-                <h3 class="text-nowrap text-bold text-center mt-3">
+                <span class="fw-bold">{{ 'Solde caisse'|trans }}</span> :
+                <h3 class="text-nowrap fw-bold text-center mt-3">
                     {{ caisse|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} F CFA
                 </h3>
             </div>

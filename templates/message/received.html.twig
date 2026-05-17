@@ -30,7 +30,7 @@
 {% block body %}
 
     <div class="container mt-5 mb-5 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-comments"></i>
             {{ "Messagerie"|trans }}
         </h3>
@@ -60,7 +60,7 @@
                             {% if not message.isDeleted %}
                                 {% set bold = "" %}
                                 {% if message.isRead == 0 %}
-                                    {% set bold = "text-bold" %}
+                                    {% set bold = "fw-bold" %}
                                 {% endif %}
                                 <tr class="{{ bold }}">
                                     <td data-label="De">
@@ -88,7 +88,7 @@
                         </tbody>
                     </table>
                     {#
-                                            <p class="text-bold text-green mb-4">
+                                            <p class="fw-bold text-green mb-4">
                                                 {{ "Nombre total de messages reçu"|trans }} : {{ messages|length }}
                                             </p>
                                             <div class="row">
@@ -106,7 +106,7 @@
                                                 {% if not message.isDeleted %}
                                                     {% set bold = "" %}
                                                     {% if message.isRead == 0 %}
-                                                        {% set bold = "text-bold" %}
+                                                        {% set bold = "fw-bold" %}
                                                     {% endif %}
                                                     <div class="row message">
                                                         <div class="col-md-3 col-4 {{ bold }}">

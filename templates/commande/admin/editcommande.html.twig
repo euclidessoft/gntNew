@@ -15,7 +15,7 @@
 
 {% block body %}
     <div class="container mt-4 fond-7">
-        <h3 class="mt-4 mb-5 text-bold">
+        <h3 class="mt-4 mb-5 fw-bold">
             <i class="fa fa-edit me-2"></i>
             <i class="fa fa-shopping-cart me-2"></i>
             {{ "Modification Commande"|trans }}
@@ -53,7 +53,7 @@
                          {% if commande.credit == 1 and commande.payer == 0 %}
                              <td> {{ commande.echeance ? commande.echeance|date('d/m/Y'): ''  }}</td>
                         {% endif %}
-                    <td class="text-bold">
+                    <td class="fw-bold">
                         {% if commande.payer == 0 %}
                             <span class="text-danger">Non payée</span>
                         {% else %}
@@ -137,7 +137,7 @@
                 </tr>
             {% endfor %}
             
-            {# <tr class="text-bold">
+            {# <tr class="fw-bold">
                 <td colspan="8" class="text-end">
                     {{ "Total"|trans }}
                 </td>
@@ -177,12 +177,12 @@
                 </td>
             </tr>
             {% endif %}
-            <tr class="text-bold">
-                <td colspan="8" class="text-end text-bold">
+            <tr class="fw-bold">
+                <td colspan="8" class="text-end fw-bold">
                     {{ "Net à payer"|trans }}
                 </td>
                 <td class="text-center">
-                    <span class="text-bold">{{ (total + acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                    <span class="fw-bold">{{ (total + acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
                     <span id="total" class="text-nowrap" style="display:none;">{{ (total + acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
                     <input type="hidden" value="{{ total }}" id="totaltamp"/>
                 </td>
@@ -190,7 +190,7 @@
                         /***Conversion prix en lettre **/
             <tr>
                 <td colspan="9" class="text-end">
-                    <span id="total" class="text-bold"></span>
+                    <span id="total" class="fw-bold"></span>
                     {{'Arrêtée la présente à la somme de'|trans}} <b id="conversion"> </b><b id="virgule"></b> <b>francs CFA TTC</b>
                 </td>
             </tr> #}

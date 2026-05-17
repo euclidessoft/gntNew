@@ -14,7 +14,7 @@
 
 {% block body %}
     <div class="container my-5 fond-7">
-        <h3 class="mt-2 mb-5 text-bold">
+        <h3 class="mt-2 mb-5 fw-bold">
             <i class="fa fa-id-card"></i>
             {{ "Information de l'employé"|trans }}
         </h3>
@@ -24,7 +24,7 @@
             employe.hypo ==1 or
             employe.hyper ==1 or
             employe.remark is not null %}
-            <div class="alert alert-danger shadow my-5 p-3 border-danger border-1 text-danger text-bold">
+            <div class="alert alert-danger shadow my-5 p-3 border-danger border-1 text-danger fw-bold">
                 <div class="row">
                     {% if employe.diabete ==1 %}
                         <div class="col-md-2 col-6">
@@ -133,7 +133,7 @@
                     <img src="{{ employe.photo ?? asset('/images/avatar-femme.avif') }}"
                          alt="Photo de {{ employe.nom }}" class="img-fluid border border-green w-100">
                 {% endif %}
-                <h3 class="mt-4 text-bold">
+                <h3 class="mt-4 fw-bold">
                     {{ employe.nom }} {{ employe.prenom }}
                 </h3>
                 <span class="badge bg-success mb-5 py-1 px-3 fs-6 rounded-pill">{{ employe.poste.nom }}</span>

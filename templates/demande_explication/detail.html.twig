@@ -21,7 +21,7 @@
                 <h4><i class="fa-solid fa-info-circle"></i> Détails de la demande d'explication</h4>
             </div>
             <div class="card-body">
-                <h5 class="mb-4 text-bold"><i class="fa-solid fa-user"></i> Détails de la demande</h5>
+                <h5 class="mb-4 fw-bold"><i class="fa-solid fa-user"></i> Détails de la demande</h5>
                 <ul class="list-group mb-4">
                     <li class="list-group-item"><strong>Objet :</strong> {{ demandeExplications.objet }}</li>
                     <li class="list-group-item"><strong>Date de soumission :</strong> {{ demandeExplications.date ? demandeExplications.date|date('d/m/Y') : 'N/A' }}</li>
@@ -40,7 +40,7 @@
                 <!-- Afficher la réponse de l'employé -->
                 <div class="mt-4">
                     {% for reponse in reponses %}
-                    <h5 class="text-success text-bold"><i class="fa-solid fa-reply"></i> Votre réponse</h5>
+                    <h5 class="text-success fw-bold"><i class="fa-solid fa-reply"></i> Votre réponse</h5>
                     <ul class="list-group mb-4">
                         <li class="list-group-item"><strong>Date de réponse :</strong> {{ reponse.dateReponse ? reponse.dateReponse|date('d/m/Y') : 'N/A' }}</li>
                         <li class="list-group-item">
