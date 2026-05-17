@@ -134,13 +134,12 @@
                     </td>
                 </tr>
             {% endfor %}
-            <tr>
-                <td colspan="8" class="text-end fw-bold">
+            <tr class="fw-bold">
+                <td colspan="8" class="text-end">
                     {{ "Total HT"|trans }}
                 </td>
-                <td class=" fw-bold">
-                    <span id=""
-                          class="text-nowrap">{{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                <td class="text-nowrap">
+                    {{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                 </td>
             </tr>
             {% if reduction != 0 %}
@@ -158,9 +157,8 @@
                 <td colspan="8" class="text-end">
                     {{ "Total TVA"|trans }}
                 </td>
-                <td>
-                    <span id=""
-                          class="text-nowrap">{{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
+                <td class="text-nowrap">
+                    {{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
                 </td>
             </tr>
 
@@ -169,7 +167,6 @@
                     {{ "Prélèvement (2%)"|trans }}
                 </td>
                 <td class="text-center">
-
                     <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '-' }}</span>
                     <input type="hidden" value="{{ tva }}" id="totaltamp"/>
                 </td>
