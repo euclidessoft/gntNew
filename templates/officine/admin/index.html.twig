@@ -44,11 +44,11 @@
                 <th>Releve</th>
             </thead>
             {# {% set numero = commandes|length *2 %} #}
-            {% set i = 1 %}
+           
 
             {% for releve in releves %}
                 <tr>
-                    <td>numero {{i}}</td>
+                    <td>Numero {{ releve.numero }}</td>
                     <td>
                     {% if releve.quinzaine == 1 %}
                         <a href="{{ path('commande_panier_releve_quinzaine', { 'releve' : releve.id})}}">RELEVE DES FACTURES - PREMIER QUINZAINE {{releve.periode}}
@@ -58,7 +58,7 @@
                     {% endif %}
                     </td>
                 </tr>
-                {% set i = i +1 %}
+            
             {% else %}
             {% endfor %}
             </tbody>

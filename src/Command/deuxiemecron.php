@@ -134,8 +134,10 @@ class deuxiemecron extends Command
 
             }
             if(count($commandes) > 0){
+                $numero =  $this->entityManager->getRepository(Releve::Class)->findBy([ 'client' => $client->getId()]);
              $releve = new Releve();
              $releve->setCommandes(json_encode($com));
+             $releve->setNumero(count($numero)+1);
              $releve->setQuinzaine(2);
              $releve->setClient($client);
              $releve->setAvoir($avoir);

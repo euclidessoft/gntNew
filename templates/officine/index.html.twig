@@ -32,25 +32,25 @@
                 <th>Releve</th>
             </thead>
             {# {% set numero = commandes|length *2 %} #}
-            {% set i = 1 %}
+          
 
             {% for releve in releves %}
                 <tr>
-                    <td>numero {{i}}</td>
+                    <td>Numero {{ releve.numero }}</td>
                     <td>
                     <a id="print" target="_blank" href="{{ path('commande_panier_officine_quinzaine_pdf', { 'releve': releve.id}) }}"
                    class="btn btn-danger me-3">
                     <i class="fa fa-file-pdf"></i>
                 </a>
                     {% if releve.quinzaine == 1 %}
-                        <a href="{{ path('commande_panier_officine_quinzaine', { 'mois' : releve.id})}}">RELEVE DES FACTURES - PREMIER QUINZAINE {{releve.periode}}
+                        <a href="{{ path('commande_panier_officine_quinzaine', { 'releve' : releve.id})}}">RELEVE DES FACTURES - PREMIER QUINZAINE {{releve.periode}}
                         </a>
                     {% else %}
                         <a href="{{ path('commande_panier_officine_quinzaine', { 'releve' : releve.id})}}">RELEVE DES FACTURES - DEUXIEME QUINZAINE  {{releve.periode}}</a>
                     {% endif %}
                     </td>
                 </tr>
-                {% set i = i +1 %}
+              
             {% else %}
             {% endfor %}
             </tbody>

@@ -62,6 +62,9 @@ class Releve
     #[ORM\Column]
     private ?int $quinzaine = null;
 
+    #[ORM\Column]
+    private ?int $numero = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -255,6 +258,18 @@ class Releve
     public function setHtavoir(float $htavoir): static
     {
         $this->htavoir = $htavoir;
+
+        return $this;
+    }
+
+    public function getNumero(): ?int
+    {
+        return $this->numero;
+    }
+
+    public function setNumero(int $numero): static
+    {
+        $this->numero = $numero;
 
         return $this;
     }

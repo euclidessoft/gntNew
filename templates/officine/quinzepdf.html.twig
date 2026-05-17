@@ -78,9 +78,15 @@
                 </div>
             </div>
         </div>
+         <h4 class="text-center fw-bold text-uppercase mt-4">
+            {{ 'Releve'|trans }}
+        </h4>
+        <h6 class="text-center text-uppercase mb-3  fw-bold">
+            {{ 'Numero'|trans }} : {{ releve.numero }}
+        </h6>
         <h3 class="text-center fw-bold text-uppercase mt-4">
               {% if releve.periode != "Precedent" %}
-            {{ "Releve Factures"|trans }} {{releve.quinzaine}} {{ "quinzaine"}} {{ releve.periode|date("m/Y")}} 
+             {{releve.quinzaine}} {{ "quinzaine"}} {{ releve.periode|date("m/Y")}} 
             {% else %} 
              {{ "Releve Factures de la periode precedente à la deuxieme quinzaine d'avril 20226"|trans }} 
             {% endif %}

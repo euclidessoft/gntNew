@@ -16,7 +16,7 @@ use App\Service\LamService;
 use App\Entity\Commande;
 use App\Entity\Facture;
 use App\Entity\Releve;
-use App\Entity\Avoir;
+use App\Entity\User;
 use App\Entity\Versement;
 use App\Entity\Client;
 use App\Entity\RetourProduit;
@@ -168,19 +168,25 @@ public function test(ParameterBagInterface $params)
         //     // }
         // // }
         // }
-        $factures =  $this->entityManager->getRepository(Facture::Class)->findAll();
-        foreach($factures as $facture){
-
+        $users =  $this->entityManager->getRepository(User::Class)->findBy(['client' => true]);
+        foreach($users as $user){
+                    $releves =  $this->entityManager->getRepository(Releve::Class)->findBy(['client' => $user]);
+                    $i = 1;
+                    foreach($releves as $releve){
+                        $releve->setNumero($i);
+                         $this->entityManager->persist($releve);
+                         $i++;
+                    }
         //     if($commande->getTraitement() == null){
         //     if($commande->getSuivi() == true){
         //    $commande->getDatelivrer() != null ? $commande->setTraitement($commande->getDatelivrer()) : $commande->setTraitement($commande->getDate());
-            $facture->setDate($facture->getApprovisionner()->getDate());
-            $this->entityManager->persist($facture);
-            //$this->entityManager->flush();
+           // $releve->setDate($facture->getApprovisionner()->getDate());
+           
+            $this->entityManager->flush();
             // }
         // }
         }
-        $this->entityManager->flush();
+        // $this->entityManager->flush();
         return new Response("okay");
     }
 

@@ -65,7 +65,7 @@ class premiercron extends Command
                 $avantage->setPayer(true);
                 $this->entityManager->persist($avantage);
                  $avant[] = [
-                    'commision' => $avantage->getCommission(),
+                    'commission' => $avantage->getCommission(),
                     'ristourne' => $avantage->getRistourne(),
                     'escompte' => $avantage->getEscompte(),
                     'tva' => $avantage->getTva(),
@@ -134,8 +134,10 @@ class premiercron extends Command
 
             }
             if(count($commandes) > 0){
+                $numero =  $this->entityManager->getRepository(Releve::Class)->findBy([ 'client' => $client->getId()]);
              $releve = new Releve();
              $releve->setCommandes(json_encode($com));
+             $releve->setNumero(count($numero)+1);
              $releve->setQuinzaine(1);
              $releve->setClient($client);
              $releve->setAvoir($avoir);
