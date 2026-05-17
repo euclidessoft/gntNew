@@ -27,14 +27,18 @@
         }
 
         @media print {
-            .table-success-light {
+            {# .table-success-light {
                 color: #000 !important;
             }
 
             .table-bordered {
                 border: 1px solid #000 !important;
-            }
+            } #}
 
+            th {
+                background-color: #c5fbae !important;
+                color: #000;
+            }
             thead {
                 background-color: #c5fbae !important;
                 color: #000;
@@ -84,10 +88,8 @@
         <h6 class="text-center text-bold text-uppercase mb-3">
         {{ 'Numero'|trans }} : {{ commande.id}}-{{ commande.numerofacture }}
         </h6>
-        <div class="row">
-
-            <div class="col-lg-12">
-                <table class="table table-success-light table-bordered table-hover table-striped">
+        
+                <table class="table table-success-light table-bordered table-hover table-striped  w-100">
                     <thead>
                     <tr>
                         <th>{{ 'N° Commande'|trans }}</th>
@@ -127,8 +129,7 @@
 
                     </tbody>
                 </table>
-            </div>
-        </div>
+        
         {% set total=0 %}
         {% set reduction=0 %}
         {% set tva=0 %}

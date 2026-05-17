@@ -52,8 +52,8 @@ class CommandeController extends AbstractController
             $total = 0;
             $notfound = 0;
              $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()],['desigantion' => 'ASC']) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()],['desigantion' => "ASC"]);  
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
              foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [
@@ -2581,24 +2581,16 @@ class CommandeController extends AbstractController
     public function pdfprintdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, GotenbergPdfInterface $gotenberg)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
-            $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);
-
-            $response = $this->render('commande/details_print.html.twig', [
+            return $gotenberg
+        ->html()
+        ->content('commande/admin/detailspdf.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
-                'panier' => $panier,
-            ]);
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-            $response->setCache([
-                'max_age' => 0,
-                'private' => true,
-            ]);
-            return $response;
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
+            
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
         //        $html = $this->renderView('commande/all_print.html.twig', [

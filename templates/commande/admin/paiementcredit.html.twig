@@ -310,6 +310,11 @@
                     {{ "Imprimer"|trans }}
                 </a>
 
+                 <a id="print" target="_blank" href="{{ path('commande_panier_print_Detail_pdf',{'commande': commande.id }) }}"
+                   class="btn btn-danger me-3">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ "Vers Pdf"|trans }}
+                </a>
                 <span id="exportexcel" class=""></span>
                 
                 {% if is_granted("ROLE_STOCK") and commande.suivi == false%}
