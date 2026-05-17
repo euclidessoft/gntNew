@@ -48,7 +48,7 @@
 
             {% for releve in releves %}
                 <tr>
-                    <td>Numero {{ releve.numero }}</td>
+                    <td>{{ releve.numero }}</td>
                     <td>
                     {% if releve.quinzaine == 1 %}
                         <a href="{{ path('commande_panier_releve_quinzaine', { 'releve' : releve.id})}}">RELEVE DES FACTURES - PREMIER QUINZAINE {{releve.periode}}

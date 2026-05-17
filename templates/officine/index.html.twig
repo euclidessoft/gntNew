@@ -36,7 +36,7 @@
 
             {% for releve in releves %}
                 <tr>
-                    <td>Numero {{ releve.numero }}</td>
+                    <td>{{ releve.numero }}</td>
                     <td>
                     <a id="print" target="_blank" href="{{ path('commande_panier_officine_quinzaine_pdf', { 'releve': releve.id}) }}"
                    class="btn btn-danger me-3">
