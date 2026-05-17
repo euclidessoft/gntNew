@@ -35,6 +35,21 @@
             <a class="nav-link active" href="#">
                 {{'Articles'|trans}}
             </a>
+        </li> 
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('facture_paye', {'fournisseur' : user.id})}}">
+                {{'Facture Payees'|trans}}
+            </a>
+        </li>  
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('facture_impaye', {'fournisseur' : user.id})}}">
+                {{'Facture impayees'|trans}}
+            </a>
+        </li>  
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('finance_journal_fournisseur', {'fournisseur' : user.id})}}">
+                {{'Compte'|trans}}
+            </a>
         </li>
     </ul>
 

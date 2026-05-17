@@ -414,6 +414,22 @@ class CommandeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function VentesProduitParMois($produit)
+    {
+        return $this->createQueryBuilder('c')
+            ->select("DATE_FORMAT(c.traitement, '%Y-%m') as mois")
+            ->addSelect('SUM(l.quantite) as quantite')
+            ->join('c.lignes', 'l')
+            ->where('l.produit = :produit')
+            ->AndWhere('c.suivi = :suivi')
+            ->setParameter('produit', $produit)
+            ->setParameter('suivi', true)
+            ->groupBy('mois')
+            ->orderBy('mois', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //  public function deuxiemetranche($user)
     // {
     //      $endDate = new \DateTime('last day of this month 23:59:59');

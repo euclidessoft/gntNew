@@ -9,6 +9,7 @@ use App\Entity\Approvisionner;
 use App\Entity\Debit;
 use App\Entity\Ecriture;
 use App\Entity\Facture;
+use App\Entity\Fournisseur;
 use App\Form\AchatType;
 use App\Repository\AchatRepository;
 use App\Repository\ApprovisionnementRepository;
@@ -64,10 +65,50 @@ class AchatController extends AbstractController
         return $response;
     }
 
+    
+    #[Route("/Palmares_Fournisseur_impaye/{fournisseur}", name :"facture_impaye", methods : ["GET"]) ]
+    public function listfactureimpaye(Fournisseur $fournisseur, FactureRepository $repository): Response
+    {
+
+        $response = $this->render('achat/factureimpaye.html.twig', [
+            'approvisionnements' => $repository->findBy(['fournisseur' => $fournisseur, 'payer' => false]),
+            'fournisseur' => $fournisseur,
+        ]);
+        $response->setSharedMaxAge(0);
+        $response->headers->addCacheControlDirective('no-cache', true);
+        $response->headers->addCacheControlDirective('no-store', true);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+        $response->setCache([
+            'max_age' => 0,
+            'private' => true,
+        ]);
+        return $response;
+    }
+    
+    #[Route("/Palmares_Fournisseur_paye/{fournisseur}", name :"facture_paye", methods : ["GET"]) ]
+    public function listfacturepaye(Fournisseur $fournisseur, FactureRepository $repository): Response
+    {
+
+        $response = $this->render('achat/facturepaye.html.twig', [
+            'approvisionnements' => $repository->findBy(['fournisseur' => $fournisseur, 'payer' => true]),
+            'fournisseur' => $fournisseur,
+        ]);
+        $response->setSharedMaxAge(0);
+        $response->headers->addCacheControlDirective('no-cache', true);
+        $response->headers->addCacheControlDirective('no-store', true);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+        $response->setCache([
+            'max_age' => 0,
+            'private' => true,
+        ]);
+        return $response;
+    }
+
     #[Route("/new/{facture}", name :"achat_new", methods : ["GET","POST"]) ]
     public function new(Request $request,Facture $facture, Solde $solde): Response
     {
         $achat = new Achat();
+        $achat->setFacture($facture);
         $achat->setMontant($facture->getMontant());
         $achat->setFournisseur($facture->getFournisseur());
         $debit = new Debit();

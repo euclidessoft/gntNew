@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\FactureRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass:FactureRepository::class) ]
@@ -25,12 +28,23 @@ class Facture
     #[ORM\Column(type:"boolean") ]
     private $payer;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $date = null;
+
+    /**
+     * @var Collection<int, Achat>
+     */
+    #[ORM\OneToMany(targetEntity: Achat::class, mappedBy: 'facture')]
+    private Collection $achats;
+
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->payer = false;
+        $this->date = new \Datetime();
+        $this->achats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,6 +96,48 @@ class Facture
     public function setPayer(bool $payer): self
     {
         $this->payer = $payer;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTime
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Achat>
+     */
+    public function getAchats(): Collection
+    {
+        return $this->achats;
+    }
+
+    public function addAchat(Achat $achat): static
+    {
+        if (!$this->achats->contains($achat)) {
+            $this->achats->add($achat);
+            $achat->setFacture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAchat(Achat $achat): static
+    {
+        if ($this->achats->removeElement($achat)) {
+            // set the owning side to null (unless already changed)
+            if ($achat->getFacture() === $this) {
+                $achat->setFacture(null);
+            }
+        }
 
         return $this;
     }

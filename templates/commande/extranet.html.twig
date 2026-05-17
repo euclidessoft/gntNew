@@ -18,7 +18,7 @@
 {#            </li>#}
 {#        </ul>#}
 
-        <table class="table table-success-light table-bordered table-hover table-striped w-100 mt-4">
+        <table class="table table-success-light table-bordered table-hover table-striped w-100 mt-4" id="liste">
             <thead>
             <tr>
                 <th>{{ 'Numero Commande'|trans }}</th>
@@ -34,20 +34,24 @@
             {% for commande in commandes %}
                 <tr>
                     <td>{{ commande.id }}</td>
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ commande.date|date('d/m/Y H:i:s') }}</td>
                    
                     <!-- <td> {{ commande.user.nom }}</td> -->
                     
                     {% if is_granted("ROLE_CLIENT_ADMIN") %}
-                    <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : "" }}</td>
+                    <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : commande.user.nom }}</td>
                     {% endif %}
                     <td>{{ commande.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
                     <td>
-                        {#                        <a href="{{ path('commande_panier_paiement_client', {'commande' : commande.id}) }}" class="btn btn-success">#}
-                        <a id="{{ commande.id }}" onclick="load('commande.id')" href="{{ path('commande_panier_Detail_extranet', {'commande' : commande.id}) }}" class="btn btn-success">
+                        {# <a id="{{ commande.id }}" onclick="load('commande.id')" href="{{ path('commande_panier_Detail_extranet', {'commande' : commande.id}) }}" class="btn btn-success"> #}
+                        <a id="{{ commande.id }}" onclick="load('commande.id')" href="{{ path('commande_panier_Detail', {'commande' : commande.id}) }}" class="btn btn-success">
                             <i class="fa fa-list"></i>
                             {{ 'Détails'|trans }}
                         </a>
+                        <a id="print" target="_blank" href="{{ path('commande_panier_print_Detail_pdf',{'commande': commande.id }) }}"
+                   class="btn btn-danger ms-2">
+                    <i class="fa fa-file-pdf"></i>
+                </a>
                     </td>
                 </tr>
             {% endfor %}

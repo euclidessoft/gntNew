@@ -17,11 +17,11 @@
     <div class="container">
         <div class="container mt-4 mb-5 fond-7 pt-3 pb-3">
             <div class="centrer">
-                <a href="{{ path('finance_days_tiers_print', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-success-light">
+                <a href="{{ path('finance_days_tiers_fournisseur_print', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-success-light">
                     <i class="fa fa-print"></i>
                     {{ 'imprimer'|trans }}
                 </a>
-                 <a target="_blank" href="{{ path('finance_days_tiers_pdf', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-danger ms-3">
+                <a target="_blank" href="{{ path('finance_days_tiers_fournisseur_pdf', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-danger  ms-3">
                     <i class="fa fa-file-pdf"></i>
                     {{ 'vers Pdf'|trans }}
                 </a>
@@ -30,18 +30,18 @@
         </div>
         <div class="card border-green shadow-black mt-5 mb-3 fond-5">
             <div class="card-header bg-success-light bb-success">
-                <h5 class="text-success fw-bold">
+                <h5 class="text-success text-bold">
                     <i class="fa-solid fa-chart-simple"></i>
-                    {{ 'Balance des tiers | Clients du '|trans }} {{ day1|date('d/m/Y') }}
+                    {{ 'Balance des tiers | fournisseurs du '|trans }} {{ day1|date('d/m/Y') }}
                     {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
                 </h5>
             </div>
             <div class="card-body">
-               <table class="table table-success-light table-bordered table-hover table-striped mt-3" id="affichage">
+               <table class="table table-success-light table-bordered table-hover table-striped mt-3" id="afichage">
        <thead>
             <tr>
                 <th rowspan="2">{{"Compte"|trans}}</th>
-                <th rowspan="2">{{"Client"|trans}}</th>
+                <th rowspan="2">{{"Fournisseur"|trans}}</th>
                 <th colspan="2">{{"Mouvements"|trans}}</th>
                 <th colspan="2">{{"Solde"|trans}}</th>
             </tr>

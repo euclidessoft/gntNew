@@ -23,6 +23,7 @@
                         {% endif %}
                         <th>{{ 'Status Commande'|trans }}</th>
                     </tr>
+
                     </thead>
                     <tbody>
                     <td>{{ commande.id }}</td>
@@ -47,7 +48,6 @@
         {% set reduction=0 %}
         {% set tva=0 %}
         <table class="w-100">
-
             <tr>
                 <th>{{ 'CIP'|trans }}</th>
                 <th>{{ 'Désignation'|trans }}</th>
@@ -60,25 +60,32 @@
                 <th>{{ 'Montant'|trans }}</th>
             </tr>
 
-
             {% for commandeproduit in commandeproduits %}
                 {% set reductionproduit = 0 %}
                 <tr>
                     <td> {{ commandeproduit.produit.reference }} </td>
                     <td>{{ commandeproduit.produit.desigantion }} </td>
                     <td class="text-center">
-                        {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
-
+                       {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
                     </td>
-                    <td class="text-center">
-                        {{ commandeproduit.quantite }}
+                    <td>
+                        {% if commande.suivi %}
+                            {{ commandeproduit.quantite }}
+                        {% else %}
+                            {% if commandeproduit.produit.stock > commandeproduit.quantite %}
+                                {{ commandeproduit.quantite }}
+                            {% else %}
+                                {{ commandeproduit.produit.stock }}
+                            {% endif %}
+                        {% endif %}
                         {% if commandeproduit.ug != 0 %}
                             <span class="badge bg-danger">
-                                        + {{ commandeproduit.ug }} U.G
-                            </span>
+                                                    + {{ commandeproduit.ug }} U.G
+                                        </span>
                         {% endif %}
+
                     </td>
-                    <td class="montant">
+                    <td>
                         {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
 
                     </td>

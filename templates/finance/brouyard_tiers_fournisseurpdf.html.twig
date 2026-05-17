@@ -1,0 +1,46 @@
+{% extends
+    'pdf.html.twig'
+%}
+{% block contenu %}
+   
+    
+                <h5 class="text-success text-bold">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    {{ 'Balance des tiers | fournisseurs du '|trans }} {{ day1|date('d/m/Y') }}
+                    {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
+                </h5>
+           
+               <table class="table table-success-light table-bordered table-hover table-striped mt-3" id="affichage">
+       <thead>
+            <tr>
+                <th rowspan="2">{{"Compte"|trans}}</th>
+                <th rowspan="2">{{"Fournisseur"|trans}}</th>
+                <th colspan="2">{{"Mouvements"|trans}}</th>
+                <th colspan="2">{{"Solde"|trans}}</th>
+            </tr>
+            <tr>
+                <th>{{"Debit"|trans}}</th>
+                <th>{{"Credit"|trans}}</th>
+                <th>{{"Debit"|trans}}</th>
+                <th>{{"Credit"|trans}}</th>
+            </tr>
+       </thead>
+        <tbody>
+            {% for commande in commandes %} 
+        
+                <tr>
+                    <td>{{commande['compte'] }}</td>
+                    <td>{{commande['nom'] }}</td>
+                    <td>{{commande['ca']|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    <td>{{commande['achat']|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
+                    {% set solde = commande['ca'] - commande['achat'] %}
+                    <td> {% if solde > 0 %} {{ solde|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% endif %}</td>
+                    <td> {% if solde < 0 %} {{ (-1 *solde) |number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% endif %}</td>
+                   
+                </tr>
+            {% else %}
+            {% endfor %}
+        </tbody>
+       </table> 
+  
+{% endblock %}

@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Laboratoire;
 use App\Entity\Produit;
+use App\Entity\Commande;
 use App\Repository\LivrerProduitRepository;
 use App\Repository\ProduitRepository;
+use App\Repository\CommandeRepository;
 use App\Form\LaboratoireForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

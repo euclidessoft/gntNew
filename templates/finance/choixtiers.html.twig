@@ -1,0 +1,66 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+
+{% block title %}{{ 'Balance dans un intervalle'|trans }} - GNT Pharma{% endblock %}
+
+{% block finance %}active{% endblock %}
+
+{% block balance %}active{% endblock %}
+
+
+{% block body %}
+    <div class="container_paiement  mt-4 fond-7 text-center">
+        <h3 class="mt-4 mb-5 text-bold">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+            {{ 'Balance des Tiers'|trans }}
+        </h3>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row justify-content-center">
+                    <div class="col-lg-4">
+                        <a href="{{ path('finance_rapport_tiers_client') }}">
+                            <div class="p-3 rounded border border-green avoir">
+                                <div class="text-green textavoir text-center py-3 rounded-top">
+                                    <i class="fas fas fa-user-tag fa-3x"></i>
+                                </div>
+                                <div class="text-bold text-green textavoir text-center py-3 rounded-bottom">
+                                    {{'Clients'|trans}}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+                    <div class="col-lg-4">
+                        <a href="{{ path('finance_rapport_tiers_fournisseur') }}">
+                            <div class="p-3 rounded border border-green avoir">
+                                <div class="text-green textavoir text-center py-3 rounded-top border-green">
+                                    <i class="fas fa-hospital-user fa-3x"></i>
+                                </div>
+                                <div class="text-green textavoir text-bold text-center py-3 rounded-bottom">
+                                    {{'Fournisseurs'|trans}}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+{% endblock %}

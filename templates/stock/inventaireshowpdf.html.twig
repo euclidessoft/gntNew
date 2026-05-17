@@ -1,0 +1,77 @@
+{% extends 'pdf.html.twig'
+%}
+{% block contenu %}
+<div class="container-fluid mt-4 fond-7">
+    <h3 class="mt-4 mb-5 text-bold">
+        <i class="fa fa-shopping-cart me-2"></i>
+        {{ "Etat inventaire produits"|trans }}
+    </h3>
+
+     <table class="table table-success-light table-bordered table-hover table-striped my-3" id="liste">
+        <thead>
+        <tr>
+            <th>{{ 'CIP'|trans }}</th>
+            <th>{{ 'Désignation'|trans }}</th>
+            {# <th>{{ 'DCI'|trans }}</th> #}
+            {# <th>{{ 'Fabricant'|trans }}</th> #}
+           <th>N° Lot</th>
+           <th>Peremptio</th>
+            <th>{{ 'Qtée Ini.'|trans }}</th>
+            <th>{{ 'Qtée Fnale'|trans }}</th>
+            <th>{{ 'Ecart'|trans }}</th>
+            <th>{{ 'Pght'|trans }}</th>
+            <th>{{ 'Cession'|trans }}</th>
+            <th>{{ 'Total'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set total = 0 %}
+        {% set totalecart = 0 %}
+        {% set totalpght = 0 %}
+        {% set totalcession = 0 %}
+        {% for inventaire in inventaires %}
+            {% set totalprod = 0 %}
+            <tr>
+                <td>{{ inventaire.produit.reference }}</td>
+                <td>{{ inventaire.produit.desigantion }}</td>
+                {# <td>{{ inventaire.produit.dci }}</td> #}
+                {# <td>{{ inventaire.produit.fabriquant }}</td> #}
+               <td>{{ inventaire.lot }}</td>
+               <td>{{ inventaire.peremption|date('d/m/Y') }}</td>
+                <td class"center">{{ inventaire.anciennequantite|number_format(0,',' , ' ') }}</td>
+                <td class"center">{{ inventaire.nouvellequantite|number_format(0,',' , ' ') }}</td>
+                <td class"center">
+                {% set ecart = inventaire.nouvellequantite - inventaire.anciennequantite %}
+                {% set totalecart = totalecart + ecart %}
+                {{ ecart|number_format(0,',' , ' ') }}
+                </td>
+                <td class"center">
+                {% set totalpght = totalpght + inventaire.pght %}
+                {{ inventaire.pght|number_format(2,',' , ' ') }}
+                </td>
+                <td class"center">
+                {% set totalcession = totalcession + inventaire.cession %}
+                {{ inventaire.cession|number_format(2,',' , ' ') }}</td>
+                <td class"center">
+                    {% set totalprod = ecart * inventaire.cession %}
+                    {% set total = total + totalprod %}
+                    {{ totalprod|number_format(2,',' , ' ') }}
+                </td>
+                
+
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfooter>
+            <tr>
+                <th colspan="6" class="text-end"> Totaux</th>
+                <th>{{ totalecart|number_format(0,',' , ' ') }}</th>
+                <th>{{ totalpght|number_format(2,',' , ' ') }}</th>
+                <th>{{ totalcession|number_format(2,',' , ' ') }}</th>
+                <th>{{ total|number_format(2,',' , ' ') }}</th>
+            </tr>
+        </tfooter>
+    </table>
+    </div>
+</div>
+{% endblock %}
