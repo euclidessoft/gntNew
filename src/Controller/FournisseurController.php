@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route("{_locale}/fournisseur") ]
 class FournisseurController extends AbstractController
@@ -99,6 +100,156 @@ class FournisseurController extends AbstractController
                 'private' => true,
             ]);
             return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/RepportAnalyse/", name :"fournisseur_rapport_analyse") ]
+    public function rapporttiers()
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+            return $this->render('fournisseur/rapport_analyse.html.twig');
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/fournisseur_rapport_analyse_lien", name :"fournisseur_rapport_analyse_lien") ]
+    public function liendaysbrouyard(Request $request)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            $lien = $this->generateUrl('fournisseur_analyse', ['date1' => $date1, 'date2' => $date2]);
+            $res['ok'] = $lien;
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+
+    }
+
+     #[Route("/fournisseur_analyse/{date1}/{date2}", name :"fournisseur_analyse") ]
+    public function analyse(Request $request, $date1, $date2, FournisseurRepository $repo)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            
+            $response = $this->render('fournisseur/analyse.html.twig', [
+                'fournisseurs' => $repo->findAll(),
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+     #[Route("/fournisseur_analyse_print/{date1}/{date2}", name :"fournisseur_analyse_print") ]
+    public function analyseprint(Request $request, $date1, $date2, FournisseurRepository $repo)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            
+            $response = $this->render('fournisseur/analyse_print.html.twig', [
+                'fournisseurs' => $repo->findAll(),
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    
+     #[Route("/fournisseur_analyse_pdf/{date1}/{date2}", name :"fournisseur_analyse_pdf") ]
+    public function analysepdf(Request $request, $date1, $date2, FournisseurRepository $repo, GotenbergPdfInterface $gotenberg)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+           
+
+             return $gotenberg
+        ->html()
+        ->content('fournisseur/analysepdf.html.twig', [
+                'fournisseurs' => $repo->findAll(),
+                'day1' => $date1,
+                'day2' => $date2,
+            ])
+        ->fileName('facture.pdf')
+        ->generate()
+        ->stream();
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

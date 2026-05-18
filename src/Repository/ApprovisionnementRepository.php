@@ -50,6 +50,28 @@ class ApprovisionnementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    
+     public function fournisseur($produit, $fournisseur, $date1, $date2): array
+    {
+        $date = new \Datetime($date1);
+        $debut = (clone $date)->setTime(0, 0, 0);
+
+        $date = new \Datetime($date2);
+        $fin = (clone $date)->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.fournisseur = :fournisseur')
+            ->andWhere('c.produit = :produit')
+            ->setParameter('fournisseur', $fournisseur)
+            ->setParameter('produit', $produit)
+            ->orderBy('c.id',"DESC")
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Approvisionnement[] Returns an array of Approvisionnement objects
     //  */

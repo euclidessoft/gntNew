@@ -1,0 +1,107 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ 'Balance des tiers du : '|trans }} {{ day1|date('d/m/Y') }} {{ 'au : '|trans }} {{ day2|date('d/m/Y') }} - GNT Pharma {% endblock %}
+{% block fournisseur %}active{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="container mt-4 mb-5 fond-7 pt-3 pb-3">
+            <div class="centrer">
+                <a href="{{ path('fournisseur_analyse_print', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-success-light">
+                    <i class="fa fa-print"></i>
+                    {{ 'imprimer'|trans }}
+                </a>
+                 <a target="_blank" href="{{ path('fournisseur_analyse_pdf', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-danger ms-3">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ 'vers Pdf'|trans }}
+                </a>
+                <span id="exporter"></span>
+            </div>
+        </div>
+        <div class="card border-green shadow-black mt-5 mb-3 fond-5">
+            <div class="card-header bg-success-light bb-success">
+                <h5 class="text-success fw-bold">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    {{ 'Analyse Founisseur du '|trans }} {{ day1|date('d/m/Y') }}
+                    {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
+                </h5>
+            </div>
+            <div class="card-body">
+               <table class="table table-success-light table-bordered table-hover table-striped mt-3">
+       <thead>
+            <tr>
+                <th>{{"Compte"|trans}}</th>
+                <th>{{"fournisseur"|trans}}</th>
+                <th>{{"designation"|trans}}</th>
+                <th>{{"CA HT"|trans}}</th>
+                <th>{{"Quantité Achetée"|trans}}</th>
+            </tr>
+       </thead>
+        <tbody>
+        {% set total = 0 %}
+        {% set totalca = 0 %}
+        {% set totalquantite = 0 %}
+            {% for fournisseur in fournisseurs %} 
+                {% set totalcafournisseur = 0 %}
+                {% set totalquantitefournisseur = 0 %}
+                {% if fournisseur.produits|length > 0 %}
+                <tr>
+                {% set row = fournisseur.produits|length + 2 %}
+                    <th>{{fournisseur.compte }}</th>
+                    <th colspan='2'>{{fournisseur.designation }}
+                    </th>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td  rowspan="{{row}}"></td>
+                    <th colspan="2" class="text-center"> Produits </th>
+                    <td></td>
+                    <td></td>
+                </tr>
+                
+                    {% for produit in fournisseur.produits %}
+                    <tr>
+                     <td>  {{ produit.reference}}</td>
+                    <td> {{ produit.desigantion}} </td>
+                   
+                        {% set chiffre = AnalyseFournisseur(produit,fournisseur,day1,day2) %}
+                         <td> {{ chiffre.ca|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% set totalcafournisseur = totalcafournisseur + chiffre.ca %}</td>
+                         <td>  {{ chiffre.quantite|number_format(0, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% set totalquantitefournisseur = totalquantitefournisseur + chiffre.quantite %}</td>
+                         </tr>
+                    {% endfor %}
+                    
+                   <tr>
+                    <th colspan="2" class="text-center"> Total</th>
+                    <th>{{ totalcafournisseur|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% set totalca = totalca + totalcafournisseur%}</th>
+                    <th> {{ totalquantitefournisseur|number_format(0, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} {% set totalquantite = totalquantite + totalquantitefournisseur%}</th>
+                    </tr>
+
+                    
+                
+                {% endif %}
+            {% else %}
+            {% endfor %}
+        </tbody>
+        <tfooter>
+        <tr>
+                    <th> </th>
+                    <th colspan="2" class="text-center">Total General</th>
+                    <th>{{ totalca|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
+                    <th> {{ totalquantite|number_format(0, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }} </th>
+         </tr>
+        </tfooter>
+
+       </table> 
+        </div>
+    </div>
+{% endblock %}

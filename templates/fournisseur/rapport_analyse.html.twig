@@ -1,0 +1,141 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+
+{% block title %}{{ 'Balance dans un intervalle'|trans }} - GNT Pharma{% endblock %}
+
+{% block finance %}active{% endblock %}
+
+{% block balance %}active{% endblock %}
+{% block tiers %}active{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-8 mt-5 mb-5 fond-7">
+        <h3 class="mt-4 fw-bold">
+         <i class="fa-solid fa-hospital-user"></i>
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+            {{ 'Analyse Fournisseur'|trans }}
+        </h3>
+        <div class="col-lg-12">
+            <div class="card border-green shadow-black mt-4 mb-5">
+                <div class="card-header bg-success-light text-green bb-green">
+                    <h6 class="mb-n1">
+{#                        <i class="fa-solid fa-magnifying-glass-chart"></i>#}
+                        {{ 'Entrer les dates'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-n3">
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Du'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date1" name="date1" class="form-control"
+                                           onchange="daysenable()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 form-group mt-1">
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="text-nowrap text-end mt-2 me-n3">
+                                        {{ 'Au'|trans }}
+                                    </p>
+                                </div>
+                                <div class="col-10">
+                                    <input type="date" id="date2" name="date2" class="form-control"
+                                           onchange="daysenable()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button  onclick="dayscaisse()"
+                                class="btn btn-shadow btn-green mt-2 mb-n1 float-right disabled" id="daysbtn">
+                            <i class="fa fa-check-circle"></i>
+                            {{ 'Valider'|trans }}
+                        </button>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block script %}
+        <script>
+
+            //situation intervalle
+            function days() {
+                var date1 = new Date($('#date1').val());
+                var date2 = new Date($('#date2').val());
+                if (date1 < date2 && date2 < new Date()) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('finance_days_brouyard_lien') }}",
+                        data: "date1=" + $('#date1').val() + "&date2=" + $('#date2').val(),
+                        success: function (data) {
+                            window.open(data['ok'], '_self');
+                            // window.location.reload();
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n a pas abouti'|trans }}");
+                        }
+                    });
+
+                } else {
+                    alert("{{ 'Vérifiez les dates saisies'|trans }}");
+                }
+
+            }
+
+            //situation intervalle caisse
+            function dayscaisse() {
+                var date1 = new Date($('#date1').val());
+                var date2 = new Date($('#date2').val());
+                if (date1 < date2 && date2 < new Date()) {
+                     $("#daysbtn").html("<i class='fa-solid fa-spinner fa-spin-pulse fa-lg'></i>");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('fournisseur_rapport_analyse_lien') }}",
+                        data: "date1=" + $('#date1').val() + "&date2=" + $('#date2').val(),
+                        success: function (data) {
+                            window.open(data['ok'], '_self');
+                            // window.location.reload();
+                        },
+                        error: function () {
+                            alert("{{ 'La requête n a pas abouti'|trans }}");
+                        }
+                    });
+
+                } else {
+                    alert("{{ 'Vérifiez les dates saisies'|trans }}");
+                }
+
+            }
+
+            //activation boutons dates
+            function daysenable() {
+                if ($('#date1').val() != '' && $('#date2').val() != '') {
+                    $('#daysbtn').removeClass("disabled");
+                } else {
+                    $('#daysbtn').addClass("disabled");
+                }
+            }
+        </script>
+    {% endblock %}
+
+{% endblock %}
