@@ -192,7 +192,7 @@ class CommandeRepository extends ServiceEntityRepository
         $endDate = new \DateTime($date);
         return $this->createQueryBuilder('p')
             ->where('p.user = :id')
-            ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.date BETWEEN :start AND :end')
             ->andWhere('p.credit = :credit')
             ->andWhere('p.payer = :payer')
             ->setParameter('id' , $user)
@@ -213,7 +213,7 @@ class CommandeRepository extends ServiceEntityRepository
         $endDate = new \DateTime($date);
         return $this->createQueryBuilder('p')
             // ->where('p.user = :id')
-            ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.date BETWEEN :start AND :end')
             ->andWhere('p.credit = :credit')
             ->andWhere('p.payer = :payer')
             // ->setParameter('id' , $user)
@@ -237,7 +237,7 @@ class CommandeRepository extends ServiceEntityRepository
         $endDate = new \DateTime($date);
         return $this->createQueryBuilder('p')
             ->where('p.user = :id')
-            ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.date BETWEEN :start AND :end')
             ->andWhere('p.credit = :credit')
             ->andWhere('p.payer = :payer')
             ->setParameter('id' , $user)
@@ -261,7 +261,7 @@ class CommandeRepository extends ServiceEntityRepository
         $endDate = new \DateTime($date);
         return $this->createQueryBuilder('p')
             // ->where('p.user = :id')
-            ->andWhere('p.traitement BETWEEN :start AND :end')
+            ->andWhere('p.date BETWEEN :start AND :end')
             ->andWhere('p.credit = :credit')
             ->andWhere('p.payer = :payer')
             // ->setParameter('id' , $user)

@@ -77,7 +77,7 @@ class premiercron extends Command
             foreach ([$commandes,$avoirs] as $tableau) {
             foreach ($tableau as $row) {
                 if($row instanceof Commande)
-                 $date = $row->getTraitement()->format('Y-m-d');
+                 $date = $row->getDate()->format('Y-m-d');
                 else $date = $row->getDate()->format('Y-m-d');
                 // dd($date);
                 // On regroupe les lignes par date
