@@ -1015,6 +1015,121 @@ class StockController extends AbstractController
         }
     }
 
+     #[Route("/Repportmouvement/", name :"mouvement") ]
+    public function rapporttiers()
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+            return $this->render('stock/rapport_mouvement.html.twig');
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+    #[Route("/mouvement_lien", name :"mouvement_lien") ]
+    public function liendaysbrouyard(Request $request)
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+            $date1 = $request->get('date1');
+            $date2 = $request->get('date2');
+            $lien = $this->generateUrl('stock_mouvement_stock', ['date1' => $date1, 'date2' => $date2]);
+            $res['ok'] = $lien;
+            $response = new Response();
+            $response->headers->set('content-type', 'application/json');
+            $re = json_encode($res);
+            $response->setContent($re);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+
+
+    }
+    
+    #[Route("/Mouvement_stock/{date1}/{date2}", name :"mouvement_stock", methods : ["GET"]) ]
+    public function mouvement(ProduitRepository $repo, $date1, $date2): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+           
+            $response = $this->render('stock/mouvement.html.twig', [
+                'produits' => $repo->reapprovisionnement(),
+                'day1' => $date1,
+                'day2' => $date2,
+            ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+    
+    #[Route("/Mouvement_stock_pdf/{date1}/{date2}", name :"mouvement_stock_pdf", methods : ["GET"]) ]
+    public function mouvement_pdf(ProduitRepository $repo, $date1, $date2, GotenbergPdfInterface $gotenberg): Response
+    {
+        if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
+           
+        return $gotenberg
+        ->html()
+        ->content('stock/mouvementpdf.html.twig', [
+                'produits' => $repo->reapprovisionnement(),
+                'day1' => $date1,
+                'day2' => $date2,
+            ])
+        ->fileName('mouvement.pdf')
+        ->generate()
+        ->stream();
+           
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    
+
   
 
 
@@ -1103,6 +1218,8 @@ class StockController extends AbstractController
             return $response;
         }
     }
+    
+
 
     #[Route("/print/{id}", name :"produit_show_print", methods : ["GET"]) ]
     public function produitprint(Produit $produit, StockRepository $repository): Response

@@ -1,0 +1,206 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ "Commande"|trans }} - GNT Pharma {% endblock %}
+{% block stock %}active{% endblock %}
+{% block etat_stock %}active{% endblock %}
+
+{% block body %}
+<div class="container mt-4 fond-7">
+    <h3 class="mt-4 fw-bold">
+        <i class="fa fa-shopping-cart me-2"></i>
+        {{ "Etat stock produits"|trans }}
+    </h3>
+     <h5 class="text-success fw-bold mb-3">
+                    <i class="fa fa-exchange"></i>
+                    {{ 'Mouvement de stock du '|trans }} {{ day1|date('d/m/Y') }}
+                    {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
+                </h5>
+    <ul class="nav nav-tabs mb-4">
+        {# {% if is_granted('ROLE_STOCK') %} #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('stock_index') }}">
+                {{ 'Disponible'|trans }}
+            </a>
+        </li>
+        {# {% endif %} #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('stock_surveiller') }}">
+                {{'à surveiller'|trans}}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('stock_rupture') }}">
+                {{ 'En rupture'|trans }}
+            </a>
+        </li>
+        {# {% if is_granted('ROLE_STOCK') %} #}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('stock_peremption') }}">
+                    {{ 'Péremption Imminente'|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('stock_sortie_produit') }}">
+                    {{ 'Historique de sortie Produit'|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="">
+                    {{ 'Mouvement de Stock'|trans }}
+                </a>
+            </li>
+        {# {% endif %} #}
+    </ul>
+            <div class="centrer gap-3  m-4 fond-7">
+                {# <a href="{{ path('fournisseur_analyse_print', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-success-light">
+                    <i class="fa fa-print"></i>
+                    {{ 'imprimer'|trans }}
+                </a> #}
+                 <a target="_blank" href="{{ path('stock_mouvement_stock_pdf', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-danger ms-3">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ 'vers Pdf'|trans }}
+                </a>
+            </div>
+    <table class="table table-success-light table-bordered table-hover table-striped my-3">
+        <tr>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Type</th>
+            <th rowspan="2">Piece</th>
+            <th rowspan="2">Tiers</th>
+            <th colspan="2">Quantités en stock</th>
+            <th rowspan="2">C.M.U.P. unitaire</th>
+            <th rowspan="2">Stock permanent</th>
+        </tr>
+        <tr>
+            <th>+/-</th>
+            <th>Solde</th>
+        </tr>
+        
+        {% set total = 0 %}
+        {% for produit in produits %}
+            <tr>
+                <th>{{ produit.reference }}</th>
+                <td></td>
+                <td></td>
+                <th>{{ produit.desigantion}}</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% set stocks = mouvement(produit, day1, day2) %}
+            {% set solde = 0%}
+        {% set entree = 0%}
+        {% set commande = 0%}
+        {% set livre = 0%}
+        {% set tableau = [] %}
+        {% set totalprod = 0 %}
+        {% for stock in stocks %}
+            <tr>
+                <td>{{ stock.date|date("d/m/Y") }}</td>
+                <td>
+                     {% if  stock.fournisseur is defined %}
+                        appro.
+                    {% else %}
+                       liv.
+                    {% endif %}
+                </td>
+                <td>
+                     {% if  stock.fournisseur is defined %}
+                        {{ stock.approvisionner.id }}
+                    {% else %}
+                        {{ stock.livrer.id }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if  stock.fournisseur is defined %}
+                        {{ stock.fournisseur ? stock.fournisseur.designation : stock.approvisionner.retour.commande.user.nom }}
+                    {% else %}
+                        {{ stock.commande.user.nom }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if  stock.fournisseur is defined %}
+                        {{ stock.quantite|number_format(0,',' , ' ') }}
+                        {% set quantite = stock.quantite %}
+                        {% set entree = entree + stock.quantite %}
+                        {% set solde = solde + stock.quantite %}
+                    
+                    {% else %}
+                     -   {{ stock.quantitelivrer|number_format(0,',' , ' ') }}
+                      {% set quantite = stock.quantitelivrer %}
+                       
+                        {% set livre = livre + stock.quantitelivrer %}
+                        {% set solde = solde - stock.quantitelivrer %}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ solde|number_format(0,',' , ' ') }} 
+                </td>
+                <td>
+                    {% if  stock.fournisseur is defined %}
+                        
+                     {{ stock.pght|number_format(2,',' , ' ')}} 
+                    {% else %}
+                     {{ stock.produit.prix|number_format(2,',' , ' ')}} 
+                    {% endif %}
+                  
+                </td>
+                <td>
+                {% if  stock.fournisseur is defined %}
+                        
+                     {{ (stock.pght * quantite)|number_format(2,',' , ' ') }}
+                    {% else %}
+                        {{ (stock.produit.prix * quantite)|number_format(2,',' , ' ') }}
+                    {% endif %}
+                    
+                </td>
+
+            </tr>
+        {% endfor %}
+         <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <th>Total {{ produit.reference}}</th>
+                <th></th>
+                <th>{{ solde|number_format(0,',' , ' ') }} </th>
+                <th> </th>
+                <th>
+                {% set totalprod = solde * produit.prix %}
+                 {% set total = total + totalprod %}
+                 {{ totalprod|number_format(2,',' , ' ') }}
+                 </th>
+            </tr>
+            
+        {% endfor %}
+         <tr>
+               
+                <th colspan="4" class="text-end">Total General</th>
+                <th colspan="2"></th>
+                <th> </th>
+                <th>
+                 {{ total|number_format(2,',' , ' ') }}
+                 </th>
+            </tr>
+    </table>
+
+    <div class="centrer gap-3  m-4 fond-7">
+             
+      <a target="_blank" href="{{ path('stock_mouvement_stock_pdf', {'date1': day1|date('Y-m-d'),'date2': day2|date('Y-m-d')}) }}" class="btn btn-danger ms-3">
+                    <i class="fa fa-file-pdf"></i>
+                    {{ 'vers Pdf'|trans }}
+                </a>
+    </div>
+</div>
+{% endblock %}

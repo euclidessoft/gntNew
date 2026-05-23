@@ -72,6 +72,25 @@ class ApprovisionnementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    
+      public function mouvement($produit, $date1, $date2): array
+    {
+        $debut = new \Datetime($date1);
+        // $debut = (clone $date)->setTime(0, 0, 0);
+
+        $fin = new \Datetime($date2);
+        // $fin = (clone $date)->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.produit = :produit')
+            ->setParameter('produit', $produit)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Approvisionnement[] Returns an array of Approvisionnement objects
     //  */
