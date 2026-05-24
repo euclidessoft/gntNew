@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Laboratoire;
 use App\Entity\Produit;
 use App\Entity\Commande;
+use App\Entity\CommandeProduit;
 use App\Repository\LivrerProduitRepository;
+use App\Repository\ApprovisionnementRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\CommandeRepository;
 use App\Form\LaboratoireForm;
@@ -18,6 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 
 #[Route('/{_locale}/Laboratoire')]
 final class LaboratoireController extends AbstractController
@@ -71,7 +74,7 @@ final class LaboratoireController extends AbstractController
     public function produit(laboratoire $laboratoire, ProduitRepository $repository): Response
     {/*  selection produits a affecter a un laboratoire*/
         if ($this->security->isGranted('ROLE_FINANCE')) {
-         
+           
             $response = $this->render('laboratoire/admin/produits.html.twig', [
                 'laboratoire' => $laboratoire,
                 'produits' => $repository->laboratoirenonAssocier($laboratoire),
@@ -138,6 +141,31 @@ final class LaboratoireController extends AbstractController
                 return $response;
             }
 	}
+    
+    #[Route('/StatMensuel', name: 'laboratoire_mensuel', methods: ['GET'])]
+    public function laboshow(LivrerProduitRepository $repository): Response
+    {
+        $produits = [];
+        $laboprod = $this->getUser()->getProduits();
+        foreach($laboprod as $prod){
+            $produits[] = $prod->getId();
+        }
+        // dd($produit);
+         $commandes = $repository->labo($produits);
+        //  $depart = $commandes[0]->getArchive();
+            $tableauClasse = [];
+        foreach ($commandes as $commande) {
+
+            $mois = date('Y-m', strtotime($commande->getDate()->format("Y-m-d")));
+
+            $tableauClasse[$mois][] = $commande;
+        }
+        //  dd($tableauClasse);
+       
+        return $this->render('laboratoire/labomensuel.html.twig', [
+            'livrerproduits' => $tableauClasse,
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_laboratoire_show', methods: ['GET'])]
     public function show(Laboratoire $laboratoire): Response
@@ -150,16 +178,92 @@ final class LaboratoireController extends AbstractController
     #[Route('/laboratoireProduit/{id}', name: 'laboratoire_produit_show', methods: ['GET'])]
     public function produitshow(Produit $produit, livrerProduitRepository $repository): Response
     {
+         $commandes = $repository->findBy(['produit' => $produit], ['id' => "ASC"]);
+        //  $depart = $commandes[0]->getArchive();
+            $tableauClasse = [];
+        foreach ($commandes as $commande) {
+
+            $mois = date('Y-m', strtotime($commande->getDate()->format("Y-m-d")));
+
+            $tableauClasse[$mois][] = $commande;
+        }
+        //  dd($tableauClasse);
         $vendu =0;
         $ventes = $repository->findBy(['produit' => $produit]);
         foreach($ventes as $vente){
             $vendu += $vente->getQuantitelivrer();
         }
         return $this->render('laboratoire/produit_show.html.twig', [
+            'livrerproduits' => $tableauClasse,
             'produit' => $produit,
-            'vendu' => $vendu,
         ]);
     }
+
+
+    
+    #[Route('/laboratoireProduit_pdf/{id}', name: 'laboratoire_produit_show_pdf', methods: ['GET'])]
+    public function produitshowpdf(Produit $produit, livrerProduitRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    {
+         $commandes = $repository->findBy(['produit' => $produit], ['id' => "ASC"]);
+        //  $depart = $commandes[0]->getArchive();
+            $tableauClasse = [];
+        foreach ($commandes as $commande) {
+
+            $mois = date('Y-m', strtotime($commande->getDate()->format("Y-m-d")));
+
+            $tableauClasse[$mois][] = $commande;
+        }
+        //  dd($tableauClasse);
+        $vendu =0;
+        $ventes = $repository->findBy(['produit' => $produit]);
+        foreach($ventes as $vente){
+            $vendu += $vente->getQuantitelivrer();
+        }
+        
+         return $gotenberg
+                ->html()
+                ->content('laboratoire/produit_showpdf.html.twig', [
+            'livrerproduits' => $tableauClasse,
+            'produit' => $produit,
+        ])
+                ->fileName('laboproduit.pdf')
+                ->generate()
+                ->stream();
+    }
+
+    
+    #[Route('/LaboStatMensuel/{mois}', name: 'laboratoire_mois', methods: ['GET'])]
+    public function laboshowmensuel(LivrerProduitRepository $repository, $mois): Response
+    {
+       
+        $laboprod = $this->getUser()->getProduits();
+       
+       
+        return $this->render('laboratoire/labo_show.html.twig', [
+            'produits' => $laboprod,
+            'mois' => $mois,
+        ]);
+    }
+
+    
+    #[Route('/LaboStatMensuel_pdf/{mois}', name: 'laboratoire_mois_pdf', methods: ['GET'])]
+    public function laboshowmensuelpdf(LivrerProduitRepository $repository, $mois, GotenbergPdfInterface $gotenberg): Response
+    {
+       
+        $laboprod = $this->getUser()->getProduits();
+       
+      
+         return $gotenberg
+                ->html()
+                ->content('laboratoire/labo_showpdf.html.twig', [
+                    'produits' => $laboprod,
+                    'mois' => $mois,
+                ])
+                ->fileName('laboproduit.pdf')
+                ->generate()
+                ->stream();
+    }
+
 
     #[Route('/{id}/edit', name: 'app_laboratoire_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Laboratoire $laboratoire, EntityManagerInterface $entityManager): Response

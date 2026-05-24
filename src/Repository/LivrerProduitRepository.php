@@ -45,6 +45,53 @@ class LivrerProduitRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    
+      public function mois($produit, $mois): array
+    {
+        $debut = new \Datetime($mois."-01");
+        // $debut = (clone $date)->setTime(0, 0, 0);
+
+        $fin = date('Y-m-t', strtotime($debut->format("Y-m-d")));
+        // $fin = (clone $date)->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->andWhere('c.produit = :produit')
+            ->setParameter('produit', $produit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    
+      public function departmois($produit, $mois): array
+    {
+        $debut = new \Datetime($mois."-01");
+        // $debut = (clone $date)->setTime(0, 0, 0);
+
+        // $fin = date('Y-m-t', strtotime($debut->format("Y-m-d")));
+        // $fin = (clone $date)->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date < :debut')
+            ->setParameter('debut', $debut)
+            ->andWhere('c.produit = :produit')
+            ->setParameter('produit', $produit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    
+    
+	public function labo( array $pel)
+	{	
+		$query = $this->createQueryBuilder('a');
+			$query->where($query->expr()->in('a.produit', $pel))
+            ->orderBy('a.id' , "DESC");
+		return $query->getQuery()->execute();
+	}
+
     // /**
     //  * @return LivrerProduit[] Returns an array of LivrerProduit objects
     //  */

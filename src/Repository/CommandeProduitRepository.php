@@ -175,6 +175,15 @@ class CommandeProduitRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    
+    
+	public function labo( array $pel)
+	{	
+		$query = $this->createQueryBuilder('a');
+			$query->where($query->expr()->in('a.produit', $pel));
+		return $query->getQuery()->execute();
+	}
+
 
     // /**
     //  * @return CommandeProduit[] Returns an array of CommandeProduit objects

@@ -125,6 +125,7 @@ class Commande
         $this->livrer = false;
         $this->Numerofacture = false;
         $this->retour = false;
+        $this->setEcheance($this->date);
         
     }
 
@@ -439,7 +440,7 @@ class Commande
     public function setTraitement(?\DateTime $traitement): static
     {
         $this->traitement = $traitement;
-        $this->setEcheance($traitement);
+        $this->getEcheance() == null ? $this->setEcheance($this->getDate()) : null;
 
         return $this;
     }

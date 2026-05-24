@@ -16,10 +16,25 @@
 
 {% block body %}
 <div class="container-fluid mt-4 mb-5 p-3 fond-7">
-    <h3 class="mt-4 mb-5 fw-bold">
-        <i class="fa-brands fa-product-hunt me-2"></i>
-        {{ "Liste des Produits"|trans }}
+   
+       <h3 class="mt-4 mb-5 fw-bold">
+        <i class="fa-solid fa-flask-vial me-2"></i>
+        {{ "Statistique Laboratoire"|trans }}
     </h3>
+    <ul class="nav nav-tabs mb-4">
+  
+        <li class="nav-item">
+            <a class="nav-link active" href="">
+                {{ 'Produits'|trans }}
+            </a>
+        </li>
+      
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('laboratoire_mensuel') }}">
+                {{'Mensuel'|trans}}
+            </a>
+        </li>
+    </ul>
     {% for message in app.flashes('notice') %}
     <div role="alert" class="alert alert-success alert-dismissible fade show radius-10 shadow-black">
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

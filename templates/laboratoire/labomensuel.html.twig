@@ -1,0 +1,54 @@
+{% extends
+    is_granted('ROLE_ADMIN') ? 'admin.html.twig' :
+    is_granted('ROLE_SUPERVISEUR') ? 'admin.html.twig' :
+    is_granted('ROLE_RH') ? 'rh.html.twig' :
+    is_granted('ROLE_FINANCE') ? 'finance.html.twig' :
+    is_granted('ROLE_CAISSIER') ? 'caisse.html.twig' :
+    is_granted('ROLE_STOCK') ? 'stock.html.twig' :
+    is_granted('ROLE_LIVREUR') ? 'livreur.html.twig' :
+    is_granted('ROLE_EMPLOYER') ? 'employe.html.twig' :
+    is_granted('ROLE_LABORATOIRE') ? 'laboratoire.html.twig' :
+    'layout.html.twig'
+%}
+{% block title %} {{ 'statistique produit: '|trans }}  - GNT Pharma {% endblock %}
+{% block laboratoire %}active{% endblock %}
+{% block body %}
+<div class="col-8 offset-2 mt-4 fond-7">
+     <h3 class="mt-4 mb-5 fw-bold">
+        <i class="fa-solid fa-flask-vial me-2"></i>
+        {{ "Statistique Laboratoire"|trans }}
+    </h3>
+    <ul class="nav nav-tabs mb-4">
+         <li class="nav-item">
+            <a class="nav-link" href="{{ path('commande_index')}}">
+            {{ 'Produits'|trans }}
+            </a>
+        </li>
+      
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                {{'Mois'|trans}}
+            </a>
+        </li>
+    </ul>
+               <table class="table table-success-light table-bordered table-hover table-striped mt-3 text-center">
+       <thead>
+            <tr>
+                <th colspan="7">STATISTIQUE DE VENTE MENSUEL</th>
+            </tr>
+            <tr>
+                <th>{{"mois"|trans}}</th>
+                <th></th>
+            </tr>
+       </thead>
+        <tbody>
+        {% for mois, livrerproduit in livrerproduits %}
+            <tr>
+                <td>{{ mois|date("m/Y") }}</td>
+                <td><a href="{{ path('laboratoire_mois', {'mois' : mois})}}" class="btn btn-success"><i class="fa fa-eye"></i></a></td>
+            </tr>
+        {% endfor %}
+       </tbody> 
+       </table> 
+</div>
+{% endblock %}

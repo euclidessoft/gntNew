@@ -91,6 +91,14 @@ class ApprovisionnementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    
+	public function labo( array $pel)
+	{	
+		$query = $this->createQueryBuilder('a');
+			$query->where($query->expr()->in('a.produit', $pel));
+		return $query->getQuery()->execute();
+	}
+
     // /**
     //  * @return Approvisionnement[] Returns an array of Approvisionnement objects
     //  */
