@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
+use App\Service\PdfService;
 
 #[Route("/{_locale}/livraison", name :"livraison_") ]
 class LivrerController extends AbstractController
@@ -617,7 +617,7 @@ class LivrerController extends AbstractController
     
 
     #[Route("/Historique_pdf/{id}", name :"historique_show_pdf", methods : ["GET"]) ]
-    public function history_showpdf(Commande $commande, LivrerRepository $livrerRepository, LivrerProduitRepository $livrerProduitRepository, ProduitRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    public function history_showpdf(Commande $commande, LivrerRepository $livrerRepository, LivrerProduitRepository $livrerProduitRepository, ProduitRepository $repository,  PdfService $pdfService): Response
     {// traitement livraison
 
         if ($this->security->isGranted('ROLE_STOCK') || $this->security->isGranted('ROLE_FINANCE')) {
@@ -625,16 +625,15 @@ class LivrerController extends AbstractController
             if ($commande->getLivraison()) {
 
                 $livrer = $livrerRepository->findBy(['commande' => $commande]);
-                 return $gotenberg
-                ->html()
-                ->content('livrer/historyshowpdf.html.twig', [
+               
+                 return $pdfService->streamPdf(
+            'livrer/historyshowpdf.html.twig', [
 //                'commandes' => $commandeproduits,
                     'commandereference' => $commande,
                     'livrer' => $livrer,
-                ])
-                ->fileName('livraison.pdf')
-                ->generate()
-                ->stream();
+                ],
+            sprintf('livraison-%s.pdf', 1)
+        );
 
 
             }
@@ -669,16 +668,16 @@ class LivrerController extends AbstractController
                 }
              }
                 $livrer = $livrerRepository->findBy(['commande' => $commande]);
-                return $gotenberg
-                ->html()
-                ->content('livrer/historyshowpdf.html.twig', [
+               
+
+                 return $pdfService->streamPdf(
+           'livrer/historyshowpdf.html.twig', [
 //                'commandes' => $commandeproduits,
                     'commandereference' => $commande,
                     'livrer' => $livrer,
-                ])
-                ->fileName('livraison.pdf')
-                ->generate()
-                ->stream();
+                ],
+            sprintf('livraison-%s.pdf', 1)
+        );
 
             }
         } else {

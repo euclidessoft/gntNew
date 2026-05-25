@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
-use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
+use App\Service\PdfService;
 
 #[Route("/{_locale}/Avoir") ]
 class AvoirController extends AbstractController
@@ -598,7 +598,7 @@ class AvoirController extends AbstractController
 
     
     #[Route("Pdf/{id}", name :"avoir_show_pdf", methods : ["GET"]) ]
-    public function showpdf(Avoir $avoir, ReclamationProduitRepository $reclamationRepository, RetourProduitRepository $retourRepository, GotenbergPdfInterface $gotenberg): Response
+    public function showpdf(Avoir $avoir, ReclamationProduitRepository $reclamationRepository, RetourProduitRepository $retourRepository, PdfService $pdfService): Response
     {
         if($avoir->getReclamation() !== null){
             $commandeproduits = $reclamationRepository->findBy(['reclamation' => $avoir->getReclamation()->getId()]);
@@ -606,30 +606,27 @@ class AvoirController extends AbstractController
              $commandeproduits = $retourRepository->findBy(['retour' => $avoir->getretour()->getId()]);
         }
         if ($this->security->isGranted('ROLE_FINANCE')) {
-           
-        return $gotenberg
-        ->html()
-        ->content('avoir/admin/showpdf.html.twig', [
+      
+        return $pdfService->streamPdf(
+            'avoir/admin/showpdf.html.twig', [
                 'avoir' => $avoir,
                 'commandeproduits' => $commandeproduits,
                 // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir])
-            ])
-        ->fileName('avoir.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('avoir-%s.pdf',$avoir->getId())
+        );
            
         } elseif ($this->security->isGranted('ROLE_CLIENT')) {
-          return $gotenberg
-        ->html()  
-        ->content('avoir/showpdf.html.twig', [
+        
+         return $pdfService->streamPdf(
+           'avoir/showpdf.html.twig', [
                 'avoir' => $avoir,
                 'commandeproduits' => $commandeproduits,
                 // 'details' => $avoirResteRepository->findBy(['avoir' => $avoir]),
             
-                ])
-        ->fileName('avoir.pdf')
-        ->generate()
-        ->stream();
+                ],
+            sprintf('avoir-%s.pdf',$avoir->getId())
+        );
             
         } else {
             $response = $this->redirectToRoute('security_logout');

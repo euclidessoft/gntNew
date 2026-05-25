@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
+use App\Service\PdfService;
 
 #[Route("{_locale}/fournisseur") ]
 class FournisseurController extends AbstractController
@@ -235,21 +235,19 @@ class FournisseurController extends AbstractController
     
     
      #[Route("/fournisseur_analyse_pdf/{date1}/{date2}", name :"fournisseur_analyse_pdf") ]
-    public function analysepdf(Request $request, $date1, $date2, FournisseurRepository $repo, GotenbergPdfInterface $gotenberg)
+    public function analysepdf(Request $request, $date1, $date2, FournisseurRepository $repo, PdfService $pdfService)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
            
 
-             return $gotenberg
-        ->html()
-        ->content('fournisseur/analysepdf.html.twig', [
+        return $pdfService->streamPdf(
+           'fournisseur/analysepdf.html.twig', [
                 'fournisseurs' => $repo->findAll(),
                 'day1' => $date1,
                 'day2' => $date2,
-            ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('balance-%s.pdf',1)
+        );
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);

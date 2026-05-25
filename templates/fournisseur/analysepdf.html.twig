@@ -1,17 +1,146 @@
-{% extends
-    'pdf.html.twig'
-%}
-{% block contenu %}
- 
-        
-        
-                <h5 class="text-success fw-bold my-4 text-center">
-                    <i class="fa-solid fa-chart-simple"></i>
-                    {{ 'Analyse Founisseur du '|trans }} {{ day1|date('d/m/Y') }}
-                    {{ 'au '|trans }} {{ day2|date('d/m/Y') }}
-                </h5>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+        }
+
+        /* ── En-tête ── */
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #039c4f;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .header-table td { vertical-align: middle; border: none !important; }
+        .logo { width: 80px; }
+        .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #039c4f;
+            text-align: center;
+        }
+        .company-info {
+            font-size: 10px;
+            text-align: center;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* ── Titre facture ── */
+        .titre-facture {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 16px 0 4px;
+        }
+        .sous-titre {
+            text-align: center;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* ── Tableaux ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+        th, td {
+            border: none;
+            padding: 5px 6px;
+            vertical-align: middle;
+        }
+        thead th {
+            background-color: #c5fbae;
+            color: #000;
+            text-align: center;
+            font-size: 10px;
+        }
+        tbody tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+        td { font-size: 10px; }
+
+        /* ── Tableau récap commande ── */
+        .recap-wrapper {
+            width: 75%;
+            margin: 0 0 20px auto;
+        }
+        .recap-wrapper td { text-align: center; border: none; }
+
+        /* ── Badge UG ── */
+        .badge {
+            background-color: #cc0000;
+            color: #fff;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        /* ── Totaux ── */
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .text-nowrap { white-space: nowrap; }
+
+        /* ── Montant en lettres ── */
+        .montant-lettres {
+            margin: 20px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* ── Pied de page ── */
+        .footer {
+            margin-top: 30px;
+            font-size: 9px;
+            color: #888;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+{# ── En-tête société ── #}
+<table class="header-table">
+    <tr>
+        <td style="width:90px;">
+              {% if logoBase64 %}
+    <img src="{{ logoBase64 }}" alt="Logo" style="width:80px;">
+{% endif %}
+        </td>
+        <td style="text-align:center;vertical-align:middle;">
+            <div class="company-name">GNT PHARMA</div>
+            <div class="company-info">
+                BP : 3582 Yaoundé – Cameroun, NGOUSSO<br>
+                Montée Éleveur Immeuble Sainte Marie<br>
+                +237 69 71 49 412 &nbsp;-&nbsp; +237 67 52 47 865<br>
+                info@gnt-pharma.com &nbsp;-&nbsp; www.gnt-pharma.com<br>
+                RCCM N° : RC/YAE/2023/M/105 &nbsp;-&nbsp; NIU : M122217881373Q
+            </div>
+        </td>
+    </tr>
+</table>
+
+{# ── Titre ── #}
+<div class="titre-facture">{{ 'Analyse Founisseur '|trans }}</div>
+<div class="sous-titre">{{ day1|date('d/m/Y') }}
+                    {{ 'au '|trans }} {{ day2|date('d/m/Y') }}</div>
+
            
-               <table class="table table-success-light table-bordered table-hover table-striped mt-3">
+               <table>
        
         <tbody>
             <tr>
@@ -76,4 +205,6 @@
         </tfooter>
 
        </table> 
-{% endblock %}
+</body>
+</html>
+

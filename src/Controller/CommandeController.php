@@ -34,7 +34,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
 use App\Service\PdfService;
 
 
@@ -2521,7 +2520,7 @@ class CommandeController extends AbstractController
     
 
      #[Route("/Bon_commande_pdf/{commande}", name :"bon_pdf") ]
-    public function bonpdf(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository,GotenbergPdfInterface $gotenberg)
+    public function bonpdf(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, PdfService $pdfService)
     {
         if ($this->security->isGranted('ROLE_CLIENT')) {
              if($this->getUser()->getTuteur() === null){
@@ -2551,29 +2550,27 @@ class CommandeController extends AbstractController
                     return $response;
                 }
              }
-            return $gotenberg
-        ->html()
-        ->content('commande/bonpdf.html.twig', [
+            
+          return $pdfService->streamPdf(
+           'commande/bonpdf.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
-            ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('bon-%s.pdf',$commande->getId()."-".$commande->getNumerofacture())
+        );
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
 
           
-             return $gotenberg
-        ->html()
-        ->content('commande/admin/bonpdf.html.twig', [
+        
+         return $pdfService->streamPdf(
+          'commande/admin/bonpdf.html.twig', [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
-            ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('bon-%s.pdf',$commande->getId()."-".$commande->getNumerofacture())
+        );
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
@@ -2589,7 +2586,7 @@ class CommandeController extends AbstractController
     }
 
     #[Route("/Pint_Details_commande/{commande}", name :"print_Detail") ]
-    public function printdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, GotenbergPdfInterface $gotenberg)
+    public function printdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
             $this->getUser()->getTuteur() === null ?
@@ -3173,7 +3170,7 @@ class CommandeController extends AbstractController
     
     
      #[Route("/Releve_Quinzaine_pdf/{releve}", name :"releve_quinzaine_pdf") ]
-    public function relevequinzainepdf(Releve $releve, GotenbergPdfInterface $gotenberg)    {
+    public function relevequinzainepdf(Releve $releve, PdfService $pdfService)    {
         if ($this->security->isGranted('ROLE_CAISSIER')) {
 
          if($releve != null){
@@ -3184,17 +3181,15 @@ class CommandeController extends AbstractController
             $commandes = [];
             $avantage = [];
          }                      
-        return $gotenberg
-        ->html()
-        ->content('commande/admin/quinzepdf.html.twig', [
+          return $pdfService->streamPdf(
+            'commande/admin/quinzepdf.html.twig', [
                 'releve' => $releve,
                 'user' => $releve->getClient(),
                 'commandes' => $commandes,
                 'avantage' => $avantage,
-            ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('releve-%s.pdf',$releve->getId())
+        );
              
             // $response = $this->render('commande/admin/quinze.html.twig', [
             //     'releve' => $releve,
@@ -3349,7 +3344,7 @@ class CommandeController extends AbstractController
 
     
     #[Route("/Officine_Quinzaine_pdf/{releve}", name :"officine_quinzaine_pdf") ]
-    public function officinequinzainepdf(Releve $releve, GotenbergPdfInterface $gotenberg)
+    public function officinequinzainepdf(Releve $releve, PdfService $pdfService)
     {
         if ($this->security->isGranted('ROLE_CLIENT_ADMIN')){
                                
@@ -3368,18 +3363,16 @@ class CommandeController extends AbstractController
             $avantage = [];
          }            
          
-         return $gotenberg
-        ->html()
-        ->content('officine/quinzepdf.html.twig', [
+        return $pdfService->streamPdf(
+           'officine/quinzepdf.html.twig', [
                 // 'commandes' => $commandes,
                 'releve' => $releve,
                 'panier' => $panier,
                 'commandes' => $commandes,
                 'avantage' => $avantage,
-            ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('releve-%s.pdf',$releve->getId())
+        );
              
              
         } else {

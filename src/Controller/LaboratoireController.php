@@ -20,7 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
+use App\Service\PdfService;
 
 #[Route('/{_locale}/Laboratoire')]
 final class LaboratoireController extends AbstractController
@@ -237,7 +237,7 @@ final class LaboratoireController extends AbstractController
 
     
     #[Route('/laboratoireProduit_pdf/{id}/{laboratoire}', name: 'laboratoire_produit_show_pdf', methods: ['GET'])]
-    public function produitshowpdf(Produit $produit, Laboratoire $laboratoire, livrerProduitRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    public function produitshowpdf(Produit $produit, Laboratoire $laboratoire, livrerProduitRepository $repository,  PdfService $pdfService): Response
     {
          $commandes = $repository->findBy(['produit' => $produit], ['id' => "ASC"]);
         //  $depart = $commandes[0]->getArchive();
@@ -254,16 +254,14 @@ final class LaboratoireController extends AbstractController
         foreach($ventes as $vente){
             $vendu += $vente->getQuantitelivrer();
         }
-        
-         return $gotenberg
-                ->html()
-                ->content('laboratoire/produit_showpdf.html.twig', [
+       
+                 return $pdfService->streamPdf(
+            'laboratoire/produit_showpdf.html.twig', [
             'livrerproduits' => $tableauClasse,
             'produit' => $produit,
-        ])
-                ->fileName('laboproduit.pdf')
-                ->generate()
-                ->stream();
+        ],
+            sprintf('laboproduit-%s.pdf',1)
+                 );
     }
 
     
@@ -283,21 +281,20 @@ final class LaboratoireController extends AbstractController
 
     
     #[Route('/LaboStatMensuel_pdf/{laboratoire}/{mois}', name: 'laboratoire_mois_pdf', methods: ['GET'])]
-    public function laboshowmensuelpdf(LivrerProduitRepository $repository,Laboratoire $laboratoire, $mois, GotenbergPdfInterface $gotenberg): Response
+    public function laboshowmensuelpdf(LivrerProduitRepository $repository,Laboratoire $laboratoire, $mois,  PdfService $pdfService): Response
     {
        
         $laboprod = $laboratoire->getProduits();
        
       
-         return $gotenberg
-                ->html()
-                ->content('laboratoire/labo_showpdf.html.twig', [
+        
+                return $pdfService->streamPdf(
+            'laboratoire/labo_showpdf.html.twig', [
                     'produits' => $laboprod,
                     'mois' => $mois,
-                ])
-                ->fileName('laboproduit.pdf')
-                ->generate()
-                ->stream();
+                ],
+            sprintf('laboproduit-%s.pdf',1)
+        );
     }
 
 

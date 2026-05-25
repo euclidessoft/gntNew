@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
-use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
+use App\Service\PdfService;
 
 #[Route("/{_locale}/Stock/Approvisionnement" , name :"stock_") ]
 class ApprovisionnementController extends AbstractController
@@ -382,19 +382,17 @@ class ApprovisionnementController extends AbstractController
     
 
     #[Route("/Details_pdf/{id}", name :"show_pdf", methods : ["GET"]) ]
-    public function detailspdf(Approvisionner $approvisionner, ApprovisionnementRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    public function detailspdf(Approvisionner $approvisionner, ApprovisionnementRepository $repository, PdfService $pdfService): Response
     {
         if ($this->security->isGranted('ROLE_STOCK')) {
-            
-         return $gotenberg
-        ->html()
-        ->content('approvisionnement/showpdf.html.twig', [
+       
+        return $pdfService->streamPdf(
+            'approvisionnement/showpdf.html.twig', [
                 'approvisionner' => $approvisionner,
                 'approvisionnements' => $repository->findBy(['approvisionner' => $approvisionner]),
-            ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('facture-%s.pdf',$approvisionner->getCommande()->getId())
+        );
            
         } else {
             $response = $this->redirectToRoute('security_login');

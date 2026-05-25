@@ -1,48 +1,183 @@
-{% extends 'pdf.html.twig' %}
-{% block title %} {{ "Bon de commande"|trans }} BC{{ commande.id }}{{ commande.numerofacture }} {% endblock %}
-{% block contenu %}
-    <h4 class="text-center fw-bold text-uppercase mt-4">
-        {{ ' Bon de commande'|trans }}
-    </h4>
-    <h6 class="text-center text-uppercase mb-3">
-        {{ 'Numero'|trans }} : BC{{ commande.id }}{{ commande.numerofacture }}
-    </h6>
-    <div class="contenu">
-        <div class="row my-5">
-            <div class="col-5"></div>
-            <div class="col-7">
-                <table class="text-center w-100">
-                    <thead>
-                    <tr>
-                        <th>{{ 'Date'|trans }}</th>
-                        <th>{{ 'N° Commande'|trans }}</th>
-                        <th>{{ 'NIU'|trans }}</th>
-                        <th>{{ 'RCCM'|trans }}</th>
-                        {% if commande.credit == 1 and commande.payer == 0 %}
-                            <th>{{ 'Echeance paiement'|trans }}</th>
-                        {% endif %}
-                        <th>{{ 'Passé par'|trans }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>{{ commande.date|date('d/m/Y H:m:s') }}</td>
-                        <td>{{ commande.id }}</td>
-                        <td>{{ commande.user.niu }}</td>
-                        <td>{{ commande.user.rccm }}</td>
-                        {% if commande.credit == 1 and commande.payer == 0 %}
-                            <td>  {{ commande.echeance ? commande.echeance|date('d/m/Y'): '' }}</td>
-                        {% endif %}
-                        <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : commande.user.nom ~" "~ commande.user.prenom }}</td>
-                    </tr>
-                    </tbody>
-                </table>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+        }
+
+        /* ── En-tête ── */
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #039c4f;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .header-table td { vertical-align: middle; border: none !important; }
+        .logo { width: 80px; }
+        .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #039c4f;
+            text-align: center;
+        }
+        .company-info {
+            font-size: 10px;
+            text-align: center;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* ── Titre facture ── */
+        .titre-facture {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 16px 0 4px;
+        }
+        .sous-titre {
+            text-align: center;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* ── Tableaux ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+        th, td {
+            border: none;
+            padding: 5px 6px;
+            vertical-align: middle;
+        }
+        thead th {
+            background-color: #c5fbae;
+            color: #000;
+            text-align: center;
+            font-size: 10px;
+        }
+        tbody tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+        td { font-size: 10px; }
+
+        /* ── Tableau récap commande ── */
+        .recap-wrapper {
+            width: 75%;
+            margin: 0 0 20px auto;
+        }
+        .recap-wrapper td { text-align: center; border: none; }
+
+        /* ── Badge UG ── */
+        .badge {
+            background-color: #cc0000;
+            color: #fff;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        /* ── Totaux ── */
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .text-nowrap { white-space: nowrap; }
+
+        /* ── Montant en lettres ── */
+        .montant-lettres {
+            margin: 20px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* ── Pied de page ── */
+        .footer {
+            margin-top: 30px;
+            font-size: 9px;
+            color: #888;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+{# ── En-tête société ── #}
+<table class="header-table">
+    <tr>
+        <td style="width:90px;">
+              {% if logoBase64 %}
+    <img src="{{ logoBase64 }}" alt="Logo" style="width:80px;">
+{% endif %}
+        </td>
+        <td style="text-align:center;vertical-align:middle;">
+            <div class="company-name">GNT PHARMA</div>
+            <div class="company-info">
+                BP : 3582 Yaoundé – Cameroun, NGOUSSO<br>
+                Montée Éleveur Immeuble Sainte Marie<br>
+                +237 69 71 49 412 &nbsp;-&nbsp; +237 67 52 47 865<br>
+                info@gnt-pharma.com &nbsp;-&nbsp; www.gnt-pharma.com<br>
+                RCCM N° : RC/YAE/2023/M/105 &nbsp;-&nbsp; NIU : M122217881373Q
             </div>
-        </div>
-        {% set total=0 %}
+        </td>
+    </tr>
+</table>
+
+{# ── Titre ── #}
+<div class="titre-facture">{{ 'Bon de Commande'|trans }}</div>
+<div class="sous-titre">{{ 'Numero'|trans }} : BC{{ commande.id }}{{ commande.numerofacture }}</div>
+
+{# ── Récap commande ── #}
+<div class="recap-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'N° Commande'|trans }}</th>
+                <th>{{ 'Date commande'|trans }}</th>
+                <th>{{ 'Date Traitement'|trans }}</th>
+                <th>{{ 'Client'|trans }}</th>
+                <th>{{ 'NIU'|trans }}</th>
+               {% if commande.credit == 1 and commande.payer == 0 %}
+                                <th>{{ 'Echeance paiement'|trans }}</th>
+                            {% endif %}
+                            <th>{{ 'Passé par'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.date|date('d/m/Y H:i') }}</td>
+                <td>{{ commande.traitement|date('d/m/Y H:i') }}</td>
+                <td>{{ commande.user.nom }} {{ commande.user.prenom }}</td>
+                <td>{{ commande.user.niu }}</td>
+               {% if commande.credit == 1 and commande.payer == 0 %}
+                                <td>  {{ commande.echeance ? commande.echeance|date('d/m/Y'): '' }}</td>
+                            {% endif %}
+                            <td>{{ commande.pharmaemploye ? commande.pharmaemploye.nom ~" "~ commande.pharmaemploye.prenom : commande.user.nom ~" "~ commande.user.prenom }}</td>
+                            
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{# ── Lignes de commande ── #}
+
+
+ {% set total=0 %}
         {% set reduction=0 %}
         {% set tva=0 %}
-        <table class="text-center w-100">
+        <table>
             <thead>
             <tr>
                 <th>{{ 'CIP'|trans }}</th>
@@ -59,8 +194,9 @@
                     <td>
                         {{ commandeproduit.quantite }}
                         {% if commandeproduit.ug != 0 %}
-                            <span class="badge bg-danger">
-                                        + {{ commandeproduit.ug }} U.G
+                            <br>
+                            <span class="badge bg-danger mb-1">
+                                + {{ commandeproduit.ug }} U.G
                             </span>
                         {% endif %}
                     </td>
@@ -68,5 +204,10 @@
             {% endfor %}
             </tbody>
         </table>
-    </div>
-{% endblock %}
+
+
+
+{# Pas de JavaScript — mPDF ne l'exécute pas #}
+
+</body>
+</html>

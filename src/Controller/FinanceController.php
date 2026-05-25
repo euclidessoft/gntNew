@@ -48,7 +48,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\SecurityBundle\Security;
-use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
+use App\Service\PdfService;
 
 #[Route("/{_locale}/finance", name :"finance_") ]
 class FinanceController extends AbstractController
@@ -259,18 +259,17 @@ class FinanceController extends AbstractController
     
 
     #[Route("/AvantageClient_pdf", name :"avantage_client_pdf") ]
-    public function avantageclientpdf(Request $request, AvantageRepository $repo, GotenbergPdfInterface $gotenberg): Response
+    public function avantageclientpdf(Request $request, AvantageRepository $repo, PdfService $pdfService): Response
     {
         if ($this->security->isGranted('ROLE_CLIENT_ADMIN')) {
            
-             return $gotenberg
-        ->html()
-        ->content('officine/avantagepdf.html.twig', [
+         
+         return $pdfService->streamPdf(
+           'officine/avantagepdf.html.twig', [
                 "avantages" => $repo->findBy(['client' => $this->getUser()] ),
-            ])
-        ->fileName('avantage.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('avantage-%s.pdf', 1)
+        );
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
@@ -437,19 +436,17 @@ class FinanceController extends AbstractController
 
     
     #[Route("/PeriodeShow_pdf/{id}", name :"avantage_show_pdf") ]
-    public function avantageshowpdf(Request $request,AveCom $id, AvantageRepository $repo,GotenbergPdfInterface $gotenberg): Response
+    public function avantageshowpdf(Request $request,AveCom $id, AvantageRepository $repo, PdfService $pdfService): Response
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
-           
-        return $gotenberg
-        ->html()
-        ->content('finance/avantage_showpdf.html.twig', [
+        
+         return $pdfService->streamPdf(
+            'finance/avantage_showpdf.html.twig', [
                         'periodes' => $repo->findBy(['AveCom' => $id]),
                         'avecom' => $id,
-                       ])
-        ->fileName('avantage.pdf')
-        ->generate()
-        ->stream();
+                       ],
+            sprintf('avantage-%s.pdf', 1)
+        );
            
         } else {
             $response = $this->redirectToRoute('security_logout');
@@ -1923,7 +1920,7 @@ class FinanceController extends AbstractController
     }
     
     #[Route("/DaysBrouyardTiers_fournisseur_pdf/{date1}/{date2}", name :"days_tiers_fournisseur_pdf") ]
-    public function daystiersfournisseurpdf(Request $request, $date1, $date2, GotenbergPdfInterface $gotenberg)
+    public function daystiersfournisseurpdf(Request $request, $date1, $date2, PdfService $pdfService)
     {// fournisseur
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
@@ -1947,17 +1944,15 @@ class FinanceController extends AbstractController
                 $com['achat'] = $montant;
                 $comm[] = $com;
            }
-              
-            return $gotenberg
-        ->html()
-        ->content('finance/brouyard_tiers_fournisseurpdf.html.twig', [
+          
+        return $pdfService->streamPdf(
+            'finance/brouyard_tiers_fournisseurpdf.html.twig', [
                 'commandes' => $comm,
                 'day1' => $date1,
                 'day2' => $date2,
-            ])
-        ->fileName('balance.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('balance-%s.pdf', 1)
+        );
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
@@ -2126,7 +2121,7 @@ class FinanceController extends AbstractController
 
     
     #[Route("/DaysBrouyardTiers_pdf/{date1}/{date2}", name :"days_tiers_pdf") ]
-    public function daystierspdf(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo, AvoirRepository $avoirrepo, GotenbergPdfInterface $gotenberg)
+    public function daystierspdf(Request $request, $date1, $date2, PaiementRepository $paierepo, VersementRepository $versementrepo, AvoirRepository $avoirrepo, PdfService $pdfService)
     {
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
@@ -2158,17 +2153,17 @@ class FinanceController extends AbstractController
                 $comm[] = $com;
            }
                     
-           
-            return $gotenberg
-        ->html()
-        ->content('finance/brouyard_tierspdf.html.twig', [
+      
+        return $pdfService->streamPdf(
+           'finance/brouyard_tierspdf.html.twig', [
                 'commandes' => $comm,
                 'day1' => $date1,
                 'day2' => $date2,
-            ])
-        ->fileName('balance.pdf')
-        ->generate()
-        ->stream();
+            ],
+            sprintf('balance-%s.pdf', 1)
+        );
+
+    
         } else {
             $response = $this->redirectToRoute('security_logout');
             $response->setSharedMaxAge(0);
