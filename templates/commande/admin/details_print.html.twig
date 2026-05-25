@@ -37,7 +37,7 @@
                         <td data-label="Client">{{ commande.user.nom }} {{ commande.user.prenom }}</td>
                         <td>{{ commande.user.niu }}</td>
                         {% if commande.paiement %}
-                            <td data-label="Date de Paiement">{{ commande.paiement ? paiement.date|date('d/m/Y') : '' }}</td>
+                            <td data-label="Date de Paiement">{{ commande.paiement ? commande.paiement.date|date('d/m/Y') : '' }}</td>
                             <td data-label="Type">
                                 {% if commande.paiement.type == "Espece" %}
                                     Espèce

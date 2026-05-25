@@ -35,6 +35,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensiolabs\GotenbergBundle\GotenbergPdfInterface;
+use App\Service\PdfService;
 
 
 #[Route("/{_locale}/Commande_Panier", name :"commande_panier_") ]
@@ -2646,49 +2647,35 @@ class CommandeController extends AbstractController
 
     
     #[Route("/Pint_Details_commande_pdf/{commande}", name :"print_Detail_pdf") ]
-    public function pdfprintdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, GotenbergPdfInterface $gotenberg)
+    public function pdfprintdetails(SessionInterface $session, CommandeProduitRepository $repository, Commande $commande, PaiementRepository $paiementRepository, PdfService $pdfService)
     {
         if ($this->security->isGranted('ROLE_CLIENT') && $commande->getUser()->getPharmacie() == $this->getUser()->getPharmacie()) {
-            return $gotenberg
-        ->html()
-        ->content('commande/admin/detailspdf.html.twig', [
-                'commandeproduits' => $repository->findBy(['commande' => $commande]),
+          
+
+         return $pdfService->streamPdf(
+            'commande/admin/detailspdf.html.twig',
+            [
+               'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
-            ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+                ],
+            sprintf('facture-%s.pdf',$commande->getId()."-".$commande->getNumerofacture())
+        );
+
+        
             
         } elseif ($this->security->isGranted('ROLE_FINANCE')) {
 
-        //        $html = $this->renderView('commande/all_print.html.twig', [
-        //         'commandeproduits' => $repository->findBy(['commande' => $commande]),
-        //         'commande' => $commande,
-        //         'paiement' => $paiementRepository->findOneBy(['commande' => $commande]),
-        //     ]);
+       
 
-        // // Générer le PDF
-        // $pdfContent = $this->pdf->getOutputFromHtml($html, [
-        //     'page-size'   => 'A4',
-        //     'orientation' => 'Portrait',
-        // ]);
-
-        // // Retourner en téléchargement
-        // return new Response($pdfContent, 200, [
-        //     'Content-Type'        => 'application/pdf',
-        //     'Content-Disposition' => 'attachment; filename="facture.pdf"',
-        // ]);
-
-        return $gotenberg
-        ->html()
-        ->content('commande/admin/detailspdf.html.twig', [
+         return $pdfService->streamPdf(
+            'commande/admin/detailspdf.html.twig',
+            [
                 'commandeproduits' => $repository->findBy(['commande' => $commande]),
                 'commande' => $commande,
                 'paiement' => $paiementRepository->findOneBy(['commande' => $commande])
-                ])
-        ->fileName('facture.pdf')
-        ->generate()
-        ->stream();
+                ],
+            sprintf('facture-%s.pdf',$commande->getId()."-".$commande->getNumerofacture())
+        );
             // $response = $this->render('commande/admin/details_print.html.twig', [
             //     'commandeproduits' => $repository->findBy(['commande' => $commande]),
             //     'commande' => $commande,

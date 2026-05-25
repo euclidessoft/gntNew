@@ -12,6 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
         "guikingone/scheduler-bundle": "^0.10.5",
+        "mpdf/mpdf": "*",
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpoffice/phpspreadsheet": "*",
         "phpstan/phpdoc-parser": "^2.1",

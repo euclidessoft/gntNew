@@ -1,239 +1,296 @@
-{% extends 'pdf.html.twig' %}
-{% block title %} {{ "Commande"|trans }} - {{ commande.id }}-{{ commande.numerofacture }} {% endblock %}
-{% block contenu %}
-    <h4 class="text-center fw-bold text-uppercase mt-4">
-        {{ ' Facture'|trans }}
-    </h4>
-    <h6 class="small text-center text-uppercase">
-        {{ 'Numero'|trans }} : {{ commande.id }}-{{ commande.numerofacture }}
-    </h6>
-    <div class="contenu">
-        <div class="row my-5">
-            <div class="col-3"></div>
-            <div class="col-9">
-                <table class="text-center w-100">
-                    <thead>
-                    <tr>
-                        <th>{{ 'N° Commande'|trans }}</th>
-                        <th>{{ 'Date commande'|trans }}</th>
-                        <th>{{ 'Date Traitement'|trans }}</th>
-                        <th>{{ 'Client'|trans }}</th>
-                        <th>{{ 'NIU'|trans }}</th>
-                        {% if commande.paiement %}
-                            <th>{{ 'Date de Paiement'|trans }}</th>
-                            <th>{{ 'Type'|trans }}</th>
-                        {% else %}
-                            <th>{{ 'Type'|trans }}</th>
-                            <th>{{ 'Date d\'echeance'|trans }}</th>
-                        {% endif %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td data-label="Numero Commande">{{ commande.id }}</td>
-                        <td data-label="Date commande">{{ commande.date|date('d/m/Y H:i:s') }}</td>
-                        <td data-label="Date traitement">{{ commande.traitement|date('d/m/Y H:i:s') }}</td>
-                        <td data-label="Client">{{ commande.user.nom }} {{ commande.user.prenom }}</td>
-                        <td>{{ commande.user.niu }}</td>
-                        {% if commande.paiement %}
-                            <td data-label="Date de Paiement">{{ commande.paiement ? paiement.date|date('d/m/Y') : '' }}</td>
-                            <td data-label="Type">
-                                {% if commande.paiement.type == "Espece" %}
-                                    Espèce
-                                {% else %}
-                                    {{ commande.paiement ? commande.paiement.type : '' }} :
-                                    {{ commande.paiement.banque ? commande.paiement.banque.nom : '' }} <br>
-                                    N°: {{ commande.paiement ? commande.paiement.numero : '' }}
-                                {% endif %}
-                            </td>
-                        {% else %}
-                            <td data-label="Credit">Credit</td>
-                            <td> {{ commande.echeance ? commande.echeance|date('d/m/Y'): '' }}</td>
-                        {% endif %}
-                    </tr>
-                    </tbody>
-                </table>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+        }
+
+        /* ── En-tête ── */
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #039c4f;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .header-table td { vertical-align: middle; border: none !important; }
+        .logo { width: 80px; }
+        .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #039c4f;
+            text-align: center;
+        }
+        .company-info {
+            font-size: 10px;
+            text-align: center;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* ── Titre facture ── */
+        .titre-facture {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 16px 0 4px;
+        }
+        .sous-titre {
+            text-align: center;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* ── Tableaux ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+        th, td {
+            border: none;
+            padding: 5px 6px;
+            vertical-align: middle;
+        }
+        thead th {
+            background-color: #c5fbae;
+            color: #000;
+            text-align: center;
+            font-size: 10px;
+        }
+        tbody tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+        td { font-size: 10px; }
+
+        /* ── Tableau récap commande ── */
+        .recap-wrapper {
+            width: 75%;
+            margin: 0 0 20px auto;
+        }
+        .recap-wrapper td { text-align: center; border: none; }
+
+        /* ── Badge UG ── */
+        .badge {
+            background-color: #cc0000;
+            color: #fff;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        /* ── Totaux ── */
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .text-nowrap { white-space: nowrap; }
+
+        /* ── Montant en lettres ── */
+        .montant-lettres {
+            margin: 20px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* ── Pied de page ── */
+        .footer {
+            margin-top: 30px;
+            font-size: 9px;
+            color: #888;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+{# ── En-tête société ── #}
+<table class="header-table">
+    <tr>
+        <td style="width:90px;">
+              {% if logoBase64 %}
+    <img src="{{ logoBase64 }}" alt="Logo" style="width:80px;">
+{% endif %}
+        </td>
+        <td style="text-align:center;vertical-align:middle;">
+            <div class="company-name">GNT PHARMA</div>
+            <div class="company-info">
+                BP : 3582 Yaoundé – Cameroun, NGOUSSO<br>
+                Montée Éleveur Immeuble Sainte Marie<br>
+                +237 69 71 49 412 &nbsp;-&nbsp; +237 67 52 47 865<br>
+                info@gnt-pharma.com &nbsp;-&nbsp; www.gnt-pharma.com<br>
+                RCCM N° : RC/YAE/2023/M/105 &nbsp;-&nbsp; NIU : M122217881373Q
             </div>
-        </div>
-        {% set total=0 %}
-        {% set reduction=0 %}
-        {% set tva=0 %}
-        <table class="text-center w-100">
-            <thead>
+        </td>
+    </tr>
+</table>
+
+{# ── Titre ── #}
+<div class="titre-facture">{{ 'Facture'|trans }}</div>
+<div class="sous-titre">{{ 'Numero'|trans }} : {{ commande.id }}-{{ commande.numerofacture }}</div>
+
+{# ── Récap commande ── #}
+<div class="recap-wrapper">
+    <table>
+        <thead>
             <tr>
-                <th>{{ 'CIP'|trans }}</th>
-                <th class="text-start">{{ 'Désignation'|trans }}</th>
-                <th>{{ 'Quantité'|trans }}<br>{{ 'commandée'|trans }}</th>
-                <th>{{ 'Quantité'|trans }}<br>{{ 'à livrer'|trans }}</th>
-                <th>{{ 'Prix Cession'|trans }}</th>
-                <th>{{ 'Réduction'|trans }}</th>
-                <th>{{ 'TVA'|trans }}</th>
-                <th>{{ 'Prix Public'|trans }}</th>
-                <th>{{ 'Montant'|trans }}</th>
+                <th>{{ 'N° Commande'|trans }}</th>
+                <th>{{ 'Date commande'|trans }}</th>
+                <th>{{ 'Date Traitement'|trans }}</th>
+                <th>{{ 'Client'|trans }}</th>
+                <th>{{ 'NIU'|trans }}</th>
+                {% if commande.paiement %}
+                    <th>{{ 'Date de Paiement'|trans }}</th>
+                    <th>{{ 'Type'|trans }}</th>
+                {% else %}
+                    <th>{{ 'Type'|trans }}</th>
+                    <th>{{ "Date d'échéance"|trans }}</th>
+                {% endif %}
             </tr>
-            </thead>
-            <tbody>
-            {% for commandeproduit in commandeproduits %}
-                {% set reductionproduit = 0 %}
-                <tr>
-                    <td> {{ commandeproduit.produit.reference }} </td>
-                    <td class="text-start">{{ commandeproduit.produit.desigantion }} </td>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.date|date('d/m/Y H:i') }}</td>
+                <td>{{ commande.traitement|date('d/m/Y H:i') }}</td>
+                <td>{{ commande.user.nom }} {{ commande.user.prenom }}</td>
+                <td>{{ commande.user.niu }}</td>
+                {% if commande.paiement %}
+                    <td>{{ commande.paiement.date|date('d/m/Y') }}</td>
                     <td>
-                        {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
-                    </td>
-                    <td>
-                        {{ commandeproduit.quantite }}
-                        {% if commandeproduit.ug != 0 %}
-                            <br>
-                            <span class="badge bg-danger">
-                                + {{ commandeproduit.ug }} U.G
-                            </span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-
-                    </td>
-                    <td>
-                        {% if commandeproduit.promotion is not null %}
-                            {% if commandeproduit.promotion.reduction is not null %}
-                                {% set reductionproduit =  commandeproduit.quantite * commandeproduit.session * commandeproduit.promotion.reduction /100 %}
-
-                                {% set reduction =  reduction + reductionproduit %}
-                                <span class="badge bg-danger">
-                                    -{{ commandeproduit.session * commandeproduit.promotion.reduction /100 }} F
-                            </span>
-                            {% else %}
-                                -
-                            {% endif %}
+                        {% if commande.paiement.type == "Espece" %}
+                            Espèce
                         {% else %}
-                            -
+                            {{ commande.paiement.type }} :
+                            {{ commande.paiement.banque ? commande.paiement.banque.nom : '' }}<br>
+                            N°: {{ commande.paiement.numero }}
                         {% endif %}
                     </td>
-                    <td>
-                        {% if commandeproduit.tva != 0 %}
-                            {% set tva = tva + (((commandeproduit.quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
-                            {% if commandeproduit.promotion is not null %}
-                                {% if commandeproduit.promotion.reduction is not null %}
-                                    {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction /100)) * 0.1925 }}
-                                {% else %}
-                                    {{ commandeproduit.session  * 0.1925 }}
-                                {% endif %}
-                            {% else %}
-                                {{ commandeproduit.session  * 0.1925 }}
-                            {% endif %}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>{{ commandeproduit.publique|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    <td>
-                        {{ (commandeproduit.quantite * commandeproduit.session)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                        {% set total = total + (commandeproduit.quantite * commandeproduit.session) %}
-                    </td>
-                </tr>
-            {% endfor %}
-            <tr class="fw-bold">
-                <td colspan="8" class="text-end">
-                    {{ "Total HT"|trans }}
-                </td>
-                <td class="text-nowrap">
-                    {{ total|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                </td>
+                {% else %}
+                    <td>Crédit</td>
+                    <td>{{ commande.echeance ? commande.echeance|date('d/m/Y') : '' }}</td>
+                {% endif %}
             </tr>
-            {% if reduction != 0 %}
-                <tr>
-                    <td colspan="8" class="text-end">
-                        {{ "Total Réduction"|trans }}
-                    </td>
-                    <td>
-                        <span id=""
-                              class="text-nowrap">{{ reduction|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                    </td>
-                </tr>
-            {% endif %}
-            <tr>
-                <td colspan="8" class="text-end">
-                    {{ "Total TVA"|trans }}
-                </td>
-                <td class="text-nowrap">
-                    {{ tva|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
-                </td>
-            </tr>
+        </tbody>
+    </table>
+</div>
 
+{# ── Lignes de commande ── #}
+{% set total = 0 %}
+{% set reduction = 0 %}
+{% set tva = 0 %}
+
+<table>
+    <thead>
+        <tr>
+            <th>{{ 'CIP'|trans }}</th>
+            <th style="text-align:left;">{{ 'Désignation'|trans }}</th>
+            <th>{{ 'Qté commandée'|trans }}</th>
+            <th>{{ 'Qté à livrer'|trans }}</th>
+            <th>{{ 'Prix Cession'|trans }}</th>
+            <th>{{ 'Réduction'|trans }}</th>
+            <th>{{ 'TVA'|trans }}</th>
+            <th>{{ 'Prix Public'|trans }}</th>
+            <th>{{ 'Montant'|trans }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for commandeproduit in commandeproduits %}
+            {% set reductionproduit = 0 %}
             <tr>
-                <td colspan="8" class="text-end">
-                    {{ "Prélèvement (2%)"|trans }}
+                <td class="text-center">{{ commandeproduit.produit.reference }}</td>
+                <td>{{ commandeproduit.produit.desigantion }}</td>
+                <td class="text-center">
+                    {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
                 </td>
                 <td class="text-center">
-                    <span id="">{{ commande.acompte != 0 ? commande.acompte|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') : '-' }}</span>
-                    <input type="hidden" value="{{ tva }}" id="totaltamp"/>
-                </td>
-            </tr>
-
-            <tr class="fw-bold">
-                <td colspan="8" class="text-end">
-                    {{ "Net à payer"|trans }}
-                </td>
-                <td class="montant">
-                    <span class="text-nowrap">{{ (total + commande.acompte + tva - reduction)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</span>
-                    <span id="total" class="text-nowrap"
-                          style="display:none;">{{ (total + commande.acompte + tva - reduction)|number_format(2, '.' , '') }}</span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-        {#        /***Conversion prix en lettre **/ #}
-        <div class="my-5">
-            {{ 'Arrêtée la présente à la somme de'|trans }}&nbsp;<b id="conversion"></b><b id="virgule"></b>
-            <b>{{ 'francs CFA TTC'|trans }}</b>
-        </div>
-        {# /***** end*****/ #}
-
-        {#{% if commande.versements|length != 0 %}
-            <div class="container mt-4 fond-7">
-                <h3 class="mt-4 mb-5 fw-bold">
-                    <i class="fa fa-shopping-cart me-2"></i>
-                    {{ "Historiques des versements"|trans }}
-                </h3>
-                <table class="w-100">
-                    <thead>
-                    <tr>
-                        <th>{{ 'numero versement'|trans }}</th>
-                        <th>{{ 'Date'|trans }}</th>
-                        <th>{{ 'Montant'|trans }}</th>
-
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for versement in  commande.versements %}
-                        <tr>
-                            <td>{{ versement.id }}</td>
-                            <td>{{ versement.date|date('d/m/Y') }}</td>
-                            <td>{{ versement.montant|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        </tr>
-                    {% else %}
-                    {% endfor %}
-                    <tr>
-                        <td colspan="2" class="text-end text-nowrap">{{ 'Total versement'|trans }}</td>
-                        <td>{{ commande.versement|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                    </tr>
-                    {% if commande.escompte is null %}
-                        <tr>
-                            <td colspan="2" class="text-end">{{ 'Montant Restant'|trans }}</td>
-                            <td>{{ (commande.montant - commande.versement)|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="2" class="text-end">{{ 'Escompte de reglement'|trans }}</td>
-                            <td>{{ commande.escompte }}%</td>
-                        </tr>
+                    {{ commandeproduit.quantite }}
+                    {% if commandeproduit.ug != 0 %}
+                        <br><span class="badge">+{{ commandeproduit.ug }} U.G</span>
                     {% endif %}
+                </td>
+                <td class="text-end">
+                    {{ commandeproduit.session|number_format(2, ',', ' ') }}
+                </td>
+                <td class="text-center">
+                    {% if commandeproduit.promotion is not null and commandeproduit.promotion.reduction is not null %}
+                        {% set reductionproduit = commandeproduit.quantite * commandeproduit.session * commandeproduit.promotion.reduction / 100 %}
+                        {% set reduction = reduction + reductionproduit %}
+                        <span class="badge">-{{ commandeproduit.session * commandeproduit.promotion.reduction / 100 }} F</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if commandeproduit.tva != 0 %}
+                        {% set tva = tva + (((commandeproduit.quantite * commandeproduit.session) - reductionproduit) * 0.1925) %}
+                        {% if commandeproduit.promotion is not null and commandeproduit.promotion.reduction is not null %}
+                            {{ (commandeproduit.session - (commandeproduit.session * commandeproduit.promotion.reduction / 100)) * 0.1925 }}
+                        {% else %}
+                            {{ commandeproduit.session * 0.1925 }}
+                        {% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td class="text-end">
+                    {{ commandeproduit.publique|number_format(2, ',', ' ') }}
+                </td>
+                <td class="text-end text-nowrap">
+                    {% set total = total + (commandeproduit.quantite * commandeproduit.session) %}
+                    {{ (commandeproduit.quantite * commandeproduit.session)|number_format(2, ',', ' ') }}
+                </td>
+            </tr>
+        {% endfor %}
 
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}#}
-{% endblock %}
+        {# Totaux #}
+        <tr class="fw-bold">
+            <td colspan="8" class="text-end">{{ 'Total HT'|trans }}</td>
+            <td class="text-end text-nowrap">{{ total|number_format(2, ',', ' ') }}</td>
+        </tr>
+        {% if reduction != 0 %}
+        <tr>
+            <td colspan="8" class="text-end">{{ 'Total Réduction'|trans }}</td>
+            <td class="text-end text-nowrap">{{ reduction|number_format(2, ',', ' ') }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td colspan="8" class="text-end">{{ 'Total TVA'|trans }}</td>
+            <td class="text-end text-nowrap">{{ tva|number_format(2, ',', ' ') }}</td>
+        </tr>
+        <tr>
+            <td colspan="8" class="text-end">{{ "Prélèvement (2%)"|trans }}</td>
+            <td class="text-center">
+                {{ commande.acompte != 0 ? commande.acompte|number_format(2, ',', ' ') : '-' }}
+            </td>
+        </tr>
+        <tr class="fw-bold">
+            <td colspan="8" class="text-end">{{ 'Net à payer'|trans }}</td>
+            <td class="text-end text-nowrap">
+                {{ (total + commande.acompte + tva - reduction)|number_format(2, ',', ' ') }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+{# ── Montant en lettres — calculé côté PHP/Twig, pas JS ── #}
+{% set netapayer = (total + commande.acompte + tva - reduction)|round(0, 'floor') %}
+<div class="montant-lettres">
+    {{ 'Arrêtée la présente à la somme de'|trans }}
+    <strong>{{ lettre(netapayer) }} {{ 'francs CFA TTC'|trans }}</strong>
+</div>
+
+
+{# Pas de JavaScript — mPDF ne l'exécute pas #}
+
+</body>
+</html>
