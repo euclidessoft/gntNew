@@ -459,7 +459,7 @@ class CommandeController extends AbstractController
 
     
     #[Route("/Modificationvalider/{commande}", name :"modification_valider") ]
-    public function modificationvalider(Commande $commande, Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository)
+    public function modificationvalider(Commande $commande, Request $request, SessionInterface $session, ProduitRepository $produitRepository, CommandeProduitRepository $repository, Promotion $promo)
     {
         if ($this->security->isGranted('ROLE_STOCK') && $this->isCsrfTokenValid('delete'.$commande->getId(), $request->request->get('_token'))) {
              $panier = $session->get('confirmation',[]);
@@ -475,7 +475,7 @@ class CommandeController extends AbstractController
                 $tva = 0;
                 foreach ($commandeproduits as $product) {
                     $product->setExtranet(false);
-                    
+                    $ug = 0;
                     $produit = $product->getProduit();
 
                     if( $product->getQuantite() == $panier[$produit->getid()]){
@@ -490,6 +490,10 @@ class CommandeController extends AbstractController
                             $reductionproduit = $panier[$produit->getid()] * $produit->getPrix() * $produit->getPromotion()->getReduction() / 100;
 
                             $reduction = $reduction + $reductionproduit;
+                        }
+                        if ($produit->getPromotion()->getPremier() !== null) {
+                            $ug = $promo->ug($produit, $panier[$produit->getid()]);
+                            $product->setUg($ug);
                         }
                     }
 
@@ -1279,8 +1283,8 @@ class CommandeController extends AbstractController
              $dataPanier = [];
             $total = 0;
              $this->getUser()->getTuteur() === null ?
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()],['desigantion' => 'ASC']) :
-             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()],['desigantion' => 'ASC']);  
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getId()]) :
+             $panier = $this->entityManager->getRepository(Panier::class)->findBy(['client' => $this->getUser()->getTuteur()->getId()]);  
              foreach($panier as $commande){
                 $commande->getProduit()->setQuantite($commande->getQuantite());
                 $dataPanier[] = [

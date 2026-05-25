@@ -179,6 +179,7 @@ final class LaboratoireController extends AbstractController
     #[Route('/admin/{id}', name: 'app_laboratoire_show_admin', methods: ['GET'])]
     public function adminshow(Laboratoire $laboratoire): Response
     {
+       
         if ($this->security->isGranted('ROLE_FINANCE')) {
 
             $response = $this->render('commande/admin/dashbord_laboratoire.html.twig', [

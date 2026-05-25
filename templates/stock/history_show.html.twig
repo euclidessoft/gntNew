@@ -48,7 +48,7 @@
 
                 {#                {% endfor %} #}
 
-                <table class="table table-success-light table-bordered table-hover table-striped text-center w-100">
+                <table class="table table-success-light table-bordered table-hover table-striped text-center w-100" id="facture">
                     <thead>
                     <tr>
                         <th>{{ "CIP"|trans }}</th>
@@ -79,11 +79,16 @@
     <div class="container mt-4 mb-5 p-3 fond-7">
         <div class="centrer">
        
-           <a target="__blank" id="{{retour.id }}" onclick="load({{ retour.id }})" href="{{ path('stock_retour_history_show_pdf', {'id' : retour.id}) }}" class="btn btn-danger">
+           <a target="__blank" id="{{retour.id }}" onclick="load({{ retour.id }})" href="{{ path('stock_retour_history_show_print', {'id' : retour.id}) }}" class="btn btn-success-light me-3">
+                            <i class="fa fa-print"></i>
+                            {{ 'Imprimer'|trans }}
+                        </a>
+                        
+           <a target="__blank" id="{{retour.id }}" onclick="load({{ retour.id }})" href="{{ path('stock_retour_history_show_pdf', {'id' : retour.id}) }}" class="btn btn-danger me-3">
                             <i class="fa fa-file-pdf"></i>
                             {{ 'vers pdf'|trans }}
                         </a>
-             {# <span id="exportexcel" class=""></span> #}
+             <span id="exportexcel" class=""></span>
         </div>
     </div>
 

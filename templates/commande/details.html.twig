@@ -78,6 +78,12 @@
                     <td>{{ commandeproduit.produit.desigantion }} </td>
                     <td>
                         {{ commandeproduit.quantitecommande ? commandeproduit.quantitecommande : commandeproduit.quantite }}
+                        {% if commandeproduit.ug != 0 %}
+                            <span class="badge bg-danger">
+                                <br>
+                                + {{ commandeproduit.ug }} U.G
+                            </span>
+                        {% endif %}
 
                     </td>
                     <td>
@@ -90,13 +96,7 @@
                                 {{ commandeproduit.produit.stock }}
                             {% endif %}
                         {% endif %}
-                        {% if commandeproduit.ug != 0 %}
-                            <span class="badge bg-danger">
-                                <br>
-                                + {{ commandeproduit.ug }} U.G
-                            </span>
-                        {% endif %}
-
+                        
                     </td>
                     <td class="montant noExport">
                         {{ commandeproduit.session|number_format(2, app.request.locale == 'fr' ? ',' : '.', app.request.locale == 'fr' ? ' ' : ',') }}
