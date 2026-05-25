@@ -53,6 +53,16 @@
             </tr>
             </tbody>
         </table>
+         <div class="col-md-12 offset-md-3 mt-4 py-3 fond-7">
+            <div class="centrer gap-3">
+               
+                <a id="{{ laboratoire.id }}" onclick="load({{ laboratoire.id }})"
+                   class="btn btn-success-light" href="{{ path('app_laboratoire_show_admin', {'id':laboratoire.id}) }}">
+                    <i class="fas fa-chart-line"></i>
+                    {{ 'Statistiques'|trans }}
+                </a>
+            </div>
+        </div>
     </div>
 
 

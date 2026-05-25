@@ -27,8 +27,8 @@
         </li>
       
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('laboratoire_mensuel') }}">
-                {{'Mois'|trans}}
+            <a class="nav-link" href="{{ path('laboratoire_mensuel', {'id' : laboratoire.id}) }}">
+                {{'Mensuel'|trans}}
             </a>
         </li>
     </ul>
@@ -37,7 +37,7 @@
                     <i class="fa fa-print"></i>
                     {{ 'imprimer'|trans }}
                 </a>#}
-                 <a target="_blank" href="{{ path('laboratoire_produit_show_pdf', {'id': produit.id}) }}" class="btn btn-danger ms-3">
+                 <a target="_blank" href="{{ path('laboratoire_produit_show_pdf', {'laboratoire' : laboratoire.id, 'id': produit.id}) }}" class="btn btn-danger ms-3">
                     <i class="fa fa-file-pdf"></i>
                     {{ 'vers Pdf'|trans }}
                 </a>

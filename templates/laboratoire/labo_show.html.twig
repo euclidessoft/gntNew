@@ -20,14 +20,20 @@
     </h3>
     <ul class="nav nav-tabs mb-4">
          <li class="nav-item">
+              {% if is_granted("ROLE_LABORATOIRE") %}
             <a class="nav-link" href="{{ path('commande_index')}}">
             {{ 'Produits'|trans }}
             </a>
+        {% else %}
+        <a class="nav-link" href="{{ path('app_laboratoire_show_admin', {'id':laboratoire.id}) }}">
+            {{ 'Produits'|trans }}
+            </a>
+        {% endif %}
         </li>
       
         <li class="nav-item">
             <a class="nav-link active" href="#">
-                {{'Mois'|trans}}
+                {{'Mensuel'|trans}}
             </a>
         </li>
     </ul>
@@ -36,7 +42,7 @@
                     <i class="fa fa-print"></i>
                     {{ 'imprimer'|trans }}
                 </a>#}
-                 <a target="_blank" href="{{ path('laboratoire_mois_pdf', {'mois' : mois})}}" class="btn btn-danger ms-3">
+                 <a target="_blank" href="{{ path('laboratoire_mois_pdf', {'laboratoire' : laboratoire.id, 'mois' : mois})}}" class="btn btn-danger ms-3">
                     <i class="fa fa-file-pdf"></i>
                     {{ 'vers Pdf'|trans }}
                 </a>

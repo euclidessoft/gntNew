@@ -20,14 +20,20 @@
     </h3>
     <ul class="nav nav-tabs mb-4">
          <li class="nav-item">
+         {% if is_granted("ROLE_LABORATOIRE") %}
             <a class="nav-link" href="{{ path('commande_index')}}">
             {{ 'Produits'|trans }}
             </a>
+        {% else %}
+        <a class="nav-link" href="{{ path('app_laboratoire_show_admin', {'id':laboratoire.id}) }}">
+            {{ 'Produits'|trans }}
+            </a>
+        {% endif %}
         </li>
       
         <li class="nav-item">
             <a class="nav-link active" href="#">
-                {{'Mois'|trans}}
+                {{'Mensuel'|trans}}
             </a>
         </li>
     </ul>
@@ -42,11 +48,13 @@
             </tr>
        </thead>
         <tbody>
+        {% set i = 0%}
         {% for mois, livrerproduit in livrerproduits %}
             <tr>
                 <td>{{ mois|date("m/Y") }}</td>
-                <td><a href="{{ path('laboratoire_mois', {'mois' : mois})}}" class="btn btn-success"><i class="fa fa-eye"></i></a></td>
+                <td><a href="{{ path('laboratoire_mois', {'laboratoire' : laboratoire.id, 'mois' : mois})}}" class="btn btn-success" id="{{ i }}" onclick="load({{ i }})"><i class="fa fa-eye"></i></a></td>
             </tr>
+            {% set i = i + 1 %}
         {% endfor %}
        </tbody> 
        </table> 

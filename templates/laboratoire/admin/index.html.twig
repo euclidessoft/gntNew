@@ -45,7 +45,7 @@
                     <td data-label="{{ 'Boite postale'|trans }}">{{ laboratoire.boitepostale }}</td>
                     <td data-label="{{ 'Site web'|trans }}">{{ laboratoire.siteweb }}</td>
                     <td data-label="{{ 'Actions'|trans }}" class="center gap-3">
-                        <a class="btn btn-success" href="{{ path('app_laboratoire_show', {'id': laboratoire.id}) }}">
+                        <a class="btn btn-success" id="{{ laboratoire.id }}" onclick="load({{laboratoire.id}})" href="{{ path('app_laboratoire_show', {'id': laboratoire.id}) }}">
                             <i class="fa fa-eye"></i>
                         </a>
                         <a class="btn btn-success-light" href="{{ path('app_laboratoire_edit', {'id': laboratoire.id}) }}">

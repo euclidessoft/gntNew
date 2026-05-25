@@ -142,11 +142,11 @@ final class LaboratoireController extends AbstractController
             }
 	}
     
-    #[Route('/StatMensuel', name: 'laboratoire_mensuel', methods: ['GET'])]
-    public function laboshow(LivrerProduitRepository $repository): Response
+    #[Route('/StatMensuel/{id}', name: 'laboratoire_mensuel', methods: ['GET'])]
+    public function laboshow(LivrerProduitRepository $repository, Laboratoire $laboratoire): Response
     {
         $produits = [];
-        $laboprod = $this->getUser()->getProduits();
+        $laboprod = $laboratoire->getProduits();
         foreach($laboprod as $prod){
             $produits[] = $prod->getId();
         }
@@ -164,6 +164,7 @@ final class LaboratoireController extends AbstractController
        
         return $this->render('laboratoire/labomensuel.html.twig', [
             'livrerproduits' => $tableauClasse,
+            'laboratoire' => $laboratoire,
         ]);
     }
 
@@ -175,8 +176,40 @@ final class LaboratoireController extends AbstractController
         ]);
     }
 
-    #[Route('/laboratoireProduit/{id}', name: 'laboratoire_produit_show', methods: ['GET'])]
-    public function produitshow(Produit $produit, livrerProduitRepository $repository): Response
+    #[Route('/admin/{id}', name: 'app_laboratoire_show_admin', methods: ['GET'])]
+    public function adminshow(Laboratoire $laboratoire): Response
+    {
+        if ($this->security->isGranted('ROLE_FINANCE')) {
+
+            $response = $this->render('commande/admin/dashbord_laboratoire.html.twig', [
+                'laboratoire' => $laboratoire,
+               ]);
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+
+        } else {
+            $response = $this->redirectToRoute('security_logout');
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->setCache([
+                'max_age' => 0,
+                'private' => true,
+            ]);
+            return $response;
+        }
+    }
+
+    #[Route('/laboratoireProduit/{id}/{laboratoire}', name: 'laboratoire_produit_show', methods: ['GET'])]
+    public function produitshow(Produit $produit, Laboratoire $laboratoire, livrerProduitRepository $repository): Response
     {
          $commandes = $repository->findBy(['produit' => $produit], ['id' => "ASC"]);
         //  $depart = $commandes[0]->getArchive();
@@ -196,13 +229,14 @@ final class LaboratoireController extends AbstractController
         return $this->render('laboratoire/produit_show.html.twig', [
             'livrerproduits' => $tableauClasse,
             'produit' => $produit,
+            'laboratoire' => $laboratoire,
         ]);
     }
 
 
     
-    #[Route('/laboratoireProduit_pdf/{id}', name: 'laboratoire_produit_show_pdf', methods: ['GET'])]
-    public function produitshowpdf(Produit $produit, livrerProduitRepository $repository, GotenbergPdfInterface $gotenberg): Response
+    #[Route('/laboratoireProduit_pdf/{id}/{laboratoire}', name: 'laboratoire_produit_show_pdf', methods: ['GET'])]
+    public function produitshowpdf(Produit $produit, Laboratoire $laboratoire, livrerProduitRepository $repository, GotenbergPdfInterface $gotenberg): Response
     {
          $commandes = $repository->findBy(['produit' => $produit], ['id' => "ASC"]);
         //  $depart = $commandes[0]->getArchive();
@@ -232,25 +266,26 @@ final class LaboratoireController extends AbstractController
     }
 
     
-    #[Route('/LaboStatMensuel/{mois}', name: 'laboratoire_mois', methods: ['GET'])]
-    public function laboshowmensuel(LivrerProduitRepository $repository, $mois): Response
+    #[Route('/LaboStatMensuel/{laboratoire}/{mois}', name: 'laboratoire_mois', methods: ['GET'])]
+    public function laboshowmensuel(LivrerProduitRepository $repository,Laboratoire $laboratoire, $mois): Response
     {
        
-        $laboprod = $this->getUser()->getProduits();
+        $laboprod = $laboratoire->getProduits();
        
        
         return $this->render('laboratoire/labo_show.html.twig', [
             'produits' => $laboprod,
             'mois' => $mois,
+            'laboratoire' => $laboratoire,
         ]);
     }
 
     
-    #[Route('/LaboStatMensuel_pdf/{mois}', name: 'laboratoire_mois_pdf', methods: ['GET'])]
-    public function laboshowmensuelpdf(LivrerProduitRepository $repository, $mois, GotenbergPdfInterface $gotenberg): Response
+    #[Route('/LaboStatMensuel_pdf/{laboratoire}/{mois}', name: 'laboratoire_mois_pdf', methods: ['GET'])]
+    public function laboshowmensuelpdf(LivrerProduitRepository $repository,Laboratoire $laboratoire, $mois, GotenbergPdfInterface $gotenberg): Response
     {
        
-        $laboprod = $this->getUser()->getProduits();
+        $laboprod = $laboratoire->getProduits();
        
       
          return $gotenberg

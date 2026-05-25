@@ -11,7 +11,7 @@
     'layout.html.twig'
 %}
 {% block title %} {{ "Tous les produits"|trans }} - GNT Pharma {% endblock %}
-{% block produit %}active{% endblock %}
+{% block laboratoire %}active{% endblock %}
 {% block all_produits %}active{% endblock %}
 
 {% block body %}
@@ -30,7 +30,7 @@
         </li>
       
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('laboratoire_mensuel') }}">
+            <a class="nav-link" href="{{ path('laboratoire_mensuel', {'id' : laboratoire.id}) }}">
                 {{'Mensuel'|trans}}
             </a>
         </li>
@@ -41,10 +41,12 @@
         {{ message|trans }}
     </div>
     {% endfor %}
-    <a href="{{ path('produit_new') }}" class="btn btn-green my-4">
-        <i class="fa fa-plus"></i>
-        {{ "Nouveau"|trans }}
-    </a>
+    {% if is_granted("ROLE_LABORATOIRE") %}
+        <a href="{{ path('produit_new') }}" class="btn btn-green my-4">
+            <i class="fa fa-plus"></i>
+            {{ "Nouveau"|trans }}
+        </a>
+    {% endif %}
     <table class="table table-success-light table-bordered table-hover table-striped w-100 text-center my-3" id="liste">
         <thead>
             <tr>
@@ -62,7 +64,7 @@
                 <td class="text-start">{{ produit.desigantion }}</td>
                 <td>{{ produit.dci }}</td>
                 <td class="text-nowrap">
-                    <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" title="{{ 'Voir'|trans }}" href="{{ path('laboratoire_produit_show', {'id': produit.id}) }}">
+                    <a id="{{ produit.id }}" onclick="load({{ produit.id }})" class="btn btn-success" title="{{ 'Voir'|trans }}" href="{{ path('laboratoire_produit_show', {'id': produit.id, 'laboratoire' : laboratoire.id}) }}">
                         <i class="fa fa-eye"></i>
                     </a>
                 </td>
